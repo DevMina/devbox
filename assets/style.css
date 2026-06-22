@@ -768,3 +768,36 @@ input[type="checkbox"] {
     .content-wrap .content {
         flex: 1;
     }
+
+/* ── Collapsible sidebar groups ── */
+.sb-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+}
+
+    .sb-group-header .sb-chevron {
+        width: 13px;
+        height: 13px;
+        flex-shrink: 0;
+        transition: transform 0.2s ease;
+        opacity: 0.4;
+    }
+
+    .sb-group-header.collapsed .sb-chevron {
+        transform: rotate(-90deg);
+    }
+
+.sb-group-body {
+    overflow: hidden;
+    transition: max-height 0.25s ease, opacity 0.2s ease;
+    max-height: 800px;
+    opacity: 1;
+}
+
+    .sb-group-body.collapsed {
+        max-height: 0 !important;
+        opacity: 0;
+    }
