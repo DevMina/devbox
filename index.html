@@ -200,6 +200,12 @@
             flex-shrink: 0;
         }
 
+        .tool-card-text {
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
+        }
+
         .tool-name {
             font-size: 0.82rem;
             font-weight: 600;
@@ -311,11 +317,11 @@
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/json.html">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">{}</div>
-                                <div><div class="tool-name">JSON Formatter</div><div class="tool-desc">Pretty-print, minify, validate</div></div>
+                                <div class="tool-card-text"><div class="tool-name">JSON Formatter</div><div class="tool-desc">Pretty-print, minify, validate</div></div>
                             </a>
                             <a class="tool-card" href="tools/jsonpath.html">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">{?}</div>
-                                <div><div class="tool-name">JSON Path Explorer</div><div class="tool-desc">Query & tree-explore JSON</div></div>
+                                <div class="tool-card-text"><div class="tool-name">JSON Path Explorer</div><div class="tool-desc">Query & tree-explore JSON</div></div>
                             </a>
                         </div>
                     </div>
@@ -326,15 +332,15 @@
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/base64.html">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">B64</div>
-                                <div><div class="tool-name">Base64</div><div class="tool-desc">Encode & decode text</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Base64</div><div class="tool-desc">Encode & decode text</div></div>
                             </a>
                             <a class="tool-card" href="tools/url.html">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">URL</div>
-                                <div><div class="tool-name">URL Encoder</div><div class="tool-desc">Encode & decode URLs</div></div>
+                                <div class="tool-card-text"><div class="tool-name">URL Encoder</div><div class="tool-desc">Encode & decode URLs</div></div>
                             </a>
                             <a class="tool-card" href="tools/htmlentity.html">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">&lt;&gt;</div>
-                                <div><div class="tool-name">HTML Entities</div><div class="tool-desc">Encode & decode HTML chars</div></div>
+                                <div class="tool-card-text"><div class="tool-name">HTML Entities</div><div class="tool-desc">Encode & decode HTML chars</div></div>
                             </a>
                         </div>
                     </div>
@@ -345,31 +351,31 @@
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/uuid.html">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">UID</div>
-                                <div><div class="tool-name">UUID Generator</div><div class="tool-desc">RFC 4122 v4 UUIDs, bulk</div></div>
+                                <div class="tool-card-text"><div class="tool-name">UUID Generator</div><div class="tool-desc">RFC 4122 v4 UUIDs, bulk</div></div>
                             </a>
                             <a class="tool-card" href="tools/hash.html">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">#</div>
-                                <div><div class="tool-name">Hash Generator</div><div class="tool-desc">MD5, SHA-1, SHA-256</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Hash Generator</div><div class="tool-desc">MD5, SHA-1, SHA-256</div></div>
                             </a>
                             <a class="tool-card" href="tools/password.html">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">🔑</div>
-                                <div><div class="tool-name">Password Generator</div><div class="tool-desc">Cryptographically random</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Password Generator</div><div class="tool-desc">Cryptographically random</div></div>
                             </a>
                             <a class="tool-card" href="tools/lorem.html">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">¶</div>
-                                <div><div class="tool-name">Lorem Ipsum</div><div class="tool-desc">Placeholder text generator</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Lorem Ipsum</div><div class="tool-desc">Placeholder text generator</div></div>
                             </a>
                             <a class="tool-card" href="tools/asciiart.html">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">A</div>
-                                <div><div class="tool-name">ASCII Art</div><div class="tool-desc">Text to ASCII art, 4 styles</div></div>
+                                <div class="tool-card-text"><div class="tool-name">ASCII Art</div><div class="tool-desc">Text to ASCII art, 4 styles</div></div>
                             </a>
                             <a class="tool-card" href="tools/qrcode.html">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">⬛</div>
-                                <div><div class="tool-name">QR Code Generator</div><div class="tool-desc">URL, WiFi, email, phone, SMS</div></div>
+                                <div class="tool-card-text"><div class="tool-name">QR Code Generator</div><div class="tool-desc">URL, WiFi, email, phone, SMS</div></div>
                             </a>
                             <a class="tool-card" href="tools/favicon.html">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">🔲</div>
-                                <div><div class="tool-name">Favicon Generator</div><div class="tool-desc">All sizes, downloadable PNG</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Favicon Generator</div><div class="tool-desc">All sizes, downloadable PNG</div></div>
                             </a>
                         </div>
                     </div>
@@ -380,23 +386,23 @@
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/color.html">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">🎨</div>
-                                <div><div class="tool-name">Color Converter</div><div class="tool-desc">HEX ↔ RGB ↔ HSL</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Color Converter</div><div class="tool-desc">HEX ↔ RGB ↔ HSL</div></div>
                             </a>
                             <a class="tool-card" href="tools/contrast.html">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">AA</div>
-                                <div><div class="tool-name">Contrast Checker</div><div class="tool-desc">WCAG AA/AAA ratios</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Contrast Checker</div><div class="tool-desc">WCAG AA/AAA ratios</div></div>
                             </a>
                             <a class="tool-card" href="tools/colorpalette.html">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">◑</div>
-                                <div><div class="tool-name">Color Palette</div><div class="tool-desc">Complementary, triadic…</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Color Palette</div><div class="tool-desc">Complementary, triadic…</div></div>
                             </a>
                             <a class="tool-card" href="tools/gradient.html">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">▣</div>
-                                <div><div class="tool-name">CSS Gradient</div><div class="tool-desc">Linear, radial, conic builder</div></div>
+                                <div class="tool-card-text"><div class="tool-name">CSS Gradient</div><div class="tool-desc">Linear, radial, conic builder</div></div>
                             </a>
                             <a class="tool-card" href="tools/imagepalette.html">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">🖼</div>
-                                <div><div class="tool-name">Image Palette</div><div class="tool-desc">Extract colors from image</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Image Palette</div><div class="tool-desc">Extract colors from image</div></div>
                             </a>
                         </div>
                     </div>
@@ -407,35 +413,35 @@
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/jwt.html">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">JWT</div>
-                                <div><div class="tool-name">JWT Decoder</div><div class="tool-desc">Header, payload, expiry</div></div>
+                                <div class="tool-card-text"><div class="tool-name">JWT Decoder</div><div class="tool-desc">Header, payload, expiry</div></div>
                             </a>
                             <a class="tool-card" href="tools/jwtencoder.html">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">JWT+</div>
-                                <div><div class="tool-name">JWT Encoder</div><div class="tool-desc">Build & sign JWT tokens</div></div>
+                                <div class="tool-card-text"><div class="tool-name">JWT Encoder</div><div class="tool-desc">Build & sign JWT tokens</div></div>
                             </a>
                             <a class="tool-card" href="tools/timestamp.html">
                                 <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">TS</div>
-                                <div><div class="tool-name">Timestamp</div><div class="tool-desc">Unix ↔ human-readable</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Timestamp</div><div class="tool-desc">Unix ↔ human-readable</div></div>
                             </a>
                             <a class="tool-card" href="tools/regex.html">
                                 <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">.*</div>
-                                <div><div class="tool-name">Regex Tester</div><div class="tool-desc">Live match highlighting</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Regex Tester</div><div class="tool-desc">Live match highlighting</div></div>
                             </a>
                             <a class="tool-card" href="tools/httpstatus.html">
                                 <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">HTTP</div>
-                                <div><div class="tool-name">HTTP Status</div><div class="tool-desc">All status codes reference</div></div>
+                                <div class="tool-card-text"><div class="tool-name">HTTP Status</div><div class="tool-desc">All status codes reference</div></div>
                             </a>
                             <a class="tool-card" href="tools/headerbuilder.html">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">HDR</div>
-                                <div><div class="tool-name">Header Builder</div><div class="tool-desc">Build & reference HTTP headers</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Header Builder</div><div class="tool-desc">Build & reference HTTP headers</div></div>
                             </a>
                             <a class="tool-card" href="tools/useragent.html">
                                 <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">UA</div>
-                                <div><div class="tool-name">User Agent Inspector</div><div class="tool-desc">Parse browser UA strings</div></div>
+                                <div class="tool-card-text"><div class="tool-name">User Agent Inspector</div><div class="tool-desc">Parse browser UA strings</div></div>
                             </a>
                             <a class="tool-card" href="tools/keytester.html">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">⌨</div>
-                                <div><div class="tool-name">Key Tester</div><div class="tool-desc">Key codes & modifiers</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Key Tester</div><div class="tool-desc">Key codes & modifiers</div></div>
                             </a>
                         </div>
                     </div>
@@ -446,31 +452,31 @@
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/numbase.html">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">0x</div>
-                                <div><div class="tool-name">Number Base</div><div class="tool-desc">Binary, Octal, Decimal, Hex</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Number Base</div><div class="tool-desc">Binary, Octal, Decimal, Hex</div></div>
                             </a>
                             <a class="tool-card" href="tools/byteconvert.html">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">B</div>
-                                <div><div class="tool-name">Byte Converter</div><div class="tool-desc">KB, MB, GB — SI & IEC</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Byte Converter</div><div class="tool-desc">KB, MB, GB — SI & IEC</div></div>
                             </a>
                             <a class="tool-card" href="tools/aspectratio.html">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">⬛</div>
-                                <div><div class="tool-name">Aspect Ratio</div><div class="tool-desc">Dimensions from ratio</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Aspect Ratio</div><div class="tool-desc">Dimensions from ratio</div></div>
                             </a>
                             <a class="tool-card" href="tools/jsoncsvconvert.html">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">⇄</div>
-                                <div><div class="tool-name">JSON ↔ CSV</div><div class="tool-desc">Convert between formats</div></div>
+                                <div class="tool-card-text"><div class="tool-name">JSON ↔ CSV</div><div class="tool-desc">Convert between formats</div></div>
                             </a>
                             <a class="tool-card" href="tools/caseconvert.html">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">Aa</div>
-                                <div><div class="tool-name">Case Converter</div><div class="tool-desc">14 formats — snake, camel…</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Case Converter</div><div class="tool-desc">14 formats — snake, camel…</div></div>
                             </a>
                             <a class="tool-card" href="tools/numberfmt.html">
                                 <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">123</div>
-                                <div><div class="tool-name">Number Format</div><div class="tool-desc">Currency, scientific, ordinal</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Number Format</div><div class="tool-desc">Currency, scientific, ordinal</div></div>
                             </a>
                             <a class="tool-card" href="tools/matheval.html">
                                 <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">∑</div>
-                                <div><div class="tool-name">Math Evaluator</div><div class="tool-desc">Expressions, functions, constants</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Math Evaluator</div><div class="tool-desc">Expressions, functions, constants</div></div>
                             </a>
                         </div>
                     </div>
@@ -481,31 +487,31 @@
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/diff.html">
                                 <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">⇄</div>
-                                <div><div class="tool-name">Diff Checker</div><div class="tool-desc">Compare two texts line by line</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Diff Checker</div><div class="tool-desc">Compare two texts line by line</div></div>
                             </a>
                             <a class="tool-card" href="tools/textstats.html">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">Aa</div>
-                                <div><div class="tool-name">Text Stats</div><div class="tool-desc">Words, reading time, freq</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Text Stats</div><div class="tool-desc">Words, reading time, freq</div></div>
                             </a>
                             <a class="tool-card" href="tools/charcounter.html">
                                 <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">Σ</div>
-                                <div><div class="tool-name">Char Counter</div><div class="tool-desc">Twitter, SMS, SEO limits</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Char Counter</div><div class="tool-desc">Twitter, SMS, SEO limits</div></div>
                             </a>
                             <a class="tool-card" href="tools/linesorter.html">
                                 <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">≡</div>
-                                <div><div class="tool-name">Line Sorter</div><div class="tool-desc">Sort, dedup, shuffle lines</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Line Sorter</div><div class="tool-desc">Sort, dedup, shuffle lines</div></div>
                             </a>
                             <a class="tool-card" href="tools/markdown.html">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">MD</div>
-                                <div><div class="tool-name">Markdown Preview</div><div class="tool-desc">Live side-by-side render</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Markdown Preview</div><div class="tool-desc">Live side-by-side render</div></div>
                             </a>
                             <a class="tool-card" href="tools/tablebuilder.html">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">▦</div>
-                                <div><div class="tool-name">Table Builder</div><div class="tool-desc">Markdown, HTML, CSV tables</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Table Builder</div><div class="tool-desc">Markdown, HTML, CSV tables</div></div>
                             </a>
                             <a class="tool-card" href="tools/textencrypt.html">
                                 <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">🔐</div>
-                                <div><div class="tool-name">Text Encrypt</div><div class="tool-desc">AES-256 in-browser</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Text Encrypt</div><div class="tool-desc">AES-256 in-browser</div></div>
                             </a>
                         </div>
                     </div>
@@ -516,19 +522,19 @@
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/sqlformat.html">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">SQL</div>
-                                <div><div class="tool-name">SQL Formatter</div><div class="tool-desc">Beautify & minify SQL</div></div>
+                                <div class="tool-card-text"><div class="tool-name">SQL Formatter</div><div class="tool-desc">Beautify & minify SQL</div></div>
                             </a>
                             <a class="tool-card" href="tools/cssminify.html">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">CSS</div>
-                                <div><div class="tool-name">CSS Minifier</div><div class="tool-desc">Minify & beautify CSS</div></div>
+                                <div class="tool-card-text"><div class="tool-name">CSS Minifier</div><div class="tool-desc">Minify & beautify CSS</div></div>
                             </a>
                             <a class="tool-card" href="tools/htmlbeautify.html">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">&lt;/&gt;</div>
-                                <div><div class="tool-name">HTML Beautifier</div><div class="tool-desc">Format & indent HTML</div></div>
+                                <div class="tool-card-text"><div class="tool-name">HTML Beautifier</div><div class="tool-desc">Format & indent HTML</div></div>
                             </a>
                             <a class="tool-card" href="tools/snippets.html">
                                 <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">{}</div>
-                                <div><div class="tool-name">Snippet Manager</div><div class="tool-desc">Save & copy code snippets</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Snippet Manager</div><div class="tool-desc">Save & copy code snippets</div></div>
                             </a>
                         </div>
                     </div>
@@ -539,19 +545,19 @@
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/ipcalc.html">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">IP</div>
-                                <div><div class="tool-name">IP Calculator</div><div class="tool-desc">CIDR subnet breakdown</div></div>
+                                <div class="tool-card-text"><div class="tool-name">IP Calculator</div><div class="tool-desc">CIDR subnet breakdown</div></div>
                             </a>
                             <a class="tool-card" href="tools/cron.html">
                                 <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">⏱</div>
-                                <div><div class="tool-name">Cron Parser</div><div class="tool-desc">Human-readable + next runs</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Cron Parser</div><div class="tool-desc">Human-readable + next runs</div></div>
                             </a>
                             <a class="tool-card" href="tools/nettools.html">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">🌐</div>
-                                <div><div class="tool-name">Network Tools</div><div class="tool-desc">DNS lookup, IP info, commands</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Network Tools</div><div class="tool-desc">DNS lookup, IP info, commands</div></div>
                             </a>
                             <a class="tool-card" href="tools/seotools.html">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">SEO</div>
-                                <div><div class="tool-name">SEO Tools</div><div class="tool-desc">robots.txt & XML sitemap</div></div>
+                                <div class="tool-card-text"><div class="tool-name">SEO Tools</div><div class="tool-desc">robots.txt & XML sitemap</div></div>
                             </a>
                         </div>
                     </div>
@@ -562,15 +568,15 @@
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/pomodoro.html">
                                 <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">🍅</div>
-                                <div><div class="tool-name">Pomodoro Timer</div><div class="tool-desc">Focus sessions & breaks</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Pomodoro Timer</div><div class="tool-desc">Focus sessions & breaks</div></div>
                             </a>
                             <a class="tool-card" href="tools/countdown.html">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">⏳</div>
-                                <div><div class="tool-name">Countdown Timer</div><div class="tool-desc">Count down to any date</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Countdown Timer</div><div class="tool-desc">Count down to any date</div></div>
                             </a>
                             <a class="tool-card" href="tools/breakpoints.html">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">📐</div>
-                                <div><div class="tool-name">Breakpoint Tester</div><div class="tool-desc">Responsive preview panel</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Breakpoint Tester</div><div class="tool-desc">Responsive preview panel</div></div>
                             </a>
                         </div>
                     </div>
