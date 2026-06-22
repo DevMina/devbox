@@ -713,20 +713,102 @@ input[type="checkbox"] {
 }
 
 /* ════════════════════════════════
+   MOBILE OVERLAY / HAMBURGER
+   ════════════════════════════════ */
+
+/* Hamburger button — hidden on desktop */
+.mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 200;
+  width: 36px;
+  height: 36px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+  transition: background var(--transition), border-color var(--transition);
+}
+.mobile-menu-btn:hover { background: var(--surface); border-color: var(--green); }
+.mobile-menu-btn span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--text-dim);
+  border-radius: 2px;
+  transition: background var(--transition);
+}
+.mobile-menu-btn:hover span { background: var(--text); }
+
+/* Overlay backdrop */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 149;
+  backdrop-filter: blur(2px);
+}
+.sidebar-overlay.active { display: block; }
+
+/* ════════════════════════════════
    RESPONSIVE — MOBILE (≤680px)
    ════════════════════════════════ */
 @media (max-width: 680px) {
-  :root { --sidebar-w: 58px; }
+  /* Show hamburger */
+  .mobile-menu-btn { display: flex; }
 
-  .sidebar { width: var(--sidebar-collapsed-w) !important; }
+  /* Sidebar becomes a fixed off-canvas drawer */
+  .sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: var(--sidebar-w) !important;
+    z-index: 150;
+    transform: translateX(-100%);
+    transition: transform var(--transition-slow), width var(--transition-slow);
+    box-shadow: var(--shadow-lg);
+    overflow-y: auto;
+  }
+
+  /* When open */
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Ensure full sidebar text is visible when open */
   .sidebar .logo-text,
   .sidebar .nav-item span,
-  .sidebar .nav-section-label { display: none !important; }
-  .sidebar .nav-item { justify-content: center; padding: 10px; }
-  .sidebar .sidebar-logo { justify-content: center; padding: 16px 10px; }
+  .sidebar .nav-section-label {
+    display: unset !important;
+    opacity: 1 !important;
+    width: auto !important;
+    overflow: visible !important;
+    pointer-events: auto !important;
+  }
+  .sidebar .nav-item { justify-content: flex-start; padding: 8px 10px; }
+  .sidebar .sidebar-logo { justify-content: flex-start; padding: 18px 16px 14px; }
   .sidebar-toggle { display: none; }
 
-  .content { padding: 16px 14px 60px; }
+  /* Content takes full width — sidebar is now position:fixed, not in flow */
+  .content-wrap,
+  .content {
+    width: 100% !important;
+  }
+
+  .content {
+    padding: 16px 14px 60px;
+    /* Top padding so content doesn't hide under the hamburger button */
+    padding-top: 60px;
+  }
 
   .three-col,
   .four-col { grid-template-columns: 1fr; }

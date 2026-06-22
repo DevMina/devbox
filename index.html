@@ -162,7 +162,7 @@
 
         .tool-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(min(210px, 100%), 1fr));
             gap: 8px;
         }
 
@@ -176,6 +176,8 @@
             border-radius: 10px;
             text-decoration: none;
             transition: border-color 0.14s, transform 0.14s, box-shadow 0.14s;
+            min-width: 0;
+            overflow: hidden;
         }
 
             .tool-card:hover {
@@ -255,6 +257,13 @@
     </style>
 </head>
 <body>
+    <!-- Mobile hamburger -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <!-- Sidebar overlay backdrop -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <div class="app">
         <aside class="sidebar" id="sidebar"></aside>
         <div class="content-wrap">
@@ -652,6 +661,35 @@
                 document.getElementById('searchInput').blur();
             }
         });
+    </script>
+    <script>
+    // Mobile sidebar open/close
+    (function() {
+      const btn = document.getElementById('mobileMenuBtn');
+      const overlay = document.getElementById('sidebarOverlay');
+      const sidebar = document.getElementById('sidebar');
+
+      function openSidebar() {
+        sidebar.classList.add('mobile-open');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeSidebar() {
+        sidebar.classList.remove('mobile-open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      btn.addEventListener('click', openSidebar);
+      overlay.addEventListener('click', closeSidebar);
+
+      // Close on nav link tap
+      sidebar.addEventListener('click', function(e) {
+        if (e.target.closest('.nav-item')) {
+          closeSidebar();
+        }
+      });
+    })();
     </script>
 </body>
 </html>

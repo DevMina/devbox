@@ -146,9 +146,56 @@ function initKeyboard() {
   });
 }
 
+
+// ── Mobile sidebar hamburger (injected dynamically for tool pages) ──
+function initMobileSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  if (!sidebar) return;
+
+  // Inject hamburger button if not already present
+  if (!document.getElementById('mobileMenuBtn')) {
+    const btn = document.createElement('button');
+    btn.id = 'mobileMenuBtn';
+    btn.className = 'mobile-menu-btn';
+    btn.setAttribute('aria-label', 'Open navigation');
+    btn.innerHTML = '<span></span><span></span><span></span>';
+    document.body.insertBefore(btn, document.body.firstChild);
+  }
+
+  // Inject overlay if not already present
+  if (!document.getElementById('sidebarOverlay')) {
+    const overlay = document.createElement('div');
+    overlay.id = 'sidebarOverlay';
+    overlay.className = 'sidebar-overlay';
+    document.body.insertBefore(overlay, document.body.firstChild);
+  }
+
+  const btn = document.getElementById('mobileMenuBtn');
+  const overlay = document.getElementById('sidebarOverlay');
+
+  function openSidebar() {
+    sidebar.classList.add('mobile-open');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  btn.addEventListener('click', openSidebar);
+  overlay.addEventListener('click', closeSidebar);
+
+  sidebar.addEventListener('click', function(e) {
+    if (e.target.closest('.nav-item')) closeSidebar();
+  });
+}
+
 // ── Init everything on DOM ready ──
 document.addEventListener('DOMContentLoaded', () => {
   initSidebar();
+  initMobileSidebar();
   injectBreadcrumb();
   initKeyboard();
   trackPageView();
