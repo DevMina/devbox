@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="DevBox — Generate robots.txt and XML sitemaps">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Tools — DevBox</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:title" content="SEO Tools — DevBox">
+<meta property="og:description" content="Generate robots.txt and XML sitemaps">
+<meta property="og:type" content="website">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="content" style="min-width:0">
+    <div class="tool-header">
+      <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">SEO</div>
+      <div>
+        <div class="tool-title">SEO Tools</div>
+        <div class="tool-desc">Generate robots.txt rules and XML sitemap entries for your website</div>
+      </div>
+    </div>
+    
+<div class="panel" style="margin-bottom:14px">
+  <div class="panel-bar"><span class="panel-label">robots.txt Generator</span><div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('robotsOut').textContent)">⎘ Copy</button></div></div>
+  <div class="input-row"><label>Site URL</label><input type="text" id="robotsSite" placeholder="https://example.com" oninput="genRobots()"></div>
+  <div style="padding:10px 14px;border-bottom:1px solid var(--border)">
+    <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:8px;font-family:var(--mono)">Disallow paths (one per line)</div>
+    <textarea id="robotsDisallow" placeholder="/admin/&#10;/private/&#10;/tmp/" oninput="genRobots()" style="min-height:80px;font-size:0.82rem"></textarea>
+  </div>
+  <div style="padding:10px 14px;display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--border)">
+    <label class="check-row"><input type="checkbox" id="robotsGooglebot" checked onchange="genRobots()"> Allow Googlebot</label>
+    <label class="check-row"><input type="checkbox" id="robotsSitemap" checked onchange="genRobots()"> Include Sitemap ref</label>
+    <label class="check-row"><input type="checkbox" id="robotsAI" onchange="genRobots()"> Block AI crawlers</label>
+  </div>
+  <div id="robotsOut" class="output-area" style="color:var(--green);font-size:0.82rem;white-space:pre;min-height:120px"></div>
+</div>
+<div class="panel">
+  <div class="panel-bar"><span class="panel-label">XML Sitemap Generator</span><div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('sitemapOut').textContent)">⎘ Copy</button></div></div>
+  <div class="input-row"><label>Base URL</label><input type="text" id="sitemapBase" placeholder="https://example.com" oninput="genSitemap()"></div>
+  <div style="padding:10px 14px;border-bottom:1px solid var(--border)">
+    <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:8px;font-family:var(--mono)">Pages (one path per line)</div>
+    <textarea id="sitemapPages" placeholder="/&#10;/about&#10;/contact&#10;/blog" oninput="genSitemap()" style="min-height:80px;font-size:0.82rem">/
+/about
+/contact
+/blog</textarea>
+  </div>
+  <div class="input-row"><label>Change freq</label>
+    <select id="sitemapFreq" onchange="genSitemap()" style="padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
+      <option>daily</option><option>weekly</option><option selected>monthly</option><option>yearly</option>
+    </select>
+  </div>
+  <div id="sitemapOut" class="output-area" style="color:var(--green);font-size:0.78rem;white-space:pre;min-height:120px;overflow-x:auto"></div>
+</div>
+  
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js"></script>
+<script src="../assets/sidebar.js"></script>
+<script>
+function genRobots(){
+  const site=document.getElementById('robotsSite').value.trim()||'https://example.com';
+  const disallowRaw=document.getElementById('robotsDisallow').value.trim();
+  const disallows=disallowRaw?disallowRaw.split('
+').filter(l=>l.trim()):[];
+  const blockAI=document.getElementById('robotsAI').checked;
+  const showSitemap=document.getElementById('robotsSitemap').checked;
+  let out='User-agent: *
+';
+  disallows.forEach(p=>{out+=`Disallow: ${p.trim()}
+`;});
+  if(!disallows.length)out+='Disallow:
+';
+  if(blockAI){out+='
+# Block AI crawlers
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+';}
+  if(document.getElementById('robotsGooglebot').checked){out+='
+User-agent: Googlebot
+Allow: /
+';}
+  if(showSitemap){out+=`
+Sitemap: ${site}/sitemap.xml
+`;}
+  document.getElementById('robotsOut').textContent=out;
+}
+function genSitemap(){
+  const base=(document.getElementById('sitemapBase').value.trim()||'https://example.com').replace(/\/$/,'');
+  const pages=document.getElementById('sitemapPages').value.trim().split('
+').filter(l=>l.trim());
+  const freq=document.getElementById('sitemapFreq').value;
+  const today=new Date().toISOString().slice(0,10);
+  let out='<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+';
+  pages.forEach(p=>{const path=p.trim().startsWith('/')?p.trim():'/'+p.trim();out+=`  <url>
+    <loc>${base}${path}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${freq}</changefreq>
+    <priority>${p.trim()==='/'?'1.0':'0.8'}</priority>
+  </url>
+`;});
+  out+='</urlset>';
+  document.getElementById('sitemapOut').textContent=out;
+}
+document.addEventListener('DOMContentLoaded',()=>{genRobots();genSitemap();});
+</script>
+</body>
+</html>

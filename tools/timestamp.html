@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="DevBox — Convert between Unix timestamps and human-readable dates">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timestamp Converter — DevBox</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:title" content="Timestamp Converter — DevBox">
+<meta property="og:description" content="Convert between Unix timestamps and human-readable dates">
+<meta property="og:type" content="website">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="content" style="min-width:0">
+    <div class="tool-header">
+      <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">TS</div>
+      <div>
+        <div class="tool-title">Timestamp Converter</div>
+        <div class="tool-desc">Convert between Unix timestamps and human-readable dates</div>
+      </div>
+    </div>
+    
+  <div class="two-col">
+    <div class="panel">
+      <div class="panel-bar"><span class="panel-label">Unix → Date</span><button class="btn btn-ghost" onclick="tsNow()">Now</button></div>
+      <div class="input-row"><label>Seconds</label><input type="text" id="tsUnixInput" placeholder="1700000000" oninput="tsFromUnix()"></div>
+      <div class="ts-grid">
+        <div class="ts-out-row"><div class="ts-out-label">UTC</div><div class="ts-out-val" id="ts-utc">—</div></div>
+        <div class="ts-out-row"><div class="ts-out-label">Local</div><div class="ts-out-val" id="ts-local">—</div></div>
+        <div class="ts-out-row"><div class="ts-out-label">ISO 8601</div><div class="ts-out-val" id="ts-iso">—</div></div>
+        <div class="ts-out-row"><div class="ts-out-label">Relative</div><div class="ts-out-val" id="ts-rel">—</div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-bar"><span class="panel-label">Date → Unix</span></div>
+      <div class="input-row"><label>Date/time</label><input type="text" id="tsDateInput" placeholder="2024-01-15 12:00:00" oninput="tsFromDate()"></div>
+      <div class="ts-grid">
+        <div class="ts-out-row"><div class="ts-out-label">Unix (s)</div><div class="ts-out-val" id="ts-unix-out" style="color:var(--yellow)">—</div><button class="uuid-copy" onclick="copy(document.getElementById('ts-unix-out').textContent)">⎘</button></div>
+        <div class="ts-out-row"><div class="ts-out-label">Unix (ms)</div><div class="ts-out-val" id="ts-unix-ms-out" style="color:var(--yellow)">—</div><button class="uuid-copy" onclick="copy(document.getElementById('ts-unix-ms-out').textContent)">⎘</button></div>
+      </div>
+    </div>
+  </div>
+  
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js"></script>
+<script src="../assets/sidebar.js"></script>
+<script>
+function tsNow(){document.getElementById('tsUnixInput').value=Math.floor(Date.now()/1000);tsFromUnix();}
+function tsFromUnix(){const val=document.getElementById('tsUnixInput').value.trim();if(!val)return;const d=new Date(parseInt(val)*1000);if(isNaN(d.getTime())){document.getElementById('ts-utc').textContent='Invalid';return;}document.getElementById('ts-utc').textContent=d.toUTCString();document.getElementById('ts-local').textContent=d.toLocaleString();document.getElementById('ts-iso').textContent=d.toISOString();const diff=Date.now()-d.getTime(),abs=Math.abs(diff),s=Math.floor(abs/1000),m=Math.floor(s/60),h=Math.floor(m/60),day=Math.floor(h/24);const ago=diff>0;const rel=day>0?day+'d':(h>0?h+'h':(m>0?m+'m':s+'s'));document.getElementById('ts-rel').textContent=rel+(ago?' ago':' from now');}
+function tsFromDate(){const val=document.getElementById('tsDateInput').value.trim();if(!val)return;const d=new Date(val);if(isNaN(d.getTime())){document.getElementById('ts-unix-out').textContent='Invalid date';return;}document.getElementById('ts-unix-out').textContent=Math.floor(d.getTime()/1000);document.getElementById('ts-unix-ms-out').textContent=d.getTime();}
+document.addEventListener('DOMContentLoaded',tsNow);
+</script>
+</body>
+</html>

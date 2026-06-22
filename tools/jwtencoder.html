@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="DevBox — Build and sign JWT tokens with HS256">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JWT Encoder — DevBox</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:title" content="JWT Encoder — DevBox">
+<meta property="og:description" content="Build and sign JWT tokens with HS256">
+<meta property="og:type" content="website">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="content" style="min-width:0">
+    <div class="tool-header">
+      <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">JWT+</div>
+      <div>
+        <div class="tool-title">JWT Encoder</div>
+        <div class="tool-desc">Build and sign JWT tokens with custom header, payload, and secret</div>
+      </div>
+    </div>
+    
+<div class="two-col" style="align-items:start">
+  <div>
+    <div class="panel">
+      <div class="panel-bar"><span class="panel-label">Header</span></div>
+      <textarea id="jwtEHeader" style="min-height:90px;font-size:0.82rem">{
+  "alg": "HS256",
+  "typ": "JWT"
+}</textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-bar">
+        <span class="panel-label">Payload</span>
+        <div class="panel-actions">
+          <button class="btn btn-ghost" onclick="jwtAddExp()">+ exp</button>
+          <button class="btn btn-ghost" onclick="jwtAddIat()">+ iat</button>
+        </div>
+      </div>
+      <textarea id="jwtEPayload" style="min-height:160px;font-size:0.82rem">{
+  "sub": "1234567890",
+  "name": "John Doe",
+  "iat": 1516239022
+}</textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-bar"><span class="panel-label">Secret (HS256)</span></div>
+      <div class="input-row" style="border-bottom:none">
+        <input type="text" id="jwtESecret" placeholder="your-256-bit-secret" value="your-secret-key">
+      </div>
+    </div>
+    <button class="btn btn-purple" style="width:100%;padding:13px;margin-top:4px;font-size:0.9rem" onclick="encodeJWT()">⟳ Generate Token</button>
+  </div>
+  <div>
+    <div class="panel">
+      <div class="panel-bar">
+        <span class="panel-label">Generated Token</span>
+        <div class="panel-actions">
+          <button class="btn btn-ghost" onclick="copy(document.getElementById('jwtEOut').textContent)">⎘ Copy</button>
+        </div>
+      </div>
+      <div id="jwtEOut" class="output-area" style="color:var(--purple);word-break:break-all;min-height:120px;font-size:0.8rem"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-bar"><span class="panel-label">Token parts (colour-coded)</span></div>
+      <div id="jwtEParts" class="output-area" style="word-break:break-all;min-height:80px;font-size:0.78rem;line-height:1.9"></div>
+    </div>
+    <div id="jwtEError" style="display:none;padding:10px 14px;background:var(--red-dim);border:1px solid rgba(255,94,122,0.3);border-radius:var(--r-sm);color:var(--red);font-size:0.82rem;font-family:var(--mono);margin-top:12px"></div>
+  </div>
+</div>
+  
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js"></script>
+<script src="../assets/sidebar.js"></script>
+<script>
+function b64url(str){return btoa(str).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');}
+function strToBytes(str){return new TextEncoder().encode(str);}
+async function hmacSha256(secret,msg){const key=await crypto.subtle.importKey('raw',strToBytes(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);const sig=await crypto.subtle.sign('HMAC',key,strToBytes(msg));return btoa(String.fromCharCode(...new Uint8Array(sig))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');}
+async function encodeJWT(){
+  const errEl=document.getElementById('jwtEError');errEl.style.display='none';
+  try{
+    const header=JSON.parse(document.getElementById('jwtEHeader').value);
+    const payload=JSON.parse(document.getElementById('jwtEPayload').value);
+    const secret=document.getElementById('jwtESecret').value;
+    const h=b64url(JSON.stringify(header)),p=b64url(JSON.stringify(payload));
+    const sig=await hmacSha256(secret,h+'.'+p);
+    const token=h+'.'+p+'.'+sig;
+    document.getElementById('jwtEOut').textContent=token;
+    document.getElementById('jwtEParts').innerHTML=
+      `<span style="color:var(--red)">${h}</span>.<span style="color:var(--purple)">${p}</span>.<span style="color:var(--cyan)">${sig}</span>`;
+  }catch(e){errEl.style.display='';errEl.textContent='Error: '+e.message;}
+}
+function jwtAddExp(){try{const p=JSON.parse(document.getElementById('jwtEPayload').value);p.exp=Math.floor(Date.now()/1000)+3600;document.getElementById('jwtEPayload').value=JSON.stringify(p,null,2);}catch(e){}}
+function jwtAddIat(){try{const p=JSON.parse(document.getElementById('jwtEPayload').value);p.iat=Math.floor(Date.now()/1000);document.getElementById('jwtEPayload').value=JSON.stringify(p,null,2);}catch(e){}}
+document.addEventListener('DOMContentLoaded',encodeJWT);
+</script>
+</body>
+</html>

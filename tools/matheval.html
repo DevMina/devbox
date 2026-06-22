@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="DevBox — Evaluate math expressions with functions and constants">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Evaluator — DevBox</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:title" content="Math Evaluator — DevBox">
+<meta property="og:description" content="Evaluate math expressions with functions and constants">
+<meta property="og:type" content="website">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="content" style="min-width:0">
+    <div class="tool-header">
+      <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">∑</div>
+      <div>
+        <div class="tool-title">Math Evaluator</div>
+        <div class="tool-desc">Evaluate mathematical expressions, unit conversions, and statistical functions</div>
+      </div>
+    </div>
+    
+<div style="max-width:640px">
+  <div class="panel" style="margin-bottom:14px">
+    <div class="panel-bar">
+      <span class="panel-label">Expression</span>
+      <div class="panel-actions">
+        <button class="btn btn-ghost" onclick="mathClear()">Clear</button>
+      </div>
+    </div>
+    <div class="input-row" style="border-bottom:none;align-items:center;gap:8px">
+      <span style="font-family:var(--mono);font-size:1.1rem;color:var(--text-dim)">&gt;</span>
+      <input type="text" id="mathInput" placeholder="2 + 2  or  sqrt(16)  or  sin(PI/2)" style="font-family:var(--mono);font-size:1rem" onkeydown="if(event.key==='Enter')mathEval()">
+      <button class="btn btn-yellow" onclick="mathEval()" style="flex-shrink:0">= Eval</button>
+    </div>
+  </div>
+  <div id="mathHistory" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;max-height:320px;overflow-y:auto"></div>
+  <div class="panel">
+    <div class="panel-bar"><span class="panel-label">Quick functions reference</span></div>
+    <div style="padding:10px 14px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px" id="mathRef"></div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <div class="panel-bar"><span class="panel-label">Constants</span></div>
+    <div class="hash-grid" id="mathConsts"></div>
+  </div>
+</div>
+
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js"></script>
+<script src="../assets/sidebar.js"></script>
+<script>
+const history=[];
+const CONSTS={PI:Math.PI,E:Math.E,PHI:(1+Math.sqrt(5))/2,TAU:2*Math.PI,LN2:Math.LN2,LN10:Math.LN10,SQRT2:Math.SQRT2};
+const QUICK_FNS=['sqrt(x)','pow(x,y)','abs(x)','round(x)','floor(x)','ceil(x)','sin(x)','cos(x)','tan(x)','asin(x)','acos(x)','atan(x)','log(x)','log2(x)','log10(x)','min(a,b)','max(a,b)','random()','factorial(n)','gcd(a,b)'];
+
+function mathEval(){
+  const raw=document.getElementById('mathInput').value.trim();
+  if(!raw)return;
+  let result,error=false;
+  try{
+    // Safe evaluator with math functions
+    const ctx={
+      ...CONSTS,
+      sqrt:Math.sqrt,pow:Math.pow,abs:Math.abs,round:Math.round,floor:Math.floor,ceil:Math.ceil,
+      sin:Math.sin,cos:Math.cos,tan:Math.tan,asin:Math.asin,acos:Math.acos,atan:Math.atan,atan2:Math.atan2,
+      log:Math.log,log2:Math.log2,log10:Math.log10,exp:Math.exp,
+      min:Math.min,max:Math.max,random:Math.random,hypot:Math.hypot,
+      factorial:n=>{if(n<0||!Number.isInteger(n))throw new Error('factorial requires non-negative integer');let r=1;for(let i=2;i<=n;i++)r*=i;return r;},
+      gcd:(a,b)=>{a=Math.abs(Math.round(a));b=Math.abs(Math.round(b));while(b){[a,b]=[b,a%b];}return a;},
+      lcm:(a,b)=>Math.abs(a*b)/Math.abs(a?a:1),
+      sum:(...args)=>args.reduce((s,v)=>s+v,0),
+      avg:(...args)=>args.reduce((s,v)=>s+v,0)/args.length,
+      degrees:r=>r*180/Math.PI,
+      radians:d=>d*Math.PI/180,
+      clamp:(v,lo,hi)=>Math.max(lo,Math.min(hi,v)),
+    };
+    const fn=new Function(...Object.keys(ctx),'return ('+raw+')');
+    result=fn(...Object.values(ctx));
+    if(typeof result==='number'&&!isNaN(result)){
+      // show in multiple formats
+      const formatted={
+        Result: result,
+        Scientific: result.toExponential(6),
+        Fraction: toFraction(result),
+        Hex: Number.isInteger(result)&&result>=0&&result<2**32?'0x'+result.toString(16).toUpperCase():'—',
+        Binary: Number.isInteger(result)&&result>=0&&result<2**32?result.toString(2):'—',
+      };
+      addHistory(raw, formatted);
+    } else {
+      addHistory(raw, {Result: JSON.stringify(result)});
+    }
+  }catch(e){addHistory(raw, null, e.message);}
+  document.getElementById('mathInput').value='';
+}
+
+function toFraction(decimal){
+  if(Number.isInteger(decimal))return decimal+'';
+  const tolerance=1e-9;let n=decimal,h1=1,h2=0,k1=0,k2=1;let b=n;
+  do{const a=Math.floor(b);let aux=h1;h1=a*h1+h2;h2=aux;aux=k1;k1=a*k1+k2;k2=aux;b=1/(b-a);}
+  while(Math.abs(decimal-h1/k1)>decimal*tolerance&&k1<1000);
+  if(k1===1)return h1+'';
+  return `${h1}/${k1} ≈ ${(h1/k1).toFixed(6)}`;
+}
+
+function addHistory(expr, vals, err){
+  const el=document.createElement('div');
+  el.className='panel';
+  el.style.margin='0';
+  if(err){
+    el.innerHTML=`<div style="padding:10px 14px"><div style="font-family:var(--mono);font-size:0.82rem;color:var(--text-dim)">? ${escHtml(expr)}</div><div style="color:var(--red);font-size:0.8rem;margin-top:4px">✗ ${escHtml(err)}</div></div>`;
+  } else {
+    const rows=Object.entries(vals).map(([l,v])=>`<div class="hash-row"><div class="hash-algo" style="min-width:90px">${l}</div><div class="hash-val" style="color:var(--yellow)">${escHtml(String(v))}</div><button class="uuid-copy" onclick="copy('${String(v).replace(/'/g,"\'")}')">⎘</button></div>`).join('');
+    el.innerHTML=`<div style="padding:8px 14px 0;font-family:var(--mono);font-size:0.82rem;color:var(--text-dim)">? ${escHtml(expr)}</div><div class="hash-grid">${rows}</div>`;
+  }
+  const hist=document.getElementById('mathHistory');
+  hist.insertBefore(el,hist.firstChild);
+  history.unshift({expr,vals,err});
+  if(hist.children.length>20)hist.removeChild(hist.lastChild);
+}
+
+function mathClear(){document.getElementById('mathHistory').innerHTML='';document.getElementById('mathInput').value='';history.length=0;}
+
+function initRef(){
+  document.getElementById('mathRef').innerHTML=QUICK_FNS.map(f=>`<button class="btn btn-ghost" style="font-size:0.72rem;font-family:var(--mono);text-align:left;justify-content:start" onclick="document.getElementById('mathInput').value='${f}';document.getElementById('mathInput').focus()">${f}</button>`).join('');
+  document.getElementById('mathConsts').innerHTML=Object.entries(CONSTS).map(([k,v])=>`<div class="hash-row"><div class="hash-algo">${k}</div><div class="hash-val" style="color:var(--yellow)">${v.toFixed(10)}</div><button class="uuid-copy" onclick="copy('${v}')">⎘</button></div>`).join('');
+}
+
+document.addEventListener('DOMContentLoaded',initRef);
+</script>
+</body>
+</html>

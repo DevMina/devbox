@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="DevBox — Check WCAG color contrast ratios for accessibility">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contrast Checker — DevBox</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:title" content="Contrast Checker — DevBox">
+<meta property="og:description" content="Check WCAG color contrast ratios for accessibility">
+<meta property="og:type" content="website">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="content" style="min-width:0">
+    <div class="tool-header">
+      <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">AA</div>
+      <div>
+        <div class="tool-title">Contrast Checker</div>
+        <div class="tool-desc">Check WCAG color contrast ratios for accessibility compliance</div>
+      </div>
+    </div>
+    
+<div class="two-col">
+  <div class="panel">
+    <div class="panel-bar"><span class="panel-label">Foreground (text)</span></div>
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border)">
+      <input type="color" id="fgPicker" value="#FFFFFF" oninput="fgFromPicker()" style="width:44px;height:44px;border:none;background:none;cursor:pointer;padding:0;border-radius:8px;overflow:hidden">
+      <input type="text" id="fgHex" value="#FFFFFF" oninput="contrastCalc()" style="flex:1;padding:9px 12px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.9rem;color:var(--text);outline:none">
+    </div>
+    <div style="display:flex;gap:8px;padding:10px 14px;flex-wrap:wrap">
+      <button class="btn btn-ghost" onclick="setFg('#FFFFFF')">White</button>
+      <button class="btn btn-ghost" onclick="setFg('#000000')">Black</button>
+      <button class="btn btn-ghost" onclick="setFg('#CDD6F0')">Light gray</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-bar"><span class="panel-label">Background</span></div>
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border)">
+      <input type="color" id="bgPicker" value="#1C2330" oninput="bgFromPicker()" style="width:44px;height:44px;border:none;background:none;cursor:pointer;padding:0;border-radius:8px;overflow:hidden">
+      <input type="text" id="bgHex" value="#1C2330" oninput="contrastCalc()" style="flex:1;padding:9px 12px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.9rem;color:var(--text);outline:none">
+    </div>
+    <div style="display:flex;gap:8px;padding:10px 14px;flex-wrap:wrap">
+      <button class="btn btn-ghost" onclick="setBg('#FFFFFF')">White</button>
+      <button class="btn btn-ghost" onclick="setBg('#000000')">Black</button>
+      <button class="btn btn-ghost" onclick="setBg('#0A0C10')">Dark</button>
+    </div>
+  </div>
+</div>
+<div class="panel" id="previewBox" style="margin-bottom:14px;min-height:100px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;transition:all 0.2s">
+  <div id="previewLarge" style="font-size:1.8rem;font-weight:700;font-family:var(--mono)">Large Text Sample</div>
+  <div id="previewSmall" style="font-size:0.9rem">Small body text — can you read this comfortably?</div>
+</div>
+<div class="panel">
+  <div class="panel-bar"><span class="panel-label">WCAG Results</span></div>
+  <div class="hash-grid" id="wcagResults"></div>
+</div>
+  
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js"></script>
+<script src="../assets/sidebar.js"></script>
+<script>
+function hexToRgb(hex){hex=hex.replace(/^#/,'');if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');const n=parseInt(hex,16);return[n>>16&255,n>>8&255,n&255];}
+function luminance(r,g,b){const lin=v=>{v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);};return 0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b);}
+function contrastRatio(l1,l2){const[hi,lo]=l1>l2?[l1,l2]:[l2,l1];return((hi+0.05)/(lo+0.05));}
+function isValidHex(h){return /^#?[0-9a-fA-F]{6}$/.test(h.trim());}
+function fgFromPicker(){document.getElementById('fgHex').value=document.getElementById('fgPicker').value;contrastCalc();}
+function bgFromPicker(){document.getElementById('bgHex').value=document.getElementById('bgPicker').value;contrastCalc();}
+function setFg(h){document.getElementById('fgHex').value=h;document.getElementById('fgPicker').value=h;contrastCalc();}
+function setBg(h){document.getElementById('bgHex').value=h;document.getElementById('bgPicker').value=h;contrastCalc();}
+function contrastCalc(){
+  const fgRaw=document.getElementById('fgHex').value.trim(),bgRaw=document.getElementById('bgHex').value.trim();
+  if(!isValidHex(fgRaw)||!isValidHex(bgRaw))return;
+  const fg=fgRaw.startsWith('#')?fgRaw:'#'+fgRaw,bg=bgRaw.startsWith('#')?bgRaw:'#'+bgRaw;
+  const fgRgb=hexToRgb(fg),bgRgb=hexToRgb(bg);
+  const fgL=luminance(...fgRgb),bgL=luminance(...bgRgb);
+  const ratio=contrastRatio(fgL,bgL);
+  const preview=document.getElementById('previewBox');
+  preview.style.background=bg;
+  document.getElementById('previewLarge').style.color=fg;
+  document.getElementById('previewSmall').style.color=fg;
+  const badge=(pass,label)=>pass
+    ?`<span class="status-badge badge-ok">✓ ${label}</span>`
+    :`<span class="status-badge badge-err">✗ ${label}</span>`;
+  const rows=[
+    ['Contrast Ratio',`<strong style="font-size:1.1rem;color:${ratio>=4.5?'var(--green)':ratio>=3?'var(--yellow)':'var(--red)'}">${ratio.toFixed(2)}:1</strong>`,''],
+    ['AA Normal text',badge(ratio>=4.5,'Pass')+(ratio>=4.5?'':' <span style="color:var(--text-dim);font-size:0.72rem">needs ≥ 4.5:1</span>'),''],
+    ['AA Large text',badge(ratio>=3,'Pass')+(ratio>=3?'':' <span style="color:var(--text-dim);font-size:0.72rem">needs ≥ 3:1</span>'),''],
+    ['AAA Normal text',badge(ratio>=7,'Pass')+(ratio>=7?'':' <span style="color:var(--text-dim);font-size:0.72rem">needs ≥ 7:1</span>'),''],
+    ['AAA Large text',badge(ratio>=4.5,'Pass')+(ratio>=4.5?'':' <span style="color:var(--text-dim);font-size:0.72rem">needs ≥ 4.5:1</span>'),''],
+    ['UI Components',badge(ratio>=3,'Pass')+(ratio>=3?'':' <span style="color:var(--text-dim);font-size:0.72rem">needs ≥ 3:1</span>'),''],
+    ['FG Luminance',fgL.toFixed(4),''],
+    ['BG Luminance',bgL.toFixed(4),''],
+  ];
+  document.getElementById('wcagResults').innerHTML=rows.map(([l,v])=>`<div class="hash-row"><div class="hash-algo" style="min-width:140px">${l}</div><div class="hash-val" style="color:var(--text)">${v}</div></div>`).join('');
+}
+document.addEventListener('DOMContentLoaded',contrastCalc);
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="DevBox — Calculate subnet info from IP and CIDR notation">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IP Calculator — DevBox</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:title" content="IP Calculator — DevBox">
+<meta property="og:description" content="Calculate subnet info from IP and CIDR notation">
+<meta property="og:type" content="website">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="content" style="min-width:0">
+    <div class="tool-header">
+      <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">IP</div>
+      <div>
+        <div class="tool-title">IP Calculator</div>
+        <div class="tool-desc">Calculate subnet info from IP address and CIDR notation</div>
+      </div>
+    </div>
+    
+<div class="panel">
+  <div class="panel-bar">
+    <span class="panel-label">IP Address / CIDR</span>
+    <div class="panel-actions">
+      <button class="btn btn-ghost" onclick="ipSet('192.168.1.0/24')">192.168.1.0/24</button>
+      <button class="btn btn-ghost" onclick="ipSet('10.0.0.0/8')">10.0.0.0/8</button>
+      <button class="btn btn-ghost" onclick="ipSet('172.16.0.0/12')">172.16.0.0/12</button>
+    </div>
+  </div>
+  <div class="input-row" style="border-bottom:none">
+    <input type="text" id="ipInput" placeholder="192.168.1.100/24" oninput="calcIP()" style="font-family:var(--mono);font-size:1rem">
+  </div>
+</div>
+<div class="panel"><div class="panel-bar"><span class="panel-label">Subnet details</span></div><div class="hash-grid" id="ipResults"></div></div>
+<div class="two-col">
+  <div class="panel"><div class="panel-bar"><span class="panel-label">Binary</span></div><div id="ipBinary" class="output-area" style="font-size:0.76rem;color:var(--blue);word-break:break-all;min-height:80px"></div></div>
+  <div class="panel"><div class="panel-bar"><span class="panel-label">IP class &amp; type</span></div><div id="ipClass" class="output-area" style="font-size:0.82rem;min-height:80px"></div></div>
+</div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js"></script>
+<script src="../assets/sidebar.js"></script>
+<script>
+function ipSet(v){document.getElementById('ipInput').value=v;calcIP();}
+function calcIP(){const raw=document.getElementById('ipInput').value.trim(),results=document.getElementById('ipResults'),binary=document.getElementById('ipBinary'),cls=document.getElementById('ipClass');if(!raw){results.innerHTML='';binary.textContent='';cls.textContent='';return;}const cm=raw.match(/^(\d+\.\d+\.\d+\.\d+)\/(\d+)$/),io=raw.match(/^(\d+\.\d+\.\d+\.\d+)$/);let ip,prefix;if(cm){ip=cm[1];prefix=parseInt(cm[2]);}else if(io){ip=io[1];prefix=24;}else{results.innerHTML='<div class="hash-row" style="color:var(--red)">Invalid IP. Use: 192.168.1.0/24</div>';return;}const parts=ip.split('.').map(Number);if(parts.some(p=>p<0||p>255||isNaN(p))||prefix<0||prefix>32){results.innerHTML='<div class="hash-row" style="color:var(--red)">Invalid IP or prefix</div>';return;}const ipN=parts.reduce((a,p)=>(a<<8)+p,0)>>>0,maskN=prefix===0?0:(0xFFFFFFFF<<(32-prefix))>>>0,netN=(ipN&maskN)>>>0,broadN=(netN|(~maskN>>>0))>>>0,firstN=prefix<31?(netN+1)>>>0:netN,lastN=prefix<31?(broadN-1)>>>0:broadN,hosts=prefix>=31?Math.pow(2,32-prefix):Math.pow(2,32-prefix)-2;const toIP=n=>[(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');const toBin=n=>[(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].map(v=>v.toString(2).padStart(8,'0')).join('.');results.innerHTML=[['Network',toIP(netN)+'/'+prefix],['Subnet mask',toIP(maskN)],['Wildcard',toIP(~maskN>>>0)],['First host',toIP(firstN)],['Last host',toIP(lastN)],['Broadcast',toIP(broadN)],['Total hosts',hosts.toLocaleString()]].map(([l,v])=>`<div class="hash-row"><div class="hash-algo">${l}</div><div class="hash-val" style="color:var(--blue)">${v}</div><button class="uuid-copy" onclick="copy('${v}')">⎘</button></div>`).join('');binary.textContent=`IP:   ${toBin(ipN)}
+Mask: ${toBin(maskN)}
+Net:  ${toBin(netN)}`;const f=parts[0];let ipClass='',pvt='';if(f<128)ipClass='A (0–127)';else if(f<192)ipClass='B (128–191)';else if(f<224)ipClass='C (192–223)';else if(f<240)ipClass='D — Multicast';else ipClass='E — Reserved';if((parts[0]===10)||(parts[0]===172&&parts[1]>=16&&parts[1]<=31)||(parts[0]===192&&parts[1]===168))pvt='Private';else if(parts[0]===127)pvt='Loopback';else if(parts[0]===169&&parts[1]===254)pvt='Link-local';else pvt='Public';cls.innerHTML=`<span style="color:var(--blue)">Class:</span> <strong style="color:var(--text)">${ipClass}</strong><br><span style="color:var(--blue)">Type:</span> <strong style="color:${pvt==='Public'?'var(--green)':'var(--yellow)'}">${pvt}</strong><br><span style="color:var(--blue)">Prefix:</span> <strong style="color:var(--text)">/${prefix}</strong>`;}
+</script>
+</body>
+</html>

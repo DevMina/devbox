@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="DevBox — Encode and decode Base64 text">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base64 Encoder/Decoder — DevBox</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:title" content="Base64 Encoder/Decoder — DevBox">
+<meta property="og:description" content="Encode and decode Base64 text">
+<meta property="og:type" content="website">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="content" style="min-width:0">
+    <div class="tool-header">
+      <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">B64</div>
+      <div>
+        <div class="tool-title">Base64 Encoder/Decoder</div>
+        <div class="tool-desc">Encode text to Base64 and decode it back</div>
+      </div>
+    </div>
+    
+  <div class="panel">
+    <div class="panel-bar">
+      <span class="panel-label">Input</span>
+      <div class="panel-actions">
+        <button class="btn btn-blue" onclick="b64Encode()">Encode →</button>
+        <button class="btn btn-ghost" onclick="b64Decode()">← Decode</button>
+        <button class="btn btn-ghost" onclick="b64Clear()">Clear</button>
+      </div>
+    </div>
+    <textarea id="b64Input" placeholder="Enter text to encode, or Base64 to decode…"></textarea>
+  </div>
+  <div class="panel">
+    <div class="panel-bar">
+      <span class="panel-label">Output</span>
+      <div class="panel-actions">
+        <button class="btn btn-ghost" onclick="copy(document.getElementById('b64Output').textContent)">⎘ Copy</button>
+        <button class="btn btn-ghost" onclick="b64Swap()">⇅ Swap</button>
+      </div>
+    </div>
+    <div id="b64Output" class="output-area" style="color:var(--blue)"></div>
+  </div>
+  
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js"></script>
+<script src="../assets/sidebar.js"></script>
+<script>
+function b64Encode(){try{document.getElementById('b64Output').textContent=btoa(unescape(encodeURIComponent(document.getElementById('b64Input').value)));}catch(e){document.getElementById('b64Output').textContent='Error: '+e.message;}}
+function b64Decode(){try{document.getElementById('b64Output').textContent=decodeURIComponent(escape(atob(document.getElementById('b64Input').value.trim())));}catch(e){document.getElementById('b64Output').textContent='Error: invalid Base64';}}
+function b64Swap(){const o=document.getElementById('b64Output').textContent;document.getElementById('b64Input').value=o;document.getElementById('b64Output').textContent='';}
+function b64Clear(){document.getElementById('b64Input').value='';document.getElementById('b64Output').textContent='';}
+</script>
+</body>
+</html>

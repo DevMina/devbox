@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="DevBox — Count down to any date and time">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Countdown Timer — DevBox</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:title" content="Countdown Timer — DevBox">
+<meta property="og:description" content="Count down to any date and time">
+<meta property="og:type" content="website">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="content" style="min-width:0">
+    <div class="tool-header">
+      <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">⏳</div>
+      <div>
+        <div class="tool-title">Countdown Timer</div>
+        <div class="tool-desc">Count down to any date and time with live progress display</div>
+      </div>
+    </div>
+    
+<div style="max-width:500px;margin:0 auto">
+  <div class="panel">
+    <div class="panel-bar"><span class="panel-label">Target date &amp; time</span></div>
+    <div class="input-row"><label>Date</label><input type="datetime-local" id="cdTarget" style="font-family:var(--mono);flex:1;padding:8px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;font-size:0.84rem"></div>
+    <div class="input-row"><label>Label</label><input type="text" id="cdLabel" placeholder="e.g. New Year, Product Launch…" style="font-family:var(--mono)"></div>
+    <div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-ghost" onclick="cdPreset(7)">+7 days</button>
+      <button class="btn btn-ghost" onclick="cdPreset(30)">+30 days</button>
+      <button class="btn btn-ghost" onclick="cdPreset(365)">+1 year</button>
+      <button class="btn btn-ghost" onclick="cdNextNY()">New Year</button>
+    </div>
+    <div class="input-row" style="border-bottom:none">
+      <button class="btn btn-pink" onclick="startCountdown()" style="padding:12px 24px;font-size:0.9rem">▶ Start Countdown</button>
+      <button class="btn btn-ghost" onclick="stopCountdown()" style="padding:12px 20px">■ Stop</button>
+    </div>
+  </div>
+  <div class="panel" id="cdDisplay" style="text-align:center;padding:32px 24px;display:none">
+    <div id="cdLabelDisplay" style="font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dim);margin-bottom:20px"></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px 8px">
+        <div style="font-family:var(--mono);font-size:2.2rem;font-weight:700;color:var(--pink)" id="cdDays">0</div>
+        <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-top:6px">Days</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px 8px">
+        <div style="font-family:var(--mono);font-size:2.2rem;font-weight:700;color:var(--orange)" id="cdHours">0</div>
+        <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-top:6px">Hours</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px 8px">
+        <div style="font-family:var(--mono);font-size:2.2rem;font-weight:700;color:var(--yellow)" id="cdMins">0</div>
+        <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-top:6px">Minutes</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px 8px">
+        <div style="font-family:var(--mono);font-size:2.2rem;font-weight:700;color:var(--green)" id="cdSecs">0</div>
+        <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-top:6px">Seconds</div>
+      </div>
+    </div>
+    <div id="cdProgress" style="height:6px;background:var(--border2);border-radius:6px;overflow:hidden;margin-bottom:14px">
+      <div id="cdProgressBar" style="height:100%;background:linear-gradient(90deg,var(--pink),var(--orange));border-radius:6px;width:0%;transition:width 0.5s"></div>
+    </div>
+    <div id="cdExtra" style="font-size:0.78rem;color:var(--text-dim);font-family:var(--mono)"></div>
+  </div>
+</div>
+  
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js"></script>
+<script src="../assets/sidebar.js"></script>
+<script>
+let cdInterval=null,cdStartTime=null,cdEndTime=null;
+function cdPreset(days){const d=new Date();d.setDate(d.getDate()+days);document.getElementById('cdTarget').value=d.toISOString().slice(0,16);}
+function cdNextNY(){const d=new Date();d.setFullYear(d.getFullYear()+1,0,1,0,0,0);document.getElementById('cdTarget').value=d.toISOString().slice(0,16);}
+function startCountdown(){
+  const val=document.getElementById('cdTarget').value;if(!val){showToast('Pick a target date first');return;}
+  cdEndTime=new Date(val).getTime();if(cdEndTime<=Date.now()){showToast('Target must be in the future');return;}
+  cdStartTime=Date.now();
+  document.getElementById('cdDisplay').style.display='';
+  document.getElementById('cdLabelDisplay').textContent=document.getElementById('cdLabel').value||'Countdown';
+  stopCountdown();
+  cdInterval=setInterval(tick,1000);tick();
+}
+function stopCountdown(){if(cdInterval){clearInterval(cdInterval);cdInterval=null;}}
+function tick(){
+  const now=Date.now(),diff=cdEndTime-now;
+  if(diff<=0){stopCountdown();document.getElementById('cdDays').textContent='0';document.getElementById('cdHours').textContent='00';document.getElementById('cdMins').textContent='00';document.getElementById('cdSecs').textContent='00';document.getElementById('cdExtra').textContent='🎉 Time is up!';document.getElementById('cdProgressBar').style.width='100%';return;}
+  const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+  document.getElementById('cdDays').textContent=d;
+  document.getElementById('cdHours').textContent=String(h).padStart(2,'0');
+  document.getElementById('cdMins').textContent=String(m).padStart(2,'0');
+  document.getElementById('cdSecs').textContent=String(s).padStart(2,'0');
+  const total=cdEndTime-cdStartTime,elapsed=now-cdStartTime,pct=Math.max(0,Math.min(100,(elapsed/total)*100));
+  document.getElementById('cdProgressBar').style.width=pct+'%';
+  const total_s=Math.floor(diff/1000);
+  document.getElementById('cdExtra').textContent=`${total_s.toLocaleString()} total seconds remaining`;
+}
+</script>
+</body>
+</html>

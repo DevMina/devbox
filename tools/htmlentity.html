@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="DevBox — Encode and decode HTML special characters">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Entities — DevBox</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:title" content="HTML Entities — DevBox">
+<meta property="og:description" content="Encode and decode HTML special characters">
+<meta property="og:type" content="website">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="content" style="min-width:0">
+    <div class="tool-header">
+      <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">&lt;&gt;</div>
+      <div>
+        <div class="tool-title">HTML Entities</div>
+        <div class="tool-desc">Encode and decode HTML special characters</div>
+      </div>
+    </div>
+    
+<div class="panel">
+  <div class="panel-bar">
+    <span class="panel-label">Input</span>
+    <div class="panel-actions">
+      <button class="btn btn-green" onclick="htmlEncode()">Encode →</button>
+      <button class="btn btn-ghost" onclick="htmlDecode()">← Decode</button>
+      <button class="btn btn-ghost" onclick="htmlSwap()">⇅ Swap</button>
+      <button class="btn btn-ghost" onclick="htmlClear()">Clear</button>
+    </div>
+  </div>
+  <textarea id="htmlEntInput" placeholder='&lt;h1 class="title"&gt;Hello &amp; "World"&lt;/h1&gt;'></textarea>
+</div>
+<div class="panel">
+  <div class="panel-bar"><span class="panel-label">Output</span><div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('htmlEntOutput').textContent)">⎘ Copy</button></div></div>
+  <div id="htmlEntOutput" class="output-area" style="color:var(--green)"></div>
+</div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js"></script>
+<script src="../assets/sidebar.js"></script>
+<script>
+function htmlEncode(){const t=document.getElementById('htmlEntInput').value;document.getElementById('htmlEntOutput').textContent=t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function htmlDecode(){const t=document.getElementById('htmlEntInput').value,el=document.createElement('div');el.innerHTML=t;document.getElementById('htmlEntOutput').textContent=el.textContent;}
+function htmlSwap(){const o=document.getElementById('htmlEntOutput').textContent;document.getElementById('htmlEntInput').value=o;document.getElementById('htmlEntOutput').textContent='';}
+function htmlClear(){document.getElementById('htmlEntInput').value='';document.getElementById('htmlEntOutput').textContent='';}
+</script>
+</body>
+</html>

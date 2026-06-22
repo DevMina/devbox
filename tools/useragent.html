@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="DevBox — Parse browser user agent strings">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Agent Inspector — DevBox</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:title" content="User Agent Inspector — DevBox">
+<meta property="og:description" content="Parse browser user agent strings">
+<meta property="og:type" content="website">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="content" style="min-width:0">
+    <div class="tool-header">
+      <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">UA</div>
+      <div>
+        <div class="tool-title">User Agent Inspector</div>
+        <div class="tool-desc">Parse and decode browser user agent strings into readable components</div>
+      </div>
+    </div>
+    
+<div class="panel">
+  <div class="panel-bar">
+    <span class="panel-label">User Agent string</span>
+    <div class="panel-actions">
+      <button class="btn btn-teal" onclick="useMyUA()">Use my UA</button>
+      <button class="btn btn-ghost" onclick="uaSample('chrome')">Chrome</button>
+      <button class="btn btn-ghost" onclick="uaSample('safari')">Safari</button>
+      <button class="btn btn-ghost" onclick="uaSample('mobile')">Mobile</button>
+      <button class="btn btn-ghost" onclick="uaSample('bot')">Googlebot</button>
+    </div>
+  </div>
+  <textarea id="uaInput" oninput="parseUA()" placeholder="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36..." style="min-height:80px;font-size:0.8rem"></textarea>
+</div>
+<div class="panel">
+  <div class="panel-bar"><span class="panel-label">Parsed result</span></div>
+  <div class="hash-grid" id="uaResults"></div>
+</div>
+<div class="panel" style="margin-top:14px">
+  <div class="panel-bar"><span class="panel-label">Raw tokens</span></div>
+  <div id="uaTokens" class="output-area" style="font-size:0.78rem;color:var(--text-dim);line-height:1.9;white-space:pre-wrap"></div>
+</div>
+  
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js"></script>
+<script src="../assets/sidebar.js"></script>
+<script>
+const UA_SAMPLES={
+  chrome:'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  safari:'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
+  mobile:'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+  bot:'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
+};
+function useMyUA(){document.getElementById('uaInput').value=navigator.userAgent;parseUA();}
+function uaSample(k){document.getElementById('uaInput').value=UA_SAMPLES[k];parseUA();}
+function parseUA(){
+  const ua=document.getElementById('uaInput').value.trim();
+  if(!ua){document.getElementById('uaResults').innerHTML='';document.getElementById('uaTokens').textContent='';return;}
+  const r=[];
+  // Browser detection
+  let browser='Unknown',version='?',engine='Unknown',engineVer='?';
+  if(/Edg\/(\S+)/.test(ua)){browser='Microsoft Edge';version=RegExp.$1;}
+  else if(/OPR\/(\S+)/.test(ua)){browser='Opera';version=RegExp.$1;}
+  else if(/Firefox\/(\S+)/.test(ua)){browser='Firefox';version=RegExp.$1;}
+  else if(/Chrome\/(\S+)/.test(ua)&&!/Chromium/.test(ua)){browser='Google Chrome';version=RegExp.$1;}
+  else if(/Chromium\/(\S+)/.test(ua)){browser='Chromium';version=RegExp.$1;}
+  else if(/Version\/(\S+).*Safari/.test(ua)){browser='Safari';version=RegExp.$1;}
+  else if(/Googlebot\/(\S+)/.test(ua)){browser='Googlebot (crawler)';version=RegExp.$1;}
+  else if(/bot|crawl|spider/i.test(ua)){browser='Bot / Crawler';version='';}
+  // Engine
+  if(/AppleWebKit\/(\S+)/.test(ua)){engine='WebKit';engineVer=RegExp.$1;}
+  else if(/Gecko\/(\S+)/.test(ua)&&!/like Gecko/.test(ua)){engine='Gecko';engineVer=RegExp.$1;}
+  else if(/Trident\/(\S+)/.test(ua)){engine='Trident (IE)';engineVer=RegExp.$1;}
+  // OS
+  let os='Unknown',osVer='';
+  if(/Windows NT (\S+)/.test(ua)){const v={'10.0':'10/11','6.3':'8.1','6.2':'8','6.1':'7','6.0':'Vista','5.1':'XP'};os='Windows';osVer=v[RegExp.$1]||RegExp.$1;}
+  else if(/Android (\S+)/.test(ua)){os='Android';osVer=RegExp.$1.replace(';','');}
+  else if(/iPhone OS (\S+)/.test(ua)){os='iOS (iPhone)';osVer=RegExp.$1.replace(/_/g,'.');}
+  else if(/iPad.*OS (\S+)/.test(ua)){os='iPadOS';osVer=RegExp.$1.replace(/_/g,'.');}
+  else if(/Mac OS X ([\d_]+)/.test(ua)){os='macOS';osVer=RegExp.$1.replace(/_/g,'.');}
+  else if(/Linux/.test(ua)){os='Linux';}
+  else if(/CrOS/.test(ua)){os='ChromeOS';}
+  // Device type
+  let device='Desktop';
+  if(/Mobile|iPhone|Android.*Mobile/.test(ua))device='Mobile';
+  else if(/Tablet|iPad|Android(?!.*Mobile)/.test(ua))device='Tablet';
+  else if(/bot|crawl|spider/i.test(ua))device='Bot';
+  r.push(['Browser',browser+(version?' '+version:'')]);
+  r.push(['Engine',engine+(engineVer?' '+engineVer:'')]);
+  r.push(['OS',os+(osVer?' '+osVer:'')]);
+  r.push(['Device type',device]);
+  r.push(['UA length',ua.length+' chars']);
+  r.push(['Mobile?',/Mobile|iPhone|Android.*Mobile/.test(ua)?'Yes':'No']);
+  r.push(['Touch?',/Touch|Android|iPhone|iPad/.test(ua)?'Likely':'Unknown']);
+  document.getElementById('uaResults').innerHTML=r.map(([l,v])=>`<div class="hash-row"><div class="hash-algo" style="min-width:110px">${l}</div><div class="hash-val" style="color:var(--teal)">${escHtml(v)}</div></div>`).join('');
+  // Tokens
+  const tokens=ua.match(/[^()\s]+|\([^)]*\)/g)||[];
+  document.getElementById('uaTokens').textContent=tokens.map((t,i)=>`[${i}] ${t}`).join('
+');
+}
+document.addEventListener('DOMContentLoaded',useMyUA);
+</script>
+</body>
+</html>

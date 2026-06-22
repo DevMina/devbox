@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="DevBox — Query and explore JSON with dot-notation paths">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON Path Explorer — DevBox</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:title" content="JSON Path Explorer — DevBox">
+<meta property="og:description" content="Query and explore JSON with dot-notation paths">
+<meta property="og:type" content="website">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="content" style="min-width:0">
+    <div class="tool-header">
+      <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">{?}</div>
+      <div>
+        <div class="tool-title">JSON Path Explorer</div>
+        <div class="tool-desc">Explore, query, and extract data from JSON using dot notation and array indexes</div>
+      </div>
+    </div>
+    
+<div class="two-col" style="align-items:start">
+  <div>
+    <div class="panel">
+      <div class="panel-bar">
+        <span class="panel-label">JSON Input</span>
+        <div class="panel-actions">
+          <button class="btn btn-ghost" onclick="jpSample()">Sample</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('jpInput').value='';jpExplore()">Clear</button>
+        </div>
+      </div>
+      <textarea id="jpInput" oninput="jpExplore()" style="min-height:280px;font-size:0.8rem" placeholder='{"user":{"name":"Alice","age":30}}'></textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-bar"><span class="panel-label">Query path</span></div>
+      <div class="input-row" style="border-bottom:none">
+        <input type="text" id="jpQuery" placeholder="user.name  or  users[0].email" oninput="jpQuery()" style="font-family:var(--mono);font-size:0.9rem">
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="panel">
+      <div class="panel-bar"><span class="panel-label">Result</span><div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('jpResult').textContent)">⎘ Copy</button></div></div>
+      <div id="jpResult" class="output-area" style="color:var(--green);min-height:120px;white-space:pre-wrap"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-bar"><span class="panel-label">Tree explorer</span></div>
+      <div id="jpTree" style="padding:10px 14px;font-family:var(--mono);font-size:0.8rem;line-height:1.8;min-height:160px;max-height:340px;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js"></script>
+<script src="../assets/sidebar.js"></script>
+<script>
+let jpData=null;
+
+function jpSample(){
+  document.getElementById('jpInput').value=JSON.stringify({
+    user:{name:"Alice",age:30,email:"alice@example.com",roles:["admin","editor"],
+    address:{city:"New York",zip:"10001",country:"US"}},
+    stats:{posts:142,followers:3820,following:98},
+    active:true,joinedAt:"2021-03-15"
+  },null,2);
+  jpExplore();
+}
+
+function jpExplore(){
+  const raw=document.getElementById('jpInput').value.trim();
+  if(!raw){document.getElementById('jpTree').innerHTML='';jpData=null;return;}
+  try{
+    jpData=JSON.parse(raw);
+    document.getElementById('jpTree').innerHTML=renderTree(jpData,'root',0);
+    jpQuery();
+  }catch(e){document.getElementById('jpTree').innerHTML='<span style="color:var(--red)">Invalid JSON: '+escHtml(e.message)+'</span>';jpData=null;}
+}
+
+function renderTree(obj,key,depth){
+  const indent='  '.repeat(depth);
+  const keyColor='var(--blue)';const valColor='var(--green)';const strColor='var(--orange)';const numColor='var(--yellow)';
+  if(obj===null) return `${indent}<span style="color:${keyColor}">${key}</span>: <span style="color:var(--red)">null</span>
+`;
+  if(typeof obj==='boolean') return `${indent}<span style="color:${keyColor}">${key}</span>: <span style="color:var(--purple)">${obj}</span>
+`;
+  if(typeof obj==='number') return `${indent}<span style="color:${keyColor}">${key}</span>: <span style="color:${numColor}">${obj}</span>
+`;
+  if(typeof obj==='string') return `${indent}<span style="color:${keyColor}">${key}</span>: <span style="color:${strColor}">"${escHtml(obj)}"</span>
+`;
+  if(Array.isArray(obj)){
+    if(obj.length===0) return `${indent}<span style="color:${keyColor}">${key}</span>: []
+`;
+    let out=`${indent}<details open><summary style="cursor:pointer;color:${keyColor}">${key} <span style="color:var(--text-dim)">[${obj.length}]</span></summary>
+`;
+    obj.forEach((v,i)=>{out+=renderTree(v,'['+i+']',depth+1);});
+    return out+'</details>
+';
+  }
+  if(typeof obj==='object'){
+    const keys=Object.keys(obj);
+    if(keys.length===0) return `${indent}<span style="color:${keyColor}">${key}</span>: {}
+`;
+    let out=`${indent}<details open><summary style="cursor:pointer;color:${keyColor}">${key} <span style="color:var(--text-dim)">{${keys.length}}</span></summary>
+`;
+    keys.forEach(k=>{out+=renderTree(obj[k],k,depth+1);});
+    return out+'</details>
+';
+  }
+  return '';
+}
+
+function jpQuery(){
+  if(!jpData){document.getElementById('jpResult').textContent='Parse JSON first';return;}
+  const q=document.getElementById('jpQuery').value.trim();
+  if(!q){document.getElementById('jpResult').textContent=JSON.stringify(jpData,null,2);return;}
+  try{
+    let result=jpData;
+    const parts=q.replace(/\[(\d+)\]/g,'.$1').split('.').filter(Boolean);
+    for(const part of parts){
+      if(result===null||result===undefined){result=undefined;break;}
+      result=result[isNaN(part)?part:parseInt(part)];
+    }
+    if(result===undefined){document.getElementById('jpResult').textContent='undefined (path not found)';return;}
+    document.getElementById('jpResult').textContent=JSON.stringify(result,null,2);
+  }catch(e){document.getElementById('jpResult').textContent='Error: '+e.message;}
+}
+
+document.addEventListener('DOMContentLoaded',jpSample);
+</script>
+</body>
+</html>
