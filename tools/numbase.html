@@ -12,39 +12,45 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">0x</div>
-      <div>
-        <div class="tool-title">Number Base Converter</div>
-        <div class="tool-desc">Convert between Binary, Octal, Decimal, and Hex</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">0x</div>
+                    <div>
+                        <div class="tool-title">Number Base Converter</div>
+                        <div class="tool-desc">Convert between Binary, Octal, Decimal, and Hex</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Enter value in any base</span></div>
+                    <div class="input-row"><label>Binary</label><input type="text" id="nb-bin" placeholder="101010" oninput="nbConvert('bin',this.value)"></div>
+                    <div class="input-row"><label>Octal</label><input type="text" id="nb-oct" placeholder="52" oninput="nbConvert('oct',this.value)"></div>
+                    <div class="input-row"><label>Decimal</label><input type="text" id="nb-dec" placeholder="42" oninput="nbConvert('dec',this.value)"></div>
+                    <div class="input-row"><label>Hex</label><input type="text" id="nb-hex" placeholder="2A" oninput="nbConvert('hex',this.value)"></div>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Details</span></div>
+                    <div class="hash-grid">
+                        <div class="hash-row"><div class="hash-algo">Decimal</div><div class="hash-val" id="nb-detail-dec" style="color:var(--orange)">—</div></div>
+                        <div class="hash-row"><div class="hash-algo">Signed 32-bit</div><div class="hash-val" id="nb-detail-signed" style="color:var(--text-dim)">—</div></div>
+                        <div class="hash-row"><div class="hash-algo">Bits needed</div><div class="hash-val" id="nb-detail-bits" style="color:var(--text-dim)">—</div></div>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="panel">
-  <div class="panel-bar"><span class="panel-label">Enter value in any base</span></div>
-  <div class="input-row"><label>Binary</label><input type="text" id="nb-bin" placeholder="101010" oninput="nbConvert('bin',this.value)"></div>
-  <div class="input-row"><label>Octal</label><input type="text" id="nb-oct" placeholder="52" oninput="nbConvert('oct',this.value)"></div>
-  <div class="input-row"><label>Decimal</label><input type="text" id="nb-dec" placeholder="42" oninput="nbConvert('dec',this.value)"></div>
-  <div class="input-row"><label>Hex</label><input type="text" id="nb-hex" placeholder="2A" oninput="nbConvert('hex',this.value)"></div>
-</div>
-<div class="panel">
-  <div class="panel-bar"><span class="panel-label">Details</span></div>
-  <div class="hash-grid">
-    <div class="hash-row"><div class="hash-algo">Decimal</div><div class="hash-val" id="nb-detail-dec" style="color:var(--orange)">—</div></div>
-    <div class="hash-row"><div class="hash-algo">Signed 32-bit</div><div class="hash-val" id="nb-detail-signed" style="color:var(--text-dim)">—</div></div>
-    <div class="hash-row"><div class="hash-algo">Bits needed</div><div class="hash-val" id="nb-detail-bits" style="color:var(--text-dim)">—</div></div>
-  </div>
-</div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-function nbConvert(from,val){val=val.trim();if(!val){['bin','oct','dec','hex'].forEach(id=>{if(id!==from)document.getElementById('nb-'+id).value='';});['nb-detail-dec','nb-detail-signed','nb-detail-bits'].forEach(id=>document.getElementById(id).textContent='—');return;}let dec;try{if(from==='bin')dec=parseInt(val,2);else if(from==='oct')dec=parseInt(val,8);else if(from==='dec')dec=parseInt(val,10);else dec=parseInt(val,16);if(isNaN(dec))throw new Error();}catch(e){return;}if(from!=='bin')document.getElementById('nb-bin').value=dec.toString(2);if(from!=='oct')document.getElementById('nb-oct').value=dec.toString(8);if(from!=='dec')document.getElementById('nb-dec').value=dec.toString(10);if(from!=='hex')document.getElementById('nb-hex').value=dec.toString(16).toUpperCase();document.getElementById('nb-detail-dec').textContent=dec.toLocaleString();document.getElementById('nb-detail-signed').textContent=dec>2147483647?'Overflow (>32-bit)':(dec|0).toString();document.getElementById('nb-detail-bits').textContent=dec===0?'1':Math.floor(Math.log2(Math.abs(dec))+1);}
-</script>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js"></script>
+    <script src="../assets/sidebar.js"></script>
+    <script>
+        function nbConvert(from, val) { val = val.trim(); if (!val) { ['bin', 'oct', 'dec', 'hex'].forEach(id => { if (id !== from) document.getElementById('nb-' + id).value = ''; });['nb-detail-dec', 'nb-detail-signed', 'nb-detail-bits'].forEach(id => document.getElementById(id).textContent = '—'); return; } let dec; try { if (from === 'bin') dec = parseInt(val, 2); else if (from === 'oct') dec = parseInt(val, 8); else if (from === 'dec') dec = parseInt(val, 10); else dec = parseInt(val, 16); if (isNaN(dec)) throw new Error(); } catch (e) { return; } if (from !== 'bin') document.getElementById('nb-bin').value = dec.toString(2); if (from !== 'oct') document.getElementById('nb-oct').value = dec.toString(8); if (from !== 'dec') document.getElementById('nb-dec').value = dec.toString(10); if (from !== 'hex') document.getElementById('nb-hex').value = dec.toString(16).toUpperCase(); document.getElementById('nb-detail-dec').textContent = dec.toLocaleString(); document.getElementById('nb-detail-signed').textContent = dec > 2147483647 ? 'Overflow (>32-bit)' : (dec | 0).toString(); document.getElementById('nb-detail-bits').textContent = dec === 0 ? '1' : Math.floor(Math.log2(Math.abs(dec)) + 1); }
+    </script>
 </body>
 </html>

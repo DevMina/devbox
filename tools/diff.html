@@ -12,41 +12,49 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">⇄</div>
-      <div>
-        <div class="tool-title">Diff Checker</div>
-        <div class="tool-desc">Compare two texts line by line and highlight differences</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">⇄</div>
+                    <div>
+                        <div class="tool-title">Diff Checker</div>
+                        <div class="tool-desc">Compare two texts line by line and highlight differences</div>
+                    </div>
+                </div>
+
+                <div class="two-col">
+                    <div class="panel" style="margin:0">
+                        <div class="panel-bar"><span class="panel-label">Original</span></div>
+                        <textarea id="diffA" placeholder="Paste original text here…" oninput="runDiff()" style="min-height:220px"></textarea>
+                    </div>
+                    <div class="panel" style="margin:0">
+                        <div class="panel-bar"><span class="panel-label">Modified</span></div>
+                        <textarea id="diffB" placeholder="Paste modified text here…" oninput="runDiff()" style="min-height:220px"></textarea>
+                    </div>
+                </div>
+                <div style="margin-top:14px" class="panel">
+                    <div class="panel-bar"><span class="panel-label">Diff output</span><span id="diffStats" style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)"></span></div>
+                    <div id="diffOutput" class="output-area" style="font-size:0.83rem;line-height:1.8;white-space:pre-wrap;"></div>
+                </div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="two-col">
-  <div class="panel" style="margin:0">
-    <div class="panel-bar"><span class="panel-label">Original</span></div>
-    <textarea id="diffA" placeholder="Paste original text here…" oninput="runDiff()" style="min-height:220px"></textarea>
-  </div>
-  <div class="panel" style="margin:0">
-    <div class="panel-bar"><span class="panel-label">Modified</span></div>
-    <textarea id="diffB" placeholder="Paste modified text here…" oninput="runDiff()" style="min-height:220px"></textarea>
-  </div>
-</div>
-<div style="margin-top:14px" class="panel">
-  <div class="panel-bar"><span class="panel-label">Diff output</span><span id="diffStats" style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)"></span></div>
-  <div id="diffOutput" class="output-area" style="font-size:0.83rem;line-height:1.8;white-space:pre-wrap;"></div>
-</div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-function runDiff(){const a=document.getElementById('diffA').value.split('\n'),b=document.getElementById('diffB').value.split('\n');const lcs=(a,b)=>{const m=a.length,n=b.length,dp=Array.from({length:m+1},()=>new Array(n+1).fill(0));for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);const seq=[];let i=m,j=n;while(i>0&&j>0){if(a[i-1]===b[j-1]){seq.unshift({t:'eq',v:a[i-1]});i--;j--;}else if(dp[i-1][j]>dp[i][j-1]){seq.unshift({t:'del',v:a[i-1]});i--;}else{seq.unshift({t:'ins',v:b[j-1]});j--;}}while(i>0){seq.unshift({t:'del',v:a[i-1]});i--;}while(j>0){seq.unshift({t:'ins',v:b[j-1]});j--;}return seq;};
-const out=document.getElementById('diffOutput'),stats=document.getElementById('diffStats');if(!document.getElementById('diffA').value&&!document.getElementById('diffB').value){out.innerHTML='';stats.textContent='';return;}
-const diff=lcs(a,b);let added=0,removed=0,html='';diff.forEach(d=>{const e=escHtml(d.v);if(d.t==='eq')html+=`<div style="color:var(--text-dim);padding:1px 8px">&nbsp; ${e}</div>`;if(d.t==='del'){html+=`<div style="background:rgba(255,94,122,0.1);color:var(--red);padding:1px 8px;border-left:3px solid var(--red)">− ${e}</div>`;removed++;}if(d.t==='ins'){html+=`<div style="background:rgba(61,255,160,0.08);color:var(--green);padding:1px 8px;border-left:3px solid var(--green)">+ ${e}</div>`;added++;}});
-out.innerHTML=html||'<span style="color:var(--text-dim)">No differences — texts are identical.</span>';stats.textContent=`+${added} added  −${removed} removed`;}
-</script>
+        <div class="toast" id="toast"></div>
+        <script src="../assets/shared.js"></script>
+        <script src="../assets/sidebar.js"></script>
+        <script>
+            function runDiff() {
+                const a = document.getElementById('diffA').value.split('\n'), b = document.getElementById('diffB').value.split('\n'); const lcs = (a, b) => { const m = a.length, n = b.length, dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0)); for (let i = 1; i <= m; i++)for (let j = 1; j <= n; j++)dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]); const seq = []; let i = m, j = n; while (i > 0 && j > 0) { if (a[i - 1] === b[j - 1]) { seq.unshift({ t: 'eq', v: a[i - 1] }); i--; j--; } else if (dp[i - 1][j] > dp[i][j - 1]) { seq.unshift({ t: 'del', v: a[i - 1] }); i--; } else { seq.unshift({ t: 'ins', v: b[j - 1] }); j--; } } while (i > 0) { seq.unshift({ t: 'del', v: a[i - 1] }); i--; } while (j > 0) { seq.unshift({ t: 'ins', v: b[j - 1] }); j--; } return seq; };
+                const out = document.getElementById('diffOutput'), stats = document.getElementById('diffStats'); if (!document.getElementById('diffA').value && !document.getElementById('diffB').value) { out.innerHTML = ''; stats.textContent = ''; return; }
+                const diff = lcs(a, b); let added = 0, removed = 0, html = ''; diff.forEach(d => { const e = escHtml(d.v); if (d.t === 'eq') html += `<div style="color:var(--text-dim);padding:1px 8px">&nbsp; ${e}</div>`; if (d.t === 'del') { html += `<div style="background:rgba(255,94,122,0.1);color:var(--red);padding:1px 8px;border-left:3px solid var(--red)">− ${e}</div>`; removed++; } if (d.t === 'ins') { html += `<div style="background:rgba(61,255,160,0.08);color:var(--green);padding:1px 8px;border-left:3px solid var(--green)">+ ${e}</div>`; added++; } });
+                out.innerHTML = html || '<span style="color:var(--text-dim)">No differences — texts are identical.</span>'; stats.textContent = `+${added} added  −${removed} removed`;
+            }
+        </script>
 </body>
 </html>

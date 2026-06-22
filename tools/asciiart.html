@@ -12,53 +12,60 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">A</div>
-      <div>
-        <div class="tool-title">ASCII Art Generator</div>
-        <div class="tool-desc">Convert text to large ASCII art with multiple styles</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">A</div>
+                    <div>
+                        <div class="tool-title">ASCII Art Generator</div>
+                        <div class="tool-desc">Convert text to large ASCII art with multiple styles</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Input</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-purple" onclick="genAscii()">Generate</button>
+                            <button class="btn btn-ghost" onclick="copy(document.getElementById('asciiOutput').textContent)">⎘ Copy</button>
+                        </div>
+                    </div>
+                    <div class="input-row"><label>Text</label><input type="text" id="asciiInput" placeholder="DEVBOX" maxlength="12" oninput="genAscii()" style="font-size:1rem;font-family:var(--mono)"></div>
+                    <div class="input-row" style="border-bottom:none">
+                        <label>Style</label>
+                        <select id="asciiStyle" onchange="genAscii()" style="padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
+                            <option value="block">Block (██)</option>
+                            <option value="hash">Hash (##)</option>
+                            <option value="star">Star (**)</option>
+                            <option value="shadow">Shadow</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Output</span></div>
+                    <div id="asciiOutput" class="output-area" style="color:var(--purple);font-size:0.72rem;line-height:1.2;white-space:pre;overflow-x:auto;font-family:var(--mono);min-height:120px"></div>
+                </div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="panel">
-  <div class="panel-bar">
-    <span class="panel-label">Input</span>
-    <div class="panel-actions">
-      <button class="btn btn-purple" onclick="genAscii()">Generate</button>
-      <button class="btn btn-ghost" onclick="copy(document.getElementById('asciiOutput').textContent)">⎘ Copy</button>
-    </div>
-  </div>
-  <div class="input-row"><label>Text</label><input type="text" id="asciiInput" placeholder="DEVBOX" maxlength="12" oninput="genAscii()" style="font-size:1rem;font-family:var(--mono)"></div>
-  <div class="input-row" style="border-bottom:none">
-    <label>Style</label>
-    <select id="asciiStyle" onchange="genAscii()" style="padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
-      <option value="block">Block (██)</option>
-      <option value="hash">Hash (##)</option>
-      <option value="star">Star (**)</option>
-      <option value="shadow">Shadow</option>
-    </select>
-  </div>
-</div>
-<div class="panel">
-  <div class="panel-bar"><span class="panel-label">Output</span></div>
-  <div id="asciiOutput" class="output-area" style="color:var(--purple);font-size:0.72rem;line-height:1.2;white-space:pre;overflow-x:auto;font-family:var(--mono);min-height:120px"></div>
-</div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-const FONT={A:['  ██  ',' ████ ','██  ██','██████','██  ██'],B:['█████ ','██  ██','█████ ','██  ██','█████ '],C:[' █████','██    ','██    ','██    ',' █████'],D:['████  ','██ ██ ','██  ██','██  ██','████  '],E:['██████','██    ','████  ','██    ','██████'],F:['██████','██    ','████  ','██    ','██    '],G:[' █████','██    ','██ ███','██  ██',' █████'],H:['██  ██','██  ██','██████','██  ██','██  ██'],I:['██████','  ██  ','  ██  ','  ██  ','██████'],J:['██████','   ██ ','   ██ ','██ ██ ',' ███  '],K:['██  ██','██ ██ ','████  ','██ ██ ','██  ██'],L:['██    ','██    ','██    ','██    ','██████'],M:['██  ██','██████','██████','██  ██','██  ██'],N:['██  ██','███ ██','██████','██ ███','██  ██'],O:[' ████ ','██  ██','██  ██','██  ██',' ████ '],P:['█████ ','██  ██','█████ ','██    ','██    '],Q:[' ████ ','██  ██','██  ██','██ ███',' ████ '],R:['█████ ','██  ██','█████ ','██ ██ ','██  ██'],S:[' █████','██    ',' ████ ','    ██','█████ '],T:['██████','  ██  ','  ██  ','  ██  ','  ██  '],U:['██  ██','██  ██','██  ██','██  ██',' ████ '],V:['██  ██','██  ██','██  ██',' ████ ','  ██  '],W:['██  ██','██  ██','██████','██████','██  ██'],X:['██  ██',' ████ ','  ██  ',' ████ ','██  ██'],Y:['██  ██',' ████ ','  ██  ','  ██  ','  ██  '],Z:['██████','   ██ ','  ██  ',' ██   ','██████'],'0':[' ████ ','██  ██','██  ██','██  ██',' ████ '],'1':['  ██  ',' ███  ','  ██  ','  ██  ','██████'],'2':[' ████ ','██  ██','   ██ ',' ██   ','██████'],'3':['█████ ','    ██','  ███ ','    ██','█████ '],'4':['   ██ ','  ███ ',' ██ ██','██████','   ██ '],'5':['██████','██    ','█████ ','    ██','█████ '],'6':[' █████','██    ','█████ ','██  ██',' ████ '],'7':['██████','    ██','   ██ ','  ██  ',' ██   '],'8':[' ████ ','██  ██',' ████ ','██  ██',' ████ '],'9':[' ████ ','██  ██',' █████','    ██',' ████ '],' ':['      ','      ','      ','      ','      '],'!':['  ██  ','  ██  ','  ██  ','      ','  ██  '],'?':[' ████ ','██  ██','   ██ ','      ','  ██  ']};
-function genAscii(){const txt=(document.getElementById('asciiInput').value||'HELLO').toUpperCase().slice(0,12),style=document.getElementById('asciiStyle').value;const lines=['','','','',''];txt.split('').forEach(ch=>{const g=FONT[ch]||FONT[' '];for(let r=0;r<5;r++)lines[r]+=(g[r]||'      ')+' ';});let out=lines.join('
-');if(style==='hash')out=out.replace(/██/g,'##').replace(/█/g,'#');else if(style==='star')out=out.replace(/██/g,'**').replace(/█/g,'*');else if(style==='shadow'){const rows=out.split('
+        <div class="toast" id="toast"></div>
+        <script src="../assets/shared.js"></script>
+        <script src="../assets/sidebar.js"></script>
+        <script>
+            const FONT = { A: ['  ██  ', ' ████ ', '██  ██', '██████', '██  ██'], B: ['█████ ', '██  ██', '█████ ', '██  ██', '█████ '], C: [' █████', '██    ', '██    ', '██    ', ' █████'], D: ['████  ', '██ ██ ', '██  ██', '██  ██', '████  '], E: ['██████', '██    ', '████  ', '██    ', '██████'], F: ['██████', '██    ', '████  ', '██    ', '██    '], G: [' █████', '██    ', '██ ███', '██  ██', ' █████'], H: ['██  ██', '██  ██', '██████', '██  ██', '██  ██'], I: ['██████', '  ██  ', '  ██  ', '  ██  ', '██████'], J: ['██████', '   ██ ', '   ██ ', '██ ██ ', ' ███  '], K: ['██  ██', '██ ██ ', '████  ', '██ ██ ', '██  ██'], L: ['██    ', '██    ', '██    ', '██    ', '██████'], M: ['██  ██', '██████', '██████', '██  ██', '██  ██'], N: ['██  ██', '███ ██', '██████', '██ ███', '██  ██'], O: [' ████ ', '██  ██', '██  ██', '██  ██', ' ████ '], P: ['█████ ', '██  ██', '█████ ', '██    ', '██    '], Q: [' ████ ', '██  ██', '██  ██', '██ ███', ' ████ '], R: ['█████ ', '██  ██', '█████ ', '██ ██ ', '██  ██'], S: [' █████', '██    ', ' ████ ', '    ██', '█████ '], T: ['██████', '  ██  ', '  ██  ', '  ██  ', '  ██  '], U: ['██  ██', '██  ██', '██  ██', '██  ██', ' ████ '], V: ['██  ██', '██  ██', '██  ██', ' ████ ', '  ██  '], W: ['██  ██', '██  ██', '██████', '██████', '██  ██'], X: ['██  ██', ' ████ ', '  ██  ', ' ████ ', '██  ██'], Y: ['██  ██', ' ████ ', '  ██  ', '  ██  ', '  ██  '], Z: ['██████', '   ██ ', '  ██  ', ' ██   ', '██████'], '0': [' ████ ', '██  ██', '██  ██', '██  ██', ' ████ '], '1': ['  ██  ', ' ███  ', '  ██  ', '  ██  ', '██████'], '2': [' ████ ', '██  ██', '   ██ ', ' ██   ', '██████'], '3': ['█████ ', '    ██', '  ███ ', '    ██', '█████ '], '4': ['   ██ ', '  ███ ', ' ██ ██', '██████', '   ██ '], '5': ['██████', '██    ', '█████ ', '    ██', '█████ '], '6': [' █████', '██    ', '█████ ', '██  ██', ' ████ '], '7': ['██████', '    ██', '   ██ ', '  ██  ', ' ██   '], '8': [' ████ ', '██  ██', ' ████ ', '██  ██', ' ████ '], '9': [' ████ ', '██  ██', ' █████', '    ██', ' ████ '], ' ': ['      ', '      ', '      ', '      ', '      '], '!': ['  ██  ', '  ██  ', '  ██  ', '      ', '  ██  '], '?': [' ████ ', '██  ██', '   ██ ', '      ', '  ██  '] };
+            function genAscii() {
+                const txt = (document.getElementById('asciiInput').value || 'HELLO').toUpperCase().slice(0, 12), style = document.getElementById('asciiStyle').value; const lines = ['', '', '', '', '']; txt.split('').forEach(ch => { const g = FONT[ch] || FONT[' ']; for (let r = 0; r < 5; r++)lines[r] += (g[r] || '      ') + ' '; }); let out = lines.join('
+');if(style==='hash')out=out.replace(/██/g,'##').replace(/█/g,'#');else if(style==='star')out=out.replace(/██/g,' ** ').replace(/█/g,' * ');else if(style==='shadow'){const rows=out.split('
 ');out=rows.join('
 ')+'
 '+rows[4].replace(/[^ ]/g,'▓').replace(/ /g,' ');}document.getElementById('asciiOutput').textContent=out;}
-document.addEventListener('DOMContentLoaded',()=>{document.getElementById('asciiInput').value='DEVBOX';genAscii();});
-</script>
+document.addEventListener('DOMContentLoaded', () => { document.getElementById('asciiInput').value = 'DEVBOX'; genAscii(); });
+        </script>
 </body>
 </html>

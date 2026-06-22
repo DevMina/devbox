@@ -12,72 +12,78 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">⌨️</div>
-      <div>
-        <div class="tool-title">Key Tester</div>
-        <div class="tool-desc">Inspect keyboard events — key codes, names, modifiers, and raw event data</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">⌨️</div>
+                    <div>
+                        <div class="tool-title">Key Tester</div>
+                        <div class="tool-desc">Inspect keyboard events — key codes, names, modifiers, and raw event data</div>
+                    </div>
+                </div>
+
+                <div style="max-width:640px">
+                    <div class="panel" style="margin-bottom:14px">
+                        <div class="panel-bar">
+                            <span class="panel-label">Press any key</span>
+                            <div class="panel-actions">
+                                <button class="btn btn-ghost" onclick="clearKeys()">Clear history</button>
+                            </div>
+                        </div>
+                        <div id="keyCapture" tabindex="0" style="min-height:120px;display:flex;align-items:center;justify-content:center;outline:none;cursor:text;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:0.85rem;color:var(--text-dim);flex-direction:column;gap:8px;padding:20px" onkeydown="captureKey(event)" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor=''">
+                            <span style="font-size:1.5rem">⌨️</span>
+                            <span>Click here, then press any key</span>
+                        </div>
+                        <div id="keyDisplay" class="hash-grid" style="display:none"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-bar"><span class="panel-label">Key history (last 10)</span></div>
+                        <div id="keyHistory" style="padding:10px 14px;display:flex;flex-direction:column;gap:6px;min-height:60px">
+                            <span style="color:var(--text-dim);font-size:0.82rem;text-align:center;padding:10px">No keys pressed yet</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div style="max-width:640px">
-  <div class="panel" style="margin-bottom:14px">
-    <div class="panel-bar">
-      <span class="panel-label">Press any key</span>
-      <div class="panel-actions">
-        <button class="btn btn-ghost" onclick="clearKeys()">Clear history</button>
-      </div>
-    </div>
-    <div id="keyCapture" tabindex="0" style="min-height:120px;display:flex;align-items:center;justify-content:center;outline:none;cursor:text;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:0.85rem;color:var(--text-dim);flex-direction:column;gap:8px;padding:20px" onkeydown="captureKey(event)" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor=''">
-      <span style="font-size:1.5rem">⌨️</span>
-      <span>Click here, then press any key</span>
-    </div>
-    <div id="keyDisplay" class="hash-grid" style="display:none"></div>
-  </div>
-  <div class="panel">
-    <div class="panel-bar"><span class="panel-label">Key history (last 10)</span></div>
-    <div id="keyHistory" style="padding:10px 14px;display:flex;flex-direction:column;gap:6px;min-height:60px">
-      <span style="color:var(--text-dim);font-size:0.82rem;text-align:center;padding:10px">No keys pressed yet</span>
-    </div>
-  </div>
-</div>
-  
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-const keyLog=[];
-function captureKey(e){
-  e.preventDefault();
-  const info={key:e.key,code:e.code,keyCode:e.keyCode,charCode:e.charCode,which:e.which,ctrl:e.ctrlKey,shift:e.shiftKey,alt:e.altKey,meta:e.metaKey,repeat:e.repeat,location:['Standard','Left','Right','Numpad','Mobile','Joystick'][e.location]||e.location};
-  document.getElementById('keyDisplay').style.display='';
-  const rows=[
-    ['key',info.key==='  '?'Space':info.key||'(none)'],
-    ['code',info.code],
-    ['keyCode',info.keyCode],
-    ['which',info.which],
-    ['Ctrl',info.ctrl?'✓ Yes':'No'],
-    ['Shift',info.shift?'✓ Yes':'No'],
-    ['Alt / Option',info.alt?'✓ Yes':'No'],
-    ['Meta (⌘/Win)',info.meta?'✓ Yes':'No'],
-    ['Location',info.location],
-    ['Repeat',info.repeat?'Yes (held)':'No'],
-  ];
-  document.getElementById('keyDisplay').innerHTML=rows.map(([l,v])=>`<div class="hash-row"><div class="hash-algo" style="min-width:120px">${l}</div><div class="hash-val" style="color:var(--blue)">${escHtml(String(v))}</div><button class="uuid-copy" onclick="copy('${String(v).replace(/'/g,"\'")}')">⎘</button></div>`).join('');
-  // Modifiers display
-  const mods=[];if(info.ctrl)mods.push('Ctrl');if(info.shift)mods.push('Shift');if(info.alt)mods.push('Alt');if(info.meta)mods.push('Meta');
-  const label=(mods.length?mods.join('+')+'+':'')+((info.key==='Control'||info.key==='Shift'||info.key==='Alt'||info.key==='Meta')?info.key:info.key==='  '?'Space':info.key);
-  keyLog.unshift(label);if(keyLog.length>10)keyLog.pop();
-  const hist=document.getElementById('keyHistory');
-  hist.innerHTML=keyLog.map(k=>`<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:0.82rem;color:var(--text)">${escHtml(k)}</div>`).join('');
-}
-function clearKeys(){keyLog.length=0;document.getElementById('keyDisplay').style.display='none';document.getElementById('keyHistory').innerHTML='<span style="color:var(--text-dim);font-size:0.82rem;text-align:center;padding:10px">No keys pressed yet</span>';}
-document.addEventListener('DOMContentLoaded',()=>document.getElementById('keyCapture').focus());
-</script>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js"></script>
+    <script src="../assets/sidebar.js"></script>
+    <script>
+        const keyLog = [];
+        function captureKey(e) {
+            e.preventDefault();
+            const info = { key: e.key, code: e.code, keyCode: e.keyCode, charCode: e.charCode, which: e.which, ctrl: e.ctrlKey, shift: e.shiftKey, alt: e.altKey, meta: e.metaKey, repeat: e.repeat, location: ['Standard', 'Left', 'Right', 'Numpad', 'Mobile', 'Joystick'][e.location] || e.location };
+            document.getElementById('keyDisplay').style.display = '';
+            const rows = [
+                ['key', info.key === '  ' ? 'Space' : info.key || '(none)'],
+                ['code', info.code],
+                ['keyCode', info.keyCode],
+                ['which', info.which],
+                ['Ctrl', info.ctrl ? '✓ Yes' : 'No'],
+                ['Shift', info.shift ? '✓ Yes' : 'No'],
+                ['Alt / Option', info.alt ? '✓ Yes' : 'No'],
+                ['Meta (⌘/Win)', info.meta ? '✓ Yes' : 'No'],
+                ['Location', info.location],
+                ['Repeat', info.repeat ? 'Yes (held)' : 'No'],
+            ];
+            document.getElementById('keyDisplay').innerHTML = rows.map(([l, v]) => `<div class="hash-row"><div class="hash-algo" style="min-width:120px">${l}</div><div class="hash-val" style="color:var(--blue)">${escHtml(String(v))}</div><button class="uuid-copy" onclick="copy('${String(v).replace(/'/g, "\'")}')">⎘</button></div>`).join('');
+            // Modifiers display
+            const mods = []; if (info.ctrl) mods.push('Ctrl'); if (info.shift) mods.push('Shift'); if (info.alt) mods.push('Alt'); if (info.meta) mods.push('Meta');
+            const label = (mods.length ? mods.join('+') + '+' : '') + ((info.key === 'Control' || info.key === 'Shift' || info.key === 'Alt' || info.key === 'Meta') ? info.key : info.key === '  ' ? 'Space' : info.key);
+            keyLog.unshift(label); if (keyLog.length > 10) keyLog.pop();
+            const hist = document.getElementById('keyHistory');
+            hist.innerHTML = keyLog.map(k => `<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:0.82rem;color:var(--text)">${escHtml(k)}</div>`).join('');
+        }
+        function clearKeys() { keyLog.length = 0; document.getElementById('keyDisplay').style.display = 'none'; document.getElementById('keyHistory').innerHTML = '<span style="color:var(--text-dim);font-size:0.82rem;text-align:center;padding:10px">No keys pressed yet</span>'; }
+        document.addEventListener('DOMContentLoaded', () => document.getElementById('keyCapture').focus());
+    </script>
 </body>
 </html>

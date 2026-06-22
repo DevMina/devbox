@@ -12,38 +12,45 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">Σ</div>
-      <div>
-        <div class="tool-title">Character Counter</div>
-        <div class="tool-desc">Count characters with platform-specific limits</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">Σ</div>
+                    <div>
+                        <div class="tool-title">Character Counter</div>
+                        <div class="tool-desc">Count characters with platform-specific limits</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Type or paste text</span><div class="panel-actions"><button class="btn btn-ghost" onclick="document.getElementById('ccInput').value='';updateCC()">Clear</button></div></div>
+                    <textarea id="ccInput" oninput="updateCC()" style="min-height:160px" placeholder="Start typing to count characters…"></textarea>
+                </div>
+                <div class="four-col" style="margin-bottom:14px">
+                    <div class="panel" style="margin:0;padding:14px 16px"><div style="font-family:var(--mono);font-size:1.6rem;font-weight:600;color:var(--teal)" id="cc-chars">0</div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim);margin-top:4px">Characters</div></div>
+                    <div class="panel" style="margin:0;padding:14px 16px"><div style="font-family:var(--mono);font-size:1.6rem;font-weight:600;color:var(--green)" id="cc-words">0</div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim);margin-top:4px">Words</div></div>
+                    <div class="panel" style="margin:0;padding:14px 16px"><div style="font-family:var(--mono);font-size:1.6rem;font-weight:600;color:var(--blue)" id="cc-lines">0</div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim);margin-top:4px">Lines</div></div>
+                    <div class="panel" style="margin:0;padding:14px 16px"><div style="font-family:var(--mono);font-size:1.6rem;font-weight:600;color:var(--orange)" id="cc-bytes">0</div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim);margin-top:4px">Bytes (UTF-8)</div></div>
+                </div>
+                <div class="panel"><div class="panel-bar"><span class="panel-label">Platform limits</span></div><div id="ccLimits"></div></div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="panel">
-  <div class="panel-bar"><span class="panel-label">Type or paste text</span><div class="panel-actions"><button class="btn btn-ghost" onclick="document.getElementById('ccInput').value='';updateCC()">Clear</button></div></div>
-  <textarea id="ccInput" oninput="updateCC()" style="min-height:160px" placeholder="Start typing to count characters…"></textarea>
-</div>
-<div class="four-col" style="margin-bottom:14px">
-  <div class="panel" style="margin:0;padding:14px 16px"><div style="font-family:var(--mono);font-size:1.6rem;font-weight:600;color:var(--teal)" id="cc-chars">0</div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim);margin-top:4px">Characters</div></div>
-  <div class="panel" style="margin:0;padding:14px 16px"><div style="font-family:var(--mono);font-size:1.6rem;font-weight:600;color:var(--green)" id="cc-words">0</div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim);margin-top:4px">Words</div></div>
-  <div class="panel" style="margin:0;padding:14px 16px"><div style="font-family:var(--mono);font-size:1.6rem;font-weight:600;color:var(--blue)" id="cc-lines">0</div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim);margin-top:4px">Lines</div></div>
-  <div class="panel" style="margin:0;padding:14px 16px"><div style="font-family:var(--mono);font-size:1.6rem;font-weight:600;color:var(--orange)" id="cc-bytes">0</div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim);margin-top:4px">Bytes (UTF-8)</div></div>
-</div>
-<div class="panel"><div class="panel-bar"><span class="panel-label">Platform limits</span></div><div id="ccLimits"></div></div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-const CC_LIMITS=[["Twitter / X",280,"var(--blue)"],["SMS (GSM-7)",160,"var(--green)"],["SMS (Unicode)",70,"var(--teal)"],["Meta Description",160,"var(--orange)"],["Page Title (SEO)",60,"var(--yellow)"],["LinkedIn Post",3000,"var(--blue)"],["Instagram Caption",2200,"var(--pink)"],["YouTube Title",100,"var(--red)"],["Email Subject",78,"var(--purple)"]];
-function updateCC(){const txt=document.getElementById('ccInput').value;document.getElementById('cc-chars').textContent=txt.length.toLocaleString();document.getElementById('cc-words').textContent=(txt.trim()?txt.trim().split(/\s+/).length:0).toLocaleString();document.getElementById('cc-lines').textContent=(txt?txt.split('
-').length:0).toLocaleString();document.getElementById('cc-bytes').textContent=new TextEncoder().encode(txt).length.toLocaleString();const chars=txt.length;document.getElementById('ccLimits').innerHTML=CC_LIMITS.map(([name,limit,color])=>{const over=chars>limit,pct=Math.min(chars/limit*100,100),remaining=limit-chars;return`<div style="padding:10px 16px;border-bottom:1px solid var(--border)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:0.8rem;font-weight:600;color:var(--text)">${name}</span><span style="font-family:var(--mono);font-size:0.76rem;color:${over?'var(--red)':color}">${chars}/${limit} ${over?`<span style="color:var(--red)">(${Math.abs(remaining)} over)</span>`:`<span style="color:var(--text-dim)">(${remaining} left)</span>`}</span></div><div style="height:4px;background:var(--border2);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${over?'var(--red)':color};border-radius:4px;transition:width 0.2s"></div></div></div>`;}).join('');}
-document.addEventListener('DOMContentLoaded',updateCC);
-</script>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js"></script>
+    <script src="../assets/sidebar.js"></script>
+    <script>
+        const CC_LIMITS = [["Twitter / X", 280, "var(--blue)"], ["SMS (GSM-7)", 160, "var(--green)"], ["SMS (Unicode)", 70, "var(--teal)"], ["Meta Description", 160, "var(--orange)"], ["Page Title (SEO)", 60, "var(--yellow)"], ["LinkedIn Post", 3000, "var(--blue)"], ["Instagram Caption", 2200, "var(--pink)"], ["YouTube Title", 100, "var(--red)"], ["Email Subject", 78, "var(--purple)"]];
+        function updateCC() {
+            const txt = document.getElementById('ccInput').value; document.getElementById('cc-chars').textContent = txt.length.toLocaleString(); document.getElementById('cc-words').textContent = (txt.trim() ? txt.trim().split(/\s+/).length : 0).toLocaleString(); document.getElementById('cc-lines').textContent = (txt ? txt.split('
+').length:0).toLocaleString();document.getElementById('cc - bytes').textContent=new TextEncoder().encode(txt).length.toLocaleString();const chars=txt.length;document.getElementById('ccLimits').innerHTML=CC_LIMITS.map(([name,limit,color])=>{const over=chars>limit,pct=Math.min(chars/limit*100,100),remaining=limit-chars;return`<div style="padding:10px 16px;border-bottom:1px solid var(--border)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:0.8rem;font-weight:600;color:var(--text)">${name}</span><span style="font-family:var(--mono);font-size:0.76rem;color:${over?'var(--red)':color}">${chars}/${limit} ${over?`<span style="color:var(--red)">(${Math.abs(remaining)} over)</span>`:`<span style="color:var(--text-dim)">(${remaining} left)</span>`}</span></div><div style="height:4px;background:var(--border2);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${over?'var(--red)':color};border-radius:4px;transition:width 0.2s"></div></div></div>`;}).join('');}
+            document.addEventListener('DOMContentLoaded', updateCC);
+    </script>
 </body>
 </html>

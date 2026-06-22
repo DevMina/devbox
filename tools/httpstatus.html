@@ -12,35 +12,41 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">HTTP</div>
-      <div>
-        <div class="tool-title">HTTP Status Codes</div>
-        <div class="tool-desc">Quick reference for all HTTP status codes</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">HTTP</div>
+                    <div>
+                        <div class="tool-title">HTTP Status Codes</div>
+                        <div class="tool-desc">Quick reference for all HTTP status codes</div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-bottom:14px">
+                    <div class="panel-bar"><span class="panel-label">Search</span></div>
+                    <div class="input-row" style="border-bottom:none">
+                        <input type="text" id="httpSearch" placeholder="Search by code or description… e.g. 404, redirect" oninput="renderHttp()">
+                    </div>
+                </div>
+                <div id="httpStatusList"></div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="panel" style="margin-bottom:14px">
-  <div class="panel-bar"><span class="panel-label">Search</span></div>
-  <div class="input-row" style="border-bottom:none">
-    <input type="text" id="httpSearch" placeholder="Search by code or description… e.g. 404, redirect" oninput="renderHttp()">
-  </div>
-</div>
-<div id="httpStatusList"></div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-const HTTP_CODES=[[100, "Continue", "The server received the request headers and the client should proceed.", "info"], [101, "Switching Protocols", "The server is switching protocols as requested.", "info"], [200, "OK", "The request succeeded.", "ok"], [201, "Created", "A new resource was created.", "ok"], [202, "Accepted", "The request was received but not yet acted upon.", "ok"], [204, "No Content", "No content to send for this request.", "ok"], [206, "Partial Content", "Partial GET request fulfilled.", "ok"], [301, "Moved Permanently", "The URL has been permanently moved.", "redirect"], [302, "Found", "The URL temporarily points to a different URI.", "redirect"], [304, "Not Modified", "The cached version is up-to-date.", "redirect"], [307, "Temporary Redirect", "Temporary redirect; method and body not changed.", "redirect"], [308, "Permanent Redirect", "Permanent redirect; method and body not changed.", "redirect"], [400, "Bad Request", "The server cannot process the request due to client error.", "client"], [401, "Unauthorized", "Authentication is required and has failed.", "client"], [403, "Forbidden", "The client does not have permission to access this resource.", "client"], [404, "Not Found", "The requested resource could not be found.", "client"], [405, "Method Not Allowed", "The HTTP method is not supported for this endpoint.", "client"], [408, "Request Timeout", "The server timed out waiting for the request.", "client"], [409, "Conflict", "The request conflicts with the current state of the server.", "client"], [410, "Gone", "The resource is no longer available.", "client"], [413, "Payload Too Large", "The request body exceeds the server limit.", "client"], [422, "Unprocessable Entity", "The request was well-formed but contained semantic errors.", "client"], [429, "Too Many Requests", "Rate limit exceeded.", "client"], [500, "Internal Server Error", "The server encountered an unexpected condition.", "server"], [501, "Not Implemented", "The server does not support the request method.", "server"], [502, "Bad Gateway", "Invalid response from an upstream server.", "server"], [503, "Service Unavailable", "The server is temporarily unable to handle the request.", "server"], [504, "Gateway Timeout", "The server did not receive a timely upstream response.", "server"]];
-const HTTP_COLORS={info:'var(--blue)',ok:'var(--green)',redirect:'var(--yellow)',client:'var(--orange)',server:'var(--red)'};
-const HTTP_GROUPS={info:'1xx Informational',ok:'2xx Success',redirect:'3xx Redirection',client:'4xx Client Errors',server:'5xx Server Errors'};
-function renderHttp(){const q=document.getElementById('httpSearch').value.toLowerCase();const filtered=q?HTTP_CODES.filter(([code,name,desc])=>code.toString().includes(q)||name.toLowerCase().includes(q)||desc.toLowerCase().includes(q)):HTTP_CODES;const byType={};filtered.forEach(c=>{if(!byType[c[3]])byType[c[3]]=[];byType[c[3]].push(c);});let html='';Object.entries(HTTP_GROUPS).forEach(([type,label])=>{if(!byType[type])return;html+=`<div style="margin-bottom:14px"><div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${HTTP_COLORS[type]};padding:8px 0 6px">${label}</div><div class="panel" style="margin:0"><div class="hash-grid">`;byType[type].forEach(([code,name,desc])=>{html+=`<div class="hash-row"><div style="font-family:var(--mono);font-weight:700;font-size:1rem;color:${HTTP_COLORS[type]};min-width:54px;flex-shrink:0">${code}</div><div style="flex:1;min-width:0"><div style="font-family:var(--mono);font-size:0.82rem;font-weight:600;color:var(--text-bright)">${name}</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;line-height:1.4">${desc}</div></div><button class="uuid-copy" onclick="copy('${code} ${name}')">⎘</button></div>`;});html+='</div></div></div>';});document.getElementById('httpStatusList').innerHTML=html||'<div style="padding:20px;color:var(--text-dim);text-align:center">No results found.</div>';}
-document.addEventListener('DOMContentLoaded',renderHttp);
-</script>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js"></script>
+    <script src="../assets/sidebar.js"></script>
+    <script>
+        const HTTP_CODES = [[100, "Continue", "The server received the request headers and the client should proceed.", "info"], [101, "Switching Protocols", "The server is switching protocols as requested.", "info"], [200, "OK", "The request succeeded.", "ok"], [201, "Created", "A new resource was created.", "ok"], [202, "Accepted", "The request was received but not yet acted upon.", "ok"], [204, "No Content", "No content to send for this request.", "ok"], [206, "Partial Content", "Partial GET request fulfilled.", "ok"], [301, "Moved Permanently", "The URL has been permanently moved.", "redirect"], [302, "Found", "The URL temporarily points to a different URI.", "redirect"], [304, "Not Modified", "The cached version is up-to-date.", "redirect"], [307, "Temporary Redirect", "Temporary redirect; method and body not changed.", "redirect"], [308, "Permanent Redirect", "Permanent redirect; method and body not changed.", "redirect"], [400, "Bad Request", "The server cannot process the request due to client error.", "client"], [401, "Unauthorized", "Authentication is required and has failed.", "client"], [403, "Forbidden", "The client does not have permission to access this resource.", "client"], [404, "Not Found", "The requested resource could not be found.", "client"], [405, "Method Not Allowed", "The HTTP method is not supported for this endpoint.", "client"], [408, "Request Timeout", "The server timed out waiting for the request.", "client"], [409, "Conflict", "The request conflicts with the current state of the server.", "client"], [410, "Gone", "The resource is no longer available.", "client"], [413, "Payload Too Large", "The request body exceeds the server limit.", "client"], [422, "Unprocessable Entity", "The request was well-formed but contained semantic errors.", "client"], [429, "Too Many Requests", "Rate limit exceeded.", "client"], [500, "Internal Server Error", "The server encountered an unexpected condition.", "server"], [501, "Not Implemented", "The server does not support the request method.", "server"], [502, "Bad Gateway", "Invalid response from an upstream server.", "server"], [503, "Service Unavailable", "The server is temporarily unable to handle the request.", "server"], [504, "Gateway Timeout", "The server did not receive a timely upstream response.", "server"]];
+        const HTTP_COLORS = { info: 'var(--blue)', ok: 'var(--green)', redirect: 'var(--yellow)', client: 'var(--orange)', server: 'var(--red)' };
+        const HTTP_GROUPS = { info: '1xx Informational', ok: '2xx Success', redirect: '3xx Redirection', client: '4xx Client Errors', server: '5xx Server Errors' };
+        function renderHttp() { const q = document.getElementById('httpSearch').value.toLowerCase(); const filtered = q ? HTTP_CODES.filter(([code, name, desc]) => code.toString().includes(q) || name.toLowerCase().includes(q) || desc.toLowerCase().includes(q)) : HTTP_CODES; const byType = {}; filtered.forEach(c => { if (!byType[c[3]]) byType[c[3]] = []; byType[c[3]].push(c); }); let html = ''; Object.entries(HTTP_GROUPS).forEach(([type, label]) => { if (!byType[type]) return; html += `<div style="margin-bottom:14px"><div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${HTTP_COLORS[type]};padding:8px 0 6px">${label}</div><div class="panel" style="margin:0"><div class="hash-grid">`; byType[type].forEach(([code, name, desc]) => { html += `<div class="hash-row"><div style="font-family:var(--mono);font-weight:700;font-size:1rem;color:${HTTP_COLORS[type]};min-width:54px;flex-shrink:0">${code}</div><div style="flex:1;min-width:0"><div style="font-family:var(--mono);font-size:0.82rem;font-weight:600;color:var(--text-bright)">${name}</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;line-height:1.4">${desc}</div></div><button class="uuid-copy" onclick="copy('${code} ${name}')">⎘</button></div>`; }); html += '</div></div></div>'; }); document.getElementById('httpStatusList').innerHTML = html || '<div style="padding:20px;color:var(--text-dim);text-align:center">No results found.</div>'; }
+        document.addEventListener('DOMContentLoaded', renderHttp);
+    </script>
 </body>
 </html>

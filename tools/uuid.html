@@ -12,46 +12,52 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">UID</div>
-      <div>
-        <div class="tool-title">UUID Generator</div>
-        <div class="tool-desc">Generate RFC 4122 v4 UUIDs</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">UID</div>
+                    <div>
+                        <div class="tool-title">UUID Generator</div>
+                        <div class="tool-desc">Generate RFC 4122 v4 UUIDs</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Options</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-orange" onclick="uuidGenerate()">⟳ Generate</button>
+                            <button class="btn btn-ghost" onclick="uuidCopyAll()">⎘ Copy all</button>
+                            <button class="btn btn-ghost" onclick="document.getElementById('uuidList').innerHTML=''">Clear</button>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <label>Count</label>
+                        <input type="number" id="uuidCount" value="5" min="1" max="50" style="width:80px;flex:none">
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Result</span></div>
+                    <div class="uuid-list" id="uuidList"></div>
+                </div>
+
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-  <div class="panel">
-    <div class="panel-bar">
-      <span class="panel-label">Options</span>
-      <div class="panel-actions">
-        <button class="btn btn-orange" onclick="uuidGenerate()">⟳ Generate</button>
-        <button class="btn btn-ghost" onclick="uuidCopyAll()">⎘ Copy all</button>
-        <button class="btn btn-ghost" onclick="document.getElementById('uuidList').innerHTML=''">Clear</button>
-      </div>
-    </div>
-    <div class="input-row">
-      <label>Count</label>
-      <input type="number" id="uuidCount" value="5" min="1" max="50" style="width:80px;flex:none">
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-bar"><span class="panel-label">Result</span></div>
-    <div class="uuid-list" id="uuidList"></div>
-  </div>
-  
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-function uuidV4(){return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16);});}
-function uuidGenerate(){const n=Math.max(1,Math.min(50,parseInt(document.getElementById('uuidCount').value)||5));const list=document.getElementById('uuidList');list.innerHTML='';for(let i=0;i<n;i++){const id=uuidV4();const row=document.createElement('div');row.className='uuid-row';row.innerHTML=`<span>${id}</span><button class="uuid-copy" onclick="copy('${id}')">⎘</button>`;list.appendChild(row);}}
-function uuidCopyAll(){const ids=[...document.querySelectorAll('.uuid-row span')].map(s=>s.textContent).join('\n');copy(ids);}
-document.addEventListener('DOMContentLoaded', uuidGenerate);
-</script>
+        <div class="toast" id="toast"></div>
+        <script src="../assets/shared.js"></script>
+        <script src="../assets/sidebar.js"></script>
+        <script>
+            function uuidV4() { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8); return v.toString(16); }); }
+            function uuidGenerate() { const n = Math.max(1, Math.min(50, parseInt(document.getElementById('uuidCount').value) || 5)); const list = document.getElementById('uuidList'); list.innerHTML = ''; for (let i = 0; i < n; i++) { const id = uuidV4(); const row = document.createElement('div'); row.className = 'uuid-row'; row.innerHTML = `<span>${id}</span><button class="uuid-copy" onclick="copy('${id}')">⎘</button>`; list.appendChild(row); } }
+            function uuidCopyAll() { const ids = [...document.querySelectorAll('.uuid-row span')].map(s => s.textContent).join('\n'); copy(ids); }
+            document.addEventListener('DOMContentLoaded', uuidGenerate);
+        </script>
 </body>
 </html>

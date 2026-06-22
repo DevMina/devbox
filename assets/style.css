@@ -743,3 +743,28 @@ input[type="checkbox"] {
   .content { padding: 0; }
   .panel { border: 1px solid #ccc; page-break-inside: avoid; }
 }
+
+.site-footer {
+    position: static;
+    width: 100%;
+    text-align: center;
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    background: var(--bg);
+    margin-top: auto;
+}
+
+.content-wrap {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+    .content-wrap .content {
+        flex: 1;
+    }

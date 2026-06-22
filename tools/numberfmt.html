@@ -12,43 +12,57 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">123</div>
-      <div>
-        <div class="tool-title">Number Formatter</div>
-        <div class="tool-desc">Format numbers as currency, percentages, scientific notation, and more</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">123</div>
+                    <div>
+                        <div class="tool-title">Number Formatter</div>
+                        <div class="tool-desc">Format numbers as currency, percentages, scientific notation, and more</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Input</span></div>
+                    <div class="input-row"><label>Number</label><input type="text" id="nfInput" placeholder="1234567.89" oninput="numFormat()"></div>
+                    <div class="input-row">
+                        <label>Locale</label>
+                        <select id="nfLocale" onchange="numFormat()" style="padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
+                            <option value="en-US">en-US (US)</option>
+                            <option value="en-GB">en-GB (UK)</option>
+                            <option value="de-DE">de-DE (German)</option>
+                            <option value="fr-FR">fr-FR (French)</option>
+                            <option value="ja-JP">ja-JP (Japanese)</option>
+                            <option value="ar-SA">ar-SA (Arabic)</option>
+                        </select>
+                    </div>
+                    <div class="input-row">
+                        <label>Currency</label>
+                        <select id="nfCurrency" onchange="numFormat()" style="padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
+                            <option value="USD">USD $</option>
+                            <option value="EUR">EUR €</option>
+                            <option value="GBP">GBP £</option>
+                            <option value="JPY">JPY ¥</option>
+                            <option value="CNY">CNY ¥</option>
+                            <option value="INR">INR ₹</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="panel"><div class="panel-bar"><span class="panel-label">Formatted output</span></div><div class="hash-grid" id="nfOutput"></div></div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="panel">
-  <div class="panel-bar"><span class="panel-label">Input</span></div>
-  <div class="input-row"><label>Number</label><input type="text" id="nfInput" placeholder="1234567.89" oninput="numFormat()"></div>
-  <div class="input-row"><label>Locale</label>
-    <select id="nfLocale" onchange="numFormat()" style="padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
-      <option value="en-US">en-US (US)</option><option value="en-GB">en-GB (UK)</option>
-      <option value="de-DE">de-DE (German)</option><option value="fr-FR">fr-FR (French)</option>
-      <option value="ja-JP">ja-JP (Japanese)</option><option value="ar-SA">ar-SA (Arabic)</option>
-    </select>
-  </div>
-  <div class="input-row"><label>Currency</label>
-    <select id="nfCurrency" onchange="numFormat()" style="padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
-      <option value="USD">USD $</option><option value="EUR">EUR €</option>
-      <option value="GBP">GBP £</option><option value="JPY">JPY ¥</option>
-      <option value="CNY">CNY ¥</option><option value="INR">INR ₹</option>
-    </select>
-  </div>
-</div>
-<div class="panel"><div class="panel-bar"><span class="panel-label">Formatted output</span></div><div class="hash-grid" id="nfOutput"></div></div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-function numFormat(){const raw=document.getElementById('nfInput').value.trim(),num=parseFloat(raw.replace(/,/g,'')),locale=document.getElementById('nfLocale').value,currency=document.getElementById('nfCurrency').value,out=document.getElementById('nfOutput');if(!raw||isNaN(num)){out.innerHTML='<div class="hash-row" style="color:var(--text-dim)">Enter a number above</div>';return;}const fmt=opts=>{try{return num.toLocaleString(locale,opts);}catch(e){return'N/A';}};const rows=[['Standard',fmt({})],['Currency',fmt({style:'currency',currency})],['Percentage',fmt({style:'percent',maximumFractionDigits:2})],['Scientific',num.toExponential(4)],['Fixed (2dp)',num.toFixed(2)],['Fixed (4dp)',num.toFixed(4)],['Compact',fmt({notation:'compact',maximumFractionDigits:2})],['No decimals',fmt({maximumFractionDigits:0})],['Binary',Number.isInteger(num)&&num>=0&&num<2**32?num.toString(2):'(integers only)'],['Hex',Number.isInteger(num)&&num>=0?'0x'+num.toString(16).toUpperCase():'(integers only)'],['Ordinal',(()=>{const n=Math.abs(Math.round(num));const s=['th','st','nd','rd'];const v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);})()]];out.innerHTML=rows.map(([l,v])=>`<div class="hash-row"><div class="hash-algo" style="min-width:110px">${l}</div><div class="hash-val" style="color:var(--red)">${escHtml(String(v))}</div><button class="uuid-copy" onclick="copy(${JSON.stringify(String(v))})">⎘</button></div>`).join('');}
-</script>
+        <div class="toast" id="toast"></div>
+        <script src="../assets/shared.js"></script>
+        <script src="../assets/sidebar.js"></script>
+        <script>
+            function numFormat() { const raw = document.getElementById('nfInput').value.trim(), num = parseFloat(raw.replace(/,/g, '')), locale = document.getElementById('nfLocale').value, currency = document.getElementById('nfCurrency').value, out = document.getElementById('nfOutput'); if (!raw || isNaN(num)) { out.innerHTML = '<div class="hash-row" style="color:var(--text-dim)">Enter a number above</div>'; return; } const fmt = opts => { try { return num.toLocaleString(locale, opts); } catch (e) { return 'N/A'; } }; const rows = [['Standard', fmt({})], ['Currency', fmt({ style: 'currency', currency })], ['Percentage', fmt({ style: 'percent', maximumFractionDigits: 2 })], ['Scientific', num.toExponential(4)], ['Fixed (2dp)', num.toFixed(2)], ['Fixed (4dp)', num.toFixed(4)], ['Compact', fmt({ notation: 'compact', maximumFractionDigits: 2 })], ['No decimals', fmt({ maximumFractionDigits: 0 })], ['Binary', Number.isInteger(num) && num >= 0 && num < 2 ** 32 ? num.toString(2) : '(integers only)'], ['Hex', Number.isInteger(num) && num >= 0 ? '0x' + num.toString(16).toUpperCase() : '(integers only)'], ['Ordinal', (() => { const n = Math.abs(Math.round(num)); const s = ['th', 'st', 'nd', 'rd']; const v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); })()]]; out.innerHTML = rows.map(([l, v]) => `<div class="hash-row"><div class="hash-algo" style="min-width:110px">${l}</div><div class="hash-val" style="color:var(--red)">${escHtml(String(v))}</div><button class="uuid-copy" onclick="copy(${JSON.stringify(String(v))})">⎘</button></div>`).join(''); }
+        </script>
 </body>
 </html>

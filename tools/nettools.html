@@ -12,127 +12,142 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">🌐</div>
-      <div>
-        <div class="tool-title">Network Tools</div>
-        <div class="tool-desc">DNS lookup helper, ping simulator, WHOIS lookup links, and network utilities reference</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">🌐</div>
+                    <div>
+                        <div class="tool-title">Network Tools</div>
+                        <div class="tool-desc">DNS lookup helper, ping simulator, WHOIS lookup links, and network utilities reference</div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-bottom:14px">
+                    <div class="panel-bar"><span class="panel-label">DNS & IP Lookup</span></div>
+                    <div class="input-row">
+                        <label>Domain / IP</label>
+                        <input type="text" id="dnsInput" placeholder="example.com or 8.8.8.8" style="font-family:var(--mono)">
+                    </div>
+                    <div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap">
+                        <button class="btn btn-blue" onclick="dnsLookup()">DNS Lookup</button>
+                        <button class="btn btn-ghost" onclick="whoIsLink()">WHOIS →</button>
+                        <button class="btn btn-ghost" onclick="sslCheck()">SSL Check →</button>
+                        <button class="btn btn-ghost" onclick="openSpeedTest()">Speed Test →</button>
+                    </div>
+                    <div id="dnsResult" class="output-area" style="color:var(--blue);min-height:80px;white-space:pre-wrap;font-size:0.82rem"></div>
+                </div>
+
+                <div class="two-col">
+                    <div class="panel">
+                        <div class="panel-bar"><span class="panel-label">My IP Info</span><div class="panel-actions"><button class="btn btn-ghost" onclick="getMyIP()">Refresh</button></div></div>
+                        <div id="myIPResult" class="hash-grid" style="min-height:80px"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-bar"><span class="panel-label">Port checker reference</span></div>
+                        <div class="hash-grid" id="portList"></div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top:14px">
+                    <div class="panel-bar"><span class="panel-label">Useful network commands (copy & run in terminal)</span></div>
+                    <div class="hash-grid" id="cmdList"></div>
+                </div>
+
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="panel" style="margin-bottom:14px">
-  <div class="panel-bar"><span class="panel-label">DNS & IP Lookup</span></div>
-  <div class="input-row">
-    <label>Domain / IP</label>
-    <input type="text" id="dnsInput" placeholder="example.com or 8.8.8.8" style="font-family:var(--mono)">
-  </div>
-  <div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap">
-    <button class="btn btn-blue" onclick="dnsLookup()">DNS Lookup</button>
-    <button class="btn btn-ghost" onclick="whoIsLink()">WHOIS →</button>
-    <button class="btn btn-ghost" onclick="sslCheck()">SSL Check →</button>
-    <button class="btn btn-ghost" onclick="openSpeedTest()">Speed Test →</button>
-  </div>
-  <div id="dnsResult" class="output-area" style="color:var(--blue);min-height:80px;white-space:pre-wrap;font-size:0.82rem"></div>
-</div>
+        <div class="toast" id="toast"></div>
+        <script src="../assets/shared.js"></script>
+        <script src="../assets/sidebar.js"></script>
+        <script>
+            const COMMON_PORTS = [
+                [80, 'HTTP'],
+                [443, 'HTTPS'],
+                [22, 'SSH'],
+                [21, 'FTP'],
+                [25, 'SMTP'],
+                [3306, 'MySQL'],
+                [5432, 'PostgreSQL'],
+                [6379, 'Redis'],
+                [27017, 'MongoDB'],
+                [3000, 'Node.js dev'],
+                [8080, 'HTTP alt'],
+                [8443, 'HTTPS alt'],
+            ];
 
-<div class="two-col">
-  <div class="panel">
-    <div class="panel-bar"><span class="panel-label">My IP Info</span><div class="panel-actions"><button class="btn btn-ghost" onclick="getMyIP()">Refresh</button></div></div>
-    <div id="myIPResult" class="hash-grid" style="min-height:80px"></div>
-  </div>
-  <div class="panel">
-    <div class="panel-bar"><span class="panel-label">Port checker reference</span></div>
-    <div class="hash-grid" id="portList"></div>
-  </div>
-</div>
+            const NET_CMDS = [
+                ['ping', 'ping -c 4 example.com'],
+                ['traceroute', 'traceroute example.com'],
+                ['nslookup', 'nslookup example.com'],
+                ['dig', 'dig example.com ANY'],
+                ['curl headers', 'curl -I https://example.com'],
+                ['open ports', 'netstat -tlnp'],
+                ['DNS flush (mac)', 'sudo dscacheutil -flushcache'],
+                ['DNS flush (win)', 'ipconfig /flushdns'],
+                ['my public IP', 'curl ifconfig.me'],
+                ['HTTP response', 'curl -o /dev/null -s -w "%{http_code}" https://example.com'],
+            ];
 
-<div class="panel" style="margin-top:14px">
-  <div class="panel-bar"><span class="panel-label">Useful network commands (copy & run in terminal)</span></div>
-  <div class="hash-grid" id="cmdList"></div>
-</div>
+            function initStatic() {
+                document.getElementById('portList').innerHTML = COMMON_PORTS.map(([p, n]) =>
+                    `<div class="hash-row"><div class="hash-algo">${p}</div><div class="hash-val" style="color:var(--blue)">${n}</div><button class="uuid-copy" onclick="copy('${p}')">⎘</button></div>`).join('');
+                document.getElementById('cmdList').innerHTML = NET_CMDS.map(([l, v]) =>
+                    `<div class="hash-row"><div class="hash-algo" style="min-width:130px">${l}</div><div class="hash-val" style="color:var(--cyan);font-size:0.78rem">${escHtml(v)}</div><button class="uuid-copy" onclick="copy(${JSON.stringify(v)})">⎘</button></div>`).join('');
+            }
 
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-const COMMON_PORTS=[
-  [80,'HTTP'],
-  [443,'HTTPS'],
-  [22,'SSH'],
-  [21,'FTP'],
-  [25,'SMTP'],
-  [3306,'MySQL'],
-  [5432,'PostgreSQL'],
-  [6379,'Redis'],
-  [27017,'MongoDB'],
-  [3000,'Node.js dev'],
-  [8080,'HTTP alt'],
-  [8443,'HTTPS alt'],
-];
-
-const NET_CMDS=[
-  ['ping','ping -c 4 example.com'],
-  ['traceroute','traceroute example.com'],
-  ['nslookup','nslookup example.com'],
-  ['dig','dig example.com ANY'],
-  ['curl headers','curl -I https://example.com'],
-  ['open ports','netstat -tlnp'],
-  ['DNS flush (mac)','sudo dscacheutil -flushcache'],
-  ['DNS flush (win)','ipconfig /flushdns'],
-  ['my public IP','curl ifconfig.me'],
-  ['HTTP response','curl -o /dev/null -s -w "%{http_code}" https://example.com'],
-];
-
-function initStatic(){
-  document.getElementById('portList').innerHTML=COMMON_PORTS.map(([p,n])=>
-    `<div class="hash-row"><div class="hash-algo">${p}</div><div class="hash-val" style="color:var(--blue)">${n}</div><button class="uuid-copy" onclick="copy('${p}')">⎘</button></div>`).join('');
-  document.getElementById('cmdList').innerHTML=NET_CMDS.map(([l,v])=>
-    `<div class="hash-row"><div class="hash-algo" style="min-width:130px">${l}</div><div class="hash-val" style="color:var(--cyan);font-size:0.78rem">${escHtml(v)}</div><button class="uuid-copy" onclick="copy(${JSON.stringify(v)})">⎘</button></div>`).join('');
-}
-
-async function dnsLookup(){
-  const domain=document.getElementById('dnsInput').value.trim();
-  if(!domain){showToast('Enter a domain first');return;}
-  document.getElementById('dnsResult').textContent='Looking up '+domain+'...';
-  try{
-    const [a,aaaa,mx,txt]=await Promise.all([
-      fetch(`https://dns.google/resolve?name=${domain}&type=A`).then(r=>r.json()),
-      fetch(`https://dns.google/resolve?name=${domain}&type=AAAA`).then(r=>r.json()),
-      fetch(`https://dns.google/resolve?name=${domain}&type=MX`).then(r=>r.json()),
-      fetch(`https://dns.google/resolve?name=${domain}&type=TXT`).then(r=>r.json()),
-    ]);
-    let out=`DNS Records for: ${domain}
+            async function dnsLookup() {
+                const domain = document.getElementById('dnsInput').value.trim();
+                if (!domain) { showToast('Enter a domain first'); return; }
+                document.getElementById('dnsResult').textContent = 'Looking up ' + domain + '...';
+                try {
+                    const [a, aaaa, mx, txt] = await Promise.all([
+                        fetch(`https://dns.google/resolve?name=${domain}&type=A`).then(r => r.json()),
+                        fetch(`https://dns.google/resolve?name=${domain}&type=AAAA`).then(r => r.json()),
+                        fetch(`https://dns.google/resolve?name=${domain}&type=MX`).then(r => r.json()),
+                        fetch(`https://dns.google/resolve?name=${domain}&type=TXT`).then(r => r.json()),
+                    ]);
+                    let out = `DNS Records for: ${domain}
 ${'─'.repeat(40)}
 `;
-    const fmt=(recs,type)=>{if(recs?.Answer?.length){recs.Answer.forEach(r=>{out+=`${type.padEnd(6)} ${r.data} (TTL ${r.TTL}s)
-`;});}else{out+=`${type.padEnd(6)} (none)
-`;}};
-    fmt(a,'A');fmt(aaaa,'AAAA');fmt(mx,'MX');fmt(txt,'TXT');
-    document.getElementById('dnsResult').textContent=out;
-  }catch(e){document.getElementById('dnsResult').textContent='Error: '+e.message+'
-(Note: may be blocked by CORS in some environments)';}
-}
+                    const fmt = (recs, type) => {
+                        if (recs?.Answer?.length) {
+                            recs.Answer.forEach(r => {
+                                out += `${type.padEnd(6)} ${r.data} (TTL ${r.TTL}s)
+`;
+                            });
+                        } else {
+                            out += `${type.padEnd(6)} (none)
+`;
+                        }
+                    };
+                    fmt(a, 'A'); fmt(aaaa, 'AAAA'); fmt(mx, 'MX'); fmt(txt, 'TXT');
+                    document.getElementById('dnsResult').textContent = out;
+                } catch (e) {
+                    document.getElementById('dnsResult').textContent = 'Error: ' + e.message + '
+                        (Note: may be blocked by CORS in some environments)';}
+                }
 
-async function getMyIP(){
-  document.getElementById('myIPResult').innerHTML='<div class="hash-row" style="color:var(--text-dim)">Fetching...</div>';
-  try{
-    const data=await fetch('https://ipapi.co/json/').then(r=>r.json());
-    const rows=[['IP',data.ip||'?'],['City',data.city||'?'],['Region',data.region||'?'],['Country',data.country_name||'?'],['ISP',data.org||'?'],['Timezone',data.timezone||'?']];
-    document.getElementById('myIPResult').innerHTML=rows.map(([l,v])=>
-      `<div class="hash-row"><div class="hash-algo">${l}</div><div class="hash-val" style="color:var(--blue)">${escHtml(String(v))}</div><button class="uuid-copy" onclick="copy(${JSON.stringify(String(v))})">⎘</button></div>`).join('');
-  }catch(e){document.getElementById('myIPResult').innerHTML='<div class="hash-row" style="color:var(--red)">Failed: '+escHtml(e.message)+'</div>';}
-}
+                async function getMyIP() {
+                    document.getElementById('myIPResult').innerHTML = '<div class="hash-row" style="color:var(--text-dim)">Fetching...</div>';
+                    try {
+                        const data = await fetch('https://ipapi.co/json/').then(r => r.json());
+                        const rows = [['IP', data.ip || '?'], ['City', data.city || '?'], ['Region', data.region || '?'], ['Country', data.country_name || '?'], ['ISP', data.org || '?'], ['Timezone', data.timezone || '?']];
+                        document.getElementById('myIPResult').innerHTML = rows.map(([l, v]) =>
+                            `<div class="hash-row"><div class="hash-algo">${l}</div><div class="hash-val" style="color:var(--blue)">${escHtml(String(v))}</div><button class="uuid-copy" onclick="copy(${JSON.stringify(String(v))})">⎘</button></div>`).join('');
+                    } catch (e) { document.getElementById('myIPResult').innerHTML = '<div class="hash-row" style="color:var(--red)">Failed: ' + escHtml(e.message) + '</div>'; }
+                }
 
-function whoIsLink(){const d=document.getElementById('dnsInput').value.trim()||'example.com';window.open('https://lookup.icann.org/en/lookup?name='+encodeURIComponent(d),'_blank');}
-function sslCheck(){const d=document.getElementById('dnsInput').value.trim()||'example.com';window.open('https://www.sslshopper.com/ssl-checker.html#hostname='+encodeURIComponent(d),'_blank');}
-function openSpeedTest(){window.open('https://www.speedtest.net','_blank');}
+                function whoIsLink() { const d = document.getElementById('dnsInput').value.trim() || 'example.com'; window.open('https://lookup.icann.org/en/lookup?name=' + encodeURIComponent(d), '_blank'); }
+                function sslCheck() { const d = document.getElementById('dnsInput').value.trim() || 'example.com'; window.open('https://www.sslshopper.com/ssl-checker.html#hostname=' + encodeURIComponent(d), '_blank'); }
+                function openSpeedTest() { window.open('https://www.speedtest.net', '_blank'); }
 
-document.addEventListener('DOMContentLoaded',()=>{initStatic();getMyIP();});
-</script>
+                document.addEventListener('DOMContentLoaded', () => { initStatic(); getMyIP(); });
+        </script>
 </body>
 </html>

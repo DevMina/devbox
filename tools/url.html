@@ -12,49 +12,55 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">URL</div>
-      <div>
-        <div class="tool-title">URL Encoder/Decoder</div>
-        <div class="tool-desc">Encode and decode URL components</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">URL</div>
+                    <div>
+                        <div class="tool-title">URL Encoder/Decoder</div>
+                        <div class="tool-desc">Encode and decode URL components</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Input</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-cyan" onclick="urlEncode()">Encode →</button>
+                            <button class="btn btn-ghost" onclick="urlDecode()">← Decode</button>
+                            <button class="btn btn-ghost" onclick="urlClear()">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="urlInput" placeholder="https://example.com/path?q=hello world&foo=bar baz"></textarea>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Output</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="copy(document.getElementById('urlOutput').textContent)">⎘ Copy</button>
+                            <button class="btn btn-ghost" onclick="urlSwap()">⇅ Swap</button>
+                        </div>
+                    </div>
+                    <div id="urlOutput" class="output-area" style="color:var(--cyan)"></div>
+                </div>
+
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-  <div class="panel">
-    <div class="panel-bar">
-      <span class="panel-label">Input</span>
-      <div class="panel-actions">
-        <button class="btn btn-cyan" onclick="urlEncode()">Encode →</button>
-        <button class="btn btn-ghost" onclick="urlDecode()">← Decode</button>
-        <button class="btn btn-ghost" onclick="urlClear()">Clear</button>
-      </div>
-    </div>
-    <textarea id="urlInput" placeholder="https://example.com/path?q=hello world&foo=bar baz"></textarea>
-  </div>
-  <div class="panel">
-    <div class="panel-bar">
-      <span class="panel-label">Output</span>
-      <div class="panel-actions">
-        <button class="btn btn-ghost" onclick="copy(document.getElementById('urlOutput').textContent)">⎘ Copy</button>
-        <button class="btn btn-ghost" onclick="urlSwap()">⇅ Swap</button>
-      </div>
-    </div>
-    <div id="urlOutput" class="output-area" style="color:var(--cyan)"></div>
-  </div>
-  
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-function urlEncode(){document.getElementById('urlOutput').textContent=encodeURIComponent(document.getElementById('urlInput').value);}
-function urlDecode(){try{document.getElementById('urlOutput').textContent=decodeURIComponent(document.getElementById('urlInput').value);}catch(e){document.getElementById('urlOutput').textContent='Error: malformed URI';}}
-function urlSwap(){const o=document.getElementById('urlOutput').textContent;document.getElementById('urlInput').value=o;document.getElementById('urlOutput').textContent='';}
-function urlClear(){document.getElementById('urlInput').value='';document.getElementById('urlOutput').textContent='';}
-</script>
+        <div class="toast" id="toast"></div>
+        <script src="../assets/shared.js"></script>
+        <script src="../assets/sidebar.js"></script>
+        <script>
+            function urlEncode() { document.getElementById('urlOutput').textContent = encodeURIComponent(document.getElementById('urlInput').value); }
+            function urlDecode() { try { document.getElementById('urlOutput').textContent = decodeURIComponent(document.getElementById('urlInput').value); } catch (e) { document.getElementById('urlOutput').textContent = 'Error: malformed URI'; } }
+            function urlSwap() { const o = document.getElementById('urlOutput').textContent; document.getElementById('urlInput').value = o; document.getElementById('urlOutput').textContent = ''; }
+            function urlClear() { document.getElementById('urlInput').value = ''; document.getElementById('urlOutput').textContent = ''; }
+        </script>
 </body>
 </html>

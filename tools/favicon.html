@@ -12,171 +12,177 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">🔲</div>
-      <div>
-        <div class="tool-title">Favicon Generator</div>
-        <div class="tool-desc">Generate favicons in all sizes from text or emoji — downloadable as PNG</div>
-      </div>
-    </div>
-    
-<div class="two-col" style="align-items:start">
-  <div>
-    <div class="panel">
-      <div class="panel-bar"><span class="panel-label">Content</span></div>
-      <div class="input-row">
-        <label>Text / Emoji</label>
-        <input type="text" id="favText" value="⚡" maxlength="3" oninput="renderFavicon()" style="font-family:var(--mono);font-size:1.2rem;width:100px;flex:none">
-      </div>
-      <div class="input-row">
-        <label>BG color</label>
-        <input type="color" id="favBg" value="#6C5CE7" oninput="renderFavicon()" style="width:40px;height:34px;border:none;background:none;cursor:pointer;padding:0;border-radius:6px;flex:none">
-        <input type="text" id="favBgHex" value="#6C5CE7" oninput="favBgFromText()" style="flex:1;padding:7px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
-      </div>
-      <div class="input-row">
-        <label>Text color</label>
-        <input type="color" id="favFg" value="#FFFFFF" oninput="renderFavicon()" style="width:40px;height:34px;border:none;background:none;cursor:pointer;padding:0;border-radius:6px;flex:none">
-        <input type="text" id="favFgHex" value="#FFFFFF" oninput="favFgFromText()" style="flex:1;padding:7px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
-      </div>
-      <div class="input-row">
-        <label>Shape</label>
-        <select id="favShape" onchange="renderFavicon()" style="padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
-          <option value="square">Square</option>
-          <option value="rounded">Rounded</option>
-          <option value="circle">Circle</option>
-        </select>
-      </div>
-      <div class="input-row">
-        <label>Font size %</label>
-        <input type="range" id="favSize" min="30" max="90" value="65" oninput="renderFavicon()">
-      </div>
-    </div>
-    <div class="panel" style="margin-top:14px">
-      <div class="panel-bar"><span class="panel-label">Presets</span></div>
-      <div id="favPresets" style="padding:10px 14px;display:flex;gap:6px;flex-wrap:wrap"></div>
-    </div>
-  </div>
-  <div>
-    <div class="panel">
-      <div class="panel-bar"><span class="panel-label">Preview &amp; Download</span></div>
-      <div style="padding:20px;display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;justify-content:center">
-        <div style="text-align:center">
-          <canvas id="fav256" width="256" height="256" style="border-radius:8px;border:1px solid var(--border);width:96px;height:96px"></canvas>
-          <div style="font-size:0.65rem;color:var(--text-dim);margin-top:4px;font-family:var(--mono)">256×256</div>
-          <button class="btn btn-cyan" style="margin-top:6px;font-size:0.7rem" onclick="downloadFav(256)">↓ PNG</button>
-        </div>
-        <div style="text-align:center">
-          <canvas id="fav128" width="128" height="128" style="border-radius:6px;border:1px solid var(--border);width:64px;height:64px"></canvas>
-          <div style="font-size:0.65rem;color:var(--text-dim);margin-top:4px;font-family:var(--mono)">128×128</div>
-          <button class="btn btn-ghost" style="margin-top:6px;font-size:0.7rem" onclick="downloadFav(128)">↓ PNG</button>
-        </div>
-        <div style="text-align:center">
-          <canvas id="fav64" width="64" height="64" style="border-radius:4px;border:1px solid var(--border);width:48px;height:48px"></canvas>
-          <div style="font-size:0.65rem;color:var(--text-dim);margin-top:4px;font-family:var(--mono)">64×64</div>
-          <button class="btn btn-ghost" style="margin-top:6px;font-size:0.7rem" onclick="downloadFav(64)">↓ PNG</button>
-        </div>
-        <div style="text-align:center">
-          <canvas id="fav32" width="32" height="32" style="border-radius:3px;border:1px solid var(--border);width:32px;height:32px"></canvas>
-          <div style="font-size:0.65rem;color:var(--text-dim);margin-top:4px;font-family:var(--mono)">32×32</div>
-          <button class="btn btn-ghost" style="margin-top:6px;font-size:0.7rem" onclick="downloadFav(32)">↓ PNG</button>
-        </div>
-        <div style="text-align:center">
-          <canvas id="fav16" width="16" height="16" style="border-radius:2px;border:1px solid var(--border);width:16px;height:16px"></canvas>
-          <div style="font-size:0.65rem;color:var(--text-dim);margin-top:4px;font-family:var(--mono)">16×16</div>
-          <button class="btn btn-ghost" style="margin-top:6px;font-size:0.7rem" onclick="downloadFav(16)">↓ PNG</button>
-        </div>
-      </div>
-    </div>
-    <div class="panel" style="margin-top:14px">
-      <div class="panel-bar"><span class="panel-label">HTML snippet</span><div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('favHTML').textContent)">⎘ Copy</button></div></div>
-      <div id="favHTML" class="output-area" style="color:var(--cyan);font-size:0.78rem;white-space:pre"></div>
-    </div>
-  </div>
-</div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">🔲</div>
+                    <div>
+                        <div class="tool-title">Favicon Generator</div>
+                        <div class="tool-desc">Generate favicons in all sizes from text or emoji — downloadable as PNG</div>
+                    </div>
+                </div>
 
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-const FAV_PRESETS=[
-  {text:'⚡',bg:'#6C5CE7',fg:'#fff'},
-  {text:'🚀',bg:'#0A0C10',fg:'#fff'},
-  {text:'❤️',bg:'#FF5A7E',fg:'#fff'},
-  {text:'🌿',bg:'#2D6A4F',fg:'#fff'},
-  {text:'★',bg:'#FFD166',fg:'#333'},
-  {text:'DB',bg:'#1C2330',fg:'#3DFFA0'},
-  {text:'AI',bg:'#0F1117',fg:'#5BA4FF'},
-  {text:'◆',bg:'#FF9A3C',fg:'#fff'},
-];
+                <div class="two-col" style="align-items:start">
+                    <div>
+                        <div class="panel">
+                            <div class="panel-bar"><span class="panel-label">Content</span></div>
+                            <div class="input-row">
+                                <label>Text / Emoji</label>
+                                <input type="text" id="favText" value="⚡" maxlength="3" oninput="renderFavicon()" style="font-family:var(--mono);font-size:1.2rem;width:100px;flex:none">
+                            </div>
+                            <div class="input-row">
+                                <label>BG color</label>
+                                <input type="color" id="favBg" value="#6C5CE7" oninput="renderFavicon()" style="width:40px;height:34px;border:none;background:none;cursor:pointer;padding:0;border-radius:6px;flex:none">
+                                <input type="text" id="favBgHex" value="#6C5CE7" oninput="favBgFromText()" style="flex:1;padding:7px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
+                            </div>
+                            <div class="input-row">
+                                <label>Text color</label>
+                                <input type="color" id="favFg" value="#FFFFFF" oninput="renderFavicon()" style="width:40px;height:34px;border:none;background:none;cursor:pointer;padding:0;border-radius:6px;flex:none">
+                                <input type="text" id="favFgHex" value="#FFFFFF" oninput="favFgFromText()" style="flex:1;padding:7px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
+                            </div>
+                            <div class="input-row">
+                                <label>Shape</label>
+                                <select id="favShape" onchange="renderFavicon()" style="padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
+                                    <option value="square">Square</option>
+                                    <option value="rounded">Rounded</option>
+                                    <option value="circle">Circle</option>
+                                </select>
+                            </div>
+                            <div class="input-row">
+                                <label>Font size %</label>
+                                <input type="range" id="favSize" min="30" max="90" value="65" oninput="renderFavicon()">
+                            </div>
+                        </div>
+                        <div class="panel" style="margin-top:14px">
+                            <div class="panel-bar"><span class="panel-label">Presets</span></div>
+                            <div id="favPresets" style="padding:10px 14px;display:flex;gap:6px;flex-wrap:wrap"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="panel">
+                            <div class="panel-bar"><span class="panel-label">Preview &amp; Download</span></div>
+                            <div style="padding:20px;display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;justify-content:center">
+                                <div style="text-align:center">
+                                    <canvas id="fav256" width="256" height="256" style="border-radius:8px;border:1px solid var(--border);width:96px;height:96px"></canvas>
+                                    <div style="font-size:0.65rem;color:var(--text-dim);margin-top:4px;font-family:var(--mono)">256×256</div>
+                                    <button class="btn btn-cyan" style="margin-top:6px;font-size:0.7rem" onclick="downloadFav(256)">↓ PNG</button>
+                                </div>
+                                <div style="text-align:center">
+                                    <canvas id="fav128" width="128" height="128" style="border-radius:6px;border:1px solid var(--border);width:64px;height:64px"></canvas>
+                                    <div style="font-size:0.65rem;color:var(--text-dim);margin-top:4px;font-family:var(--mono)">128×128</div>
+                                    <button class="btn btn-ghost" style="margin-top:6px;font-size:0.7rem" onclick="downloadFav(128)">↓ PNG</button>
+                                </div>
+                                <div style="text-align:center">
+                                    <canvas id="fav64" width="64" height="64" style="border-radius:4px;border:1px solid var(--border);width:48px;height:48px"></canvas>
+                                    <div style="font-size:0.65rem;color:var(--text-dim);margin-top:4px;font-family:var(--mono)">64×64</div>
+                                    <button class="btn btn-ghost" style="margin-top:6px;font-size:0.7rem" onclick="downloadFav(64)">↓ PNG</button>
+                                </div>
+                                <div style="text-align:center">
+                                    <canvas id="fav32" width="32" height="32" style="border-radius:3px;border:1px solid var(--border);width:32px;height:32px"></canvas>
+                                    <div style="font-size:0.65rem;color:var(--text-dim);margin-top:4px;font-family:var(--mono)">32×32</div>
+                                    <button class="btn btn-ghost" style="margin-top:6px;font-size:0.7rem" onclick="downloadFav(32)">↓ PNG</button>
+                                </div>
+                                <div style="text-align:center">
+                                    <canvas id="fav16" width="16" height="16" style="border-radius:2px;border:1px solid var(--border);width:16px;height:16px"></canvas>
+                                    <div style="font-size:0.65rem;color:var(--text-dim);margin-top:4px;font-family:var(--mono)">16×16</div>
+                                    <button class="btn btn-ghost" style="margin-top:6px;font-size:0.7rem" onclick="downloadFav(16)">↓ PNG</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel" style="margin-top:14px">
+                            <div class="panel-bar"><span class="panel-label">HTML snippet</span><div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('favHTML').textContent)">⎘ Copy</button></div></div>
+                            <div id="favHTML" class="output-area" style="color:var(--cyan);font-size:0.78rem;white-space:pre"></div>
+                        </div>
+                    </div>
+                </div>
 
-function drawFavicon(canvas, text, bg, fg, shape, sizePct){
-  const s=canvas.width;const ctx=canvas.getContext('2d');
-  ctx.clearRect(0,0,s,s);
-  const r=shape==='circle'?s/2:shape==='rounded'?s*0.2:0;
-  ctx.beginPath();
-  if(r>0){ctx.roundRect?ctx.roundRect(0,0,s,s,[r]):ctx.rect(0,0,s,s);}
-  else{ctx.rect(0,0,s,s);}
-  ctx.fillStyle=bg;ctx.fill();
-  ctx.fillStyle=fg;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.font=`${Math.round(s*sizePct/100)}px system-ui,sans-serif`;
-  ctx.fillText(text,s/2,s/2);
-}
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
 
-function renderFavicon(){
-  const text=document.getElementById('favText').value||'?';
-  const bg=document.getElementById('favBg').value;
-  const fg=document.getElementById('favFg').value;
-  const shape=document.getElementById('favShape').value;
-  const sizePct=parseInt(document.getElementById('favSize').value);
-  document.getElementById('favBgHex').value=bg;
-  document.getElementById('favFgHex').value=fg;
-  [256,128,64,32,16].forEach(s=>{drawFavicon(document.getElementById('fav'+s),text,bg,fg,shape,sizePct);});
-  document.getElementById('favHTML').textContent=`<!-- Paste in your <head> -->
+        </div><!-- /content-wrap -->
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js"></script>
+    <script src="../assets/sidebar.js"></script>
+    <script>
+        const FAV_PRESETS = [
+            { text: '⚡', bg: '#6C5CE7', fg: '#fff' },
+            { text: '🚀', bg: '#0A0C10', fg: '#fff' },
+            { text: '❤️', bg: '#FF5A7E', fg: '#fff' },
+            { text: '🌿', bg: '#2D6A4F', fg: '#fff' },
+            { text: '★', bg: '#FFD166', fg: '#333' },
+            { text: 'DB', bg: '#1C2330', fg: '#3DFFA0' },
+            { text: 'AI', bg: '#0F1117', fg: '#5BA4FF' },
+            { text: '◆', bg: '#FF9A3C', fg: '#fff' },
+        ];
+
+        function drawFavicon(canvas, text, bg, fg, shape, sizePct) {
+            const s = canvas.width; const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, s, s);
+            const r = shape === 'circle' ? s / 2 : shape === 'rounded' ? s * 0.2 : 0;
+            ctx.beginPath();
+            if (r > 0) { ctx.roundRect ? ctx.roundRect(0, 0, s, s, [r]) : ctx.rect(0, 0, s, s); }
+            else { ctx.rect(0, 0, s, s); }
+            ctx.fillStyle = bg; ctx.fill();
+            ctx.fillStyle = fg;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.font = `${Math.round(s * sizePct / 100)}px system-ui,sans-serif`;
+            ctx.fillText(text, s / 2, s / 2);
+        }
+
+        function renderFavicon() {
+            const text = document.getElementById('favText').value || '?';
+            const bg = document.getElementById('favBg').value;
+            const fg = document.getElementById('favFg').value;
+            const shape = document.getElementById('favShape').value;
+            const sizePct = parseInt(document.getElementById('favSize').value);
+            document.getElementById('favBgHex').value = bg;
+            document.getElementById('favFgHex').value = fg;
+            [256, 128, 64, 32, 16].forEach(s => { drawFavicon(document.getElementById('fav' + s), text, bg, fg, shape, sizePct); });
+            document.getElementById('favHTML').textContent = `<!-- Paste in your <head> -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" sizes="128x128" href="favicon-128.png">`;
-}
+        }
 
-function favBgFromText(){const v=document.getElementById('favBgHex').value;if(/^#[0-9a-fA-F]{6}$/.test(v))document.getElementById('favBg').value=v;renderFavicon();}
-function favFgFromText(){const v=document.getElementById('favFgHex').value;if(/^#[0-9a-fA-F]{6}$/.test(v))document.getElementById('favFg').value=v;renderFavicon();}
+        function favBgFromText() { const v = document.getElementById('favBgHex').value; if (/^#[0-9a-fA-F]{6}$/.test(v)) document.getElementById('favBg').value = v; renderFavicon(); }
+        function favFgFromText() { const v = document.getElementById('favFgHex').value; if (/^#[0-9a-fA-F]{6}$/.test(v)) document.getElementById('favFg').value = v; renderFavicon(); }
 
-function downloadFav(size){
-  const canvas=document.getElementById('fav'+size);
-  const a=document.createElement('a');
-  a.href=canvas.toDataURL('image/png');
-  a.download=`favicon-${size}.png`;
-  a.click();
-  showToast(`favicon-${size}.png downloaded`);
-}
+        function downloadFav(size) {
+            const canvas = document.getElementById('fav' + size);
+            const a = document.createElement('a');
+            a.href = canvas.toDataURL('image/png');
+            a.download = `favicon-${size}.png`;
+            a.click();
+            showToast(`favicon-${size}.png downloaded`);
+        }
 
-function initPresets(){
-  document.getElementById('favPresets').innerHTML=FAV_PRESETS.map(({text,bg,fg})=>{
-    const canvas=document.createElement('canvas');canvas.width=40;canvas.height=40;
-    setTimeout(()=>drawFavicon(canvas,text,bg,fg,'rounded',65),0);
-    const btn=document.createElement('div');
-    btn.style.cssText='cursor:pointer;border-radius:6px;overflow:hidden;border:1px solid var(--border);flex-shrink:0';
-    btn.appendChild(canvas);
-    btn.onclick=()=>{document.getElementById('favText').value=text;document.getElementById('favBg').value=bg;document.getElementById('favFg').value=fg;renderFavicon();};
-    return btn.outerHTML.replace('<div ','<div ');
-  }).join('');
-  // Re-render with actual canvas elements after DOM insert
-  setTimeout(()=>{
-    const els=document.querySelectorAll('#favPresets div canvas');
-    FAV_PRESETS.forEach(({text,bg,fg},i)=>{if(els[i])drawFavicon(els[i],text,bg,fg,'rounded',65);});
-    // Click handlers
-    document.querySelectorAll('#favPresets div').forEach((el,i)=>{
-      el.onclick=()=>{document.getElementById('favText').value=FAV_PRESETS[i].text;document.getElementById('favBg').value=FAV_PRESETS[i].bg;document.getElementById('favFg').value=FAV_PRESETS[i].fg;renderFavicon();};
-    });
-  },50);
-}
+        function initPresets() {
+            document.getElementById('favPresets').innerHTML = FAV_PRESETS.map(({ text, bg, fg }) => {
+                const canvas = document.createElement('canvas'); canvas.width = 40; canvas.height = 40;
+                setTimeout(() => drawFavicon(canvas, text, bg, fg, 'rounded', 65), 0);
+                const btn = document.createElement('div');
+                btn.style.cssText = 'cursor:pointer;border-radius:6px;overflow:hidden;border:1px solid var(--border);flex-shrink:0';
+                btn.appendChild(canvas);
+                btn.onclick = () => { document.getElementById('favText').value = text; document.getElementById('favBg').value = bg; document.getElementById('favFg').value = fg; renderFavicon(); };
+                return btn.outerHTML.replace('<div ', '<div ');
+            }).join('');
+            // Re-render with actual canvas elements after DOM insert
+            setTimeout(() => {
+                const els = document.querySelectorAll('#favPresets div canvas');
+                FAV_PRESETS.forEach(({ text, bg, fg }, i) => { if (els[i]) drawFavicon(els[i], text, bg, fg, 'rounded', 65); });
+                // Click handlers
+                document.querySelectorAll('#favPresets div').forEach((el, i) => {
+                    el.onclick = () => { document.getElementById('favText').value = FAV_PRESETS[i].text; document.getElementById('favBg').value = FAV_PRESETS[i].bg; document.getElementById('favFg').value = FAV_PRESETS[i].fg; renderFavicon(); };
+                });
+            }, 50);
+        }
 
-document.addEventListener('DOMContentLoaded',()=>{initPresets();renderFavicon();});
-</script>
+        document.addEventListener('DOMContentLoaded', () => { initPresets(); renderFavicon(); });
+    </script>
 </body>
 </html>

@@ -12,169 +12,175 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">{ }</div>
-      <div>
-        <div class="tool-title">Snippet Manager</div>
-        <div class="tool-desc">Save, organize, and quickly copy your frequently used code snippets</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">{ }</div>
+                    <div>
+                        <div class="tool-title">Snippet Manager</div>
+                        <div class="tool-desc">Save, organize, and quickly copy your frequently used code snippets</div>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
+                    <input type="text" id="snippetSearch" placeholder="Search snippets…" oninput="renderSnippets()" style="flex:1;min-width:200px;padding:10px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--font);font-size:0.88rem;color:var(--text);outline:none">
+                    <button class="btn btn-teal" onclick="openSnippetModal()">+ New snippet</button>
+                    <button class="btn btn-ghost" onclick="exportSnippets()">⎘ Export JSON</button>
+                    <button class="btn btn-ghost" onclick="document.getElementById('importFile').click()">↑ Import</button>
+                    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importSnippets(this)">
+                </div>
+                <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap" id="tagFilter"></div>
+                <div id="snippetGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px"></div>
+                <div id="emptyState" style="text-align:center;padding:48px;color:var(--text-dim);display:none">
+                    <div style="font-size:2rem;margin-bottom:8px">{ }</div>
+                    <div>No snippets yet. Create your first one!</div>
+                </div>
+
+                <!-- Modal -->
+                <div id="snippetModal" style="display:none;position:fixed;inset:0;background:rgba(10,12,16,0.7);z-index:50;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)">
+                    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto">
+                        <div style="font-family:var(--mono);font-size:1rem;font-weight:600;color:var(--text-bright);margin-bottom:16px" id="modalTitle">New Snippet</div>
+                        <input type="hidden" id="editId">
+                        <div style="margin-bottom:12px"><div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:6px">Title</div><input type="text" id="snipTitle" placeholder="e.g. Fetch with error handling" style="width:100%;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--font);font-size:0.9rem;color:var(--text);outline:none"></div>
+                        <div style="margin-bottom:12px"><div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:6px">Language / Tag</div><input type="text" id="snipLang" placeholder="javascript, python, bash, sql…" style="width:100%;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.88rem;color:var(--text);outline:none"></div>
+                        <div style="margin-bottom:12px"><div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:6px">Description (optional)</div><input type="text" id="snipDesc" placeholder="Short description…" style="width:100%;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--font);font-size:0.88rem;color:var(--text);outline:none"></div>
+                        <div style="margin-bottom:16px"><div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:6px">Code</div><textarea id="snipCode" placeholder="Paste your code here…" style="width:100%;min-height:180px;padding:12px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none;resize:vertical;line-height:1.6"></textarea></div>
+                        <div style="display:flex;gap:8px;justify-content:flex-end">
+                            <button class="btn btn-ghost" onclick="closeSnippetModal()">Cancel</button>
+                            <button class="btn btn-teal" onclick="saveSnippet()">Save Snippet</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div style="display:flex;gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
-  <input type="text" id="snippetSearch" placeholder="Search snippets…" oninput="renderSnippets()" style="flex:1;min-width:200px;padding:10px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--font);font-size:0.88rem;color:var(--text);outline:none">
-  <button class="btn btn-teal" onclick="openSnippetModal()">+ New snippet</button>
-  <button class="btn btn-ghost" onclick="exportSnippets()">⎘ Export JSON</button>
-  <button class="btn btn-ghost" onclick="document.getElementById('importFile').click()">↑ Import</button>
-  <input type="file" id="importFile" accept=".json" style="display:none" onchange="importSnippets(this)">
-</div>
-<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap" id="tagFilter"></div>
-<div id="snippetGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px"></div>
-<div id="emptyState" style="text-align:center;padding:48px;color:var(--text-dim);display:none">
-  <div style="font-size:2rem;margin-bottom:8px">{ }</div>
-  <div>No snippets yet. Create your first one!</div>
-</div>
+        <div class="toast" id="toast"></div>
+        <script src="../assets/shared.js"></script>
+        <script src="../assets/sidebar.js"></script>
+        <script>
+            const LANG_COLORS = { javascript: 'var(--yellow)', python: 'var(--blue)', bash: 'var(--green)', sql: 'var(--orange)', css: 'var(--pink)', html: 'var(--orange)', json: 'var(--cyan)', typescript: 'var(--blue)', rust: 'var(--red)', go: 'var(--cyan)', ruby: 'var(--red)', php: 'var(--purple)', default: 'var(--text-dim)' };
+            let snippets = JSON.parse(localStorage.getItem('devbox_snippets') || '[]');
+            let activeTag = '';
 
-<!-- Modal -->
-<div id="snippetModal" style="display:none;position:fixed;inset:0;background:rgba(10,12,16,0.7);z-index:50;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)">
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto">
-    <div style="font-family:var(--mono);font-size:1rem;font-weight:600;color:var(--text-bright);margin-bottom:16px" id="modalTitle">New Snippet</div>
-    <input type="hidden" id="editId">
-    <div style="margin-bottom:12px"><div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:6px">Title</div><input type="text" id="snipTitle" placeholder="e.g. Fetch with error handling" style="width:100%;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--font);font-size:0.9rem;color:var(--text);outline:none"></div>
-    <div style="margin-bottom:12px"><div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:6px">Language / Tag</div><input type="text" id="snipLang" placeholder="javascript, python, bash, sql…" style="width:100%;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.88rem;color:var(--text);outline:none"></div>
-    <div style="margin-bottom:12px"><div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:6px">Description (optional)</div><input type="text" id="snipDesc" placeholder="Short description…" style="width:100%;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--font);font-size:0.88rem;color:var(--text);outline:none"></div>
-    <div style="margin-bottom:16px"><div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:6px">Code</div><textarea id="snipCode" placeholder="Paste your code here…" style="width:100%;min-height:180px;padding:12px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none;resize:vertical;line-height:1.6"></textarea></div>
-    <div style="display:flex;gap:8px;justify-content:flex-end">
-      <button class="btn btn-ghost" onclick="closeSnippetModal()">Cancel</button>
-      <button class="btn btn-teal" onclick="saveSnippet()">Save Snippet</button>
-    </div>
-  </div>
-</div>
+            function saveStore() { localStorage.setItem('devbox_snippets', JSON.stringify(snippets)); }
 
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-const LANG_COLORS={javascript:'var(--yellow)',python:'var(--blue)',bash:'var(--green)',sql:'var(--orange)',css:'var(--pink)',html:'var(--orange)',json:'var(--cyan)',typescript:'var(--blue)',rust:'var(--red)',go:'var(--cyan)',ruby:'var(--red)',php:'var(--purple)',default:'var(--text-dim)'};
-let snippets=JSON.parse(localStorage.getItem('devbox_snippets')||'[]');
-let activeTag='';
+            function openSnippetModal(id = null) {
+                document.getElementById('editId').value = id || '';
+                if (id) { const s = snippets.find(x => x.id === id); document.getElementById('snipTitle').value = s.title; document.getElementById('snipLang').value = s.lang; document.getElementById('snipDesc').value = s.desc || ''; document.getElementById('snipCode').value = s.code; document.getElementById('modalTitle').textContent = 'Edit Snippet'; }
+                else { document.getElementById('snipTitle').value = ''; document.getElementById('snipLang').value = ''; document.getElementById('snipDesc').value = ''; document.getElementById('snipCode').value = ''; document.getElementById('modalTitle').textContent = 'New Snippet'; }
+                document.getElementById('snippetModal').style.display = 'flex';
+                setTimeout(() => document.getElementById('snipTitle').focus(), 100);
+            }
 
-function saveStore(){localStorage.setItem('devbox_snippets',JSON.stringify(snippets));}
+            function closeSnippetModal() { document.getElementById('snippetModal').style.display = 'none'; }
 
-function openSnippetModal(id=null){
-  document.getElementById('editId').value=id||'';
-  if(id){const s=snippets.find(x=>x.id===id);document.getElementById('snipTitle').value=s.title;document.getElementById('snipLang').value=s.lang;document.getElementById('snipDesc').value=s.desc||'';document.getElementById('snipCode').value=s.code;document.getElementById('modalTitle').textContent='Edit Snippet';}
-  else{document.getElementById('snipTitle').value='';document.getElementById('snipLang').value='';document.getElementById('snipDesc').value='';document.getElementById('snipCode').value='';document.getElementById('modalTitle').textContent='New Snippet';}
-  document.getElementById('snippetModal').style.display='flex';
-  setTimeout(()=>document.getElementById('snipTitle').focus(),100);
-}
+            function saveSnippet() {
+                const title = document.getElementById('snipTitle').value.trim();
+                const code = document.getElementById('snipCode').value.trim();
+                if (!title || !code) { showToast('Title and code are required'); return; }
+                const id = document.getElementById('editId').value;
+                const snip = { id: id || Date.now().toString(), title, lang: document.getElementById('snipLang').value.trim().toLowerCase(), desc: document.getElementById('snipDesc').value.trim(), code, created: id ? (snippets.find(x => x.id === id)?.created || Date.now()) : Date.now(), updated: Date.now() };
+                if (id) { const idx = snippets.findIndex(x => x.id === id); snippets[idx] = snip; }
+                else { snippets.unshift(snip); }
+                saveStore(); closeSnippetModal(); renderSnippets(); showToast(id ? 'Snippet updated' : 'Snippet saved');
+            }
 
-function closeSnippetModal(){document.getElementById('snippetModal').style.display='none';}
+            function deleteSnippet(id) { if (!confirm('Delete this snippet?')) return; snippets = snippets.filter(x => x.id !== id); saveStore(); renderSnippets(); showToast('Deleted'); }
 
-function saveSnippet(){
-  const title=document.getElementById('snipTitle').value.trim();
-  const code=document.getElementById('snipCode').value.trim();
-  if(!title||!code){showToast('Title and code are required');return;}
-  const id=document.getElementById('editId').value;
-  const snip={id:id||Date.now().toString(),title,lang:document.getElementById('snipLang').value.trim().toLowerCase(),desc:document.getElementById('snipDesc').value.trim(),code,created:id?(snippets.find(x=>x.id===id)?.created||Date.now()):Date.now(),updated:Date.now()};
-  if(id){const idx=snippets.findIndex(x=>x.id===id);snippets[idx]=snip;}
-  else{snippets.unshift(snip);}
-  saveStore();closeSnippetModal();renderSnippets();showToast(id?'Snippet updated':'Snippet saved');
-}
+            function renderSnippets() {
+                const q = document.getElementById('snippetSearch').value.toLowerCase();
+                const filtered = snippets.filter(s => {
+                    if (activeTag && s.lang !== activeTag) return false;
+                    return !q || s.title.toLowerCase().includes(q) || s.code.toLowerCase().includes(q) || (s.lang || '').includes(q) || (s.desc || '').toLowerCase().includes(q);
+                });
 
-function deleteSnippet(id){if(!confirm('Delete this snippet?'))return;snippets=snippets.filter(x=>x.id!==id);saveStore();renderSnippets();showToast('Deleted');}
+                // Tag filter
+                const tags = [...new Set(snippets.map(s => s.lang).filter(Boolean))].sort();
+                document.getElementById('tagFilter').innerHTML = ['<button class="btn ' + (activeTag === '' ? 'btn-teal' : 'btn-ghost') + '" onclick="activeTag=\'\';renderSnippets()">All</button>',
+                ...tags.map(t => `<button class="btn ${activeTag === t ? 'btn-teal' : 'btn-ghost'}" style="font-size:0.76rem" onclick="activeTag='${t}';renderSnippets()">${t}</button>`)].join('');
 
-function renderSnippets(){
-  const q=document.getElementById('snippetSearch').value.toLowerCase();
-  const filtered=snippets.filter(s=>{
-    if(activeTag&&s.lang!==activeTag)return false;
-    return !q||s.title.toLowerCase().includes(q)||s.code.toLowerCase().includes(q)||(s.lang||'').includes(q)||(s.desc||'').toLowerCase().includes(q);
-  });
-
-  // Tag filter
-  const tags=[...new Set(snippets.map(s=>s.lang).filter(Boolean))].sort();
-  document.getElementById('tagFilter').innerHTML=['<button class="btn '+(activeTag===''?'btn-teal':'btn-ghost')+'" onclick="activeTag=\'\';renderSnippets()">All</button>',
-    ...tags.map(t=>`<button class="btn ${activeTag===t?'btn-teal':'btn-ghost'}" style="font-size:0.76rem" onclick="activeTag='${t}';renderSnippets()">${t}</button>`)].join('');
-
-  const grid=document.getElementById('snippetGrid');
-  const empty=document.getElementById('emptyState');
-  if(!filtered.length){grid.innerHTML='';empty.style.display='';return;}
-  empty.style.display='none';
-  const langColor=l=>LANG_COLORS[l]||LANG_COLORS.default;
-  grid.innerHTML=filtered.map(s=>`
-    <div class="panel" style="margin:0;display:flex;flex-direction:column">
-      <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px">
-        <div style="flex:1;min-width:0">
-          <div style="font-weight:600;font-size:0.88rem;color:var(--text-bright);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(s.title)}</div>
-          ${s.desc?`<div style="font-size:0.72rem;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(s.desc)}</div>`:''}
-        </div>
-        ${s.lang?`<span style="font-family:var(--mono);font-size:0.65rem;font-weight:600;padding:2px 8px;background:${langColor(s.lang)}22;color:${langColor(s.lang)};border-radius:999px;flex-shrink:0;border:1px solid ${langColor(s.lang)}44">${escHtml(s.lang)}</span>`:''}
-      </div>
-      <pre style="padding:12px 14px;font-family:var(--mono);font-size:0.76rem;color:var(--text);overflow:hidden;max-height:100px;line-height:1.55;flex:1;white-space:pre-wrap;word-break:break-all;margin:0">${escHtml(s.code.slice(0,300)+(s.code.length>300?'
+                const grid = document.getElementById('snippetGrid');
+                const empty = document.getElementById('emptyState');
+                if (!filtered.length) { grid.innerHTML = ''; empty.style.display = ''; return; }
+                empty.style.display = 'none';
+                const langColor = l => LANG_COLORS[l] || LANG_COLORS.default;
+                grid.innerHTML = filtered.map(s => `
+            <div class="panel" style="margin:0;display:flex;flex-direction:column">
+              <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px">
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:600;font-size:0.88rem;color:var(--text-bright);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(s.title)}</div>
+                  ${s.desc ? `<div style="font-size:0.72rem;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(s.desc)}</div>` : ''}
+                </div>
+                ${s.lang ? `<span style="font-family:var(--mono);font-size:0.65rem;font-weight:600;padding:2px 8px;background:${langColor(s.lang)}22;color:${langColor(s.lang)};border-radius:999px;flex-shrink:0;border:1px solid ${langColor(s.lang)}44">${escHtml(s.lang)}</span>` : ''}
+              </div>
+              <pre style="padding:12px 14px;font-family:var(--mono);font-size:0.76rem;color:var(--text);overflow:hidden;max-height:100px;line-height:1.55;flex:1;white-space:pre-wrap;word-break:break-all;margin:0">${escHtml(s.code.slice(0, 300) + (s.code.length > 300 ? '
 …':''))}</pre>
-      <div style="padding:8px 10px;border-top:1px solid var(--border);display:flex;gap:6px">
-        <button class="btn btn-teal" style="flex:1;font-size:0.76rem" onclick="copy(${JSON.stringify(s.code)})">⎘ Copy</button>
-        <button class="btn btn-ghost" style="font-size:0.76rem" onclick="openSnippetModal('${s.id}')">Edit</button>
-        <button class="btn btn-ghost" style="font-size:0.76rem;color:var(--red)" onclick="deleteSnippet('${s.id}')">Del</button>
-      </div>
-    </div>`).join('');
+                < div style = "padding:8px 10px;border-top:1px solid var(--border);display:flex;gap:6px" >
+                <button class="btn btn-teal" style="flex:1;font-size:0.76rem" onclick="copy(${JSON.stringify(s.code)})">⎘ Copy</button>
+                <button class="btn btn-ghost" style="font-size:0.76rem" onclick="openSnippetModal('${s.id}')">Edit</button>
+                <button class="btn btn-ghost" style="font-size:0.76rem;color:var(--red)" onclick="deleteSnippet('${s.id}')">Del</button>
+              </div >
+            </div > `).join('');
 }
 
 function exportSnippets(){copy(JSON.stringify(snippets,null,2));showToast('Snippets copied as JSON');}
 function importSnippets(input){
-  const f=input.files[0];if(!f)return;
-  const reader=new FileReader();
-  reader.onload=e=>{try{const data=JSON.parse(e.target.result);if(Array.isArray(data)){snippets=[...data,...snippets];saveStore();renderSnippets();showToast(data.length+' snippets imported');}else showToast('Invalid format');}catch(ex){showToast('Parse error: '+ex.message);}};
-  reader.readAsText(f);input.value='';
+          const f=input.files[0];if(!f)return;
+          const reader=new FileReader();
+          reader.onload=e=>{try{const data=JSON.parse(e.target.result);if(Array.isArray(data)){snippets=[...data,...snippets];saveStore();renderSnippets();showToast(data.length+' snippets imported');}else showToast('Invalid format');}catch(ex){showToast('Parse error: '+ex.message);}};
+          reader.readAsText(f);input.value='';
 }
 
 document.getElementById('snippetModal').addEventListener('click',e=>{if(e.target===document.getElementById('snippetModal'))closeSnippetModal();});
 
 // Seed with examples if empty
 if(!snippets.length){
-  snippets=[
-    {id:'1',title:'Fetch with error handling',lang:'javascript',desc:'Async fetch wrapper with try/catch',code:'async function fetchData(url) {
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } catch (err) {
-    console.error("Fetch error:", err);
-    throw err;
-  }
+          snippets=[
+            {id:'1',title:'Fetch with error handling',lang:'javascript',desc:'Async fetch wrapper with try/catch',code:'async function fetchData(url) {
+          try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`HTTP ${ res.status }`);
+            return await res.json();
+          } catch (err) {
+            console.error("Fetch error:", err);
+            throw err;
+          }
 }',created:Date.now(),updated:Date.now()},
-    {id:'2',title:'Debounce function',lang:'javascript',desc:'Delay execution until after delay ms',code:'function debounce(fn, delay = 300) {
-  let timer;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => fn(...args), delay);
-  };
+            {id:'2',title:'Debounce function',lang:'javascript',desc:'Delay execution until after delay ms',code:'function debounce(fn, delay = 300) {
+          let timer;
+          return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => fn(...args), delay);
+          };
 }',created:Date.now(),updated:Date.now()},
-    {id:'3',title:'Flexbox center',lang:'css',desc:'Center content horizontally and vertically',code:'.center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+            {id:'3',title:'Flexbox center',lang:'css',desc:'Center content horizontally and vertically',code:'.center {
+          display: flex;
+          align-items: center;
+          justify-content: center;
 }',created:Date.now(),updated:Date.now()},
-    {id:'4',title:'Select with JOIN',lang:'sql',desc:'Basic SELECT with table join',code:'SELECT u.name, u.email, COUNT(o.id) AS orders
+            {id:'4',title:'Select with JOIN',lang:'sql',desc:'Basic SELECT with table join',code:'SELECT u.name, u.email, COUNT(o.id) AS orders
 FROM users u
 LEFT JOIN orders o ON u.id = o.user_id
 WHERE u.active = 1
 GROUP BY u.id
 ORDER BY orders DESC
 LIMIT 20;',created:Date.now(),updated:Date.now()},
-    {id:'5',title:'List files recursively',lang:'bash',desc:'Find all files in directory tree',code:'find . -type f -name "*.js" | sort
+            {id:'5',title:'List files recursively',lang:'bash',desc:'Find all files in directory tree',code:'find . -type f -name "*.js" | sort
 
 # Or with size info:
 find . -type f -name "*.js" -exec ls -lh {} \;',created:Date.now(),updated:Date.now()},
-  ];
-  saveStore();
+          ];
+          saveStore();
 }
 
 document.addEventListener('DOMContentLoaded',renderSnippets);
-</script>
+        </script>
 </body>
 </html>

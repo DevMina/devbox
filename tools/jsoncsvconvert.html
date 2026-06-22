@@ -12,42 +12,51 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">⇄</div>
-      <div>
-        <div class="tool-title">JSON ↔ CSV</div>
-        <div class="tool-desc">Convert between JSON arrays and CSV format</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">⇄</div>
+                    <div>
+                        <div class="tool-title">JSON ↔ CSV</div>
+                        <div class="tool-desc">Convert between JSON arrays and CSV format</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Input</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-green" onclick="jsonToCsv()">JSON → CSV</button>
+                            <button class="btn btn-ghost" onclick="csvToJson()">CSV → JSON</button>
+                            <button class="btn btn-ghost" onclick="jcSample()">Sample</button>
+                            <button class="btn btn-ghost" onclick="document.getElementById('jcInput').value='';document.getElementById('jcOutput').textContent=''">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="jcInput" style="min-height:180px" placeholder='[{"name":"Alice","age":30},{"name":"Bob","age":25}]'></textarea>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Output</span><div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('jcOutput').textContent)">⎘ Copy</button></div></div>
+                    <div id="jcOutput" class="output-area" style="color:var(--green);min-height:160px;white-space:pre-wrap;"></div>
+                </div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="panel">
-  <div class="panel-bar">
-    <span class="panel-label">Input</span>
-    <div class="panel-actions">
-      <button class="btn btn-green" onclick="jsonToCsv()">JSON → CSV</button>
-      <button class="btn btn-ghost" onclick="csvToJson()">CSV → JSON</button>
-      <button class="btn btn-ghost" onclick="jcSample()">Sample</button>
-      <button class="btn btn-ghost" onclick="document.getElementById('jcInput').value='';document.getElementById('jcOutput').textContent=''">Clear</button>
-    </div>
-  </div>
-  <textarea id="jcInput" style="min-height:180px" placeholder='[{"name":"Alice","age":30},{"name":"Bob","age":25}]'></textarea>
-</div>
-<div class="panel">
-  <div class="panel-bar"><span class="panel-label">Output</span><div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('jcOutput').textContent)">⎘ Copy</button></div></div>
-  <div id="jcOutput" class="output-area" style="color:var(--green);min-height:160px;white-space:pre-wrap;"></div>
-</div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-function jsonToCsv(){try{const data=JSON.parse(document.getElementById('jcInput').value);if(!Array.isArray(data)||!data.length){document.getElementById('jcOutput').textContent='Error: Input must be a JSON array of objects';return;}const keys=[...new Set(data.flatMap(Object.keys))];const rows=[keys.join(','),...data.map(row=>keys.map(k=>{const v=row[k]===undefined?'':String(row[k]);return v.includes(',')||v.includes('"')||v.includes('\n')?`"${v.replace(/"/g,'""')}"`':v;}).join(','))];document.getElementById('jcOutput').textContent=rows.join('\n');}catch(e){document.getElementById('jcOutput').textContent='Error: '+e.message;}}
-function csvToJson(){try{const lines=document.getElementById('jcInput').value.trim().split('\n');if(lines.length<2){document.getElementById('jcOutput').textContent='Error: Need header row + data rows';return;}const pCsv=line=>{const r=[];let cur='',inQ=false;for(let c of line){if(c==='"')inQ=!inQ;else if(c===','&&!inQ){r.push(cur.trim());cur='';}else cur+=c;}r.push(cur.trim());return r;};const headers=pCsv(lines[0]);const data=lines.slice(1).filter(l=>l.trim()).map(line=>{const vals=pCsv(line);const obj={};headers.forEach((h,i)=>{const v=vals[i]||'';obj[h]=isNaN(v)||v===''?v:Number(v);});return obj;});document.getElementById('jcOutput').textContent=JSON.stringify(data,null,2);}catch(e){document.getElementById('jcOutput').textContent='Error: '+e.message;}}
-function jcSample(){document.getElementById('jcInput').value='[{"name":"Alice","age":30,"city":"New York"},{"name":"Bob","age":25,"city":"London"},{"name":"Carol","age":35,"city":"Tokyo"}]';}
-</script>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js"></script>
+    <script src="../assets/sidebar.js"></script>
+    <script>
+        function jsonToCsv() {
+            try {
+                const data = JSON.parse(document.getElementById('jcInput').value); if (!Array.isArray(data) || !data.length) { document.getElementById('jcOutput').textContent = 'Error: Input must be a JSON array of objects'; return; } const keys = [...new Set(data.flatMap(Object.keys))]; const rows = [keys.join(','), ...data.map(row => keys.map(k => {
+                    const v = row[k] === undefined ? '' : String(row[k]); return v.includes(',') || v.includes('"') || v.includes('\n') ? `"${v.replace(/"/g, '""')}"`':v;}).join(', '))];document.getElementById('jcOutput').textContent=rows.join('\n');}catch(e){document.getElementById('jcOutput').textContent='Error: '+e.message;}}
+                    function csvToJson() { try { const lines = document.getElementById('jcInput').value.trim().split('\n'); if (lines.length < 2) { document.getElementById('jcOutput').textContent = 'Error: Need header row + data rows'; return; } const pCsv = line => { const r = []; let cur = '', inQ = false; for (let c of line) { if (c === '"') inQ = !inQ; else if (c === ',' && !inQ) { r.push(cur.trim()); cur = ''; } else cur += c; } r.push(cur.trim()); return r; }; const headers = pCsv(lines[0]); const data = lines.slice(1).filter(l => l.trim()).map(line => { const vals = pCsv(line); const obj = {}; headers.forEach((h, i) => { const v = vals[i] || ''; obj[h] = isNaN(v) || v === '' ? v : Number(v); }); return obj; }); document.getElementById('jcOutput').textContent = JSON.stringify(data, null, 2); } catch (e) { document.getElementById('jcOutput').textContent = 'Error: ' + e.message; } }
+                    function jcSample() { document.getElementById('jcInput').value = '[{"name":"Alice","age":30,"city":"New York"},{"name":"Bob","age":25,"city":"London"},{"name":"Carol","age":35,"city":"Tokyo"}]'; }
+    </script>
 </body>
 </html>

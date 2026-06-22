@@ -12,42 +12,48 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">JWT</div>
-      <div>
-        <div class="tool-title">JWT Decoder</div>
-        <div class="tool-desc">Decode and inspect JSON Web Tokens — header, payload, expiration</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">JWT</div>
+                    <div>
+                        <div class="tool-title">JWT Decoder</div>
+                        <div class="tool-desc">Decode and inspect JSON Web Tokens — header, payload, expiration</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Token</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="jwtSample()">Sample</button>
+                            <button class="btn btn-ghost" onclick="document.getElementById('jwtInput').value='';jwtDecode()">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="jwtInput" placeholder="Paste JWT token here…" oninput="jwtDecode()" style="min-height:90px;word-break:break-all;"></textarea>
+                </div>
+                <div class="panel" id="jwtResult" style="display:none">
+                    <div class="panel-bar"><span class="panel-label">Decoded</span><span id="jwtExpBadge"></span></div>
+                    <div class="jwt-section"><div class="jwt-section-title" style="color:var(--red)">Header</div><div class="jwt-json" id="jwtHeader" style="color:var(--red)"></div></div>
+                    <div class="jwt-section"><div class="jwt-section-title" style="color:var(--purple)">Payload / Claims</div><div class="jwt-json" id="jwtPayload" style="color:var(--purple)"></div></div>
+                    <div class="jwt-section"><div class="jwt-section-title" style="color:var(--text-dim)">Signature</div><div class="jwt-json" id="jwtSig" style="color:var(--text-dim);font-size:0.75rem;word-break:break-all;"></div></div>
+                </div>
+
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-  <div class="panel">
-    <div class="panel-bar">
-      <span class="panel-label">Token</span>
-      <div class="panel-actions">
-        <button class="btn btn-ghost" onclick="jwtSample()">Sample</button>
-        <button class="btn btn-ghost" onclick="document.getElementById('jwtInput').value='';jwtDecode()">Clear</button>
-      </div>
-    </div>
-    <textarea id="jwtInput" placeholder="Paste JWT token here…" oninput="jwtDecode()" style="min-height:90px;word-break:break-all;"></textarea>
-  </div>
-  <div class="panel" id="jwtResult" style="display:none">
-    <div class="panel-bar"><span class="panel-label">Decoded</span><span id="jwtExpBadge"></span></div>
-    <div class="jwt-section"><div class="jwt-section-title" style="color:var(--red)">Header</div><div class="jwt-json" id="jwtHeader" style="color:var(--red)"></div></div>
-    <div class="jwt-section"><div class="jwt-section-title" style="color:var(--purple)">Payload / Claims</div><div class="jwt-json" id="jwtPayload" style="color:var(--purple)"></div></div>
-    <div class="jwt-section"><div class="jwt-section-title" style="color:var(--text-dim)">Signature</div><div class="jwt-json" id="jwtSig" style="color:var(--text-dim);font-size:0.75rem;word-break:break-all;"></div></div>
-  </div>
-  
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-function jwtDecode(){const token=document.getElementById('jwtInput').value.trim(),result=document.getElementById('jwtResult');if(!token){result.style.display='none';return;}const parts=token.split('.');if(parts.length<2){result.style.display='none';return;}try{const dec=str=>JSON.parse(decodeURIComponent(escape(atob(str.replace(/-/g,'+').replace(/_/g,'/').padEnd(Math.ceil(str.length/4)*4,'=')))));const header=dec(parts[0]),payload=dec(parts[1]);document.getElementById('jwtHeader').textContent=JSON.stringify(header,null,2);document.getElementById('jwtPayload').textContent=JSON.stringify(payload,null,2);document.getElementById('jwtSig').textContent=parts[2]||'(none)';result.style.display='';const eb=document.getElementById('jwtExpBadge');if(payload.exp){const ed=new Date(payload.exp*1000);eb.innerHTML=ed<new Date()?'<span class="status-badge badge-err">✗ Expired '+ed.toLocaleString()+'</span>':'<span class="status-badge badge-ok">✓ Valid until '+ed.toLocaleString()+'</span>';}else eb.innerHTML='<span class="status-badge badge-info">No exp claim</span>';}catch(e){result.style.display='';document.getElementById('jwtHeader').textContent='Could not decode token';document.getElementById('jwtPayload').textContent='';document.getElementById('jwtSig').textContent='';document.getElementById('jwtExpBadge').innerHTML='<span class="status-badge badge-err">Invalid token</span>';}}
-function jwtSample(){document.getElementById('jwtInput').value='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTksInJvbGVzIjpbImFkbWluIiwidXNlciJdfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';jwtDecode();}
-</script>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js"></script>
+    <script src="../assets/sidebar.js"></script>
+    <script>
+        function jwtDecode() { const token = document.getElementById('jwtInput').value.trim(), result = document.getElementById('jwtResult'); if (!token) { result.style.display = 'none'; return; } const parts = token.split('.'); if (parts.length < 2) { result.style.display = 'none'; return; } try { const dec = str => JSON.parse(decodeURIComponent(escape(atob(str.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(str.length / 4) * 4, '='))))); const header = dec(parts[0]), payload = dec(parts[1]); document.getElementById('jwtHeader').textContent = JSON.stringify(header, null, 2); document.getElementById('jwtPayload').textContent = JSON.stringify(payload, null, 2); document.getElementById('jwtSig').textContent = parts[2] || '(none)'; result.style.display = ''; const eb = document.getElementById('jwtExpBadge'); if (payload.exp) { const ed = new Date(payload.exp * 1000); eb.innerHTML = ed < new Date() ? '<span class="status-badge badge-err">✗ Expired ' + ed.toLocaleString() + '</span>' : '<span class="status-badge badge-ok">✓ Valid until ' + ed.toLocaleString() + '</span>'; } else eb.innerHTML = '<span class="status-badge badge-info">No exp claim</span>'; } catch (e) { result.style.display = ''; document.getElementById('jwtHeader').textContent = 'Could not decode token'; document.getElementById('jwtPayload').textContent = ''; document.getElementById('jwtSig').textContent = ''; document.getElementById('jwtExpBadge').innerHTML = '<span class="status-badge badge-err">Invalid token</span>'; } }
+        function jwtSample() { document.getElementById('jwtInput').value = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTksInJvbGVzIjpbImFkbWluIiwidXNlciJdfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'; jwtDecode(); }
+    </script>
 </body>
 </html>

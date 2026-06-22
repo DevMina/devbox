@@ -12,45 +12,51 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">B</div>
-      <div>
-        <div class="tool-title">Byte Converter</div>
-        <div class="tool-desc">Convert between bytes, KB, MB, GB, TB in decimal and binary units</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">B</div>
+                    <div>
+                        <div class="tool-title">Byte Converter</div>
+                        <div class="tool-desc">Convert between bytes, KB, MB, GB, TB in decimal and binary units</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Enter value</span></div>
+                    <div class="input-row">
+                        <label>Value</label>
+                        <input type="number" id="byteVal" placeholder="1024" oninput="byteConvert()" style="width:160px;flex:none">
+                        <select id="byteUnit" onchange="byteConvert()" style="padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none;flex:none">
+                            <option value="1">Bytes (B)</option>
+                            <option value="1000">Kilobytes (KB)</option>
+                            <option value="1000000">Megabytes (MB)</option>
+                            <option value="1000000000">Gigabytes (GB)</option>
+                            <option value="1000000000000">Terabytes (TB)</option>
+                            <option value="1024">Kibibytes (KiB)</option>
+                            <option value="1048576">Mebibytes (MiB)</option>
+                            <option value="1073741824">Gibibytes (GiB)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="two-col">
+                    <div class="panel"><div class="panel-bar"><span class="panel-label">Decimal (SI)</span></div><div class="hash-grid" id="byteDecOut"></div></div>
+                    <div class="panel"><div class="panel-bar"><span class="panel-label">Binary (IEC)</span></div><div class="hash-grid" id="byteBinOut"></div></div>
+                </div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="panel">
-  <div class="panel-bar"><span class="panel-label">Enter value</span></div>
-  <div class="input-row">
-    <label>Value</label>
-    <input type="number" id="byteVal" placeholder="1024" oninput="byteConvert()" style="width:160px;flex:none">
-    <select id="byteUnit" onchange="byteConvert()" style="padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none;flex:none">
-      <option value="1">Bytes (B)</option>
-      <option value="1000">Kilobytes (KB)</option>
-      <option value="1000000">Megabytes (MB)</option>
-      <option value="1000000000">Gigabytes (GB)</option>
-      <option value="1000000000000">Terabytes (TB)</option>
-      <option value="1024">Kibibytes (KiB)</option>
-      <option value="1048576">Mebibytes (MiB)</option>
-      <option value="1073741824">Gibibytes (GiB)</option>
-    </select>
-  </div>
-</div>
-<div class="two-col">
-  <div class="panel"><div class="panel-bar"><span class="panel-label">Decimal (SI)</span></div><div class="hash-grid" id="byteDecOut"></div></div>
-  <div class="panel"><div class="panel-bar"><span class="panel-label">Binary (IEC)</span></div><div class="hash-grid" id="byteBinOut"></div></div>
-</div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-function byteConvert(){const val=parseFloat(document.getElementById('byteVal').value),unit=parseFloat(document.getElementById('byteUnit').value);if(isNaN(val)){document.getElementById('byteDecOut').innerHTML='';document.getElementById('byteBinOut').innerHTML='';return;}const bytes=val*unit;const decU=[['Bytes','B',1],['Kilobytes','KB',1e3],['Megabytes','MB',1e6],['Gigabytes','GB',1e9],['Terabytes','TB',1e12],['Petabytes','PB',1e15]];const binU=[['Bytes','B',1],['Kibibytes','KiB',1024],['Mebibytes','MiB',1048576],['Gibibytes','GiB',1073741824],['Tebibytes','TiB',1099511627776],['Pebibytes','PiB',1125899906842624]];const fmt=n=>n>=1?n.toLocaleString('en-US',{maximumFractionDigits:6}):n.toPrecision(4);const makeRows=units=>units.map(([name,abbr,size])=>`<div class="hash-row"><div class="hash-algo">${abbr}</div><div class="hash-val" style="color:var(--purple)">${fmt(bytes/size)}</div><button class="uuid-copy" onclick="copy('${fmt(bytes/size)}')">⎘</button></div>`).join('');document.getElementById('byteDecOut').innerHTML=makeRows(decU);document.getElementById('byteBinOut').innerHTML=makeRows(binU);}
-</script>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js"></script>
+    <script src="../assets/sidebar.js"></script>
+    <script>
+        function byteConvert() { const val = parseFloat(document.getElementById('byteVal').value), unit = parseFloat(document.getElementById('byteUnit').value); if (isNaN(val)) { document.getElementById('byteDecOut').innerHTML = ''; document.getElementById('byteBinOut').innerHTML = ''; return; } const bytes = val * unit; const decU = [['Bytes', 'B', 1], ['Kilobytes', 'KB', 1e3], ['Megabytes', 'MB', 1e6], ['Gigabytes', 'GB', 1e9], ['Terabytes', 'TB', 1e12], ['Petabytes', 'PB', 1e15]]; const binU = [['Bytes', 'B', 1], ['Kibibytes', 'KiB', 1024], ['Mebibytes', 'MiB', 1048576], ['Gibibytes', 'GiB', 1073741824], ['Tebibytes', 'TiB', 1099511627776], ['Pebibytes', 'PiB', 1125899906842624]]; const fmt = n => n >= 1 ? n.toLocaleString('en-US', { maximumFractionDigits: 6 }) : n.toPrecision(4); const makeRows = units => units.map(([name, abbr, size]) => `<div class="hash-row"><div class="hash-algo">${abbr}</div><div class="hash-val" style="color:var(--purple)">${fmt(bytes / size)}</div><button class="uuid-copy" onclick="copy('${fmt(bytes / size)}')">⎘</button></div>`).join(''); document.getElementById('byteDecOut').innerHTML = makeRows(decU); document.getElementById('byteBinOut').innerHTML = makeRows(binU); }
+    </script>
 </body>
 </html>

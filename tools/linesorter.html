@@ -12,69 +12,78 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">≡</div>
-      <div>
-        <div class="tool-title">Line Sorter</div>
-        <div class="tool-desc">Sort, deduplicate, shuffle, and transform lines of text</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">≡</div>
+                    <div>
+                        <div class="tool-title">Line Sorter</div>
+                        <div class="tool-desc">Sort, deduplicate, shuffle, and transform lines of text</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Input — one item per line</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="lsSample()">Sample</button>
+                            <button class="btn btn-ghost" onclick="document.getElementById('lsInput').value='';document.getElementById('lsOutput').textContent=''">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="lsInput" oninput="lsStats()" style="min-height:160px" placeholder="banana&#10;apple&#10;cherry&#10;apple&#10;date"></textarea>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+                    <button class="btn btn-yellow" onclick="lsDo('sortaz')">A→Z</button>
+                    <button class="btn btn-ghost" onclick="lsDo('sortza')">Z→A</button>
+                    <button class="btn btn-ghost" onclick="lsDo('sortlen')">By length</button>
+                    <button class="btn btn-ghost" onclick="lsDo('reverse')">Reverse</button>
+                    <button class="btn btn-ghost" onclick="lsDo('shuffle')">Shuffle</button>
+                    <button class="btn btn-ghost" onclick="lsDo('dedup')">Remove dupes</button>
+                    <button class="btn btn-ghost" onclick="lsDo('trim')">Trim spaces</button>
+                    <button class="btn btn-ghost" onclick="lsDo('empty')">Remove empty</button>
+                    <button class="btn btn-ghost" onclick="lsDo('lower')">lowercase</button>
+                    <button class="btn btn-ghost" onclick="lsDo('upper')">UPPERCASE</button>
+                    <button class="btn btn-ghost" onclick="lsDo('number')">Add numbers</button>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Output</span>
+                        <span id="lsStatsEl" style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)"></span>
+                        <div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('lsOutput').textContent)">⎘ Copy</button></div>
+                    </div>
+                    <div id="lsOutput" class="output-area" style="color:var(--yellow);white-space:pre-wrap;min-height:120px"></div>
+                </div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="panel">
-  <div class="panel-bar">
-    <span class="panel-label">Input — one item per line</span>
-    <div class="panel-actions">
-      <button class="btn btn-ghost" onclick="lsSample()">Sample</button>
-      <button class="btn btn-ghost" onclick="document.getElementById('lsInput').value='';document.getElementById('lsOutput').textContent=''">Clear</button>
-    </div>
-  </div>
-  <textarea id="lsInput" oninput="lsStats()" style="min-height:160px" placeholder="banana&#10;apple&#10;cherry&#10;apple&#10;date"></textarea>
-</div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-  <button class="btn btn-yellow" onclick="lsDo('sortaz')">A→Z</button>
-  <button class="btn btn-ghost" onclick="lsDo('sortza')">Z→A</button>
-  <button class="btn btn-ghost" onclick="lsDo('sortlen')">By length</button>
-  <button class="btn btn-ghost" onclick="lsDo('reverse')">Reverse</button>
-  <button class="btn btn-ghost" onclick="lsDo('shuffle')">Shuffle</button>
-  <button class="btn btn-ghost" onclick="lsDo('dedup')">Remove dupes</button>
-  <button class="btn btn-ghost" onclick="lsDo('trim')">Trim spaces</button>
-  <button class="btn btn-ghost" onclick="lsDo('empty')">Remove empty</button>
-  <button class="btn btn-ghost" onclick="lsDo('lower')">lowercase</button>
-  <button class="btn btn-ghost" onclick="lsDo('upper')">UPPERCASE</button>
-  <button class="btn btn-ghost" onclick="lsDo('number')">Add numbers</button>
-</div>
-<div class="panel">
-  <div class="panel-bar">
-    <span class="panel-label">Output</span>
-    <span id="lsStatsEl" style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)"></span>
-    <div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('lsOutput').textContent)">⎘ Copy</button></div>
-  </div>
-  <div id="lsOutput" class="output-area" style="color:var(--yellow);white-space:pre-wrap;min-height:120px"></div>
-</div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-function lsStats(){const l=document.getElementById('lsInput').value.split('
+        <div class="toast" id="toast"></div>
+        <script src="../assets/shared.js"></script>
+        <script src="../assets/sidebar.js"></script>
+        <script>
+            function lsStats() {
+                const l = document.getElementById('lsInput').value.split('
 '),e=document.getElementById('lsStatsEl');if(e)e.textContent=`${l.length} lines · ${l.filter(x=>x.trim()).length} non-empty`;}
-function lsDo(op){let lines=document.getElementById('lsInput').value.split('
+function lsDo(op) {
+                        let lines = document.getElementById('lsInput').value.split('
 ');switch(op){case 'sortaz':lines.sort((a,b)=>a.localeCompare(b));break;case 'sortza':lines.sort((a,b)=>b.localeCompare(a));break;case 'sortlen':lines.sort((a,b)=>a.length-b.length);break;case 'reverse':lines.reverse();break;case 'shuffle':for(let i=lines.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[lines[i],lines[j]]=[lines[j],lines[i]];}break;case 'dedup':lines=[...new Set(lines)];break;case 'trim':lines=lines.map(l=>l.trim());break;case 'empty':lines=lines.filter(l=>l.trim());break;case 'lower':lines=lines.map(l=>l.toLowerCase());break;case 'upper':lines=lines.map(l=>l.toUpperCase());break;case 'number':lines=lines.map((l,i)=>`${i+1}. ${l}`);break;}document.getElementById('lsOutput').textContent=lines.join('
 ');const e=document.getElementById('lsStatsEl');if(e)e.textContent=`${lines.length} lines`;}
-function lsSample(){document.getElementById('lsInput').value='banana
-apple
-cherry
-apple
-date
-banana
-elderberry
-fig
-grape
+function lsSample() {
+                                document.getElementById('lsInput').value = 'banana
+                                apple
+                                cherry
+                                apple
+                                date
+                                banana
+                                elderberry
+                                fig
+                                grape
 banana';lsStats();}
-</script>
+        </script>
 </body>
 </html>

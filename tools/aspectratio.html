@@ -12,51 +12,57 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">⬛</div>
-      <div>
-        <div class="tool-title">Aspect Ratio Calculator</div>
-        <div class="tool-desc">Calculate dimensions from ratios with visual preview</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">⬛</div>
+                    <div>
+                        <div class="tool-title">Aspect Ratio Calculator</div>
+                        <div class="tool-desc">Calculate dimensions from ratios with visual preview</div>
+                    </div>
+                </div>
+
+                <div class="two-col">
+                    <div class="panel">
+                        <div class="panel-bar"><span class="panel-label">Calculate dimensions</span></div>
+                        <div class="input-row"><label>Width</label><input type="number" id="arW" placeholder="1920" oninput="arCalc('w')"></div>
+                        <div class="input-row"><label>Height</label><input type="number" id="arH" placeholder="1080" oninput="arCalc('h')"></div>
+                        <div class="input-row"><label>Ratio W</label><input type="number" id="arRW" placeholder="16" oninput="arCalc('r')"></div>
+                        <div class="input-row"><label>Ratio H</label><input type="number" id="arRH" placeholder="9" oninput="arCalc('r')"></div>
+                        <div class="hash-grid" id="arResult"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-bar"><span class="panel-label">Common ratios — click to load</span></div>
+                        <div id="arPresets" style="padding:10px 14px;display:flex;flex-wrap:wrap;gap:6px"></div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Visual preview</span></div>
+                    <div style="padding:16px;display:flex;justify-content:center;align-items:center;min-height:160px">
+                        <div id="arVisual" style="background:var(--surface2);border:2px solid var(--border);border-radius:6px;transition:all 0.3s;max-width:100%;display:flex;align-items:center;justify-content:center">
+                            <span id="arVisualLabel" style="font-family:var(--mono);font-size:0.75rem;color:var(--text-dim)">16:9</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="two-col">
-  <div class="panel">
-    <div class="panel-bar"><span class="panel-label">Calculate dimensions</span></div>
-    <div class="input-row"><label>Width</label><input type="number" id="arW" placeholder="1920" oninput="arCalc('w')"></div>
-    <div class="input-row"><label>Height</label><input type="number" id="arH" placeholder="1080" oninput="arCalc('h')"></div>
-    <div class="input-row"><label>Ratio W</label><input type="number" id="arRW" placeholder="16" oninput="arCalc('r')"></div>
-    <div class="input-row"><label>Ratio H</label><input type="number" id="arRH" placeholder="9" oninput="arCalc('r')"></div>
-    <div class="hash-grid" id="arResult"></div>
-  </div>
-  <div class="panel">
-    <div class="panel-bar"><span class="panel-label">Common ratios — click to load</span></div>
-    <div id="arPresets" style="padding:10px 14px;display:flex;flex-wrap:wrap;gap:6px"></div>
-  </div>
-</div>
-<div class="panel">
-  <div class="panel-bar"><span class="panel-label">Visual preview</span></div>
-  <div style="padding:16px;display:flex;justify-content:center;align-items:center;min-height:160px">
-    <div id="arVisual" style="background:var(--surface2);border:2px solid var(--border);border-radius:6px;transition:all 0.3s;max-width:100%;display:flex;align-items:center;justify-content:center">
-      <span id="arVisualLabel" style="font-family:var(--mono);font-size:0.75rem;color:var(--text-dim)">16:9</span>
-    </div>
-  </div>
-</div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-const AR_PRESETS=[['16:9', '1920', '1080'], ['4:3', '1600', '1200'], ['1:1', '1080', '1080'], ['21:9', '2560', '1080'], ['9:16', '1080', '1920'], ['3:2', '1500', '1000'], ['2:1', '2000', '1000'], ['4:5', '1080', '1350'], ['3:4', '900', '1200'], ['5:4', '1280', '1024']];
-function gcd(a,b){return b===0?a:gcd(b,a%b);}
-function arCalc(changed){const w=parseFloat(document.getElementById('arW').value),h=parseFloat(document.getElementById('arH').value),rw=parseFloat(document.getElementById('arRW').value),rh=parseFloat(document.getElementById('arRH').value);let resW=w,resH=h;if(changed==='w'&&w&&rw&&rh){resH=Math.round(w/rw*rh);document.getElementById('arH').value=resH;}else if(changed==='h'&&h&&rw&&rh){resW=Math.round(h/rh*rw);document.getElementById('arW').value=resW;}else if(changed==='r'&&rw&&rh&&w){resH=Math.round(w/rw*rh);document.getElementById('arH').value=resH;}if(resW&&resH){const g=gcd(Math.round(resW),Math.round(resH)),ratio=`${Math.round(resW)/g}:${Math.round(resH)/g}`,dec=(resW/resH).toFixed(4);document.getElementById('arResult').innerHTML=`<div class="hash-row"><div class="hash-algo">Ratio</div><div class="hash-val" style="color:var(--cyan)">${ratio} (${dec}:1)</div></div><div class="hash-row"><div class="hash-algo">Width</div><div class="hash-val">${Math.round(resW)}px</div></div><div class="hash-row"><div class="hash-algo">Height</div><div class="hash-val">${Math.round(resH)}px</div></div><div class="hash-row"><div class="hash-algo">Megapixels</div><div class="hash-val" style="color:var(--text-dim)">${(resW*resH/1e6).toFixed(2)} MP</div></div>`;const scale=Math.min(300/resW,180/resH),vw=Math.round(resW*scale),vh=Math.round(resH*scale),vis=document.getElementById('arVisual');vis.style.width=vw+'px';vis.style.height=vh+'px';document.getElementById('arVisualLabel').textContent=ratio;}}
-function arLoad(w,h){document.getElementById('arW').value=w;document.getElementById('arH').value=h;const g=gcd(parseInt(w),parseInt(h));document.getElementById('arRW').value=parseInt(w)/g;document.getElementById('arRH').value=parseInt(h)/g;arCalc('w');}
-function initPresets(){const c=document.getElementById('arPresets');AR_PRESETS.forEach(([l,w,h])=>{const btn=document.createElement('button');btn.className='btn btn-ghost';btn.style.fontSize='0.72rem';btn.textContent=`${l} (${w}×${h})`;btn.onclick=()=>arLoad(w,h);c.appendChild(btn);});}
-document.addEventListener('DOMContentLoaded',()=>{initPresets();arLoad('1920','1080');});
-</script>
+        <div class="toast" id="toast"></div>
+        <script src="../assets/shared.js"></script>
+        <script src="../assets/sidebar.js"></script>
+        <script>
+            const AR_PRESETS = [['16:9', '1920', '1080'], ['4:3', '1600', '1200'], ['1:1', '1080', '1080'], ['21:9', '2560', '1080'], ['9:16', '1080', '1920'], ['3:2', '1500', '1000'], ['2:1', '2000', '1000'], ['4:5', '1080', '1350'], ['3:4', '900', '1200'], ['5:4', '1280', '1024']];
+            function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+            function arCalc(changed) { const w = parseFloat(document.getElementById('arW').value), h = parseFloat(document.getElementById('arH').value), rw = parseFloat(document.getElementById('arRW').value), rh = parseFloat(document.getElementById('arRH').value); let resW = w, resH = h; if (changed === 'w' && w && rw && rh) { resH = Math.round(w / rw * rh); document.getElementById('arH').value = resH; } else if (changed === 'h' && h && rw && rh) { resW = Math.round(h / rh * rw); document.getElementById('arW').value = resW; } else if (changed === 'r' && rw && rh && w) { resH = Math.round(w / rw * rh); document.getElementById('arH').value = resH; } if (resW && resH) { const g = gcd(Math.round(resW), Math.round(resH)), ratio = `${Math.round(resW) / g}:${Math.round(resH) / g}`, dec = (resW / resH).toFixed(4); document.getElementById('arResult').innerHTML = `<div class="hash-row"><div class="hash-algo">Ratio</div><div class="hash-val" style="color:var(--cyan)">${ratio} (${dec}:1)</div></div><div class="hash-row"><div class="hash-algo">Width</div><div class="hash-val">${Math.round(resW)}px</div></div><div class="hash-row"><div class="hash-algo">Height</div><div class="hash-val">${Math.round(resH)}px</div></div><div class="hash-row"><div class="hash-algo">Megapixels</div><div class="hash-val" style="color:var(--text-dim)">${(resW * resH / 1e6).toFixed(2)} MP</div></div>`; const scale = Math.min(300 / resW, 180 / resH), vw = Math.round(resW * scale), vh = Math.round(resH * scale), vis = document.getElementById('arVisual'); vis.style.width = vw + 'px'; vis.style.height = vh + 'px'; document.getElementById('arVisualLabel').textContent = ratio; } }
+            function arLoad(w, h) { document.getElementById('arW').value = w; document.getElementById('arH').value = h; const g = gcd(parseInt(w), parseInt(h)); document.getElementById('arRW').value = parseInt(w) / g; document.getElementById('arRH').value = parseInt(h) / g; arCalc('w'); }
+            function initPresets() { const c = document.getElementById('arPresets'); AR_PRESETS.forEach(([l, w, h]) => { const btn = document.createElement('button'); btn.className = 'btn btn-ghost'; btn.style.fontSize = '0.72rem'; btn.textContent = `${l} (${w}×${h})`; btn.onclick = () => arLoad(w, h); c.appendChild(btn); }); }
+            document.addEventListener('DOMContentLoaded', () => { initPresets(); arLoad('1920', '1080'); });
+        </script>
 </body>
 </html>

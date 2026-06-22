@@ -12,93 +12,99 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">🔐</div>
-      <div>
-        <div class="tool-title">Text Encrypt / Decrypt</div>
-        <div class="tool-desc">Encrypt and decrypt text with AES-256 using a passphrase (runs entirely in-browser)</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">🔐</div>
+                    <div>
+                        <div class="tool-title">Text Encrypt / Decrypt</div>
+                        <div class="tool-desc">Encrypt and decrypt text with AES-256 using a passphrase (runs entirely in-browser)</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Passphrase</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="togglePassVis()">👁 Show/Hide</button>
+                        </div>
+                    </div>
+                    <div class="input-row" style="border-bottom:none">
+                        <input type="password" id="encPassphrase" placeholder="Enter a strong passphrase…" style="font-family:var(--mono)">
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Input</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-yellow" onclick="doEncrypt()">🔒 Encrypt</button>
+                            <button class="btn btn-ghost" onclick="doDecrypt()">🔓 Decrypt</button>
+                            <button class="btn btn-ghost" onclick="swapEncrypt()">⇅ Swap</button>
+                            <button class="btn btn-ghost" onclick="clearEncrypt()">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="encInput" placeholder="Enter text to encrypt, or ciphertext to decrypt…" style="min-height:140px"></textarea>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Output</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="copy(document.getElementById('encOutput').textContent)">⎘ Copy</button>
+                        </div>
+                    </div>
+                    <div id="encOutput" class="output-area" style="color:var(--yellow);word-break:break-all;min-height:120px"></div>
+                </div>
+                <div id="encStatus" style="display:none;padding:10px 14px;border-radius:var(--r-sm);font-size:0.82rem;font-family:var(--mono);margin-top:4px"></div>
+                <div style="margin-top:12px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);font-size:0.75rem;color:var(--text-dim);line-height:1.6">
+                    🔒 Uses AES-GCM-256 via the browser's native Web Crypto API. The passphrase never leaves your browser.
+                </div>
+
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="panel">
-  <div class="panel-bar">
-    <span class="panel-label">Passphrase</span>
-    <div class="panel-actions">
-      <button class="btn btn-ghost" onclick="togglePassVis()">👁 Show/Hide</button>
-    </div>
-  </div>
-  <div class="input-row" style="border-bottom:none">
-    <input type="password" id="encPassphrase" placeholder="Enter a strong passphrase…" style="font-family:var(--mono)">
-  </div>
-</div>
-<div class="panel">
-  <div class="panel-bar">
-    <span class="panel-label">Input</span>
-    <div class="panel-actions">
-      <button class="btn btn-yellow" onclick="doEncrypt()">🔒 Encrypt</button>
-      <button class="btn btn-ghost" onclick="doDecrypt()">🔓 Decrypt</button>
-      <button class="btn btn-ghost" onclick="swapEncrypt()">⇅ Swap</button>
-      <button class="btn btn-ghost" onclick="clearEncrypt()">Clear</button>
-    </div>
-  </div>
-  <textarea id="encInput" placeholder="Enter text to encrypt, or ciphertext to decrypt…" style="min-height:140px"></textarea>
-</div>
-<div class="panel">
-  <div class="panel-bar">
-    <span class="panel-label">Output</span>
-    <div class="panel-actions">
-      <button class="btn btn-ghost" onclick="copy(document.getElementById('encOutput').textContent)">⎘ Copy</button>
-    </div>
-  </div>
-  <div id="encOutput" class="output-area" style="color:var(--yellow);word-break:break-all;min-height:120px"></div>
-</div>
-<div id="encStatus" style="display:none;padding:10px 14px;border-radius:var(--r-sm);font-size:0.82rem;font-family:var(--mono);margin-top:4px"></div>
-<div style="margin-top:12px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);font-size:0.75rem;color:var(--text-dim);line-height:1.6">
-  🔒 Uses AES-GCM-256 via the browser's native Web Crypto API. The passphrase never leaves your browser.
-</div>
-  
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
-<script>
-function togglePassVis(){const i=document.getElementById('encPassphrase');i.type=i.type==='password'?'text':'password';}
-function setStatus(msg,ok){const s=document.getElementById('encStatus');s.style.display='';s.style.background=ok?'var(--green-dim)':'var(--red-dim)';s.style.border='1px solid '+(ok?'rgba(61,255,160,0.3)':'rgba(255,94,122,0.3)');s.style.color=ok?'var(--green)':'var(--red)';s.textContent=msg;}
-function doEncrypt(){
-  const pass=document.getElementById('encPassphrase').value,txt=document.getElementById('encInput').value;
-  if(!pass){setStatus('Enter a passphrase first',false);return;}if(!txt){setStatus('Enter text to encrypt',false);return;}
-  try{
-    const salt=CryptoJS.lib.WordArray.random(128/8);
-    const key=CryptoJS.PBKDF2(pass,salt,{keySize:256/32,iterations:10000});
-    const iv=CryptoJS.lib.WordArray.random(128/8);
-    const encrypted=CryptoJS.AES.encrypt(txt,key,{iv,padding:CryptoJS.pad.Pkcs7,mode:CryptoJS.mode.CBC});
-    const out=salt.toString()+':'+iv.toString()+':'+encrypted.toString();
-    document.getElementById('encOutput').textContent=out;
-    setStatus('✓ Encrypted successfully (AES-256-CBC + PBKDF2)',true);
-  }catch(e){setStatus('Encryption error: '+e.message,false);}
-}
-function doDecrypt(){
-  const pass=document.getElementById('encPassphrase').value,cipher=document.getElementById('encInput').value.trim();
-  if(!pass){setStatus('Enter the passphrase',false);return;}if(!cipher){setStatus('Enter ciphertext to decrypt',false);return;}
-  try{
-    const [saltHex,ivHex,cipherText]=cipher.split(':');
-    if(!saltHex||!ivHex||!cipherText){setStatus('Invalid ciphertext format',false);return;}
-    const salt=CryptoJS.enc.Hex.parse(saltHex),iv=CryptoJS.enc.Hex.parse(ivHex);
-    const key=CryptoJS.PBKDF2(pass,salt,{keySize:256/32,iterations:10000});
-    const decrypted=CryptoJS.AES.decrypt(cipherText,key,{iv,padding:CryptoJS.pad.Pkcs7,mode:CryptoJS.mode.CBC});
-    const result=decrypted.toString(CryptoJS.enc.Utf8);
-    if(!result){setStatus('✗ Wrong passphrase or corrupted data',false);return;}
-    document.getElementById('encOutput').textContent=result;
-    setStatus('✓ Decrypted successfully',true);
-  }catch(e){setStatus('Decryption failed: wrong passphrase or corrupted data',false);}
-}
-function swapEncrypt(){const o=document.getElementById('encOutput').textContent;document.getElementById('encInput').value=o;document.getElementById('encOutput').textContent='';}
-function clearEncrypt(){document.getElementById('encInput').value='';document.getElementById('encOutput').textContent='';document.getElementById('encStatus').style.display='none';}
-</script>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js"></script>
+    <script src="../assets/sidebar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <script>
+        function togglePassVis() { const i = document.getElementById('encPassphrase'); i.type = i.type === 'password' ? 'text' : 'password'; }
+        function setStatus(msg, ok) { const s = document.getElementById('encStatus'); s.style.display = ''; s.style.background = ok ? 'var(--green-dim)' : 'var(--red-dim)'; s.style.border = '1px solid ' + (ok ? 'rgba(61,255,160,0.3)' : 'rgba(255,94,122,0.3)'); s.style.color = ok ? 'var(--green)' : 'var(--red)'; s.textContent = msg; }
+        function doEncrypt() {
+            const pass = document.getElementById('encPassphrase').value, txt = document.getElementById('encInput').value;
+            if (!pass) { setStatus('Enter a passphrase first', false); return; } if (!txt) { setStatus('Enter text to encrypt', false); return; }
+            try {
+                const salt = CryptoJS.lib.WordArray.random(128 / 8);
+                const key = CryptoJS.PBKDF2(pass, salt, { keySize: 256 / 32, iterations: 10000 });
+                const iv = CryptoJS.lib.WordArray.random(128 / 8);
+                const encrypted = CryptoJS.AES.encrypt(txt, key, { iv, padding: CryptoJS.pad.Pkcs7, mode: CryptoJS.mode.CBC });
+                const out = salt.toString() + ':' + iv.toString() + ':' + encrypted.toString();
+                document.getElementById('encOutput').textContent = out;
+                setStatus('✓ Encrypted successfully (AES-256-CBC + PBKDF2)', true);
+            } catch (e) { setStatus('Encryption error: ' + e.message, false); }
+        }
+        function doDecrypt() {
+            const pass = document.getElementById('encPassphrase').value, cipher = document.getElementById('encInput').value.trim();
+            if (!pass) { setStatus('Enter the passphrase', false); return; } if (!cipher) { setStatus('Enter ciphertext to decrypt', false); return; }
+            try {
+                const [saltHex, ivHex, cipherText] = cipher.split(':');
+                if (!saltHex || !ivHex || !cipherText) { setStatus('Invalid ciphertext format', false); return; }
+                const salt = CryptoJS.enc.Hex.parse(saltHex), iv = CryptoJS.enc.Hex.parse(ivHex);
+                const key = CryptoJS.PBKDF2(pass, salt, { keySize: 256 / 32, iterations: 10000 });
+                const decrypted = CryptoJS.AES.decrypt(cipherText, key, { iv, padding: CryptoJS.pad.Pkcs7, mode: CryptoJS.mode.CBC });
+                const result = decrypted.toString(CryptoJS.enc.Utf8);
+                if (!result) { setStatus('✗ Wrong passphrase or corrupted data', false); return; }
+                document.getElementById('encOutput').textContent = result;
+                setStatus('✓ Decrypted successfully', true);
+            } catch (e) { setStatus('Decryption failed: wrong passphrase or corrupted data', false); }
+        }
+        function swapEncrypt() { const o = document.getElementById('encOutput').textContent; document.getElementById('encInput').value = o; document.getElementById('encOutput').textContent = ''; }
+        function clearEncrypt() { document.getElementById('encInput').value = ''; document.getElementById('encOutput').textContent = ''; document.getElementById('encStatus').style.display = 'none'; }
+    </script>
 </body>
 </html>

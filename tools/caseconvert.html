@@ -12,30 +12,38 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">Aa</div>
-      <div>
-        <div class="tool-title">Case Converter</div>
-        <div class="tool-desc">Transform text into 14 different cases — camelCase, snake_case, kebab, and more</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">Aa</div>
+                    <div>
+                        <div class="tool-title">Case Converter</div>
+                        <div class="tool-desc">Transform text into 14 different cases — camelCase, snake_case, kebab, and more</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Input text</span><div class="panel-actions"><button class="btn btn-ghost" onclick="document.getElementById('caseInput').value='';caseConvert()">Clear</button></div></div>
+                    <textarea id="caseInput" oninput="caseConvert()" placeholder="hello world example text" style="min-height:100px"></textarea>
+                </div>
+                <div class="hash-grid" id="caseOutputs" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px"></div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="panel">
-  <div class="panel-bar"><span class="panel-label">Input text</span><div class="panel-actions"><button class="btn btn-ghost" onclick="document.getElementById('caseInput').value='';caseConvert()">Clear</button></div></div>
-  <textarea id="caseInput" oninput="caseConvert()" placeholder="hello world example text" style="min-height:100px"></textarea>
-</div>
-<div class="hash-grid" id="caseOutputs" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px"></div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-function caseConvert(){const txt=document.getElementById('caseInput').value;const words=txt.trim().replace(/[-_]/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').split(/\s+/).filter(Boolean);const cases=[['UPPERCASE',txt.toUpperCase()],['lowercase',txt.toLowerCase()],['Title Case',words.map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ')],['Sentence case',txt.charAt(0).toUpperCase()+txt.slice(1).toLowerCase()],['camelCase',words.map((w,i)=>i===0?w.toLowerCase():w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join('')],['PascalCase',words.map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join('')],['snake_case',words.map(w=>w.toLowerCase()).join('_')],['SCREAMING_SNAKE',words.map(w=>w.toUpperCase()).join('_')],['kebab-case',words.map(w=>w.toLowerCase()).join('-')],['COBOL-CASE',words.map(w=>w.toUpperCase()).join('-')],['dot.case',words.map(w=>w.toLowerCase()).join('.')],['path/case',words.map(w=>w.toLowerCase()).join('/')],['Inverted Case',txt.split('').map(c=>c===c.toUpperCase()?c.toLowerCase():c.toUpperCase()).join('')],['AlTeRnAtInG',txt.split('').map((c,i)=>i%2===0?c.toLowerCase():c.toUpperCase()).join('')]];
-document.getElementById('caseOutputs').innerHTML=cases.map(([label,val])=>`<div class="hash-row"><div class="hash-algo" style="min-width:130px;font-size:0.68rem">${label}</div><div class="hash-val" style="color:var(--green)">${escHtml(val)}</div><button class="uuid-copy" onclick="copy(${JSON.stringify(val)})">⎘</button></div>`).join('');}
-</script>
+        <div class="toast" id="toast"></div>
+        <script src="../assets/shared.js"></script>
+        <script src="../assets/sidebar.js"></script>
+        <script>
+            function caseConvert() {
+                const txt = document.getElementById('caseInput').value; const words = txt.trim().replace(/[-_]/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s+/).filter(Boolean); const cases = [['UPPERCASE', txt.toUpperCase()], ['lowercase', txt.toLowerCase()], ['Title Case', words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')], ['Sentence case', txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase()], ['camelCase', words.map((w, i) => i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('')], ['PascalCase', words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('')], ['snake_case', words.map(w => w.toLowerCase()).join('_')], ['SCREAMING_SNAKE', words.map(w => w.toUpperCase()).join('_')], ['kebab-case', words.map(w => w.toLowerCase()).join('-')], ['COBOL-CASE', words.map(w => w.toUpperCase()).join('-')], ['dot.case', words.map(w => w.toLowerCase()).join('.')], ['path/case', words.map(w => w.toLowerCase()).join('/')], ['Inverted Case', txt.split('').map(c => c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()).join('')], ['AlTeRnAtInG', txt.split('').map((c, i) => i % 2 === 0 ? c.toLowerCase() : c.toUpperCase()).join('')]];
+                document.getElementById('caseOutputs').innerHTML = cases.map(([label, val]) => `<div class="hash-row"><div class="hash-algo" style="min-width:130px;font-size:0.68rem">${label}</div><div class="hash-val" style="color:var(--green)">${escHtml(val)}</div><button class="uuid-copy" onclick="copy(${JSON.stringify(val)})">⎘</button></div>`).join('');
+            }
+        </script>
 </body>
 </html>

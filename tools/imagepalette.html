@@ -12,114 +12,121 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">🖼</div>
-      <div>
-        <div class="tool-title">Image Color Extractor</div>
-        <div class="tool-desc">Upload an image and extract the dominant color palette from it</div>
-      </div>
-    </div>
-    
-<div class="panel" style="margin-bottom:14px">
-  <div class="panel-bar"><span class="panel-label">Upload image</span></div>
-  <div id="dropZone" onclick="document.getElementById('imgFile').click()"
-    style="margin:14px;border:2px dashed var(--border);border-radius:var(--r);padding:40px;text-align:center;cursor:pointer;transition:border-color 0.15s;color:var(--text-dim);font-size:0.88rem"
-    ondragover="event.preventDefault();this.style.borderColor='var(--orange)'"
-    ondragleave="this.style.borderColor='var(--border)'"
-    ondrop="handleDrop(event)">
-    <div style="font-size:2rem;margin-bottom:8px">🖼</div>
-    <div>Click to upload or drag &amp; drop an image</div>
-    <div style="font-size:0.72rem;margin-top:4px;color:var(--text-dim)">PNG, JPG, GIF, WebP, SVG</div>
-    <input type="file" id="imgFile" accept="image/*" style="display:none" onchange="loadImage(this.files[0])">
-  </div>
-  <canvas id="imgCanvas" style="display:none"></canvas>
-</div>
-<div id="imgPreviewWrap" style="display:none">
-  <div class="two-col" style="align-items:start">
-    <div class="panel">
-      <div class="panel-bar"><span class="panel-label">Preview</span></div>
-      <div style="padding:14px;display:flex;align-items:center;justify-content:center;min-height:160px">
-        <img id="imgPreview" style="max-width:100%;max-height:300px;border-radius:6px;border:1px solid var(--border)">
-      </div>
-      <div style="padding:0 14px 14px;font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)" id="imgInfo"></div>
-    </div>
-    <div class="panel">
-      <div class="panel-bar">
-        <span class="panel-label">Extracted palette</span>
-        <div class="panel-actions">
-          <button class="btn btn-ghost" id="colorCountBtn" onclick="changeColorCount()">8 colors</button>
-          <button class="btn btn-ghost" onclick="copyAllColors()">⎘ Copy all</button>
-        </div>
-      </div>
-      <div id="paletteRow" style="display:flex;margin:0;min-height:60px"></div>
-      <div id="paletteValues" class="hash-grid"></div>
-    </div>
-  </div>
-</div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">🖼</div>
+                    <div>
+                        <div class="tool-title">Image Color Extractor</div>
+                        <div class="tool-desc">Upload an image and extract the dominant color palette from it</div>
+                    </div>
+                </div>
 
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-let colorCount=8;
-function handleDrop(e){e.preventDefault();document.getElementById('dropZone').style.borderColor='var(--border)';const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))loadImage(f);}
-function loadImage(file){
-  if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const img=document.getElementById('imgPreview');
-    img.onload=()=>{
-      document.getElementById('imgPreviewWrap').style.display='';
-      document.getElementById('imgInfo').textContent=`${file.name} — ${img.naturalWidth}×${img.naturalHeight}px — ${(file.size/1024).toFixed(1)}KB`;
-      extractColors(img);
-    };
-    img.src=e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-function changeColorCount(){colorCount=colorCount===8?16:colorCount===16?4:8;document.getElementById('colorCountBtn').textContent=colorCount+' colors';extractColors(document.getElementById('imgPreview'));}
-function extractColors(img){
-  const canvas=document.getElementById('imgCanvas');
-  const ctx=canvas.getContext('2d');
-  const MAX=150;
-  const scale=Math.min(1,MAX/Math.max(img.naturalWidth,img.naturalHeight));
-  canvas.width=Math.round(img.naturalWidth*scale);
-  canvas.height=Math.round(img.naturalHeight*scale);
-  ctx.drawImage(img,0,0,canvas.width,canvas.height);
-  const data=ctx.getImageData(0,0,canvas.width,canvas.height).data;
-  // Sample pixels and quantize
-  const buckets={};
-  for(let i=0;i<data.length;i+=16){
-    const r=data[i]&0xF0,g=data[i+1]&0xF0,b=data[i+2]&0xF0;
-    if(data[i+3]<128)continue;
-    const key=`${r},${g},${b}`;
-    buckets[key]=(buckets[key]||{count:0,r:0,g:0,b:0});
-    buckets[key].count++;buckets[key].r+=data[i];buckets[key].g+=data[i+1];buckets[key].b+=data[i+2];
-  }
-  const sorted=Object.entries(buckets).sort((a,b)=>b[1].count-a[1].count);
-  const colors=[];const MIN_DIFF=40;
-  for(const [,v] of sorted){
-    if(colors.length>=colorCount)break;
-    const r=Math.round(v.r/v.count),g=Math.round(v.g/v.count),b=Math.round(v.b/v.count);
-    const tooClose=colors.some(c=>Math.abs(c[0]-r)+Math.abs(c[1]-g)+Math.abs(c[2]-b)<MIN_DIFF);
-    if(!tooClose)colors.push([r,g,b]);
-  }
-  renderPalette(colors);
-}
-function toHex(r,g,b){return'#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();}
-function renderPalette(colors){
-  const row=document.getElementById('paletteRow');
-  const vals=document.getElementById('paletteValues');
-  row.innerHTML=colors.map(([r,g,b])=>{const hex=toHex(r,g,b);return`<div title="${hex}" onclick="copy('${hex}')" style="flex:1;min-height:60px;background:${hex};cursor:pointer;transition:flex 0.15s" onmouseover="this.style.flex='1.5'" onmouseout="this.style.flex='1'"></div>`;}).join('');
-  vals.innerHTML=colors.map(([r,g,b])=>{const hex=toHex(r,g,b);return`<div class="hash-row"><div style="width:18px;height:18px;border-radius:4px;background:${hex};flex-shrink:0;border:1px solid var(--border)"></div><div class="hash-val" style="color:var(--orange)">${hex}</div><div style="font-size:0.72rem;color:var(--text-dim);min-width:120px">rgb(${r},${g},${b})</div><button class="uuid-copy" onclick="copy('${hex}')">⎘</button></div>`;}).join('');
-}
-function copyAllColors(){const hexes=[...document.querySelectorAll('#paletteValues .hash-val')].map(el=>el.textContent);copy(hexes.join('
+                <div class="panel" style="margin-bottom:14px">
+                    <div class="panel-bar"><span class="panel-label">Upload image</span></div>
+                    <div id="dropZone" onclick="document.getElementById('imgFile').click()"
+                         style="margin:14px;border:2px dashed var(--border);border-radius:var(--r);padding:40px;text-align:center;cursor:pointer;transition:border-color 0.15s;color:var(--text-dim);font-size:0.88rem"
+                         ondragover="event.preventDefault();this.style.borderColor='var(--orange)'"
+                         ondragleave="this.style.borderColor='var(--border)'"
+                         ondrop="handleDrop(event)">
+                        <div style="font-size:2rem;margin-bottom:8px">🖼</div>
+                        <div>Click to upload or drag &amp; drop an image</div>
+                        <div style="font-size:0.72rem;margin-top:4px;color:var(--text-dim)">PNG, JPG, GIF, WebP, SVG</div>
+                        <input type="file" id="imgFile" accept="image/*" style="display:none" onchange="loadImage(this.files[0])">
+                    </div>
+                    <canvas id="imgCanvas" style="display:none"></canvas>
+                </div>
+                <div id="imgPreviewWrap" style="display:none">
+                    <div class="two-col" style="align-items:start">
+                        <div class="panel">
+                            <div class="panel-bar"><span class="panel-label">Preview</span></div>
+                            <div style="padding:14px;display:flex;align-items:center;justify-content:center;min-height:160px">
+                                <img id="imgPreview" style="max-width:100%;max-height:300px;border-radius:6px;border:1px solid var(--border)">
+                            </div>
+                            <div style="padding:0 14px 14px;font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)" id="imgInfo"></div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-bar">
+                                <span class="panel-label">Extracted palette</span>
+                                <div class="panel-actions">
+                                    <button class="btn btn-ghost" id="colorCountBtn" onclick="changeColorCount()">8 colors</button>
+                                    <button class="btn btn-ghost" onclick="copyAllColors()">⎘ Copy all</button>
+                                </div>
+                            </div>
+                            <div id="paletteRow" style="display:flex;margin:0;min-height:60px"></div>
+                            <div id="paletteValues" class="hash-grid"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
+    </div>
+        <div class="toast" id="toast"></div>
+        <script src="../assets/shared.js"></script>
+        <script src="../assets/sidebar.js"></script>
+        <script>
+            let colorCount = 8;
+            function handleDrop(e) { e.preventDefault(); document.getElementById('dropZone').style.borderColor = 'var(--border)'; const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) loadImage(f); }
+            function loadImage(file) {
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = document.getElementById('imgPreview');
+                    img.onload = () => {
+                        document.getElementById('imgPreviewWrap').style.display = '';
+                        document.getElementById('imgInfo').textContent = `${file.name} — ${img.naturalWidth}×${img.naturalHeight}px — ${(file.size / 1024).toFixed(1)}KB`;
+                        extractColors(img);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+            function changeColorCount() { colorCount = colorCount === 8 ? 16 : colorCount === 16 ? 4 : 8; document.getElementById('colorCountBtn').textContent = colorCount + ' colors'; extractColors(document.getElementById('imgPreview')); }
+            function extractColors(img) {
+                const canvas = document.getElementById('imgCanvas');
+                const ctx = canvas.getContext('2d');
+                const MAX = 150;
+                const scale = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
+                canvas.width = Math.round(img.naturalWidth * scale);
+                canvas.height = Math.round(img.naturalHeight * scale);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                // Sample pixels and quantize
+                const buckets = {};
+                for (let i = 0; i < data.length; i += 16) {
+                    const r = data[i] & 0xF0, g = data[i + 1] & 0xF0, b = data[i + 2] & 0xF0;
+                    if (data[i + 3] < 128) continue;
+                    const key = `${r},${g},${b}`;
+                    buckets[key] = (buckets[key] || { count: 0, r: 0, g: 0, b: 0 });
+                    buckets[key].count++; buckets[key].r += data[i]; buckets[key].g += data[i + 1]; buckets[key].b += data[i + 2];
+                }
+                const sorted = Object.entries(buckets).sort((a, b) => b[1].count - a[1].count);
+                const colors = []; const MIN_DIFF = 40;
+                for (const [, v] of sorted) {
+                    if (colors.length >= colorCount) break;
+                    const r = Math.round(v.r / v.count), g = Math.round(v.g / v.count), b = Math.round(v.b / v.count);
+                    const tooClose = colors.some(c => Math.abs(c[0] - r) + Math.abs(c[1] - g) + Math.abs(c[2] - b) < MIN_DIFF);
+                    if (!tooClose) colors.push([r, g, b]);
+                }
+                renderPalette(colors);
+            }
+            function toHex(r, g, b) { return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('').toUpperCase(); }
+            function renderPalette(colors) {
+                const row = document.getElementById('paletteRow');
+                const vals = document.getElementById('paletteValues');
+                row.innerHTML = colors.map(([r, g, b]) => { const hex = toHex(r, g, b); return `<div title="${hex}" onclick="copy('${hex}')" style="flex:1;min-height:60px;background:${hex};cursor:pointer;transition:flex 0.15s" onmouseover="this.style.flex='1.5'" onmouseout="this.style.flex='1'"></div>`; }).join('');
+                vals.innerHTML = colors.map(([r, g, b]) => { const hex = toHex(r, g, b); return `<div class="hash-row"><div style="width:18px;height:18px;border-radius:4px;background:${hex};flex-shrink:0;border:1px solid var(--border)"></div><div class="hash-val" style="color:var(--orange)">${hex}</div><div style="font-size:0.72rem;color:var(--text-dim);min-width:120px">rgb(${r},${g},${b})</div><button class="uuid-copy" onclick="copy('${hex}')">⎘</button></div>`; }).join('');
+            }
+            function copyAllColors() {
+                const hexes = [...document.querySelectorAll('#paletteValues .hash-val')].map(el => el.textContent); copy(hexes.join('
 '));}
-</script>
+        </script>
 </body>
 </html>

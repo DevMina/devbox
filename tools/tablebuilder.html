@@ -12,130 +12,141 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">▦</div>
-      <div>
-        <div class="tool-title">Table Builder</div>
-        <div class="tool-desc">Build Markdown, HTML, and CSV tables visually with a live editor</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">▦</div>
+                    <div>
+                        <div class="tool-title">Table Builder</div>
+                        <div class="tool-desc">Build Markdown, HTML, and CSV tables visually with a live editor</div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-bottom:14px">
+                    <div class="panel-bar">
+                        <span class="panel-label">Table settings</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-orange" onclick="addCol()">+ Column</button>
+                            <button class="btn btn-ghost" onclick="addRow()">+ Row</button>
+                            <button class="btn btn-ghost" onclick="removeRow()">− Row</button>
+                            <button class="btn btn-ghost" onclick="resetTable()">Reset</button>
+                        </div>
+                    </div>
+                    <div style="overflow-x:auto;padding:14px 16px">
+                        <table id="editTable" style="border-collapse:collapse;min-width:100%"></table>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Output format</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-orange" onclick="setFmt('md');renderOut()" id="fmtMd">Markdown</button>
+                            <button class="btn btn-ghost" onclick="setFmt('html');renderOut()" id="fmtHtml">HTML</button>
+                            <button class="btn btn-ghost" onclick="setFmt('csv');renderOut()" id="fmtCsv">CSV</button>
+                            <button class="btn btn-ghost" onclick="copy(document.getElementById('tableOut').textContent)">⎘ Copy</button>
+                        </div>
+                    </div>
+                    <div id="tableOut" class="output-area" style="color:var(--orange);white-space:pre;min-height:120px;overflow-x:auto;font-size:0.82rem"></div>
+                </div>
+
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="panel" style="margin-bottom:14px">
-  <div class="panel-bar">
-    <span class="panel-label">Table settings</span>
-    <div class="panel-actions">
-      <button class="btn btn-orange" onclick="addCol()">+ Column</button>
-      <button class="btn btn-ghost" onclick="addRow()">+ Row</button>
-      <button class="btn btn-ghost" onclick="removeRow()">− Row</button>
-      <button class="btn btn-ghost" onclick="resetTable()">Reset</button>
-    </div>
-  </div>
-  <div style="overflow-x:auto;padding:14px 16px">
-    <table id="editTable" style="border-collapse:collapse;min-width:100%"></table>
-  </div>
-</div>
-<div class="panel">
-  <div class="panel-bar">
-    <span class="panel-label">Output format</span>
-    <div class="panel-actions">
-      <button class="btn btn-orange" onclick="setFmt('md');renderOut()" id="fmtMd">Markdown</button>
-      <button class="btn btn-ghost" onclick="setFmt('html');renderOut()" id="fmtHtml">HTML</button>
-      <button class="btn btn-ghost" onclick="setFmt('csv');renderOut()" id="fmtCsv">CSV</button>
-      <button class="btn btn-ghost" onclick="copy(document.getElementById('tableOut').textContent)">⎘ Copy</button>
-    </div>
-  </div>
-  <div id="tableOut" class="output-area" style="color:var(--orange);white-space:pre;min-height:120px;overflow-x:auto;font-size:0.82rem"></div>
-</div>
-  
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-let tData={headers:['Name','Age','City'],rows:[['Alice','30','New York'],['Bob','25','London'],['Carol','35','Tokyo']]};
-let fmt='md';
-function setFmt(f){fmt=f;['md','html','csv'].forEach(x=>document.getElementById('fmtBtn'+(x==='md'?'Md':x==='html'?'Html':'Csv'))&&document.getElementById('fmtBtn'+(x==='md'?'Md':x==='html'?'Html':'Csv')).classList.toggle('btn-orange',x===f));
-// update button styles
-document.getElementById('fmtMd').className='btn '+(f==='md'?'btn-orange':'btn-ghost');
-document.getElementById('fmtHtml').className='btn '+(f==='html'?'btn-orange':'btn-ghost');
-document.getElementById('fmtCsv').className='btn '+(f==='csv'?'btn-orange':'btn-ghost');}
-function cellStyle(){return 'padding:6px 10px;border:1px solid var(--border);background:var(--surface2);font-family:var(--mono);font-size:0.82rem;color:var(--text);outline:none;min-width:100px;max-width:200px;';}
-function renderEdit(){
-  const t=document.getElementById('editTable');t.innerHTML='';
-  // Header row
-  const thead=document.createElement('tr');
-  tData.headers.forEach((h,ci)=>{
-    const th=document.createElement('th');th.style.cssText='padding:4px';
-    const inp=document.createElement('input');inp.type='text';inp.value=h;inp.style.cssText=cellStyle()+'background:var(--surface);font-weight:600;color:var(--text-bright)';
-    inp.oninput=()=>{tData.headers[ci]=inp.value;renderOut();};
-    th.appendChild(inp);thead.appendChild(th);
-  });
-  // Delete col buttons
-  const delRow=document.createElement('tr');
-  tData.headers.forEach((_,ci)=>{const td=document.createElement('td');td.style.cssText='padding:2px 4px;text-align:center';const btn=document.createElement('button');btn.className='btn btn-ghost';btn.style.cssText='padding:2px 8px;font-size:0.7rem';btn.textContent='− Col';btn.onclick=()=>removeCol(ci);td.appendChild(btn);delRow.appendChild(td);});
-  t.appendChild(delRow);t.appendChild(thead);
-  // Data rows
-  tData.rows.forEach((row,ri)=>{
-    const tr=document.createElement('tr');
-    tData.headers.forEach((_,ci)=>{
-      const td=document.createElement('td');td.style.cssText='padding:4px';
-      const inp=document.createElement('input');inp.type='text';inp.value=row[ci]||'';inp.style.cssText=cellStyle();
-      inp.oninput=()=>{tData.rows[ri][ci]=inp.value;renderOut();};
-      td.appendChild(inp);tr.appendChild(td);
-    });
-    t.appendChild(tr);
-  });
-  renderOut();
-}
-function addCol(){tData.headers.push('Column '+(tData.headers.length+1));tData.rows.forEach(r=>r.push(''));renderEdit();}
-function removeCol(ci){if(tData.headers.length<=1)return;tData.headers.splice(ci,1);tData.rows.forEach(r=>r.splice(ci,1));renderEdit();}
-function addRow(){tData.rows.push(tData.headers.map(()=>''));renderEdit();}
-function removeRow(){if(tData.rows.length>0)tData.rows.pop();renderEdit();}
-function resetTable(){tData={headers:['Name','Age','City'],rows:[['Alice','30','New York'],['Bob','25','London'],['Carol','35','Tokyo']]};renderEdit();}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function renderOut(){
-  const{headers,rows}=tData;
-  let out='';
-  if(fmt==='md'){
-    const colW=headers.map((_,i)=>Math.max(headers[i].length,...rows.map(r=>(r[i]||'').length)));
-    const pad=(s,w)=>s.padEnd(w,' ');
-    out='| '+headers.map((h,i)=>pad(h,colW[i])).join(' | ')+' |
-';
-    out+='| '+headers.map((_,i)=>'-'.repeat(colW[i])).join(' | ')+' |
-';
-    rows.forEach(r=>{out+='| '+headers.map((_,i)=>pad(r[i]||'',colW[i])).join(' | ')+' |
-';});
-  }else if(fmt==='html'){
-    out='<table>
-  <thead>
-    <tr>
-';
-    headers.forEach(h=>{out+=`      <th>${esc(h)}</th>
+        <div class="toast" id="toast"></div>
+        <script src="../assets/shared.js"></script>
+        <script src="../assets/sidebar.js"></script>
+        <script>
+            let tData = { headers: ['Name', 'Age', 'City'], rows: [['Alice', '30', 'New York'], ['Bob', '25', 'London'], ['Carol', '35', 'Tokyo']] };
+            let fmt = 'md';
+            function setFmt(f) {
+                fmt = f;['md', 'html', 'csv'].forEach(x => document.getElementById('fmtBtn' + (x === 'md' ? 'Md' : x === 'html' ? 'Html' : 'Csv')) && document.getElementById('fmtBtn' + (x === 'md' ? 'Md' : x === 'html' ? 'Html' : 'Csv')).classList.toggle('btn-orange', x === f));
+                // update button styles
+                document.getElementById('fmtMd').className = 'btn ' + (f === 'md' ? 'btn-orange' : 'btn-ghost');
+                document.getElementById('fmtHtml').className = 'btn ' + (f === 'html' ? 'btn-orange' : 'btn-ghost');
+                document.getElementById('fmtCsv').className = 'btn ' + (f === 'csv' ? 'btn-orange' : 'btn-ghost');
+            }
+            function cellStyle() { return 'padding:6px 10px;border:1px solid var(--border);background:var(--surface2);font-family:var(--mono);font-size:0.82rem;color:var(--text);outline:none;min-width:100px;max-width:200px;'; }
+            function renderEdit() {
+                const t = document.getElementById('editTable'); t.innerHTML = '';
+                // Header row
+                const thead = document.createElement('tr');
+                tData.headers.forEach((h, ci) => {
+                    const th = document.createElement('th'); th.style.cssText = 'padding:4px';
+                    const inp = document.createElement('input'); inp.type = 'text'; inp.value = h; inp.style.cssText = cellStyle() + 'background:var(--surface);font-weight:600;color:var(--text-bright)';
+                    inp.oninput = () => { tData.headers[ci] = inp.value; renderOut(); };
+                    th.appendChild(inp); thead.appendChild(th);
+                });
+                // Delete col buttons
+                const delRow = document.createElement('tr');
+                tData.headers.forEach((_, ci) => { const td = document.createElement('td'); td.style.cssText = 'padding:2px 4px;text-align:center'; const btn = document.createElement('button'); btn.className = 'btn btn-ghost'; btn.style.cssText = 'padding:2px 8px;font-size:0.7rem'; btn.textContent = '− Col'; btn.onclick = () => removeCol(ci); td.appendChild(btn); delRow.appendChild(td); });
+                t.appendChild(delRow); t.appendChild(thead);
+                // Data rows
+                tData.rows.forEach((row, ri) => {
+                    const tr = document.createElement('tr');
+                    tData.headers.forEach((_, ci) => {
+                        const td = document.createElement('td'); td.style.cssText = 'padding:4px';
+                        const inp = document.createElement('input'); inp.type = 'text'; inp.value = row[ci] || ''; inp.style.cssText = cellStyle();
+                        inp.oninput = () => { tData.rows[ri][ci] = inp.value; renderOut(); };
+                        td.appendChild(inp); tr.appendChild(td);
+                    });
+                    t.appendChild(tr);
+                });
+                renderOut();
+            }
+            function addCol() { tData.headers.push('Column ' + (tData.headers.length + 1)); tData.rows.forEach(r => r.push('')); renderEdit(); }
+            function removeCol(ci) { if (tData.headers.length <= 1) return; tData.headers.splice(ci, 1); tData.rows.forEach(r => r.splice(ci, 1)); renderEdit(); }
+            function addRow() { tData.rows.push(tData.headers.map(() => '')); renderEdit(); }
+            function removeRow() { if (tData.rows.length > 0) tData.rows.pop(); renderEdit(); }
+            function resetTable() { tData = { headers: ['Name', 'Age', 'City'], rows: [['Alice', '30', 'New York'], ['Bob', '25', 'London'], ['Carol', '35', 'Tokyo']] }; renderEdit(); }
+            function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+            function renderOut() {
+                const { headers, rows } = tData;
+                let out = '';
+                if (fmt === 'md') {
+                    const colW = headers.map((_, i) => Math.max(headers[i].length, ...rows.map(r => (r[i] || '').length)));
+                    const pad = (s, w) => s.padEnd(w, ' ');
+                    out = '| ' + headers.map((h, i) => pad(h, colW[i])).join(' | ') + ' |
+                    ';
+                    out += '| ' + headers.map((_, i) => '-'.repeat(colW[i])).join(' | ') + ' |
+                    ';
+                    rows.forEach(r => {
+                        out += '| ' + headers.map((_, i) => pad(r[i] || '', colW[i])).join(' | ') + ' |
+                        ';});
+                    }else if (fmt === 'html') {
+                        out = '<table>
+                            < thead >
+                            <tr>
+                                ';
+            headers.forEach(h=>{out += `      <th>${esc(h)}</th>
 `;});
-    out+='    </tr>
-  </thead>
-  <tbody>
-';
-    rows.forEach(r=>{out+='    <tr>
+                                out+='    </tr>
+          </thead >
+                            <tbody>
+                                ';
+            rows.forEach(r=>{out += '    <tr>
 ';headers.forEach((_,i)=>{out+=`      <td>${esc(r[i]||'')}</td>
 `;});out+='    </tr>
-';});
-    out+='  </tbody>
-</table>';
-  }else{
-    const csvRow=arr=>arr.map(v=>{const s=String(v||'');return s.includes(',')||s.includes('"')||s.includes('
-')?'"'+s.replace(/"/g,'""')+'"':s;}).join(',');
-    out=csvRow(headers)+'
-'+rows.map(r=>csvRow(headers.map((_,i)=>r[i]||''))).join('
-');
-  }
-  document.getElementById('tableOut').textContent=out;
-}
-document.addEventListener('DOMContentLoaded',renderEdit);
-</script>
+                        ';});
+                        out += '  </tbody>
+</table > ';
+                    } else {
+                        const csvRow = arr => arr.map(v => {
+                            const s = String(v || ''); return s.includes(',') || s.includes('"') || s.includes('
+')?'"'+s.replace(/" / g, '""') + '"': s;
+                        }).join(',');
+                        out = csvRow(headers) + '
+                        '+rows.map(r=>csvRow(headers.map((_,i)=>r[i]||''))).join('
+                        ');
+                    }
+                    document.getElementById('tableOut').textContent = out;
+                }
+                document.addEventListener('DOMContentLoaded', renderEdit);
+        </script>
 </body>
 </html>

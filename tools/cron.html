@@ -12,47 +12,55 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">⏱</div>
-      <div>
-        <div class="tool-title">Cron Parser</div>
-        <div class="tool-desc">Decode cron expressions into plain English with next run times</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">⏱</div>
+                    <div>
+                        <div class="tool-title">Cron Parser</div>
+                        <div class="tool-desc">Decode cron expressions into plain English with next run times</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Expression</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="cronSample('0 * * * *')">Hourly</button>
+                            <button class="btn btn-ghost" onclick="cronSample('0 0 * * *')">Daily</button>
+                            <button class="btn btn-ghost" onclick="cronSample('0 9 * * 1-5')">Weekdays 9am</button>
+                            <button class="btn btn-ghost" onclick="cronSample('*/5 * * * *')">Every 5 min</button>
+                        </div>
+                    </div>
+                    <div class="input-row" style="border-bottom:none;">
+                        <input type="text" id="cronInput" placeholder="*/5 * * * *" oninput="parseCron()" style="font-size:1.1rem;font-family:var(--mono)">
+                    </div>
+                </div>
+                <div class="panel"><div class="panel-bar"><span class="panel-label">Meaning</span></div><div id="cronMeaning" class="output-area" style="color:var(--yellow);font-size:0.9rem;min-height:60px;"></div></div>
+                <div class="panel"><div class="panel-bar"><span class="panel-label">Field breakdown</span></div><div id="cronFields" class="hash-grid"></div></div>
+                <div class="panel"><div class="panel-bar"><span class="panel-label">Next 5 run times</span></div><div id="cronNext" class="output-area" style="color:var(--text-dim);font-size:0.82rem;min-height:80px;"></div></div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="panel">
-  <div class="panel-bar">
-    <span class="panel-label">Expression</span>
-    <div class="panel-actions">
-      <button class="btn btn-ghost" onclick="cronSample('0 * * * *')">Hourly</button>
-      <button class="btn btn-ghost" onclick="cronSample('0 0 * * *')">Daily</button>
-      <button class="btn btn-ghost" onclick="cronSample('0 9 * * 1-5')">Weekdays 9am</button>
-      <button class="btn btn-ghost" onclick="cronSample('*/5 * * * *')">Every 5 min</button>
-    </div>
-  </div>
-  <div class="input-row" style="border-bottom:none;">
-    <input type="text" id="cronInput" placeholder="*/5 * * * *" oninput="parseCron()" style="font-size:1.1rem;font-family:var(--mono)">
-  </div>
-</div>
-<div class="panel"><div class="panel-bar"><span class="panel-label">Meaning</span></div><div id="cronMeaning" class="output-area" style="color:var(--yellow);font-size:0.9rem;min-height:60px;"></div></div>
-<div class="panel"><div class="panel-bar"><span class="panel-label">Field breakdown</span></div><div id="cronFields" class="hash-grid"></div></div>
-<div class="panel"><div class="panel-bar"><span class="panel-label">Next 5 run times</span></div><div id="cronNext" class="output-area" style="color:var(--text-dim);font-size:0.82rem;min-height:80px;"></div></div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-function cronSample(e){document.getElementById('cronInput').value=e;parseCron();}
-function parseCron(){const raw=document.getElementById('cronInput').value.trim(),meaning=document.getElementById('cronMeaning'),fields=document.getElementById('cronFields'),next=document.getElementById('cronNext');if(!raw){meaning.textContent='';fields.innerHTML='';next.textContent='';return;}const parts=raw.split(/\s+/);if(parts.length!==5){meaning.textContent='⚠ Expected 5 fields: minute hour day month weekday';fields.innerHTML='';next.textContent='';return;}const[min,hr,dom,mon,dow]=parts,fieldDefs=[{label:'Minute',val:min,range:'0–59'},{label:'Hour',val:hr,range:'0–23'},{label:'Day',val:dom,range:'1–31'},{label:'Month',val:mon,range:'1–12'},{label:'Weekday',val:dow,range:'0–6 (Sun=0)'}];fields.innerHTML=fieldDefs.map(f=>`<div class="hash-row"><div class="hash-algo">${f.label}</div><div class="hash-val" style="color:var(--yellow)">${f.val}</div><div style="font-size:0.68rem;color:var(--text-dim);padding-top:3px">${f.range}</div></div>`).join('');
-const ff=(v,unit,vals)=>{if(v==='*')return`every ${unit}`;if(v.startsWith('*/'))return`every ${v.slice(2)} ${unit}s`;if(v.includes('-')){const[a,b]=v.split('-');return`${unit}s ${a}–${b}`;}if(v.includes(','))return`${unit}s ${v}`;return`${unit} ${vals?vals[parseInt(v)]||v:v}`;};
-const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-meaning.textContent=`Runs at ${ff(min,'minute')} of ${ff(hr,'hour')}, on ${ff(dom,'day')} of ${ff(mon,'month',MONTHS)}, on ${ff(dow,'weekday',DAYS)}.`;
-try{const runs=[];const now=new Date();now.setSeconds(0,0);let d=new Date(now);d.setMinutes(d.getMinutes()+1);let att=0;while(runs.length<5&&att<100000){att++;const mf=(val,cur)=>{if(val==='*')return true;if(val.startsWith('*/'))return cur%parseInt(val.slice(2))===0;if(val.includes('-')){const[a,b]=val.split('-').map(Number);return cur>=a&&cur<=b;}if(val.includes(','))return val.split(',').map(Number).includes(cur);return parseInt(val)===cur;};if(mf(mon,d.getMonth()+1)&&mf(dom,d.getDate())&&mf(dow,d.getDay())&&mf(hr,d.getHours())&&mf(min,d.getMinutes()))runs.push(new Date(d));d.setMinutes(d.getMinutes()+1);}next.textContent=runs.length?runs.map((r,i)=>`${i+1}. ${r.toLocaleString()}`).join('\n'):'Could not compute next runs.';}catch(e){next.textContent='';}}
-document.addEventListener('DOMContentLoaded',()=>cronSample('*/5 * * * *'));
-</script>
+        <div class="toast" id="toast"></div>
+        <script src="../assets/shared.js"></script>
+        <script src="../assets/sidebar.js"></script>
+        <script>
+            function cronSample(e) { document.getElementById('cronInput').value = e; parseCron(); }
+            function parseCron() {
+                const raw = document.getElementById('cronInput').value.trim(), meaning = document.getElementById('cronMeaning'), fields = document.getElementById('cronFields'), next = document.getElementById('cronNext'); if (!raw) { meaning.textContent = ''; fields.innerHTML = ''; next.textContent = ''; return; } const parts = raw.split(/\s+/); if (parts.length !== 5) { meaning.textContent = '⚠ Expected 5 fields: minute hour day month weekday'; fields.innerHTML = ''; next.textContent = ''; return; } const [min, hr, dom, mon, dow] = parts, fieldDefs = [{ label: 'Minute', val: min, range: '0–59' }, { label: 'Hour', val: hr, range: '0–23' }, { label: 'Day', val: dom, range: '1–31' }, { label: 'Month', val: mon, range: '1–12' }, { label: 'Weekday', val: dow, range: '0–6 (Sun=0)' }]; fields.innerHTML = fieldDefs.map(f => `<div class="hash-row"><div class="hash-algo">${f.label}</div><div class="hash-val" style="color:var(--yellow)">${f.val}</div><div style="font-size:0.68rem;color:var(--text-dim);padding-top:3px">${f.range}</div></div>`).join('');
+                const ff = (v, unit, vals) => { if (v === '*') return `every ${unit}`; if (v.startsWith('*/')) return `every ${v.slice(2)} ${unit}s`; if (v.includes('-')) { const [a, b] = v.split('-'); return `${unit}s ${a}–${b}`; } if (v.includes(',')) return `${unit}s ${v}`; return `${unit} ${vals ? vals[parseInt(v)] || v : v}`; };
+                const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                meaning.textContent = `Runs at ${ff(min, 'minute')} of ${ff(hr, 'hour')}, on ${ff(dom, 'day')} of ${ff(mon, 'month', MONTHS)}, on ${ff(dow, 'weekday', DAYS)}.`;
+                try { const runs = []; const now = new Date(); now.setSeconds(0, 0); let d = new Date(now); d.setMinutes(d.getMinutes() + 1); let att = 0; while (runs.length < 5 && att < 100000) { att++; const mf = (val, cur) => { if (val === '*') return true; if (val.startsWith('*/')) return cur % parseInt(val.slice(2)) === 0; if (val.includes('-')) { const [a, b] = val.split('-').map(Number); return cur >= a && cur <= b; } if (val.includes(',')) return val.split(',').map(Number).includes(cur); return parseInt(val) === cur; }; if (mf(mon, d.getMonth() + 1) && mf(dom, d.getDate()) && mf(dow, d.getDay()) && mf(hr, d.getHours()) && mf(min, d.getMinutes())) runs.push(new Date(d)); d.setMinutes(d.getMinutes() + 1); } next.textContent = runs.length ? runs.map((r, i) => `${i + 1}. ${r.toLocaleString()}`).join('\n') : 'Could not compute next runs.'; } catch (e) { next.textContent = ''; }
+            }
+            document.addEventListener('DOMContentLoaded', () => cronSample('*/5 * * * *'));
+        </script>
 </body>
 </html>

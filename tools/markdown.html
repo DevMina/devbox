@@ -12,35 +12,41 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">MD</div>
-      <div>
-        <div class="tool-title">Markdown Preview</div>
-        <div class="tool-desc">Write Markdown and see a live rendered preview side by side</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">MD</div>
+                    <div>
+                        <div class="tool-title">Markdown Preview</div>
+                        <div class="tool-desc">Write Markdown and see a live rendered preview side by side</div>
+                    </div>
+                </div>
+
+                <div class="two-col" style="align-items:start">
+                    <div class="panel" style="margin:0">
+                        <div class="panel-bar"><span class="panel-label">Markdown</span><div class="panel-actions"><button class="btn btn-ghost" onclick="mdSample()">Sample</button><button class="btn btn-ghost" onclick="document.getElementById('mdInput').value='';renderMd()">Clear</button></div></div>
+                        <textarea id="mdInput" oninput="renderMd()" style="min-height:500px;font-size:0.83rem;" placeholder="# Hello World"></textarea>
+                    </div>
+                    <div class="panel" style="margin:0">
+                        <div class="panel-bar"><span class="panel-label">Preview</span></div>
+                        <div id="mdPreview" style="padding:16px 20px;min-height:500px;font-size:0.88rem;line-height:1.75;color:var(--text);"></div>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="two-col" style="align-items:start">
-  <div class="panel" style="margin:0">
-    <div class="panel-bar"><span class="panel-label">Markdown</span><div class="panel-actions"><button class="btn btn-ghost" onclick="mdSample()">Sample</button><button class="btn btn-ghost" onclick="document.getElementById('mdInput').value='';renderMd()">Clear</button></div></div>
-    <textarea id="mdInput" oninput="renderMd()" style="min-height:500px;font-size:0.83rem;" placeholder="# Hello World"></textarea>
-  </div>
-  <div class="panel" style="margin:0">
-    <div class="panel-bar"><span class="panel-label">Preview</span></div>
-    <div id="mdPreview" style="padding:16px 20px;min-height:500px;font-size:0.88rem;line-height:1.75;color:var(--text);"></div>
-  </div>
-</div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-function renderMd(){const src=document.getElementById('mdInput').value;let html=src.replace(/^#{6}\s(.+)$/gm,'<h6 style="font-size:0.8em;color:var(--text-dim);margin:10px 0 4px">$1</h6>').replace(/^#{5}\s(.+)$/gm,'<h5 style="font-size:0.9em;color:var(--text-dim);margin:10px 0 4px">$1</h5>').replace(/^#{4}\s(.+)$/gm,'<h4 style="font-size:1em;font-weight:700;margin:12px 0 6px">$1</h4>').replace(/^#{3}\s(.+)$/gm,'<h3 style="font-size:1.1em;font-weight:700;color:var(--text-bright);margin:14px 0 6px">$1</h3>').replace(/^#{2}\s(.+)$/gm,'<h2 style="font-size:1.25em;font-weight:700;color:var(--text-bright);margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border)">$1</h2>').replace(/^#{1}\s(.+)$/gm,'<h1 style="font-size:1.5em;font-weight:700;color:var(--text-bright);margin:0 0 12px;padding-bottom:6px;border-bottom:2px solid var(--border)">$1</h1>').replace(/^&gt;\s?(.+)$/gm,'<blockquote style="border-left:3px solid var(--blue);margin:8px 0;padding:6px 12px;color:var(--text-dim);background:var(--surface2);border-radius:0 4px 4px 0">$1</blockquote>').replace(/```(\w*)\n([\s\S]*?)```/g,'<pre style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;overflow-x:auto;margin:10px 0"><code style="font-family:var(--mono);font-size:0.82em;color:var(--green)">$2</code></pre>').replace(/`([^`]+)`/g,'<code style="background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-family:var(--mono);font-size:0.85em;color:var(--orange)">$1</code>').replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>').replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--text-bright)">$1</strong>').replace(/\*(.+?)\*/g,'<em style="color:var(--text-dim)">$1</em>').replace(/~~(.+?)~~/g,'<del style="color:var(--text-dim)">$1</del>').replace(/^(-{3,}|\*{3,})$/gm,'<hr style="border:none;border-top:1px solid var(--border);margin:16px 0">').replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" style="color:var(--blue);text-decoration:underline">$1</a>').replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'<img src="$2" alt="$1" style="max-width:100%;border-radius:6px;margin:6px 0">').replace(/^\s*[-*+]\s(.+)$/gm,'<li style="margin:3px 0;padding-left:4px">$1</li>').replace(/^\d+\.\s(.+)$/gm,'<li style="margin:3px 0;padding-left:4px;list-style:decimal">$1</li>').replace(/(<li[^>]*>.*<\/li>\n?)+/g,m=>`<ul style="padding-left:20px;margin:8px 0">${m}</ul>`).replace(/\n\n+/g,'</p><p style="margin:8px 0">').replace(/\n/g,'<br>');document.getElementById('mdPreview').innerHTML=`<p style="margin:8px 0">${html}</p>`;}
-function mdSample(){document.getElementById('mdInput').value=`# Markdown Preview\n\nType on the left, see **live** results here.\n\n## Features\n\n- **Bold**, *italic*, ~~strikethrough~~\n- \`inline code\`\n- [Links](https://example.com)\n\n## Code\n\n\`\`\`javascript\nconst greet = name => \`Hello, \${name}!\`;\n\`\`\`\n\n> Blockquote — great for callouts.\n\n---\n\nMade with ❤️ in DevBox.`;renderMd();}
-</script>
+        <div class="toast" id="toast"></div>
+        <script src="../assets/shared.js"></script>
+        <script src="../assets/sidebar.js"></script>
+        <script>
+            function renderMd() { const src = document.getElementById('mdInput').value; let html = src.replace(/^#{6}\s(.+)$/gm, '<h6 style="font-size:0.8em;color:var(--text-dim);margin:10px 0 4px">$1</h6>').replace(/^#{5}\s(.+)$/gm, '<h5 style="font-size:0.9em;color:var(--text-dim);margin:10px 0 4px">$1</h5>').replace(/^#{4}\s(.+)$/gm, '<h4 style="font-size:1em;font-weight:700;margin:12px 0 6px">$1</h4>').replace(/^#{3}\s(.+)$/gm, '<h3 style="font-size:1.1em;font-weight:700;color:var(--text-bright);margin:14px 0 6px">$1</h3>').replace(/^#{2}\s(.+)$/gm, '<h2 style="font-size:1.25em;font-weight:700;color:var(--text-bright);margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border)">$1</h2>').replace(/^#{1}\s(.+)$/gm, '<h1 style="font-size:1.5em;font-weight:700;color:var(--text-bright);margin:0 0 12px;padding-bottom:6px;border-bottom:2px solid var(--border)">$1</h1>').replace(/^&gt;\s?(.+)$/gm, '<blockquote style="border-left:3px solid var(--blue);margin:8px 0;padding:6px 12px;color:var(--text-dim);background:var(--surface2);border-radius:0 4px 4px 0">$1</blockquote>').replace(/```(\w*)\n([\s\S]*?)```/g, '<pre style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;overflow-x:auto;margin:10px 0"><code style="font-family:var(--mono);font-size:0.82em;color:var(--green)">$2</code></pre>').replace(/`([^`]+)`/g, '<code style="background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-family:var(--mono);font-size:0.85em;color:var(--orange)">$1</code>').replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>').replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--text-bright)">$1</strong>').replace(/\*(.+?)\*/g, '<em style="color:var(--text-dim)">$1</em>').replace(/~~(.+?)~~/g, '<del style="color:var(--text-dim)">$1</del>').replace(/^(-{3,}|\*{3,})$/gm, '<hr style="border:none;border-top:1px solid var(--border);margin:16px 0">').replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color:var(--blue);text-decoration:underline">$1</a>').replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:6px;margin:6px 0">').replace(/^\s*[-*+]\s(.+)$/gm, '<li style="margin:3px 0;padding-left:4px">$1</li>').replace(/^\d+\.\s(.+)$/gm, '<li style="margin:3px 0;padding-left:4px;list-style:decimal">$1</li>').replace(/(<li[^>]*>.*<\/li>\n?)+/g, m => `<ul style="padding-left:20px;margin:8px 0">${m}</ul>`).replace(/\n\n+/g, '</p><p style="margin:8px 0">').replace(/\n/g, '<br>'); document.getElementById('mdPreview').innerHTML = `<p style="margin:8px 0">${html}</p>`; }
+            function mdSample() { document.getElementById('mdInput').value = `# Markdown Preview\n\nType on the left, see **live** results here.\n\n## Features\n\n- **Bold**, *italic*, ~~strikethrough~~\n- \`inline code\`\n- [Links](https://example.com)\n\n## Code\n\n\`\`\`javascript\nconst greet = name => \`Hello, \${name}!\`;\n\`\`\`\n\n> Blockquote — great for callouts.\n\n---\n\nMade with ❤️ in DevBox.`; renderMd(); }
+        </script>
 </body>
 </html>

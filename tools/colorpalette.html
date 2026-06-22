@@ -12,47 +12,55 @@
 <meta property="og:type" content="website">
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="content" style="min-width:0">
-    <div class="tool-header">
-      <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">🎨</div>
-      <div>
-        <div class="tool-title">Color Palette Generator</div>
-        <div class="tool-desc">Generate complementary, analogous, triadic, and more palettes</div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">🎨</div>
+                    <div>
+                        <div class="tool-title">Color Palette Generator</div>
+                        <div class="tool-desc">Generate complementary, analogous, triadic, and more palettes</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Base color</span></div>
+                    <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border)">
+                        <input type="color" id="paletteBase" value="#B07EFF" oninput="genPalette()" style="width:48px;height:48px;border:none;background:none;cursor:pointer;padding:0;border-radius:8px;overflow:hidden">
+                        <input type="text" id="paletteHexIn" value="#B07EFF" oninput="paletteFromHex()" style="flex:1;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.9rem;color:var(--text);outline:none">
+                    </div>
+                    <div style="display:flex;gap:8px;padding:10px 14px;flex-wrap:wrap">
+                        <button class="btn btn-ghost" onclick="paletteMode='complementary';genPalette()">Complementary</button>
+                        <button class="btn btn-ghost" onclick="paletteMode='analogous';genPalette()">Analogous</button>
+                        <button class="btn btn-ghost" onclick="paletteMode='triadic';genPalette()">Triadic</button>
+                        <button class="btn btn-ghost" onclick="paletteMode='tetradic';genPalette()">Tetradic</button>
+                        <button class="btn btn-ghost" onclick="paletteMode='mono';genPalette()">Monochromatic</button>
+                        <button class="btn btn-ghost" onclick="paletteMode='split';genPalette()">Split-Comp</button>
+                    </div>
+                </div>
+                <div id="paletteOutput" style="display:flex;gap:0;border-radius:var(--r);overflow:hidden;margin-bottom:14px;min-height:100px"></div>
+                <div class="panel"><div class="panel-bar"><span class="panel-label">Values</span></div><div id="paletteValues" class="hash-grid"></div></div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </div><!-- /content-wrap -->
     </div>
-    
-<div class="panel">
-  <div class="panel-bar"><span class="panel-label">Base color</span></div>
-  <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border)">
-    <input type="color" id="paletteBase" value="#B07EFF" oninput="genPalette()" style="width:48px;height:48px;border:none;background:none;cursor:pointer;padding:0;border-radius:8px;overflow:hidden">
-    <input type="text" id="paletteHexIn" value="#B07EFF" oninput="paletteFromHex()" style="flex:1;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.9rem;color:var(--text);outline:none">
-  </div>
-  <div style="display:flex;gap:8px;padding:10px 14px;flex-wrap:wrap">
-    <button class="btn btn-ghost" onclick="paletteMode='complementary';genPalette()">Complementary</button>
-    <button class="btn btn-ghost" onclick="paletteMode='analogous';genPalette()">Analogous</button>
-    <button class="btn btn-ghost" onclick="paletteMode='triadic';genPalette()">Triadic</button>
-    <button class="btn btn-ghost" onclick="paletteMode='tetradic';genPalette()">Tetradic</button>
-    <button class="btn btn-ghost" onclick="paletteMode='mono';genPalette()">Monochromatic</button>
-    <button class="btn btn-ghost" onclick="paletteMode='split';genPalette()">Split-Comp</button>
-  </div>
-</div>
-<div id="paletteOutput" style="display:flex;gap:0;border-radius:var(--r);overflow:hidden;margin-bottom:14px;min-height:100px"></div>
-<div class="panel"><div class="panel-bar"><span class="panel-label">Values</span></div><div id="paletteValues" class="hash-grid"></div></div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js"></script>
-<script src="../assets/sidebar.js"></script>
-<script>
-let paletteMode='complementary';
-function hexToHsl(hex){hex=hex.replace(/^#/,'');if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');const r=parseInt(hex.slice(0,2),16)/255,g=parseInt(hex.slice(2,4),16)/255,b=parseInt(hex.slice(4,6),16)/255;const max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,l=(max+min)/2;if(max===min){h=s=0;}else{const d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;}h/=6;}return[Math.round(h*360),Math.round(s*100),Math.round(l*100)];}
-function hslToHex(h,s,l){h=((h%360)+360)%360;s/=100;l/=100;const c=(1-Math.abs(2*l-1))*s,x=c*(1-Math.abs((h/60)%2-1)),m=l-c/2;let r=0,g=0,b=0;if(h<60){r=c;g=x;}else if(h<120){r=x;g=c;}else if(h<180){g=c;b=x;}else if(h<240){g=x;b=c;}else if(h<300){r=x;b=c;}else{r=c;b=x;}return'#'+[r,g,b].map(v=>Math.round((v+m)*255).toString(16).padStart(2,'0')).join('');}
-function paletteFromHex(){const hex=document.getElementById('paletteHexIn').value.trim();if(/^#?[0-9a-fA-F]{6}$/.test(hex)){const h=hex.startsWith('#')?hex:'#'+hex;document.getElementById('paletteBase').value=h;genPalette();}}
-function genPalette(){const base=document.getElementById('paletteBase').value;document.getElementById('paletteHexIn').value=base;const[h,s,l]=hexToHsl(base);let colors=[];if(paletteMode==='complementary')colors=[hslToHex(h,s,l),hslToHex(h,s,Math.min(l+15,90)),hslToHex(h+180,s,l),hslToHex(h+180,s,Math.min(l+15,90)),hslToHex(h+180,Math.max(s-20,10),l)];else if(paletteMode==='analogous')colors=[hslToHex(h-60,s,l),hslToHex(h-30,s,l),hslToHex(h,s,l),hslToHex(h+30,s,l),hslToHex(h+60,s,l)];else if(paletteMode==='triadic')colors=[hslToHex(h,s,l),hslToHex(h,s,Math.min(l+20,90)),hslToHex(h+120,s,l),hslToHex(h+120,s,Math.min(l+20,90)),hslToHex(h+240,s,l)];else if(paletteMode==='tetradic')colors=[hslToHex(h,s,l),hslToHex(h+90,s,l),hslToHex(h+180,s,l),hslToHex(h+270,s,l),hslToHex(h,Math.max(s-30,10),l)];else if(paletteMode==='mono')colors=[hslToHex(h,s,20),hslToHex(h,s,35),hslToHex(h,s,50),hslToHex(h,s,65),hslToHex(h,s,80)];else if(paletteMode==='split')colors=[hslToHex(h,s,l),hslToHex(h+150,s,l),hslToHex(h+210,s,l),hslToHex(h+150,s,Math.min(l+20,90)),hslToHex(h+210,s,Math.min(l+20,90))];
-const out=document.getElementById('paletteOutput');out.innerHTML=colors.map(c=>`<div style="flex:1;background:${c};min-height:100px;cursor:pointer;transition:flex 0.2s;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px" title="${c.toUpperCase()}" onclick="copy('${c.toUpperCase()}')" onmouseover="this.style.flex='1.6'" onmouseout="this.style.flex='1'"></div>`).join('');document.getElementById('paletteValues').innerHTML=colors.map(c=>`<div class="hash-row"><div style="width:20px;height:20px;border-radius:4px;background:${c};flex-shrink:0;border:1px solid var(--border)"></div><div class="hash-val" style="color:var(--pink)">${c.toUpperCase()}</div><div style="font-size:0.72rem;color:var(--text-dim);min-width:120px">${hexToHsl(c).join('° ')}</div><button class="uuid-copy" onclick="copy('${c.toUpperCase()}')">⎘</button></div>`).join('');}
-document.addEventListener('DOMContentLoaded',genPalette);
-</script>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js"></script>
+    <script src="../assets/sidebar.js"></script>
+    <script>
+        let paletteMode = 'complementary';
+        function hexToHsl(hex) { hex = hex.replace(/^#/, ''); if (hex.length === 3) hex = hex.split('').map(c => c + c).join(''); const r = parseInt(hex.slice(0, 2), 16) / 255, g = parseInt(hex.slice(2, 4), 16) / 255, b = parseInt(hex.slice(4, 6), 16) / 255; const max = Math.max(r, g, b), min = Math.min(r, g, b); let h, s, l = (max + min) / 2; if (max === min) { h = s = 0; } else { const d = max - min; s = l > 0.5 ? d / (2 - max - min) : d / (max + min); switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; }h /= 6; } return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)]; }
+        function hslToHex(h, s, l) { h = ((h % 360) + 360) % 360; s /= 100; l /= 100; const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = l - c / 2; let r = 0, g = 0, b = 0; if (h < 60) { r = c; g = x; } else if (h < 120) { r = x; g = c; } else if (h < 180) { g = c; b = x; } else if (h < 240) { g = x; b = c; } else if (h < 300) { r = x; b = c; } else { r = c; b = x; } return '#' + [r, g, b].map(v => Math.round((v + m) * 255).toString(16).padStart(2, '0')).join(''); }
+        function paletteFromHex() { const hex = document.getElementById('paletteHexIn').value.trim(); if (/^#?[0-9a-fA-F]{6}$/.test(hex)) { const h = hex.startsWith('#') ? hex : '#' + hex; document.getElementById('paletteBase').value = h; genPalette(); } }
+        function genPalette() {
+            const base = document.getElementById('paletteBase').value; document.getElementById('paletteHexIn').value = base; const [h, s, l] = hexToHsl(base); let colors = []; if (paletteMode === 'complementary') colors = [hslToHex(h, s, l), hslToHex(h, s, Math.min(l + 15, 90)), hslToHex(h + 180, s, l), hslToHex(h + 180, s, Math.min(l + 15, 90)), hslToHex(h + 180, Math.max(s - 20, 10), l)]; else if (paletteMode === 'analogous') colors = [hslToHex(h - 60, s, l), hslToHex(h - 30, s, l), hslToHex(h, s, l), hslToHex(h + 30, s, l), hslToHex(h + 60, s, l)]; else if (paletteMode === 'triadic') colors = [hslToHex(h, s, l), hslToHex(h, s, Math.min(l + 20, 90)), hslToHex(h + 120, s, l), hslToHex(h + 120, s, Math.min(l + 20, 90)), hslToHex(h + 240, s, l)]; else if (paletteMode === 'tetradic') colors = [hslToHex(h, s, l), hslToHex(h + 90, s, l), hslToHex(h + 180, s, l), hslToHex(h + 270, s, l), hslToHex(h, Math.max(s - 30, 10), l)]; else if (paletteMode === 'mono') colors = [hslToHex(h, s, 20), hslToHex(h, s, 35), hslToHex(h, s, 50), hslToHex(h, s, 65), hslToHex(h, s, 80)]; else if (paletteMode === 'split') colors = [hslToHex(h, s, l), hslToHex(h + 150, s, l), hslToHex(h + 210, s, l), hslToHex(h + 150, s, Math.min(l + 20, 90)), hslToHex(h + 210, s, Math.min(l + 20, 90))];
+            const out = document.getElementById('paletteOutput'); out.innerHTML = colors.map(c => `<div style="flex:1;background:${c};min-height:100px;cursor:pointer;transition:flex 0.2s;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px" title="${c.toUpperCase()}" onclick="copy('${c.toUpperCase()}')" onmouseover="this.style.flex='1.6'" onmouseout="this.style.flex='1'"></div>`).join(''); document.getElementById('paletteValues').innerHTML = colors.map(c => `<div class="hash-row"><div style="width:20px;height:20px;border-radius:4px;background:${c};flex-shrink:0;border:1px solid var(--border)"></div><div class="hash-val" style="color:var(--pink)">${c.toUpperCase()}</div><div style="font-size:0.72rem;color:var(--text-dim);min-width:120px">${hexToHsl(c).join('° ')}</div><button class="uuid-copy" onclick="copy('${c.toUpperCase()}')">⎘</button></div>`).join('');
+        }
+        document.addEventListener('DOMContentLoaded', genPalette);
+    </script>
 </body>
 </html>
