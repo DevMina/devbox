@@ -75,11 +75,22 @@ function buildSidebar() {
     const currentFile = rawFile.replace(/\.html$/, '');
     const chevronSVG = `<svg class="sb-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg>`;
 
+    const contactHref = home.replace('index.html', '') + 'contact.html';
     let html = `
     <a class="sidebar-logo" href="${home}">
       <div class="logo-mark">{}</div>
       <div class="logo-text">Dev<span>Box</span></div>
     </a>
+    <div class="sb-top-actions">
+      <button class="theme-toggle" onclick="window.toggleTheme()">
+        <span class="theme-toggle-icon">☀️</span>
+        <span class="theme-toggle-label">Light mode</span>
+      </button>
+      <a class="sidebar-contact-link" href="${contactHref}">
+        <span class="theme-toggle-icon">✉️</span>
+        <span>Contact</span>
+      </a>
+    </div>
     <div class="sb-nav-controls">
       <button class="sb-expand-all" title="Expand all sections">expand all</button>
       <span class="sb-nav-sep">·</span>
@@ -134,17 +145,7 @@ function buildSidebar() {
     });
     flushSection();
 
-    html += `</nav>
-    <div class="sidebar-bottom">
-      <a class="sidebar-contact-link" href="${home.replace('index.html', '')}contact.html">
-        <span class="theme-toggle-icon">✉️</span>
-        <span>Contact</span>
-      </a>
-      <button class="theme-toggle" onclick="window.toggleTheme()">
-        <span class="theme-toggle-icon">☀️</span>
-        <span class="theme-toggle-label">Light mode</span>
-      </button>
-    </div>`;
+    html += `</nav>`;
     return html;
 }
 

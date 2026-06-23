@@ -970,13 +970,23 @@ input[type="checkbox"] {
 /* ════════════════════════════════
    THEME TOGGLE BUTTON (sidebar)
    ════════════════════════════════ */
-.sidebar-bottom {
-  margin-top: auto;
-  padding: 12px 10px;
-  border-top: 1px solid var(--border);
+.sb-top-actions {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  overflow: hidden;
+  transition: opacity var(--transition), max-height var(--transition-slow);
+  max-height: 100px;
+}
+
+.sidebar.collapsed .sb-top-actions {
+  opacity: 0;
+  max-height: 0;
+  padding: 0;
+  pointer-events: none;
+  border-bottom: none;
 }
 
 .theme-toggle {
@@ -984,7 +994,7 @@ input[type="checkbox"] {
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 8px 10px;
+  padding: 7px 10px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
@@ -1006,12 +1016,12 @@ input[type="checkbox"] {
   line-height: 1;
 }
 
-/* Contact link in sidebar bottom */
+/* Contact link in sidebar top */
 .sidebar-contact-link {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 10px;
+  padding: 7px 10px;
   border-radius: var(--r-sm);
   text-decoration: none;
   font-family: var(--mono);
