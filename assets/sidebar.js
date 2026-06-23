@@ -71,7 +71,8 @@ function buildSidebar() {
         { href: 'breakpoints.html', label: 'Breakpoint Tester', dot: '--cyan' },
     ];
 
-    const currentFile = window.location.pathname.split('/').pop() || 'index.html';
+    const rawFile = window.location.pathname.split('/').pop() || 'index.html';
+    const currentFile = rawFile.replace(/\.html$/, '');
     const chevronSVG = `<svg class="sb-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg>`;
 
     let html = `
@@ -89,7 +90,7 @@ function buildSidebar() {
         const key = currentSection;
 
         // Only expand the section that contains the active page; collapse everything else
-        const hasActive = bodyItems.some(item => currentFile === item.href);
+        const hasActive = bodyItems.some(item => currentFile === item.href.replace(/.html$/, ''));
         const isCollapsed = !hasActive;
 
         html += `
@@ -102,7 +103,7 @@ function buildSidebar() {
 
         bodyItems.forEach(item => {
             const fullHref = base + item.href;
-            const isActive = currentFile === item.href;
+            const isActive = currentFile === item.href.replace(/.html$/, '');
             html += `
           <a class="nav-item${isActive ? ' active' : ''}" href="${fullHref}">
             <div class="nav-dot" style="background:var(${item.dot})"></div>
