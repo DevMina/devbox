@@ -661,6 +661,18 @@
         // Press / to focus search
         document.addEventListener('DOMContentLoaded', loadRecent);
 
+        // Dynamic section counts
+        document.querySelectorAll('.section').forEach(section => {
+            const count = section.querySelectorAll('.tool-card').length;
+            const badge = section.querySelector('.section-count');
+            if (badge) badge.textContent = count;
+        });
+
+        // Platform-aware keyboard hint
+        const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
+        const hint = document.querySelector('.search-hint');
+        if (hint) hint.innerHTML = isMac ? '<span class="kbd">⌘K</span> or <span class="kbd">/</span>' : '<span class="kbd">Ctrl+K</span> or <span class="kbd">/</span>';
+
         document.addEventListener('keydown', e => {
             if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
                 e.preventDefault();

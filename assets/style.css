@@ -883,6 +883,59 @@ input[type="checkbox"] {
         max-height: 0 !important;
         opacity: 0;
     }
+
+/* Hide group headers when sidebar is collapsed (icon-only mode) */
+.sidebar.collapsed .sb-group-header {
+    display: none;
+}
+.sidebar.collapsed .sb-group-body {
+    max-height: 800px !important;
+    opacity: 1;
+}
+.sidebar.collapsed .sb-group-body.collapsed {
+    max-height: 800px !important;
+    opacity: 1;
+}
+
+/* Expand/Collapse all controls */
+.sb-nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 16px 4px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    transition: opacity var(--transition), max-height var(--transition-slow);
+    max-height: 32px;
+    opacity: 1;
+}
+
+.sidebar.collapsed .sb-nav-controls {
+    opacity: 0;
+    max-height: 0;
+    pointer-events: none;
+    padding: 0;
+    border-bottom: none;
+}
+
+.sb-nav-controls button {
+    background: none;
+    border: none;
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 0;
+    transition: color var(--transition);
+    white-space: nowrap;
+}
+.sb-nav-controls button:hover { color: var(--green); }
+
+.sb-nav-sep {
+    font-size: 0.6rem;
+    color: var(--border2);
+    flex-shrink: 0;
+}
 /* ════════════════════════════════
    LIGHT THEME
    ════════════════════════════════ */

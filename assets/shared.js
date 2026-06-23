@@ -199,4 +199,15 @@ document.addEventListener('DOMContentLoaded', () => {
   injectBreadcrumb();
   initKeyboard();
   trackPageView();
+
+  // Platform-aware keyboard hint (tool pages have no search bar, so safe to try)
+  const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
+  const hint = document.querySelector('.search-hint');
+  if (hint) hint.innerHTML = isMac
+    ? '<span class="kbd">⌘K</span> or <span class="kbd">/</span>'
+    : '<span class="kbd">Ctrl+K</span> or <span class="kbd">/</span>';
+
+  // Update sidebar toggle label for platform
+  const toggle = document.querySelector('.sidebar-toggle');
+  if (toggle) toggle.title = `Toggle sidebar (${isMac ? '⌘B' : 'Ctrl+B'})`;
 });

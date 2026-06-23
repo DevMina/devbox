@@ -80,6 +80,11 @@ function buildSidebar() {
       <div class="logo-mark">{}</div>
       <div class="logo-text">Dev<span>Box</span></div>
     </a>
+    <div class="sb-nav-controls">
+      <button class="sb-expand-all" title="Expand all sections">expand all</button>
+      <span class="sb-nav-sep">·</span>
+      <button class="sb-collapse-all" title="Collapse all sections">collapse all</button>
+    </div>
     <nav class="nav">`;
 
     let currentSection = null;
@@ -105,7 +110,7 @@ function buildSidebar() {
             const fullHref = base + item.href;
             const isActive = currentFile === item.href.replace(/.html$/, '');
             html += `
-          <a class="nav-item${isActive ? ' active' : ''}" href="${fullHref}">
+          <a class="nav-item${isActive ? ' active' : ''}" href="${fullHref}" title="${item.label}">
             <div class="nav-dot" style="background:var(${item.dot})"></div>
             <span>${item.label}</span>
           </a>`;
@@ -143,30 +148,65 @@ function buildSidebar() {
     return html;
 }
 
+const SB_COLLAPSE_KEY = 'devbox_sb_sections';
+
+function getSectionStates() {
+    try { return JSON.parse(localStorage.getItem(SB_COLLAPSE_KEY) || '{}'); } catch(e) { return {}; }
+}
+
+function saveSectionState(key, collapsed) {
+    const states = getSectionStates();
+    states[key] = collapsed;
+    try { localStorage.setItem(SB_COLLAPSE_KEY, JSON.stringify(states)); } catch(e) {}
+}
+
 function initSidebarCollapse() {
     const sidebar = document.getElementById('sidebar');
     if (!sidebar) return;
+
+    // Restore saved per-section collapse states
+    const states = getSectionStates();
+    sidebar.querySelectorAll('.sb-group-header').forEach(header => {
+        const key = header.dataset.key;
+        // If we have a saved state, use it; otherwise keep the default (active section open, others closed)
+        if (key && key in states) {
+            const isCollapsed = states[key];
+            header.classList.toggle('collapsed', isCollapsed);
+            header.nextElementSibling.classList.toggle('collapsed', isCollapsed);
+        }
+    });
 
     sidebar.addEventListener('click', e => {
         const header = e.target.closest('.sb-group-header');
         if (!header) return;
 
-        const isAlreadyOpen = !header.classList.contains('collapsed');
-
-        // Collapse all groups first (accordion behaviour)
-        sidebar.querySelectorAll('.sb-group-header').forEach(h => {
-            h.classList.add('collapsed');
-            h.nextElementSibling.classList.add('collapsed');
-        });
-
-        // If it wasn't open, open it now
-        if (isAlreadyOpen) {
-            // clicking an open group collapses it — already done above, nothing more to do
-        } else {
-            header.classList.remove('collapsed');
-            header.nextElementSibling.classList.remove('collapsed');
-        }
+        const isNowCollapsed = header.classList.toggle('collapsed');
+        header.nextElementSibling.classList.toggle('collapsed', isNowCollapsed);
+        saveSectionState(header.dataset.key, isNowCollapsed);
     });
+
+    // Expand-all / collapse-all buttons
+    const expandBtn = sidebar.querySelector('.sb-expand-all');
+    const collapseBtn = sidebar.querySelector('.sb-collapse-all');
+
+    if (expandBtn) {
+        expandBtn.addEventListener('click', () => {
+            sidebar.querySelectorAll('.sb-group-header').forEach(h => {
+                h.classList.remove('collapsed');
+                h.nextElementSibling.classList.remove('collapsed');
+                saveSectionState(h.dataset.key, false);
+            });
+        });
+    }
+    if (collapseBtn) {
+        collapseBtn.addEventListener('click', () => {
+            sidebar.querySelectorAll('.sb-group-header').forEach(h => {
+                h.classList.add('collapsed');
+                h.nextElementSibling.classList.add('collapsed');
+                saveSectionState(h.dataset.key, true);
+            });
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
