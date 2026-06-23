@@ -8,13 +8,18 @@ function buildSidebar() {
 
     const ITEMS = [
         { section: 'Format' },
-        { href: 'json.html', label: 'JSON', dot: '--green' },
-        { href: 'jsonpath.html', label: 'JSON Path', dot: '--green' },
+        { href: 'json.html', label: 'JSON Formatter', dot: '--green' },
+        { href: 'xml.html', label: 'XML Formatter', dot: '--orange' },
+        { href: 'sqlformat.html', label: 'SQL Formatter', dot: '--orange' },
+        { href: 'cssminify.html', label: 'CSS Minifier', dot: '--pink' },
+        { href: 'htmlbeautify.html', label: 'HTML Beautifier', dot: '--orange' },
+        { href: 'diff.html', label: 'Diff Checker', dot: '--teal' },
         { section: 'Encode' },
         { href: 'base64.html', label: 'Base64', dot: '--blue' },
         { href: 'filebase64.html', label: 'File → Base64', dot: '--blue' },
         { href: 'url.html', label: 'URL Encoder', dot: '--cyan' },
         { href: 'htmlentity.html', label: 'HTML Entities', dot: '--green' },
+        { href: 'unicode.html', label: 'Unicode Converter', dot: '--purple' },
         { section: 'Generate' },
         { href: 'uuid.html', label: 'UUID', dot: '--orange' },
         { href: 'hash.html', label: 'Hash', dot: '--cyan' },
@@ -31,35 +36,32 @@ function buildSidebar() {
         { href: 'imagepalette.html', label: 'Image Palette', dot: '--orange' },
         { section: 'Inspect' },
         { href: 'jwt.html', label: 'JWT Decoder', dot: '--purple' },
-        { href: 'jwtencoder.html', label: 'JWT Encoder', dot: '--purple' },
         { href: 'timestamp.html', label: 'Timestamp', dot: '--yellow' },
         { href: 'regex.html', label: 'Regex Tester', dot: '--red' },
         { href: 'httpstatus.html', label: 'HTTP Status', dot: '--red' },
-        { href: 'headerbuilder.html', label: 'Header Builder', dot: '--purple' },
         { href: 'useragent.html', label: 'User Agent', dot: '--teal' },
         { href: 'keytester.html', label: 'Key Tester', dot: '--blue' },
+        { href: 'jsonpath.html', label: 'JSON Path', dot: '--green' },
+        { section: 'Build' },
+        { href: 'jwtencoder.html', label: 'JWT Encoder', dot: '--purple' },
+        { href: 'headerbuilder.html', label: 'Header Builder', dot: '--purple' },
+        { href: 'tablebuilder.html', label: 'Table Builder', dot: '--orange' },
+        { href: 'snippets.html', label: 'Snippet Manager', dot: '--teal' },
+        { href: 'breakpoints.html', label: 'Breakpoint Tester', dot: '--cyan' },
         { section: 'Convert' },
         { href: 'numbase.html', label: 'Number Base', dot: '--orange' },
         { href: 'byteconvert.html', label: 'Byte Converter', dot: '--purple' },
         { href: 'aspectratio.html', label: 'Aspect Ratio', dot: '--cyan' },
         { href: 'jsoncsvconvert.html', label: 'JSON ↔ CSV', dot: '--green' },
-        { href: 'caseconvert.html', label: 'Case Converter', dot: '--green' },
         { href: 'numberfmt.html', label: 'Number Format', dot: '--red' },
         { href: 'matheval.html', label: 'Math Evaluator', dot: '--yellow' },
         { section: 'Text' },
-        { href: 'diff.html', label: 'Diff Checker', dot: '--teal' },
         { href: 'textstats.html', label: 'Text Stats', dot: '--blue' },
         { href: 'charcounter.html', label: 'Char Counter', dot: '--teal' },
+        { href: 'caseconvert.html', label: 'Case Converter', dot: '--green' },
         { href: 'linesorter.html', label: 'Line Sorter', dot: '--yellow' },
         { href: 'markdown.html', label: 'Markdown Preview', dot: '--blue' },
-        { href: 'tablebuilder.html', label: 'Table Builder', dot: '--orange' },
         { href: 'textencrypt.html', label: 'Text Encrypt', dot: '--yellow' },
-        { section: 'Code' },
-        { href: 'sqlformat.html', label: 'SQL Formatter', dot: '--orange' },
-        { href: 'xml.html', label: 'XML Formatter', dot: '--orange' },
-        { href: 'cssminify.html', label: 'CSS Minifier', dot: '--pink' },
-        { href: 'htmlbeautify.html', label: 'HTML Beautifier', dot: '--orange' },
-        { href: 'snippets.html', label: 'Snippet Manager', dot: '--teal' },
         { section: 'Network' },
         { href: 'ipcalc.html', label: 'IP Calculator', dot: '--blue' },
         { href: 'cron.html', label: 'Cron Parser', dot: '--yellow' },
@@ -68,11 +70,9 @@ function buildSidebar() {
         { section: 'Productivity' },
         { href: 'pomodoro.html', label: 'Pomodoro Timer', dot: '--red' },
         { href: 'countdown.html', label: 'Countdown', dot: '--pink' },
-        { href: 'breakpoints.html', label: 'Breakpoint Tester', dot: '--cyan' },
     ];
 
-    const rawFile = window.location.pathname.split('/').pop() || 'index.html';
-    const currentFile = rawFile.replace(/\.html$/, '');
+    const currentFile = window.location.pathname.split('/').pop() || 'index.html';
     const chevronSVG = `<svg class="sb-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg>`;
 
     const contactHref = home.replace('index.html', '') + 'contact.html';
@@ -106,7 +106,7 @@ function buildSidebar() {
         const key = currentSection;
 
         // Only expand the section that contains the active page; collapse everything else
-        const hasActive = bodyItems.some(item => currentFile === item.href.replace(/.html$/, ''));
+        const hasActive = bodyItems.some(item => currentFile === item.href);
         const isCollapsed = !hasActive;
 
         html += `
@@ -119,7 +119,7 @@ function buildSidebar() {
 
         bodyItems.forEach(item => {
             const fullHref = base + item.href;
-            const isActive = currentFile === item.href.replace(/.html$/, '');
+            const isActive = currentFile === item.href;
             html += `
           <a class="nav-item${isActive ? ' active' : ''}" href="${fullHref}" title="${item.label}">
             <div class="nav-dot" style="background:var(${item.dot})"></div>

@@ -1196,3 +1196,76 @@ input[type="checkbox"] {
 @media (max-width: 520px) {
   .form-row { grid-template-columns: 1fr; }
 }
+
+
+/* ════════════════════════════════════════
+   ENHANCEMENTS — June 2026
+   ════════════════════════════════════════ */
+
+/* Tool cards: favourite star */
+.tool-card { position: relative; }
+.fav-btn {
+  position: absolute; top: 7px; right: 8px;
+  background: none; border: none; cursor: pointer;
+  font-size: 0.75rem; color: var(--text-dim);
+  opacity: 0; transition: opacity 0.15s, color 0.15s;
+  padding: 2px 4px; line-height: 1;
+}
+.tool-card:hover .fav-btn { opacity: 1; }
+.fav-btn.starred { opacity: 1 !important; color: var(--yellow); }
+
+/* Favourites section on homepage */
+#favSection {
+  display: none;
+  margin-bottom: 20px;
+}
+#favSection .fav-section-header {
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-dim);
+  margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+}
+#favSection .fav-section-header button {
+  background: none; border: none; color: var(--text-dim); cursor: pointer;
+  font-size: 0.62rem; font-family: var(--mono); opacity: 0.6;
+  transition: opacity 0.15s;
+}
+#favSection .fav-section-header button:hover { opacity: 1; }
+
+/* Copy button feedback */
+.btn.copied { color: var(--green) !important; border-color: var(--green) !important; }
+
+/* Tool page: back link (breadcrumb) improvement */
+.breadcrumb {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim);
+  text-decoration: none; margin-bottom: 14px;
+  padding: 5px 10px; border-radius: var(--r-sm);
+  background: var(--surface); border: 1px solid var(--border);
+  transition: color var(--transition), border-color var(--transition), background var(--transition);
+}
+.breadcrumb:hover { color: var(--text); border-color: var(--border2); background: var(--surface2); }
+
+/* Smooth sidebar collapse animation */
+.sidebar { transition: width 0.2s ease; }
+.sidebar.collapsed { transition: width 0.2s ease; }
+
+/* Search clear button */
+.search-clear {
+  position: absolute; right: 90px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; color: var(--text-dim);
+  font-size: 1rem; line-height: 1; display: none; padding: 4px;
+  transition: color 0.15s;
+}
+.search-clear:hover { color: var(--text); }
+.search-clear.show { display: block; }
+
+/* Print: hide search & sidebar hint */
+@media print {
+  .search-wrap, .hero-badges, .footnote { display: none; }
+}
+
+/* Keyboard shortcut hint in search: platform-aware already works, just polish */
+.search-hint { user-select: none; }
+
+/* Section toggle (collapse all / expand all) - make more prominent */
+.sb-nav-controls button:hover { color: var(--green) !important; }
