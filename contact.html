@@ -10,7 +10,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="preload" href="assets/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="assets/style.css"></noscript>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         .contact-submit:disabled {
@@ -97,7 +98,6 @@
     </div>
 
     <div class="toast" id="toast"></div>
-    <script src="assets/theme.js"></script>
     <script src="assets/shared.js" defer></script>
     <script src="assets/sidebar.js" defer></script>
     <script>
