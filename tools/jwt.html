@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
 <meta name="description" content="DevBox — Decode and inspect JSON Web Tokens">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JWT Decoder — DevBox</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
 <link rel="stylesheet" href="../assets/style.css">
 <meta property="og:title" content="JWT Decoder — DevBox">
 <meta property="og:description" content="Decode and inspect JSON Web Tokens">
@@ -14,7 +18,7 @@
 <body>
     <div class="app">
         <aside class="sidebar" id="sidebar"></aside>
-        <div class="content-wrap">
+        <main class="content-wrap">
             <div class="content" style="min-width:0">
                 <div class="tool-header">
                     <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">JWT</div>
@@ -46,12 +50,11 @@
                 © 2026 Mina Abdo. All rights reserved.
             </footer>
 
-        </div><!-- /content-wrap -->
+        </main><!-- /content-wrap -->
     </div>
     <div class="toast" id="toast"></div>
-    <script src="../assets/theme.js"></script>
-    <script src="../assets/shared.js"></script>
-    <script src="../assets/sidebar.js"></script>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
     <script>
         function jwtDecode() { const token = document.getElementById('jwtInput').value.trim(), result = document.getElementById('jwtResult'); if (!token) { result.style.display = 'none'; return; } const parts = token.split('.'); if (parts.length < 2) { result.style.display = 'none'; return; } try { const dec = str => JSON.parse(decodeURIComponent(escape(atob(str.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(str.length / 4) * 4, '='))))); const header = dec(parts[0]), payload = dec(parts[1]); document.getElementById('jwtHeader').textContent = JSON.stringify(header, null, 2); document.getElementById('jwtPayload').textContent = JSON.stringify(payload, null, 2); document.getElementById('jwtSig').textContent = parts[2] || '(none)'; result.style.display = ''; const eb = document.getElementById('jwtExpBadge'); if (payload.exp) { const ed = new Date(payload.exp * 1000); eb.innerHTML = ed < new Date() ? '<span class="status-badge badge-err">✗ Expired ' + ed.toLocaleString() + '</span>' : '<span class="status-badge badge-ok">✓ Valid until ' + ed.toLocaleString() + '</span>'; } else eb.innerHTML = '<span class="status-badge badge-info">No exp claim</span>'; } catch (e) { result.style.display = ''; document.getElementById('jwtHeader').textContent = 'Could not decode token'; document.getElementById('jwtPayload').textContent = ''; document.getElementById('jwtSig').textContent = ''; document.getElementById('jwtExpBadge').innerHTML = '<span class="status-badge badge-err">Invalid token</span>'; } }
         function jwtSample() { document.getElementById('jwtInput').value = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTksInJvbGVzIjpbImFkbWluIiwidXNlciJdfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'; jwtDecode(); }

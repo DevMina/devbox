@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
 <meta name="description" content="DevBox — Quick reference for all HTTP status codes">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HTTP Status Codes — DevBox</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
 <link rel="stylesheet" href="../assets/style.css">
 <meta property="og:title" content="HTTP Status Codes — DevBox">
 <meta property="og:description" content="Quick reference for all HTTP status codes">
@@ -14,7 +18,7 @@
 <body>
     <div class="app">
         <aside class="sidebar" id="sidebar"></aside>
-        <div class="content-wrap">
+        <main class="content-wrap">
             <div class="content" style="min-width:0">
                 <div class="tool-header">
                     <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">HTTP</div>
@@ -36,12 +40,11 @@
                 © 2026 Mina Abdo. All rights reserved.
             </footer>
 
-        </div><!-- /content-wrap -->
+        </main><!-- /content-wrap -->
     </div>
     <div class="toast" id="toast"></div>
-    <script src="../assets/theme.js"></script>
-    <script src="../assets/shared.js"></script>
-    <script src="../assets/sidebar.js"></script>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
     <script>
         const HTTP_CODES = [[100, "Continue", "The server received the request headers and the client should proceed.", "info"], [101, "Switching Protocols", "The server is switching protocols as requested.", "info"], [200, "OK", "The request succeeded.", "ok"], [201, "Created", "A new resource was created.", "ok"], [202, "Accepted", "The request was received but not yet acted upon.", "ok"], [204, "No Content", "No content to send for this request.", "ok"], [206, "Partial Content", "Partial GET request fulfilled.", "ok"], [301, "Moved Permanently", "The URL has been permanently moved.", "redirect"], [302, "Found", "The URL temporarily points to a different URI.", "redirect"], [304, "Not Modified", "The cached version is up-to-date.", "redirect"], [307, "Temporary Redirect", "Temporary redirect; method and body not changed.", "redirect"], [308, "Permanent Redirect", "Permanent redirect; method and body not changed.", "redirect"], [400, "Bad Request", "The server cannot process the request due to client error.", "client"], [401, "Unauthorized", "Authentication is required and has failed.", "client"], [403, "Forbidden", "The client does not have permission to access this resource.", "client"], [404, "Not Found", "The requested resource could not be found.", "client"], [405, "Method Not Allowed", "The HTTP method is not supported for this endpoint.", "client"], [408, "Request Timeout", "The server timed out waiting for the request.", "client"], [409, "Conflict", "The request conflicts with the current state of the server.", "client"], [410, "Gone", "The resource is no longer available.", "client"], [413, "Payload Too Large", "The request body exceeds the server limit.", "client"], [422, "Unprocessable Entity", "The request was well-formed but contained semantic errors.", "client"], [429, "Too Many Requests", "Rate limit exceeded.", "client"], [500, "Internal Server Error", "The server encountered an unexpected condition.", "server"], [501, "Not Implemented", "The server does not support the request method.", "server"], [502, "Bad Gateway", "Invalid response from an upstream server.", "server"], [503, "Service Unavailable", "The server is temporarily unable to handle the request.", "server"], [504, "Gateway Timeout", "The server did not receive a timely upstream response.", "server"]];
         const HTTP_COLORS = { info: 'var(--blue)', ok: 'var(--green)', redirect: 'var(--yellow)', client: 'var(--orange)', server: 'var(--red)' };

@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
 <meta name="description" content="DevBox — Beautify and minify SQL queries">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SQL Formatter — DevBox</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
 <link rel="stylesheet" href="../assets/style.css">
 <meta property="og:title" content="SQL Formatter — DevBox">
 <meta property="og:description" content="Beautify and minify SQL queries">
@@ -14,7 +18,7 @@
 <body>
     <div class="app">
         <aside class="sidebar" id="sidebar"></aside>
-        <div class="content-wrap">
+        <main class="content-wrap">
             <div class="content" style="min-width:0">
                 <div class="tool-header">
                     <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">SQL</div>
@@ -45,12 +49,11 @@
                 © 2026 Mina Abdo. All rights reserved.
             </footer>
 
-        </div><!-- /content-wrap -->
+        </main><!-- /content-wrap -->
     </div>
     <div class="toast" id="toast"></div>
-    <script src="../assets/theme.js"></script>
-    <script src="../assets/shared.js"></script>
-    <script src="../assets/sidebar.js"></script>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
     <script>
         const SQL_KW = ['SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'NOT', 'IN', 'IS', 'NULL', 'ORDER BY', 'GROUP BY', 'HAVING', 'LIMIT', 'OFFSET', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'OUTER JOIN', 'ON', 'AS', 'DISTINCT', 'COUNT', 'SUM', 'AVG', 'MIN', 'MAX', 'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM', 'CREATE TABLE', 'DROP TABLE', 'ALTER TABLE', 'ADD', 'COLUMN', 'PRIMARY KEY', 'FOREIGN KEY', 'REFERENCES', 'INDEX', 'UNIQUE', 'DEFAULT', 'NOT NULL', 'AUTO_INCREMENT', 'BETWEEN', 'LIKE', 'EXISTS', 'UNION', 'ALL'];
         function sqlFormat() {

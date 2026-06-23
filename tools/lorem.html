@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
 <meta name="description" content="DevBox — Generate Lorem Ipsum placeholder text">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lorem Ipsum Generator — DevBox</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
 <link rel="stylesheet" href="../assets/style.css">
 <meta property="og:title" content="Lorem Ipsum Generator — DevBox">
 <meta property="og:description" content="Generate Lorem Ipsum placeholder text">
@@ -14,7 +18,7 @@
 <body>
     <div class="app">
         <aside class="sidebar" id="sidebar"></aside>
-        <div class="content-wrap">
+        <main class="content-wrap">
             <div class="content" style="min-width:0">
                 <div class="tool-header">
                     <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">¶</div>
@@ -58,12 +62,11 @@
                 © 2026 Mina Abdo. All rights reserved.
             </footer>
 
-        </div><!-- /content-wrap -->
+        </main><!-- /content-wrap -->
     </div>
     <div class="toast" id="toast"></div>
-    <script src="../assets/theme.js"></script>
-    <script src="../assets/shared.js"></script>
-    <script src="../assets/sidebar.js"></script>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
     <script>
         const LW = ['lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit', 'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et', 'dolore', 'magna', 'aliqua', 'enim', 'ad', 'minim', 'veniam', 'quis', 'nostrud', 'exercitation', 'ullamco', 'laboris', 'nisi', 'aliquip', 'ex', 'ea', 'commodo', 'consequat', 'duis', 'aute', 'irure', 'in', 'reprehenderit', 'voluptate', 'velit', 'esse', 'cillum', 'eu', 'fugiat', 'nulla', 'pariatur', 'excepteur', 'sint', 'occaecat', 'cupidatat', 'non', 'proident', 'sunt', 'culpa', 'qui', 'officia', 'deserunt', 'mollit', 'anim', 'est', 'laborum', 'cras', 'pulvinar', 'mattis', 'purus', 'id', 'varius', 'quam', 'quisque', 'faucibus', 'ornare', 'suspendisse'];
         function lSent(n) { const w = []; for (let i = 0; i < n; i++)w.push(LW[Math.floor(Math.random() * LW.length)]); const s = w.join(' '); return s.charAt(0).toUpperCase() + s.slice(1) + '.'; }
