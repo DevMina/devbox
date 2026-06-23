@@ -883,3 +883,253 @@ input[type="checkbox"] {
         max-height: 0 !important;
         opacity: 0;
     }
+/* ════════════════════════════════
+   LIGHT THEME
+   ════════════════════════════════ */
+[data-theme="light"] {
+  --bg:       #F5F7FA;
+  --panel:    #FFFFFF;
+  --surface:  #EAEDF2;
+  --surface2: #DDE1EA;
+
+  --border:  #D1D7E3;
+  --border2: #B8C0D2;
+
+  --text:        #2D3452;
+  --text-dim:    #7A859E;
+  --text-bright: #111827;
+
+  --green:       #00A86B;  --green-dim:  rgba(0,168,107,0.1);
+  --blue:        #2B6CB0;  --blue-dim:   rgba(43,108,176,0.1);
+  --orange:      #C05621;  --orange-dim: rgba(192,86,33,0.1);
+  --purple:      #6B46C1;  --purple-dim: rgba(107,70,193,0.1);
+  --red:         #C53030;  --red-dim:    rgba(197,48,48,0.1);
+  --cyan:        #0987A0;  --cyan-dim:   rgba(9,135,160,0.1);
+  --yellow:      #B7791F;  --yellow-dim: rgba(183,121,31,0.1);
+  --pink:        #97266D;  --pink-dim:   rgba(151,38,109,0.1);
+  --teal:        #285E61;  --teal-dim:   rgba(40,94,97,0.1);
+}
+
+[data-theme="light"] .logo-mark { color: #F5F7FA; }
+[data-theme="light"] .tool-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+[data-theme="light"] * { scrollbar-color: var(--border2) transparent; }
+
+/* ════════════════════════════════
+   THEME TOGGLE BUTTON (sidebar)
+   ════════════════════════════════ */
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 12px 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+  text-align: left;
+}
+.theme-toggle:hover {
+  background: var(--surface2);
+  border-color: var(--border2);
+  color: var(--text);
+}
+.theme-toggle-icon {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+/* Contact link in sidebar bottom */
+.sidebar-contact-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--r-sm);
+  text-decoration: none;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  transition: background var(--transition), color var(--transition);
+}
+.sidebar-contact-link:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+/* ════════════════════════════════
+   CONTACT PAGE
+   ════════════════════════════════ */
+.contact-wrap {
+  max-width: 560px;
+}
+
+.contact-hero {
+  margin-bottom: 28px;
+}
+.contact-hero-title {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  letter-spacing: -0.03em;
+  margin-bottom: 6px;
+}
+.contact-hero-sub {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  width: 100%;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 11px 14px;
+  font-family: var(--font);
+  font-size: 0.88rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--transition), background var(--transition);
+  appearance: none;
+}
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  border-color: var(--green);
+  background: var(--surface2);
+}
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: var(--text-dim);
+  opacity: 0.6;
+}
+.form-textarea {
+  resize: vertical;
+  min-height: 130px;
+  line-height: 1.6;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.contact-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--green);
+  color: #0A0C10;
+  border: none;
+  border-radius: var(--r);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--transition), transform var(--transition);
+  align-self: flex-start;
+}
+.contact-submit:hover { opacity: 0.88; transform: translateY(-1px); }
+.contact-submit:active { transform: translateY(0); }
+
+.contact-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  font-family: var(--mono);
+}
+.contact-divider::before,
+.contact-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.contact-alt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  text-decoration: none;
+  color: var(--text-dim);
+  font-size: 0.82rem;
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+.contact-alt:hover {
+  border-color: var(--border2);
+  background: var(--surface2);
+  color: var(--text);
+}
+.contact-alt-icon { font-size: 1rem; flex-shrink: 0; }
+.contact-alt-label { font-family: var(--mono); font-size: 0.7rem; color: var(--text-dim); }
+.contact-alt-value { font-size: 0.82rem; color: var(--text); font-weight: 500; }
+
+.form-success {
+  display: none;
+  padding: 20px;
+  background: var(--green-dim);
+  border: 1px solid var(--green);
+  border-radius: var(--r);
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  text-align: center;
+  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+}
+.form-success.show { display: flex; }
+.form-success-icon { font-size: 1.8rem; }
+
+@media (max-width: 520px) {
+  .form-row { grid-template-columns: 1fr; }
+}

@@ -324,11 +324,15 @@
 
                     <!-- ENCODE -->
                     <div class="section" data-section="Encode">
-                        <div class="section-header">Encode / Decode <span class="section-count">3</span></div>
+                        <div class="section-header">Encode / Decode <span class="section-count">4</span></div>
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/base64.html">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">B64</div>
                                 <div class="tool-card-text"><div class="tool-name">Base64</div><div class="tool-desc">Encode & decode text</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/filebase64.html">
+                                <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">F64</div>
+                                <div class="tool-card-text"><div class="tool-name">File → Base64</div><div class="tool-desc">Convert files to Base64 / data URI</div></div>
                             </a>
                             <a class="tool-card" href="tools/url.html">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">URL</div>
@@ -514,11 +518,15 @@
 
                     <!-- CODE -->
                     <div class="section" data-section="Code">
-                        <div class="section-header">Code <span class="section-count">4</span></div>
+                        <div class="section-header">Code <span class="section-count">5</span></div>
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/sqlformat.html">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">SQL</div>
                                 <div class="tool-card-text"><div class="tool-name">SQL Formatter</div><div class="tool-desc">Beautify & minify SQL</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/xml.html">
+                                <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">XML</div>
+                                <div class="tool-card-text"><div class="tool-name">XML Formatter</div><div class="tool-desc">Beautify, minify &amp; validate XML</div></div>
                             </a>
                             <a class="tool-card" href="tools/cssminify.html">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">CSS</div>
@@ -586,13 +594,14 @@
             </div><!-- /content -->
 
             <footer class="site-footer">
-                © 2026 Mina Abdo. All rights reserved.
+                © 2026 Mina Abdo. All rights reserved. &nbsp;·&nbsp; <a href="contact.html" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">Contact</a>
             </footer>
 
         </div><!-- /content-wrap -->
     </div><!-- /app -->
 
     <div class="toast" id="toast"></div>
+    <script src="assets/theme.js"></script>
     <script src="assets/shared.js"></script>
     <script src="assets/sidebar.js"></script>
     <script>

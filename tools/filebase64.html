@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="DevBox — Convert any file to Base64 and back">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File → Base64 — DevBox</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:title" content="File to Base64 — DevBox">
+<meta property="og:description" content="Convert any file to Base64 string or data URI, and decode Base64 back to a file">
+<meta property="og:type" content="website">
+<style>
+  .drop-zone {
+    border: 2px dashed var(--border2);
+    border-radius: var(--r);
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color var(--transition), background var(--transition);
+    background: var(--surface);
+    position: relative;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--blue);
+    background: var(--blue-dim);
+  }
+  .drop-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .drop-icon { font-size: 2.2rem; margin-bottom: 10px; }
+  .drop-label { font-size: 0.9rem; color: var(--text); margin-bottom: 4px; font-weight: 500; }
+  .drop-hint { font-size: 0.75rem; color: var(--text-dim); font-family: var(--mono); }
+
+  .file-info {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: var(--r);
+    margin-bottom: 14px;
+  }
+  .file-info.show { display: flex; }
+  .file-info-icon { font-size: 1.6rem; flex-shrink: 0; }
+  .file-info-name { font-family: var(--mono); font-size: 0.82rem; color: var(--text-bright); font-weight: 600; word-break: break-all; }
+  .file-info-meta { font-size: 0.72rem; color: var(--text-dim); margin-top: 2px; }
+
+  .tabs { display: flex; gap: 4px; margin-bottom: 14px; }
+  .tab-btn {
+    padding: 7px 16px; border-radius: var(--r-sm); border: 1px solid var(--border);
+    background: var(--surface); color: var(--text-dim); font-family: var(--mono); font-size: 0.75rem;
+    cursor: pointer; transition: all var(--transition);
+  }
+  .tab-btn:hover { color: var(--text); border-color: var(--border2); }
+  .tab-btn.active { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
+
+  .stat-row {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    font-family: var(--mono); font-size: 0.75rem;
+    padding: 8px 0; color: var(--text-dim);
+  }
+  .stat-row strong { color: var(--text); }
+
+  .decode-section { display: none; }
+  .decode-section.show { display: block; }
+  .encode-section { display: block; }
+  .encode-section.hidden { display: none; }
+
+  .preview-img {
+    max-width: 100%; max-height: 200px; border-radius: var(--r-sm);
+    border: 1px solid var(--border); display: block; margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="content-wrap">
+    <div class="content" style="min-width:0">
+
+      <div class="tool-header">
+        <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">F64</div>
+        <div>
+          <div class="tool-title">File → Base64</div>
+          <div class="tool-desc">Convert any file to Base64 / data URI, or decode Base64 back to a file</div>
+        </div>
+      </div>
+
+      <!-- Mode tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" id="tabEncode" onclick="switchMode('encode')">📄 File → Base64</button>
+        <button class="tab-btn" id="tabDecode" onclick="switchMode('decode')">🔁 Base64 → File</button>
+      </div>
+
+      <!-- ENCODE MODE -->
+      <div class="encode-section" id="encodeSection">
+        <!-- Drop zone -->
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" onchange="handleFile(this.files[0])">
+          <div class="drop-icon">📂</div>
+          <div class="drop-label">Drop any file here or click to browse</div>
+          <div class="drop-hint">Images, PDFs, ZIPs, fonts — any file type</div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <!-- File info -->
+        <div class="file-info" id="fileInfo">
+          <div class="file-info-icon" id="fileInfoIcon">📄</div>
+          <div>
+            <div class="file-info-name" id="fileInfoName">—</div>
+            <div class="file-info-meta" id="fileInfoMeta">—</div>
+          </div>
+        </div>
+
+        <!-- Output format -->
+        <div class="panel" id="outputPanel" style="display:none">
+          <div class="panel-bar">
+            <span class="panel-label">Output</span>
+            <div class="panel-actions">
+              <select id="outputFmt" onchange="renderOutput()" class="btn btn-ghost" style="font-family:var(--mono);font-size:0.72rem;padding:5px 10px;cursor:pointer">
+                <option value="raw">Raw Base64</option>
+                <option value="datauri">Data URI</option>
+                <option value="cssurl">CSS url()</option>
+                <option value="html">HTML img src</option>
+              </select>
+              <button class="btn btn-ghost" onclick="copyOutput()">⎘ Copy</button>
+              <button class="btn btn-ghost" onclick="downloadTxt()">↓ .txt</button>
+            </div>
+          </div>
+          <div id="statRow" class="stat-row"></div>
+          <div id="b64Output" class="output-area" style="color:var(--blue);word-break:break-all;min-height:100px;max-height:260px;overflow-y:auto;white-space:pre-wrap;font-size:0.75rem"></div>
+          <div id="previewWrap" style="display:none">
+            <div style="font-family:var(--mono);font-size:0.68rem;color:var(--text-dim);margin-top:12px;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.08em">Preview</div>
+            <img id="previewImg" class="preview-img" alt="preview">
+          </div>
+        </div>
+      </div>
+
+      <!-- DECODE MODE -->
+      <div class="decode-section" id="decodeSection">
+        <div class="panel">
+          <div class="panel-bar">
+            <span class="panel-label">Paste Base64 or Data URI</span>
+            <div class="panel-actions">
+              <button class="btn btn-blue" onclick="decodeBase64()">⬇ Decode & Download</button>
+              <button class="btn btn-ghost" onclick="document.getElementById('decodeInput').value='';document.getElementById('decodeStatus').textContent=''">Clear</button>
+            </div>
+          </div>
+          <textarea id="decodeInput" style="min-height:180px;font-size:0.75rem" placeholder="data:image/png;base64,iVBORw0KGgo… or raw Base64…"></textarea>
+        </div>
+        <div id="decodeStatus" style="font-family:var(--mono);font-size:0.8rem;margin-top:8px"></div>
+      </div>
+
+    </div><!-- /content -->
+    <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/theme.js"></script>
+<script src="../assets/shared.js"></script>
+<script src="../assets/sidebar.js"></script>
+<script>
+  let currentFile = null;
+  let currentB64 = '';
+  let currentMime = '';
+
+  // Drag & drop
+  const dropZone = document.getElementById('dropZone');
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f) handleFile(f);
+  });
+
+  function handleFile(file) {
+    if (!file) return;
+    currentFile = file;
+    currentMime = file.type || 'application/octet-stream';
+
+    // Show file info
+    const info = document.getElementById('fileInfo');
+    info.classList.add('show');
+    document.getElementById('fileInfoIcon').textContent = iconForMime(currentMime);
+    document.getElementById('fileInfoName').textContent = file.name;
+    document.getElementById('fileInfoMeta').textContent = `${formatBytes(file.size)} · ${currentMime}`;
+
+    // Read as base64
+    const reader = new FileReader();
+    reader.onload = e => {
+      const dataUri = e.target.result;
+      // strip prefix: "data:...;base64,"
+      const comma = dataUri.indexOf(',');
+      currentB64 = comma >= 0 ? dataUri.slice(comma + 1) : dataUri;
+      document.getElementById('outputPanel').style.display = '';
+      renderOutput();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function renderOutput() {
+    if (!currentB64) return;
+    const fmt = document.getElementById('outputFmt').value;
+    let out = '';
+    if (fmt === 'raw')     out = currentB64;
+    if (fmt === 'datauri') out = `data:${currentMime};base64,${currentB64}`;
+    if (fmt === 'cssurl')  out = `url('data:${currentMime};base64,${currentB64}')`;
+    if (fmt === 'html')    out = `<img src="data:${currentMime};base64,${currentB64}" alt="${currentFile?.name || 'file'}">`;
+
+    document.getElementById('b64Output').textContent = out;
+
+    // Stats
+    const orig = currentFile ? currentFile.size : Math.round(currentB64.length * 0.75);
+    const b64len = out.length;
+    const overhead = b64len - (currentFile ? currentFile.size : 0);
+    document.getElementById('statRow').innerHTML =
+      `<span>Original: <strong>${formatBytes(orig)}</strong></span>` +
+      `<span>Base64 length: <strong>${b64len.toLocaleString()} chars</strong></span>` +
+      `<span>Size overhead: <strong style="color:var(--yellow)">+${Math.round((b64len / (orig||1) - 1)*100)}%</strong></span>`;
+
+    // Image preview
+    const isImage = currentMime.startsWith('image/');
+    const prevWrap = document.getElementById('previewWrap');
+    if (isImage && fmt !== 'raw') {
+      const src = fmt === 'html' ? `data:${currentMime};base64,${currentB64}` : out.replace(/^url\('|'\)$/g,'');
+      document.getElementById('previewImg').src = `data:${currentMime};base64,${currentB64}`;
+      prevWrap.style.display = '';
+    } else {
+      prevWrap.style.display = 'none';
+    }
+  }
+
+  function copyOutput() {
+    const txt = document.getElementById('b64Output').textContent;
+    navigator.clipboard.writeText(txt).then(() => showToast('Copied!'));
+  }
+
+  function downloadTxt() {
+    const txt = document.getElementById('b64Output').textContent;
+    if (!txt) return;
+    const name = (currentFile?.name || 'file') + '.base64.txt';
+    const blob = new Blob([txt], { type: 'text/plain' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  }
+
+  // DECODE
+  function decodeBase64() {
+    let input = document.getElementById('decodeInput').value.trim();
+    const statusEl = document.getElementById('decodeStatus');
+    if (!input) { statusEl.innerHTML = '<span style="color:var(--red)">Paste a Base64 string first.</span>'; return; }
+
+    let mime = 'application/octet-stream';
+    let b64 = input;
+
+    // Handle data URI
+    const match = input.match(/^data:([^;]+);base64,(.+)$/s);
+    if (match) { mime = match[1]; b64 = match[2]; }
+
+    try {
+      const binary = atob(b64.replace(/\s/g,''));
+      const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+      const blob = new Blob([bytes], { type: mime });
+      const ext = mime.split('/')[1]?.split('+')[0] || 'bin';
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `decoded.${ext}`;
+      a.click();
+      statusEl.innerHTML = `<span style="color:var(--green)">✓ Downloaded decoded.${ext} (${formatBytes(bytes.length)})</span>`;
+    } catch(e) {
+      statusEl.innerHTML = `<span style="color:var(--red)">Error: invalid Base64 — ${e.message}</span>`;
+    }
+  }
+
+  function switchMode(mode) {
+    document.getElementById('encodeSection').classList.toggle('hidden', mode !== 'encode');
+    document.getElementById('decodeSection').classList.toggle('show', mode === 'decode');
+    document.getElementById('tabEncode').classList.toggle('active', mode === 'encode');
+    document.getElementById('tabDecode').classList.toggle('active', mode === 'decode');
+  }
+
+  function iconForMime(mime) {
+    if (mime.startsWith('image/')) return '🖼️';
+    if (mime.startsWith('video/')) return '🎬';
+    if (mime.startsWith('audio/')) return '🎵';
+    if (mime.includes('pdf')) return '📕';
+    if (mime.includes('zip') || mime.includes('compressed')) return '📦';
+    if (mime.includes('font')) return '🔤';
+    if (mime.includes('json') || mime.includes('javascript') || mime.includes('html') || mime.includes('css')) return '💻';
+    return '📄';
+  }
+
+  function formatBytes(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
+    return (b/1048576).toFixed(2) + ' MB';
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1800);
+  }
+</script>
+</body>
+</html>

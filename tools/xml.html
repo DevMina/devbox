@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="DevBox — Beautify and minify XML with validation">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XML Formatter — DevBox</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<meta property="og:title" content="XML Formatter — DevBox">
+<meta property="og:description" content="Beautify, minify and validate XML instantly">
+<meta property="og:type" content="website">
+<style>
+  .xml-error {
+    padding: 10px 14px;
+    background: var(--red-dim);
+    border: 1px solid var(--red);
+    border-radius: var(--r-sm);
+    color: var(--red);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.5;
+    display: none;
+    margin-bottom: 10px;
+  }
+  .xml-error.show { display: block; }
+  .xml-valid {
+    padding: 8px 14px;
+    background: var(--green-dim);
+    border: 1px solid var(--green);
+    border-radius: var(--r-sm);
+    color: var(--green);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    display: none;
+    margin-bottom: 10px;
+  }
+  .xml-valid.show { display: flex; align-items: center; gap: 8px; }
+
+  .indent-select {
+    font-family: var(--mono); font-size: 0.72rem;
+    padding: 5px 10px; cursor: pointer;
+  }
+
+  #xmlOutput {
+    white-space: pre;
+    overflow-x: auto;
+    min-height: 160px;
+    max-height: 420px;
+    overflow-y: auto;
+    font-size: 0.78rem;
+    line-height: 1.65;
+    color: var(--orange);
+  }
+
+  /* Syntax highlight classes */
+  .xml-tag     { color: var(--blue); }
+  .xml-attr    { color: var(--orange); }
+  .xml-value   { color: var(--green); }
+  .xml-comment { color: var(--text-dim); font-style: italic; }
+  .xml-cdata   { color: var(--yellow); }
+  .xml-pi      { color: var(--purple); }
+  .xml-text    { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="content-wrap">
+    <div class="content" style="min-width:0">
+
+      <div class="tool-header">
+        <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">&lt;/&gt;</div>
+        <div>
+          <div class="tool-title">XML Formatter</div>
+          <div class="tool-desc">Beautify, minify and validate XML with syntax highlighting</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-bar">
+          <span class="panel-label">Input XML</span>
+          <div class="panel-actions">
+            <button class="btn btn-orange" onclick="xmlBeautify()">⇄ Beautify</button>
+            <button class="btn btn-ghost" onclick="xmlMinify()">⇉ Minify</button>
+            <button class="btn btn-ghost" onclick="xmlValidate()">✓ Validate</button>
+            <button class="btn btn-ghost" onclick="xmlSample()">Sample</button>
+            <button class="btn btn-ghost" onclick="xmlClear()">Clear</button>
+          </div>
+        </div>
+        <textarea id="xmlInput" style="min-height:200px;font-size:0.8rem" placeholder="<root><item id=&quot;1&quot;><name>Example</name></item></root>"></textarea>
+      </div>
+
+      <!-- Validation banner -->
+      <div class="xml-error" id="xmlError"></div>
+      <div class="xml-valid" id="xmlValid">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Valid XML
+      </div>
+
+      <!-- Stat row -->
+      <div id="xmlStats" style="display:none;font-family:var(--mono);font-size:0.75rem;color:var(--text-dim);display:flex;gap:16px;flex-wrap:wrap;padding:4px 0;margin-bottom:10px"></div>
+
+      <div class="panel" id="outputPanel" style="display:none">
+        <div class="panel-bar">
+          <span class="panel-label">Output</span>
+          <div class="panel-actions">
+            <label style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);display:flex;align-items:center;gap:6px">
+              Indent
+              <select id="indentSize" class="btn btn-ghost indent-select" onchange="reformat()">
+                <option value="2">2 spaces</option>
+                <option value="4">4 spaces</option>
+                <option value="tab">tab</option>
+              </select>
+            </label>
+            <label style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);display:flex;align-items:center;gap:6px">
+              <input type="checkbox" id="highlightToggle" checked onchange="reformat()" style="accent-color:var(--orange)"> Highlight
+            </label>
+            <button class="btn btn-ghost" onclick="copyOutput()">⎘ Copy</button>
+            <button class="btn btn-ghost" onclick="downloadXml()">↓ .xml</button>
+          </div>
+        </div>
+        <div id="xmlOutput" class="output-area"></div>
+      </div>
+
+    </div>
+    <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/theme.js"></script>
+<script src="../assets/shared.js"></script>
+<script src="../assets/sidebar.js"></script>
+<script>
+  let lastMode = 'beautify'; // track last action for re-indent
+
+  /* ── Parse & validate via DOMParser ── */
+  function parseXml(src) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(src, 'application/xml');
+    const err = doc.querySelector('parsererror');
+    return err ? { ok: false, msg: err.textContent.trim() } : { ok: true, doc };
+  }
+
+  function getIndent() {
+    const v = document.getElementById('indentSize').value;
+    return v === 'tab' ? '\t' : ' '.repeat(Number(v));
+  }
+
+  /* ── Beautify (serialize with indentation) ── */
+  function xmlBeautify() {
+    const src = document.getElementById('xmlInput').value.trim();
+    if (!src) return;
+    const r = parseXml(src);
+    if (!r.ok) { showError(r.msg); return; }
+    lastMode = 'beautify';
+    clearBanners();
+    const pretty = serializeBeautify(r.doc, getIndent());
+    renderOutput(pretty);
+    showStats(src, pretty);
+    showValid();
+  }
+
+  /* ── Minify ── */
+  function xmlMinify() {
+    const src = document.getElementById('xmlInput').value.trim();
+    if (!src) return;
+    const r = parseXml(src);
+    if (!r.ok) { showError(r.msg); return; }
+    lastMode = 'minify';
+    clearBanners();
+    const min = serializeMinify(r.doc);
+    renderOutput(min);
+    showStats(src, min);
+    showValid();
+  }
+
+  /* ── Validate only ── */
+  function xmlValidate() {
+    const src = document.getElementById('xmlInput').value.trim();
+    if (!src) return;
+    const r = parseXml(src);
+    if (!r.ok) { showError(r.msg); return; }
+    clearBanners(); showValid();
+    document.getElementById('outputPanel').style.display = 'none';
+  }
+
+  /* ── Re-run last mode when indent/highlight changes ── */
+  function reformat() {
+    if (lastMode === 'beautify') xmlBeautify();
+    else if (lastMode === 'minify') xmlMinify();
+  }
+
+  /* ── Serialise: beautify ── */
+  function serializeBeautify(node, indent, depth = 0) {
+    const pad = indent.repeat(depth);
+    if (node.nodeType === Node.DOCUMENT_NODE) {
+      let out = '<?xml version="1.0" encoding="UTF-8"?>\n';
+      node.childNodes.forEach(c => { out += serializeBeautify(c, indent, 0); });
+      return out;
+    }
+    if (node.nodeType === Node.PROCESSING_INSTRUCTION_NODE) {
+      return `${pad}<?${node.target} ${node.data}?>\n`;
+    }
+    if (node.nodeType === Node.COMMENT_NODE) {
+      return `${pad}<!--${node.nodeValue}-->\n`;
+    }
+    if (node.nodeType === Node.CDATA_SECTION_NODE) {
+      return `${pad}<![CDATA[${node.nodeValue}]]>\n`;
+    }
+    if (node.nodeType === Node.TEXT_NODE) {
+      const t = node.nodeValue.trim();
+      return t ? `${pad}${escapeXml(t)}\n` : '';
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+    // Element
+    let tag = node.nodeName;
+    let attrs = '';
+    for (const a of node.attributes) attrs += ` ${a.name}="${escapeAttr(a.value)}"`;
+
+    const children = [...node.childNodes];
+    const hasChildren = children.some(c => c.nodeType !== Node.TEXT_NODE || c.nodeValue.trim());
+
+    if (!hasChildren) return `${pad}<${tag}${attrs}/>\n`;
+
+    // Check if single text child
+    const onlyText = children.length === 1 && children[0].nodeType === Node.TEXT_NODE;
+    if (onlyText) {
+      return `${pad}<${tag}${attrs}>${escapeXml(children[0].nodeValue.trim())}</${tag}>\n`;
+    }
+
+    let out = `${pad}<${tag}${attrs}>\n`;
+    children.forEach(c => { out += serializeBeautify(c, indent, depth + 1); });
+    out += `${pad}</${tag}>\n`;
+    return out;
+  }
+
+  /* ── Serialise: minify ── */
+  function serializeMinify(node) {
+    if (node.nodeType === Node.DOCUMENT_NODE) {
+      let out = '<?xml version="1.0" encoding="UTF-8"?>';
+      node.childNodes.forEach(c => { out += serializeMinify(c); });
+      return out;
+    }
+    if (node.nodeType === Node.PROCESSING_INSTRUCTION_NODE) return `<?${node.target} ${node.data}?>`;
+    if (node.nodeType === Node.COMMENT_NODE) return '';  // strip comments in minify
+    if (node.nodeType === Node.CDATA_SECTION_NODE) return `<![CDATA[${node.nodeValue}]]>`;
+    if (node.nodeType === Node.TEXT_NODE) {
+      const t = node.nodeValue.trim(); return t ? escapeXml(t) : '';
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return '';
+    let tag = node.nodeName, attrs = '';
+    for (const a of node.attributes) attrs += ` ${a.name}="${escapeAttr(a.value)}"`;
+    const children = [...node.childNodes];
+    const hasContent = children.some(c => c.nodeType !== Node.TEXT_NODE || c.nodeValue.trim());
+    if (!hasContent) return `<${tag}${attrs}/>`;
+    let out = `<${tag}${attrs}>`;
+    children.forEach(c => { out += serializeMinify(c); });
+    return out + `</${tag}>`;
+  }
+
+  /* ── Syntax highlight ── */
+  function highlight(xml) {
+    // Escape HTML first
+    const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+    return xml
+      // Comments
+      .replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="xml-comment">$1</span>')
+      // CDATA
+      .replace(/(&lt;!\[CDATA\[[\s\S]*?\]\]&gt;)/g, '<span class="xml-cdata">$1</span>')
+      // Processing instructions
+      .replace(/(&lt;\?[\s\S]*?\?&gt;)/g, '<span class="xml-pi">$1</span>')
+      // Closing tags
+      .replace(/(&lt;\/[A-Za-z0-9_:.-]+&gt;)/g, '<span class="xml-tag">$1</span>')
+      // Opening/self-closing tags with attributes
+      .replace(/(&lt;[A-Za-z0-9_:.-]+)([\s\S]*?)(\/?&gt;)/g, (_, open, attrs, close) => {
+        const attrHighlighted = attrs.replace(/([A-Za-z0-9_:.-]+)=(&quot;[^&]*&quot;)/g,
+          '<span class="xml-attr">$1</span>=<span class="xml-value">$2</span>');
+        return `<span class="xml-tag">${open}</span>${attrHighlighted}<span class="xml-tag">${close}</span>`;
+      });
+  }
+
+  function renderOutput(text) {
+    const panel = document.getElementById('outputPanel');
+    panel.style.display = '';
+    const el = document.getElementById('xmlOutput');
+    const doHL = document.getElementById('highlightToggle').checked;
+    if (doHL) {
+      const escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      el.innerHTML = highlight(escaped);
+    } else {
+      el.textContent = text;
+    }
+    el._rawText = text;
+  }
+
+  function copyOutput() {
+    const el = document.getElementById('xmlOutput');
+    const txt = el._rawText || el.textContent;
+    navigator.clipboard.writeText(txt).then(() => showToast('Copied!'));
+  }
+
+  function downloadXml() {
+    const el = document.getElementById('xmlOutput');
+    const txt = el._rawText || el.textContent;
+    if (!txt) return;
+    const blob = new Blob([txt], { type: 'application/xml' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'output.xml'; a.click();
+  }
+
+  function showStats(orig, out) {
+    const saved = orig.length - out.length;
+    const pct = orig.length > 0 ? Math.round(Math.abs(saved) / orig.length * 100) : 0;
+    const color = saved >= 0 ? 'var(--green)' : 'var(--yellow)';
+    document.getElementById('xmlStats').style.display = 'flex';
+    document.getElementById('xmlStats').innerHTML =
+      `<span>Input: <strong style="color:var(--text)">${orig.length.toLocaleString()} chars</strong></span>` +
+      `<span>Output: <strong style="color:var(--text)">${out.length.toLocaleString()} chars</strong></span>` +
+      `<span>Δ: <strong style="color:${color}">${saved >= 0 ? '-' : '+'}${Math.abs(saved).toLocaleString()} chars (${pct}%)</strong></span>`;
+  }
+
+  function showError(msg) {
+    document.getElementById('xmlError').textContent = '✖ ' + msg;
+    document.getElementById('xmlError').classList.add('show');
+    document.getElementById('xmlValid').classList.remove('show');
+  }
+  function showValid() {
+    document.getElementById('xmlValid').classList.add('show');
+    document.getElementById('xmlError').classList.remove('show');
+  }
+  function clearBanners() {
+    document.getElementById('xmlError').classList.remove('show');
+    document.getElementById('xmlValid').classList.remove('show');
+  }
+
+  function escapeXml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function escapeAttr(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function xmlClear() {
+    document.getElementById('xmlInput').value = '';
+    document.getElementById('xmlOutput').textContent = '';
+    document.getElementById('xmlOutput')._rawText = '';
+    document.getElementById('outputPanel').style.display = 'none';
+    document.getElementById('xmlStats').style.display = 'none';
+    clearBanners();
+  }
+
+  function xmlSample() {
+    document.getElementById('xmlInput').value =
+`<?xml version="1.0" encoding="UTF-8"?>
+<!-- DevBox sample XML -->
+<library>
+  <book id="1" genre="fiction">
+    <title>The Great Gatsby</title>
+    <author>F. Scott Fitzgerald</author>
+    <year>1925</year>
+    <price currency="USD">9.99</price>
+  </book>
+  <book id="2" genre="non-fiction">
+    <title>Sapiens</title>
+    <author>Yuval Noah Harari</author>
+    <year>2011</year>
+    <price currency="USD">14.99</price>
+    <tags>
+      <tag>history</tag>
+      <tag>anthropology</tag>
+    </tags>
+  </book>
+</library>`;
+    xmlBeautify();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1800);
+  }
+
+  // Keyboard shortcut: Ctrl+Enter to beautify
+  document.getElementById('xmlInput').addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); xmlBeautify(); }
+  });
+</script>
+</body>
+</html>

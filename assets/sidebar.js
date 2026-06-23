@@ -12,6 +12,7 @@ function buildSidebar() {
         { href: 'jsonpath.html', label: 'JSON Path', dot: '--green' },
         { section: 'Encode' },
         { href: 'base64.html', label: 'Base64', dot: '--blue' },
+        { href: 'filebase64.html', label: 'File → Base64', dot: '--blue' },
         { href: 'url.html', label: 'URL Encoder', dot: '--cyan' },
         { href: 'htmlentity.html', label: 'HTML Entities', dot: '--green' },
         { section: 'Generate' },
@@ -55,6 +56,7 @@ function buildSidebar() {
         { href: 'textencrypt.html', label: 'Text Encrypt', dot: '--yellow' },
         { section: 'Code' },
         { href: 'sqlformat.html', label: 'SQL Formatter', dot: '--orange' },
+        { href: 'xml.html', label: 'XML Formatter', dot: '--orange' },
         { href: 'cssminify.html', label: 'CSS Minifier', dot: '--pink' },
         { href: 'htmlbeautify.html', label: 'HTML Beautifier', dot: '--orange' },
         { href: 'snippets.html', label: 'Snippet Manager', dot: '--teal' },
@@ -126,7 +128,17 @@ function buildSidebar() {
     });
     flushSection();
 
-    html += `</nav>`;
+    html += `</nav>
+    <div class="sidebar-bottom">
+      <a class="sidebar-contact-link" href="${home.replace('index.html', '')}contact.html">
+        <span class="theme-toggle-icon">✉️</span>
+        <span>Contact</span>
+      </a>
+      <button class="theme-toggle" onclick="window.toggleTheme()">
+        <span class="theme-toggle-icon">☀️</span>
+        <span class="theme-toggle-label">Light mode</span>
+      </button>
+    </div>`;
     return html;
 }
 

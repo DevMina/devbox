@@ -2,59 +2,524 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="description" content="DevBox — Compare two texts and highlight line differences">
+<meta name="description" content="DevBox — Compare two texts and highlight differences">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Diff Checker — DevBox</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="Diff Checker — DevBox">
-<meta property="og:description" content="Compare two texts and highlight line differences">
-<meta property="og:type" content="website">
+<style>
+/* ── View toggle ── */
+.view-tabs { display:flex; gap:4px; margin-bottom:14px; }
+.view-tab {
+  padding:7px 16px; border-radius:var(--r-sm); border:1px solid var(--border);
+  background:var(--surface); color:var(--text-dim); font-family:var(--mono);
+  font-size:0.75rem; cursor:pointer; transition:all var(--transition);
+}
+.view-tab:hover { color:var(--text); border-color:var(--border2); }
+.view-tab.active { background:var(--teal-dim); border-color:var(--teal); color:var(--teal); }
+
+/* ── Stat pills ── */
+.diff-stats {
+  display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;
+  font-family:var(--mono); font-size:0.75rem;
+}
+.stat-pill {
+  padding:4px 12px; border-radius:20px; font-weight:600;
+}
+.pill-add  { background:var(--green-dim); color:var(--green); border:1px solid var(--green); }
+.pill-del  { background:var(--red-dim);   color:var(--red);   border:1px solid var(--red); }
+.pill-eq   { background:var(--surface2);  color:var(--text-dim); border:1px solid var(--border); }
+
+/* ── Unified diff table ── */
+.diff-table {
+  width:100%; border-collapse:collapse; font-family:var(--mono);
+  font-size:0.78rem; line-height:1.7;
+}
+.diff-table td { padding:1px 0; vertical-align:top; }
+.diff-gutter {
+  width:42px; min-width:42px; text-align:right;
+  padding:1px 10px 1px 6px !important;
+  color:var(--text-dim); opacity:0.5;
+  user-select:none; border-right:1px solid var(--border);
+}
+.diff-sign {
+  width:22px; min-width:22px; text-align:center;
+  padding:1px 2px !important; user-select:none; font-weight:700;
+}
+.diff-code { padding:1px 10px !important; white-space:pre-wrap; word-break:break-all; width:100%; }
+
+/* Row colours */
+.row-add  .diff-sign { color:var(--green); }
+.row-add  .diff-code { background:rgba(0,200,100,0.07); color:var(--text); }
+.row-add  .diff-gutter { background:rgba(0,200,100,0.04); }
+.row-del  .diff-sign { color:var(--red); }
+.row-del  .diff-code { background:rgba(255,80,100,0.08); color:var(--text); }
+.row-del  .diff-gutter { background:rgba(255,80,100,0.04); }
+.row-eq   .diff-sign { color:transparent; }
+.row-eq   .diff-code { color:var(--text-dim); }
+
+/* Inline word diff highlight */
+.hl-add { background:rgba(0,200,100,0.30); border-radius:2px; }
+.hl-del { background:rgba(255,80,100,0.35); border-radius:2px; }
+
+/* Hunk separator */
+.row-hunk td { padding:3px 10px !important; font-size:0.7rem; color:var(--text-dim);
+  background:var(--surface2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+  font-family:var(--mono); }
+
+/* ── Side-by-side ── */
+.diff-side {
+  display:grid; grid-template-columns:1fr 1fr; gap:1px;
+  background:var(--border); border-radius:var(--r); overflow:hidden;
+}
+.diff-side-pane { background:var(--panel); overflow-x:auto; }
+.diff-side-header {
+  padding:6px 12px; font-family:var(--mono); font-size:0.72rem;
+  font-weight:600; color:var(--text-dim); background:var(--surface2);
+  border-bottom:1px solid var(--border); text-transform:uppercase; letter-spacing:0.06em;
+}
+.diff-side-pane table { width:100%; border-collapse:collapse; font-family:var(--mono); font-size:0.78rem; line-height:1.7; }
+.diff-side-pane .diff-gutter { width:38px; min-width:38px; }
+
+/* Inputs row */
+.input-row {
+  display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;
+}
+@media(max-width:700px) {
+  .input-row { grid-template-columns:1fr; }
+  .diff-side  { grid-template-columns:1fr; }
+}
+
+/* Empty state */
+.diff-empty {
+  padding:40px; text-align:center; color:var(--text-dim);
+  font-family:var(--mono); font-size:0.82rem;
+}
+</style>
 </head>
 <body>
-    <div class="app">
-        <aside class="sidebar" id="sidebar"></aside>
-        <div class="content-wrap">
-            <div class="content" style="min-width:0">
-                <div class="tool-header">
-                    <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">⇄</div>
-                    <div>
-                        <div class="tool-title">Diff Checker</div>
-                        <div class="tool-desc">Compare two texts line by line and highlight differences</div>
-                    </div>
-                </div>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="content-wrap">
+    <div class="content" style="min-width:0">
 
-                <div class="two-col">
-                    <div class="panel" style="margin:0">
-                        <div class="panel-bar"><span class="panel-label">Original</span></div>
-                        <textarea id="diffA" placeholder="Paste original text here…" oninput="runDiff()" style="min-height:220px"></textarea>
-                    </div>
-                    <div class="panel" style="margin:0">
-                        <div class="panel-bar"><span class="panel-label">Modified</span></div>
-                        <textarea id="diffB" placeholder="Paste modified text here…" oninput="runDiff()" style="min-height:220px"></textarea>
-                    </div>
-                </div>
-                <div style="margin-top:14px" class="panel">
-                    <div class="panel-bar"><span class="panel-label">Diff output</span><span id="diffStats" style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)"></span></div>
-                    <div id="diffOutput" class="output-area" style="font-size:0.83rem;line-height:1.8;white-space:pre-wrap;"></div>
-                </div>
-            </div>
-            <footer class="site-footer">
-                © 2026 Mina Abdo. All rights reserved.
-            </footer>
+      <div class="tool-header">
+        <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">⇄</div>
+        <div>
+          <div class="tool-title">Diff Checker</div>
+          <div class="tool-desc">Compare two texts with line numbers, inline highlights & side-by-side view</div>
+        </div>
+      </div>
 
-        </div><!-- /content-wrap -->
+      <!-- Inputs -->
+      <div class="input-row">
+        <div class="panel" style="margin:0">
+          <div class="panel-bar">
+            <span class="panel-label">Original</span>
+            <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+          </div>
+          <textarea id="diffA" placeholder="Paste original text here…" oninput="runDiff()" style="min-height:200px"></textarea>
+        </div>
+        <div class="panel" style="margin:0">
+          <div class="panel-bar">
+            <span class="panel-label">Modified</span>
+            <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
+          </div>
+          <textarea id="diffB" placeholder="Paste modified text here…" oninput="runDiff()" style="min-height:200px"></textarea>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="diff-stats" id="diffStats" style="display:none">
+        <span class="stat-pill pill-add" id="statAdd"></span>
+        <span class="stat-pill pill-del" id="statDel"></span>
+        <span class="stat-pill pill-eq"  id="statEq"></span>
+      </div>
+
+      <!-- View toggle -->
+      <div class="view-tabs">
+        <button class="view-tab active" id="tabUnified"   onclick="setView('unified')">Unified</button>
+        <button class="view-tab"        id="tabSideBySide" onclick="setView('side')">Side by side</button>
+      </div>
+
+      <!-- Output -->
+      <div class="panel" style="padding:0;overflow:hidden">
+        <div id="diffOutput"><div class="diff-empty">Enter text in both panels to see the diff.</div></div>
+      </div>
+
     </div>
-        <div class="toast" id="toast"></div>
-        <script src="../assets/shared.js"></script>
-        <script src="../assets/sidebar.js"></script>
-        <script>
-            function runDiff() {
-                const a = document.getElementById('diffA').value.split('\n'), b = document.getElementById('diffB').value.split('\n'); const lcs = (a, b) => { const m = a.length, n = b.length, dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0)); for (let i = 1; i <= m; i++)for (let j = 1; j <= n; j++)dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]); const seq = []; let i = m, j = n; while (i > 0 && j > 0) { if (a[i - 1] === b[j - 1]) { seq.unshift({ t: 'eq', v: a[i - 1] }); i--; j--; } else if (dp[i - 1][j] > dp[i][j - 1]) { seq.unshift({ t: 'del', v: a[i - 1] }); i--; } else { seq.unshift({ t: 'ins', v: b[j - 1] }); j--; } } while (i > 0) { seq.unshift({ t: 'del', v: a[i - 1] }); i--; } while (j > 0) { seq.unshift({ t: 'ins', v: b[j - 1] }); j--; } return seq; };
-                const out = document.getElementById('diffOutput'), stats = document.getElementById('diffStats'); if (!document.getElementById('diffA').value && !document.getElementById('diffB').value) { out.innerHTML = ''; stats.textContent = ''; return; }
-                const diff = lcs(a, b); let added = 0, removed = 0, html = ''; diff.forEach(d => { const e = escHtml(d.v); if (d.t === 'eq') html += `<div style="color:var(--text-dim);padding:1px 8px">&nbsp; ${e}</div>`; if (d.t === 'del') { html += `<div style="background:rgba(255,94,122,0.1);color:var(--red);padding:1px 8px;border-left:3px solid var(--red)">− ${e}</div>`; removed++; } if (d.t === 'ins') { html += `<div style="background:rgba(61,255,160,0.08);color:var(--green);padding:1px 8px;border-left:3px solid var(--green)">+ ${e}</div>`; added++; } });
-                out.innerHTML = html || '<span style="color:var(--text-dim)">No differences — texts are identical.</span>'; stats.textContent = `+${added} added  −${removed} removed`;
-            }
-        </script>
+    <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/theme.js"></script>
+<script src="../assets/shared.js"></script>
+<script src="../assets/sidebar.js"></script>
+<script>
+/* ══════════════════════════════════════
+   LCS-based line diff
+══════════════════════════════════════ */
+function lineDiff(aLines, bLines) {
+  const m = aLines.length, n = bLines.length;
+  // DP table
+  const dp = [];
+  for (let i = 0; i <= m; i++) { dp[i] = new Int32Array(n + 1); }
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = aLines[i-1] === bLines[j-1]
+        ? dp[i-1][j-1] + 1
+        : Math.max(dp[i-1][j], dp[i][j-1]);
+
+  // Traceback
+  const ops = [];
+  let i = m, j = n;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && aLines[i-1] === bLines[j-1]) {
+      ops.unshift({ type: 'eq', a: aLines[i-1], b: bLines[j-1], ai: i-1, bi: j-1 });
+      i--; j--;
+    } else if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) {
+      ops.unshift({ type: 'ins', b: bLines[j-1], bi: j-1 });
+      j--;
+    } else {
+      ops.unshift({ type: 'del', a: aLines[i-1], ai: i-1 });
+      i--;
+    }
+  }
+  return ops;
+}
+
+/* ══════════════════════════════════════
+   Word-level inline diff for changed lines
+══════════════════════════════════════ */
+function wordDiff(aStr, bStr) {
+  const tok = s => s.match(/\S+|\s+/g) || [];
+  const aw = tok(aStr), bw = tok(bStr);
+  const m = aw.length, n = bw.length;
+  const dp = [];
+  for (let i = 0; i <= m; i++) { dp[i] = new Int32Array(n + 1); }
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = aw[i-1] === bw[j-1]
+        ? dp[i-1][j-1] + 1
+        : Math.max(dp[i-1][j], dp[i][j-1]);
+
+  const ops = [];
+  let i = m, j = n;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && aw[i-1] === bw[j-1]) {
+      ops.unshift({ type: 'eq', v: aw[i-1] }); i--; j--;
+    } else if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) {
+      ops.unshift({ type: 'ins', v: bw[j-1] }); j--;
+    } else {
+      ops.unshift({ type: 'del', v: aw[i-1] }); i--;
+    }
+  }
+  return ops;
+}
+
+function renderWordDiff(ops, side) {
+  // side: 'del' renders del highlights, 'ins' renders ins highlights
+  return ops.map(op => {
+    const e = esc(op.v);
+    if (op.type === 'eq')  return e;
+    if (op.type === 'del' && side === 'del') return `<mark class="hl-del">${e}</mark>`;
+    if (op.type === 'ins' && side === 'ins') return `<mark class="hl-ins hl-add">${e}</mark>`;
+    if (op.type === 'del' && side === 'ins') return ''; // hide deleted tokens on insert side
+    if (op.type === 'ins' && side === 'del') return ''; // hide inserted tokens on delete side
+    return e;
+  }).join('');
+}
+
+/* ══════════════════════════════════════
+   Pairing adjacent del/ins for inline diff
+══════════════════════════════════════ */
+function pairOps(ops) {
+  // Group consecutive del then ins into pairs for word-level diffing
+  const result = [];
+  let i = 0;
+  while (i < ops.length) {
+    if (ops[i].type === 'del') {
+      const delBlock = [], insBlock = [];
+      while (i < ops.length && ops[i].type === 'del') delBlock.push(ops[i++]);
+      while (i < ops.length && ops[i].type === 'ins') insBlock.push(ops[i++]);
+      // Pair them up 1-to-1 for inline word diff
+      const len = Math.max(delBlock.length, insBlock.length);
+      for (let k = 0; k < len; k++) {
+        const d = delBlock[k], ins = insBlock[k];
+        if (d && ins) {
+          // Both exist — do word diff
+          const wops = wordDiff(d.a, ins.b);
+          result.push({ type: 'del', a: d.a, ai: d.ai, wops });
+          result.push({ type: 'ins', b: ins.b, bi: ins.bi, wops });
+        } else if (d) {
+          result.push(d);
+        } else {
+          result.push(ins);
+        }
+      }
+    } else {
+      result.push(ops[i++]);
+    }
+  }
+  return result;
+}
+
+/* ══════════════════════════════════════
+   Hunk collapsing (context=3 lines)
+══════════════════════════════════════ */
+function withHunks(ops, context = 3) {
+  // Mark which indices are near a change
+  const changed = ops.map(o => o.type !== 'eq');
+  const visible = new Array(ops.length).fill(false);
+  for (let i = 0; i < ops.length; i++) {
+    if (changed[i]) {
+      for (let j = Math.max(0, i - context); j <= Math.min(ops.length - 1, i + context); j++)
+        visible[j] = true;
+    }
+  }
+
+  const result = [];
+  let skipping = false, skipCount = 0;
+  for (let i = 0; i < ops.length; i++) {
+    if (visible[i]) {
+      if (skipping && skipCount > 0) result.push({ type: 'hunk', count: skipCount });
+      skipping = false; skipCount = 0;
+      result.push(ops[i]);
+    } else {
+      if (!skipping) skipping = true;
+      skipCount++;
+    }
+  }
+  if (skipping && skipCount > 0) result.push({ type: 'hunk', count: skipCount });
+  return result;
+}
+
+/* ══════════════════════════════════════
+   Render
+══════════════════════════════════════ */
+let currentView = 'unified';
+let lastOps = [];
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('tabUnified').classList.toggle('active', v === 'unified');
+  document.getElementById('tabSideBySide').classList.toggle('active', v === 'side');
+  renderView(lastOps);
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderView(ops) {
+  lastOps = ops;
+  if (!ops || ops.length === 0) {
+    document.getElementById('diffOutput').innerHTML = '<div class="diff-empty">Enter text in both panels to see the diff.</div>';
+    return;
+  }
+  if (currentView === 'unified') renderUnified(ops);
+  else renderSide(ops);
+}
+
+function renderUnified(ops) {
+  const paired = pairOps(ops);
+  const hunked = withHunks(paired);
+
+  let aLine = 1, bLine = 1;
+  // Pre-count to set starting line numbers properly
+  // We'll track them as we go instead
+  let html = '<table class="diff-table">';
+
+  // We need to know line numbers – recalculate by scanning
+  const lineNums = []; // per entry: { an, bn }
+  let an = 1, bn = 1;
+  for (const op of paired) {
+    if (op.type === 'eq')  { lineNums.push({an, bn}); an++; bn++; }
+    else if (op.type === 'del') { lineNums.push({an, bn:null}); an++; }
+    else if (op.type === 'ins') { lineNums.push({an:null, bn}); bn++; }
+    else lineNums.push(null);
+  }
+
+  let idx = 0;
+  for (const op of hunked) {
+    if (op.type === 'hunk') {
+      html += `<tr class="row-hunk"><td colspan="4">⋯ ${op.count} unchanged line${op.count>1?'s':''} hidden ⋯</td></tr>`;
+      idx += op.count;
+      continue;
+    }
+
+    const ln = lineNums[idx] || {};
+    const anStr = ln.an != null ? ln.an : '';
+    const bnStr = ln.bn != null ? ln.bn : '';
+
+    if (op.type === 'eq') {
+      html += `<tr class="row-eq">
+        <td class="diff-gutter">${anStr}</td>
+        <td class="diff-gutter">${bnStr}</td>
+        <td class="diff-sign"> </td>
+        <td class="diff-code">${esc(op.a)}</td>
+      </tr>`;
+    } else if (op.type === 'del') {
+      const content = op.wops ? renderWordDiff(op.wops, 'del') : esc(op.a);
+      html += `<tr class="row-del">
+        <td class="diff-gutter">${anStr}</td>
+        <td class="diff-gutter"></td>
+        <td class="diff-sign">−</td>
+        <td class="diff-code">${content}</td>
+      </tr>`;
+    } else if (op.type === 'ins') {
+      const content = op.wops ? renderWordDiff(op.wops, 'ins') : esc(op.b);
+      html += `<tr class="row-ins row-add">
+        <td class="diff-gutter"></td>
+        <td class="diff-gutter">${bnStr}</td>
+        <td class="diff-sign">+</td>
+        <td class="diff-code">${content}</td>
+      </tr>`;
+    }
+    idx++;
+  }
+  html += '</table>';
+  document.getElementById('diffOutput').innerHTML = html;
+}
+
+function renderSide(ops) {
+  const paired = pairOps(ops);
+  const hunked = withHunks(paired);
+
+  // Build left (del/eq) and right (ins/eq) columns in sync
+  let leftHtml = '', rightHtml = '';
+  let an = 1, bn = 1;
+
+  // Precompute line numbers
+  const lineNums = [];
+  let la = 1, lb = 1;
+  for (const op of paired) {
+    if (op.type === 'eq')       { lineNums.push({la, lb}); la++; lb++; }
+    else if (op.type === 'del') { lineNums.push({la, lb:null}); la++; }
+    else if (op.type === 'ins') { lineNums.push({la:null, lb}); lb++; }
+    else lineNums.push(null);
+  }
+
+  let idx = 0;
+  for (const op of hunked) {
+    if (op.type === 'hunk') {
+      const sep = `<tr class="row-hunk"><td colspan="3">⋯ ${op.count} unchanged ⋯</td></tr>`;
+      leftHtml += sep; rightHtml += sep;
+      idx += op.count;
+      continue;
+    }
+
+    const ln = lineNums[idx] || {};
+
+    if (op.type === 'eq') {
+      const row = `<tr class="row-eq">
+        <td class="diff-gutter">${ln.la||''}</td>
+        <td class="diff-sign"> </td>
+        <td class="diff-code">${esc(op.a)}</td></tr>`;
+      leftHtml += row; rightHtml += row;
+    } else if (op.type === 'del') {
+      const content = op.wops ? renderWordDiff(op.wops, 'del') : esc(op.a);
+      leftHtml += `<tr class="row-del">
+        <td class="diff-gutter">${ln.la||''}</td>
+        <td class="diff-sign">−</td>
+        <td class="diff-code">${content}</td></tr>`;
+      rightHtml += `<tr class="row-eq" style="opacity:0.3">
+        <td class="diff-gutter"></td>
+        <td class="diff-sign"></td>
+        <td class="diff-code"> </td></tr>`;
+    } else if (op.type === 'ins') {
+      const content = op.wops ? renderWordDiff(op.wops, 'ins') : esc(op.b);
+      leftHtml += `<tr class="row-eq" style="opacity:0.3">
+        <td class="diff-gutter"></td>
+        <td class="diff-sign"></td>
+        <td class="diff-code"> </td></tr>`;
+      rightHtml += `<tr class="row-ins row-add">
+        <td class="diff-gutter">${ln.lb||''}</td>
+        <td class="diff-sign">+</td>
+        <td class="diff-code">${content}</td></tr>`;
+    }
+    idx++;
+  }
+
+  document.getElementById('diffOutput').innerHTML = `
+    <div class="diff-side">
+      <div class="diff-side-pane">
+        <div class="diff-side-header">Original</div>
+        <table class="diff-table">${leftHtml}</table>
+      </div>
+      <div class="diff-side-pane">
+        <div class="diff-side-header">Modified</div>
+        <table class="diff-table">${rightHtml}</table>
+      </div>
+    </div>`;
+}
+
+function runDiff() {
+  const aVal = document.getElementById('diffA').value;
+  const bVal = document.getElementById('diffB').value;
+
+  if (!aVal && !bVal) {
+    document.getElementById('diffOutput').innerHTML = '<div class="diff-empty">Enter text in both panels to see the diff.</div>';
+    document.getElementById('diffStats').style.display = 'none';
+    lastOps = [];
+    return;
+  }
+
+  const aLines = aVal.split('\n');
+  const bLines = bVal.split('\n');
+  const ops = lineDiff(aLines, bLines);
+
+  // Stats
+  let added = 0, removed = 0, unchanged = 0;
+  ops.forEach(o => {
+    if (o.type === 'ins') added++;
+    else if (o.type === 'del') removed++;
+    else unchanged++;
+  });
+
+  document.getElementById('diffStats').style.display = 'flex';
+  document.getElementById('statAdd').textContent = `+${added} added`;
+  document.getElementById('statDel').textContent = `−${removed} removed`;
+  document.getElementById('statEq').textContent  = `${unchanged} unchanged`;
+
+  renderView(ops);
+}
+
+function clearAll() {
+  document.getElementById('diffA').value = '';
+  document.getElementById('diffB').value = '';
+  runDiff();
+}
+
+function loadSample() {
+  document.getElementById('diffA').value =
+`function greet(name) {
+  const msg = "Hello, " + name;
+  console.log(msg);
+  return msg;
+}
+
+const users = ["Alice", "Bob", "Charlie"];
+users.forEach(u => greet(u));
+
+// TODO: add error handling`;
+
+  document.getElementById('diffB').value =
+`function greet(name, greeting = "Hello") {
+  if (!name) throw new Error("Name is required");
+  const msg = \`\${greeting}, \${name}!\`;
+  console.log(msg);
+  return msg;
+}
+
+const users = ["Alice", "Bob", "Charlie", "Dana"];
+users.forEach(u => greet(u));
+
+// Error handling added above`;
+
+  runDiff();
+}
+</script>
 </body>
 </html>
