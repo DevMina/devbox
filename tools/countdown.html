@@ -3,97 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<style id="critical-css">
-/* ════════════════════════════════════════════
-   DevBox — Shared Design System
-   ════════════════════════════════════════════ */
-
-/* ── CSS Custom Properties ── */
-:root {
-  /* Background layers */
-  --bg:       #0A0C10;
-  --panel:    #0F1117;
-  --surface:  #161B24;
-  --surface2: #1C2330;
-
-  /* Borders */
-  --border:  #252D3D;
-  --border2: #2E3A50;
-
-  /* Text */
-  --text:        #CDD6F0;
-  --text-dim:    #7A8AAD;
-  --text-bright: #EEF2FF;
-
-  /* Accent palette */
-  --green:       #3DFFA0;  --green-dim:  rgba(61,255,160,0.09);
-  --blue:        #5BA4FF;  --blue-dim:   rgba(91,164,255,0.09);
-  --orange:      #FF9A3C;  --orange-dim: rgba(255,154,60,0.09);
-  --purple:      #B07EFF;  --purple-dim: rgba(176,126,255,0.09);
-  --red:         #FF5E7A;  --red-dim:    rgba(255,94,122,0.09);
-  --cyan:        #22D9F0;  --cyan-dim:   rgba(34,217,240,0.09);
-  --yellow:      #FFD166;  --yellow-dim: rgba(255,209,102,0.09);
-  --pink:        #FF79C6;  --pink-dim:   rgba(255,121,198,0.09);
-  --teal:        #1EE8B8;  --teal-dim:   rgba(30,232,184,0.09);
-
-  /* Typography */
-  --font: 'IBM Plex Sans', system-ui, sans-serif;
-  --mono: 'IBM Plex Mono', 'Fira Code', monospace;
-
-  /* Radii */
-  --r:    10px;
-  --r-sm:  6px;
-  --r-xs:  4px;
-
-  /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.25);
-  --shadow-md: 0 4px 20px rgba(0,0,0,0.35);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,0.45);
-
-  /* Transitions */
-  --transition: 0.15s ease;
-  --transition-slow: 0.25s ease;
-
-  /* Sidebar width */
-  --sidebar-w: 228px;
-  --sidebar-collapsed-w: 58px;
-}
-body {
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-.app{display:flex;flex:1;height:100vh;overflow:hidden;}
-.sidebar{width:var(--sidebar-w);background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;overflow-x:hidden;position:relative;z-index:10;}
-[data-theme="light"] {
-  --bg:       #F5F7FA;
-  --panel:    #FFFFFF;
-  --surface:  #EAEDF2;
-  --surface2: #DDE1EA;
-
-  --border:  #D1D7E3;
-  --border2: #B8C0D2;
-
-  --text:        #2D3452;
-  --text-dim:    #566080;
-  --text-bright: #111827;
-
-  --green:       #006B43;  --green-dim:  rgba(0,168,107,0.1);
-  --blue:        #2B6CB0;  --blue-dim:   rgba(43,108,176,0.1);
-  --orange:      #9A4218;  --orange-dim: rgba(192,86,33,0.1);
-  --purple:      #6B46C1;  --purple-dim: rgba(107,70,193,0.1);
-  --red:         #C53030;  --red-dim:    rgba(197,48,48,0.1);
-  --cyan:        #066678;  --cyan-dim:   rgba(9,135,160,0.1);
-  --yellow:      #8A5A15;  --yellow-dim: rgba(183,121,31,0.1);
-  --pink:        #97266D;  --pink-dim:   rgba(151,38,109,0.1);
-  --teal:        #285E61;  --teal-dim:   rgba(40,94,97,0.1);
-}
-</style>
 <meta name="description" content="DevBox — Count down to any date and time">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Countdown Timer — DevBox</title>
@@ -101,8 +10,7 @@ body {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="preload" href="../assets/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="../assets/style.css"></noscript>
+<link rel="stylesheet" href="../assets/style.css">
 <meta property="og:title" content="Countdown Timer — DevBox">
 <meta property="og:description" content="Count down to any date and time">
 <meta property="og:type" content="website">
