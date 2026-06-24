@@ -196,6 +196,16 @@ function initSidebarCollapse() {
         const isNowCollapsed = header.classList.toggle('collapsed');
         header.nextElementSibling.classList.toggle('collapsed', isNowCollapsed);
         saveSectionState(header.dataset.key, isNowCollapsed);
+
+        // Accordion: collapse all other sections when one is expanded
+        if (!isNowCollapsed) {
+            sidebar.querySelectorAll('.sb-group-header').forEach(h => {
+                if (h === header) return;
+                h.classList.add('collapsed');
+                h.nextElementSibling.classList.add('collapsed');
+                saveSectionState(h.dataset.key, true);
+            });
+        }
     });
 
     // Expand-all / collapse-all buttons
