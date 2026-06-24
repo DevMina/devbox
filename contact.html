@@ -2,35 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact — DevBox</title>
     <meta name="description" content="Get in touch with the DevBox team.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="assets/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <style>
-        .contact-submit:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-        .spinner {
-            width: 13px; height: 13px;
-            border: 2px solid rgba(0,0,0,0.3);
-            border-top-color: #0A0C10;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            display: inline-block;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-    </style>
 </head>
 <body>
-<div class="app">
+    <div class="app">
         <aside class="sidebar" id="sidebar"></aside>
         <main class="content-wrap">
             <div class="content">
@@ -70,7 +53,7 @@
                         <div id="formError" style="display:none;padding:10px 14px;background:var(--red-dim);border:1px solid var(--red);border-radius:var(--r);color:var(--red);font-size:0.8rem;font-family:var(--mono)"></div>
 
                         <button class="contact-submit" id="submitBtn" onclick="sendContactForm()">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
                             Send Message
                         </button>
                     </div>
@@ -93,7 +76,7 @@
                 <a href="index.html" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s"
                    onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">Back to tools</a>
             </footer>
-        </div>
+        </main>
     </div>
 
     <div class="toast" id="toast"></div>
@@ -101,60 +84,21 @@
     <script src="assets/shared.js" defer></script>
     <script src="assets/sidebar.js" defer></script>
     <script>
-        // ─────────────────────────────────────────
-        // EMAILJS CONFIG — replace these 3 values
-        // after setting up at emailjs.com
-        // ─────────────────────────────────────────
-        const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';
-        const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';
-        const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
-        // ─────────────────────────────────────────
-
-        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-
-        async function sendContactForm() {
-            const email   = document.getElementById('contactEmail').value.trim();
+        function sendContactForm() {
+            const email = document.getElementById('contactEmail').value.trim();
             const subject = document.getElementById('contactSubject').value.trim();
             const message = document.getElementById('contactMessage').value.trim();
-            const errEl   = document.getElementById('formError');
-            const btn     = document.getElementById('submitBtn');
 
-            errEl.style.display = 'none';
             if (!email || !email.includes('@')) { showErr('Please enter a valid email address.'); return; }
-            if (!subject)                        { showErr('Please enter a subject.'); return; }
-            if (!message)                        { showErr('Please write a message.'); return; }
+            if (!subject) { showErr('Please enter a subject.'); return; }
+            if (!message) { showErr('Please write a message.'); return; }
 
-            // Loading state
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Sending…';
+            const body = `From: ${email}\n\n${message}`;
+            const mailto = `mailto:mina.abdo2030@gmail.com`
+                + `?subject=${encodeURIComponent(subject)}`
+                + `&body=${encodeURIComponent(body)}`;
 
-            try {
-                await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                    from_email: email,
-                    subject:    subject,
-                    message:    message,
-                    to_email:   'mina.abdo2030@gmail.com',
-                });
-
-                document.getElementById('contactForm').style.display = 'none';
-                document.getElementById('formSuccess').classList.add('show');
-
-            } catch (err) {
-                showErr('Failed to send — please try again or email us directly.');
-                console.error('EmailJS error:', err);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Message`;
-            }
-        }
-
-        function resetForm() {
-            document.getElementById('contactEmail').value   = '';
-            document.getElementById('contactSubject').value = '';
-            document.getElementById('contactMessage').value = '';
-            document.getElementById('formError').style.display = 'none';
-            document.getElementById('contactForm').style.display = '';
-            document.getElementById('formSuccess').classList.remove('show');
+            window.location.href = mailto;
         }
 
         function showErr(msg) {
@@ -162,6 +106,6 @@
             el.textContent = '⚠ ' + msg;
             el.style.display = 'block';
         }
-</script>
+    </script>
 </body>
 </html>
