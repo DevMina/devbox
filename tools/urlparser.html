@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>URL Parser — DevBox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.url-input{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:12px 14px;font-family:var(--mono);font-size:0.88rem;color:var(--text);outline:none;transition:border-color var(--transition)}
+.url-input:focus{border-color:var(--cyan)}
+.parts-grid{display:grid;gap:8px;margin-top:4px}
+.part-row{display:grid;grid-template-columns:120px 1fr auto;gap:8px;align-items:center;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm)}
+.part-key{font-family:var(--mono);font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim)}
+.part-val{font-family:var(--mono);font-size:0.82rem;color:var(--text);word-break:break-all}
+.part-val.empty{color:var(--text-dim);opacity:0.4;font-style:italic}
+.part-copy{padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);font-family:var(--mono);font-size:0.68rem;cursor:pointer;transition:all var(--transition);white-space:nowrap}
+.part-copy:hover{color:var(--text);border-color:var(--border2)}
+.params-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:0.8rem;margin-top:2px}
+.params-table th{text-align:left;padding:7px 12px;font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim);border-bottom:1px solid var(--border);background:var(--surface2)}
+.params-table td{padding:7px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.params-table tr:last-child td{border-bottom:none}
+.params-table tr:hover td{background:var(--surface2)}
+.param-key{color:var(--cyan)}
+.param-val{color:var(--green);word-break:break-all}
+.badge-pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.68rem;font-family:var(--mono);font-weight:600}
+.badge-https{background:var(--green-dim);color:var(--green);border:1px solid var(--green)}
+.badge-http{background:var(--yellow-dim);color:var(--yellow);border:1px solid var(--yellow)}
+.badge-other{background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content-wrap">
+    <div class="content">
+      <div class="tool-header">
+        <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">URL</div>
+        <div><div class="tool-title">URL Parser</div><div class="tool-desc">Break any URL into protocol, host, path, query params, fragment & more</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-bar">
+          <span class="panel-label">URL</span>
+          <div class="panel-actions">
+            <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('urlInput').value='';parse()">Clear</button>
+          </div>
+        </div>
+        <input class="url-input" id="urlInput" type="text" placeholder="https://example.com/path?foo=bar&baz=qux#section" oninput="parse()">
+      </div>
+
+      <div id="results" style="display:none">
+        <!-- Parts -->
+        <div class="panel">
+          <div class="panel-bar"><span class="panel-label">Components</span></div>
+          <div class="parts-grid" id="partsGrid"></div>
+        </div>
+
+        <!-- Query params -->
+        <div class="panel" id="paramsPanel" style="display:none">
+          <div class="panel-bar">
+            <span class="panel-label">Query Parameters</span>
+            <div class="panel-actions">
+              <span id="paramCount" style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)"></span>
+              <button class="btn btn-ghost" onclick="copyParams()">⎘ Copy JSON</button>
+            </div>
+          </div>
+          <table class="params-table">
+            <thead><tr><th>Key</th><th>Value</th><th>Decoded</th></tr></thead>
+            <tbody id="paramsBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Rebuild URL -->
+        <div class="panel">
+          <div class="panel-bar">
+            <span class="panel-label">Normalised URL</span>
+            <div class="panel-actions"><button class="btn btn-ghost" onclick="copyNorm()">⎘ Copy</button></div>
+          </div>
+          <div id="normUrl" class="output-area" style="color:var(--cyan);font-size:0.82rem;word-break:break-all"></div>
+        </div>
+      </div>
+
+      <div id="errMsg" style="display:none;padding:12px 14px;background:var(--red-dim);border:1px solid var(--red);border-radius:var(--r);color:var(--red);font-family:var(--mono);font-size:0.82rem"></div>
+    </div>
+    <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js" defer></script>
+<script src="../assets/sidebar.js" defer></script>
+<script>
+let lastParams = {};
+
+function parse() {
+  const raw = document.getElementById('urlInput').value.trim();
+  const res = document.getElementById('results');
+  const err = document.getElementById('errMsg');
+  err.style.display='none'; res.style.display='none';
+  if (!raw) return;
+  let url;
+  try {
+    url = new URL(raw.includes('://') ? raw : 'https://'+raw);
+  } catch(e) {
+    err.textContent = '✖ Invalid URL: '+e.message; err.style.display=''; return;
+  }
+  res.style.display='';
+
+  const protocol = url.protocol.replace(':','');
+  const badge = protocol==='https' ? 'badge-https' : protocol==='http' ? 'badge-http' : 'badge-other';
+
+  const parts = [
+    ['Protocol', `<span class="badge-pill ${badge}">${protocol}</span>`, url.protocol.replace(':','')],
+    ['Host',     url.hostname, url.hostname],
+    ['Port',     url.port || (protocol==='https'?'443':protocol==='http'?'80':'—'), url.port],
+    ['Origin',   url.origin, url.origin],
+    ['Path',     url.pathname, url.pathname],
+    ['Query',    url.search || '—', url.search],
+    ['Fragment', url.hash ? url.hash.slice(1) : '—', url.hash ? url.hash.slice(1) : ''],
+    ['Username', url.username || '—', url.username],
+    ['Password', url.password || '—', url.password],
+  ];
+
+  document.getElementById('partsGrid').innerHTML = parts.map(([k,display,copy]) => `
+    <div class="part-row">
+      <span class="part-key">${k}</span>
+      <span class="part-val${(!copy||copy==='—')?'':''}">${display}</span>
+      ${copy && copy!=='—' ? `<button class="part-copy" onclick="cp('${esc(copy)}')">⎘</button>` : '<span></span>'}
+    </div>`).join('');
+
+  // Query params
+  lastParams = {};
+  const params = [...url.searchParams.entries()];
+  const pp = document.getElementById('paramsPanel');
+  if (params.length) {
+    pp.style.display='';
+    document.getElementById('paramCount').textContent = params.length+' param'+(params.length>1?'s':'');
+    document.getElementById('paramsBody').innerHTML = params.map(([k,v]) => {
+      lastParams[k] = v;
+      const decoded = decodeURIComponent(v);
+      return `<tr><td class="param-key">${esc(k)}</td><td class="param-val">${esc(v)}</td><td style="color:var(--text-dim)">${esc(decoded)}</td></tr>`;
+    }).join('');
+  } else { pp.style.display='none'; }
+
+  document.getElementById('normUrl').textContent = url.toString();
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function cp(t){navigator.clipboard.writeText(t).then(()=>showToast('Copied!'));}
+function copyParams(){navigator.clipboard.writeText(JSON.stringify(lastParams,null,2)).then(()=>showToast('Copied!'));}
+function copyNorm(){const t=document.getElementById('normUrl').textContent;if(t)navigator.clipboard.writeText(t).then(()=>showToast('Copied!'));}
+function loadSample(){document.getElementById('urlInput').value='https://api.devbox.tools/v2/search?q=json+formatter&lang=en&page=1&limit=20&sort=relevance#results';parse();}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
+</script>
+</body>
+</html>

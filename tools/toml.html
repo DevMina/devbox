@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOML ↔ JSON — DevBox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.mode-tabs{display:flex;gap:4px;margin-bottom:14px}
+.mode-tab{padding:7px 16px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:var(--mono);font-size:0.75rem;cursor:pointer;transition:all var(--transition)}
+.mode-tab:hover{color:var(--text);border-color:var(--border2)}
+.mode-tab.active{background:var(--red-dim);border-color:var(--red);color:var(--red)}
+#output{white-space:pre;overflow-x:auto;min-height:120px;font-size:0.8rem;color:var(--green)}
+.err{color:var(--red)!important}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content-wrap">
+    <div class="content">
+      <div class="tool-header">
+        <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">TOML</div>
+        <div><div class="tool-title">TOML ↔ JSON</div><div class="tool-desc">Convert between TOML and JSON — Rust, Python, and config files</div></div>
+      </div>
+      <div class="mode-tabs">
+        <button class="mode-tab active" id="tab-tj" onclick="setMode('tj')">TOML → JSON</button>
+        <button class="mode-tab" id="tab-jt" onclick="setMode('jt')">JSON → TOML</button>
+      </div>
+      <div class="panel">
+        <div class="panel-bar">
+          <span class="panel-label" id="inputLabel">TOML Input</span>
+          <div class="panel-actions">
+            <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('input').value='';run()">Clear</button>
+          </div>
+        </div>
+        <textarea id="input" style="min-height:200px;font-size:0.8rem" oninput="run()" placeholder="Paste TOML here…"></textarea>
+      </div>
+      <div class="panel">
+        <div class="panel-bar">
+          <span class="panel-label" id="outputLabel">JSON Output</span>
+          <div class="panel-actions">
+            <button class="btn btn-ghost" onclick="copy()">⎘ Copy</button>
+            <button class="btn btn-ghost" onclick="swap()">⇅ Swap</button>
+          </div>
+        </div>
+        <div id="output" class="output-area"></div>
+      </div>
+    </div>
+    <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js" defer></script>
+<script src="../assets/sidebar.js" defer></script>
+<script>
+// Lightweight TOML parser
+function parseTOML(src) {
+  const lines = src.split('\n');
+  const root = {}, path = [];
+  let cur = root;
+  for (let raw of lines) {
+    const line = raw.split('#')[0].trim();
+    if (!line) continue;
+    // Table array [[key]]
+    const taMatch = line.match(/^\[\[(.+)\]\]$/);
+    if (taMatch) {
+      const keys = taMatch[1].trim().split('.');
+      path.length = 0;
+      let obj = root;
+      for (let i=0;i<keys.length-1;i++) { if(!obj[keys[i]])obj[keys[i]]={};obj=obj[keys[i]]; }
+      const last=keys[keys.length-1];
+      if(!Array.isArray(obj[last]))obj[last]=[];
+      const entry={};obj[last].push(entry);cur=entry;continue;
+    }
+    // Table [key]
+    const tMatch = line.match(/^\[([^\]]+)\]$/);
+    if (tMatch) {
+      const keys = tMatch[1].trim().split('.');
+      path.length=0;cur=root;
+      for (const k of keys) { if(!cur[k])cur[k]={};cur=cur[k]; }
+      continue;
+    }
+    // Key = value
+    const eqIdx = line.indexOf('=');
+    if (eqIdx<0) continue;
+    const key = line.slice(0,eqIdx).trim();
+    const rawVal = line.slice(eqIdx+1).trim();
+    cur[key] = parseVal(rawVal);
+  }
+  return root;
+}
+function parseVal(v) {
+  if (v==='true') return true;
+  if (v==='false') return false;
+  if (v.startsWith('"')) { try{return JSON.parse(v);}catch{return v.slice(1,-1);} }
+  if (v.startsWith("'")) return v.slice(1,-1);
+  if (v.startsWith('[')) {
+    try {
+      const inner = v.slice(1,-1).trim();
+      if (!inner) return [];
+      return inner.split(',').map(x=>parseVal(x.trim()));
+    } catch{return v;}
+  }
+  const n = Number(v);
+  if (!isNaN(n) && v!=='') return n;
+  return v;
+}
+
+// JSON → TOML
+function objToTOML(obj, prefix='') {
+  let simple='', tables='';
+  for (const [k,v] of Object.entries(obj)) {
+    const key = /[^a-zA-Z0-9_-]/.test(k) ? `"${k}"` : k;
+    if (v===null||v===undefined) continue;
+    if (typeof v==='boolean') simple+=`${key} = ${v}\n`;
+    else if (typeof v==='number') simple+=`${key} = ${v}\n`;
+    else if (typeof v==='string') simple+=`${key} = ${JSON.stringify(v)}\n`;
+    else if (Array.isArray(v)) {
+      if (v.every(x=>typeof x!=='object'||x===null)) {
+        simple+=`${key} = [${v.map(x=>JSON.stringify(x)).join(', ')}]\n`;
+      } else {
+        v.forEach(item=>{ tables+=`\n[[${prefix?prefix+'.':''}${key}]]\n`+objToTOML(item,prefix?prefix+'.'+key:key); });
+      }
+    } else if (typeof v==='object') {
+      tables+=`\n[${prefix?prefix+'.':''}${key}]\n`+objToTOML(v,prefix?prefix+'.'+key:key);
+    }
+  }
+  return simple+tables;
+}
+
+let mode='tj';
+function setMode(m){mode=m;['tj','jt'].forEach(x=>document.getElementById('tab-'+x).classList.toggle('active',x===m));document.getElementById('inputLabel').textContent=m==='jt'?'JSON Input':'TOML Input';document.getElementById('outputLabel').textContent=m==='jt'?'TOML Output':'JSON Output';document.getElementById('input').placeholder=m==='jt'?'Paste JSON here…':'Paste TOML here…';document.getElementById('output').style.color=m==='jt'?'var(--red)':'var(--green)';run();}
+function run(){
+  const src=document.getElementById('input').value.trim();
+  const out=document.getElementById('output');
+  if(!src){out.textContent='';out.classList.remove('err');return;}
+  try{
+    if(mode==='tj'){out.textContent=JSON.stringify(parseTOML(src),null,2);}
+    else{const obj=JSON.parse(src);out.textContent=objToTOML(obj).trim();}
+    out.classList.remove('err');
+  }catch(e){out.textContent='✖ '+e.message;out.classList.add('err');}
+}
+function copy(){const t=document.getElementById('output').textContent;if(t&&!t.startsWith('✖'))navigator.clipboard.writeText(t).then(()=>showToast('Copied!'));}
+function swap(){const o=document.getElementById('output').textContent;if(o&&!o.startsWith('✖')){document.getElementById('input').value=o;setMode(mode==='tj'?'jt':'tj');}}
+function loadSample(){
+  if(mode==='jt')document.getElementById('input').value='{"package":{"name":"my-app","version":"1.0.0","edition":"2021"},"dependencies":{"serde":{"version":"1.0","features":["derive"]},"tokio":{"version":"1","features":["full"]}},"profile":{"release":{"opt-level":3}}}';
+  else document.getElementById('input').value='[package]\nname = "my-app"\nversion = "1.0.0"\nedition = "2021"\n\n[dependencies]\nserde = { version = "1.0", features = ["derive"] }\ntokio = { version = "1", features = ["full"] }\n\n[profile.release]\nopt-level = 3';
+  run();
+}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
+</script>
+</body>
+</html>

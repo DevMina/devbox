@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit Converter — DevBox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.cat-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px}
+.cat-tab{padding:6px 14px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:var(--mono);font-size:0.73rem;cursor:pointer;transition:all var(--transition)}
+.cat-tab:hover{color:var(--text);border-color:var(--border2)}
+.cat-tab.active{background:var(--cyan-dim);border-color:var(--cyan);color:var(--cyan)}
+.conv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.conv-row{display:flex;flex-direction:column;gap:4px}
+.conv-label{font-family:var(--mono);font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim)}
+.conv-input{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:9px 12px;font-family:var(--mono);font-size:0.88rem;color:var(--text);outline:none;transition:border-color var(--transition);width:100%}
+.conv-input:focus{border-color:var(--cyan)}
+.conv-input.active-input{border-color:var(--cyan);background:var(--surface2)}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content-wrap">
+    <div class="content">
+      <div class="tool-header">
+        <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">⇄</div>
+        <div><div class="tool-title">Unit Converter</div><div class="tool-desc">Convert length, weight, temperature, speed, area, volume & data</div></div>
+      </div>
+      <div class="cat-tabs" id="catTabs"></div>
+      <div class="panel">
+        <div class="panel-bar"><span class="panel-label" id="catLabel">Length</span></div>
+        <div class="conv-grid" id="convGrid"></div>
+      </div>
+    </div>
+    <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js" defer></script>
+<script src="../assets/sidebar.js" defer></script>
+<script>
+const CATS = {
+  Length: {
+    m:   ['Meter',      1],
+    km:  ['Kilometer',  1e3],
+    cm:  ['Centimeter', 1e-2],
+    mm:  ['Millimeter', 1e-3],
+    mi:  ['Mile',       1609.344],
+    yd:  ['Yard',       0.9144],
+    ft:  ['Foot',       0.3048],
+    in:  ['Inch',       0.0254],
+    nm:  ['Nanometer',  1e-9],
+  },
+  Weight: {
+    kg:  ['Kilogram',   1],
+    g:   ['Gram',       1e-3],
+    mg:  ['Milligram',  1e-6],
+    lb:  ['Pound',      0.45359237],
+    oz:  ['Ounce',      0.028349523],
+    t:   ['Metric Ton', 1000],
+    st:  ['Stone',      6.35029318],
+  },
+  Temperature: {
+    C:   ['Celsius',    null],
+    F:   ['Fahrenheit', null],
+    K:   ['Kelvin',     null],
+    R:   ['Rankine',    null],
+  },
+  Speed: {
+    mps:  ['m/s',       1],
+    kph:  ['km/h',      1/3.6],
+    mph:  ['mph',       0.44704],
+    kt:   ['Knot',      0.514444],
+    fps:  ['ft/s',      0.3048],
+    mach: ['Mach',      343],
+  },
+  Area: {
+    m2:  ['m²',         1],
+    km2: ['km²',        1e6],
+    cm2: ['cm²',        1e-4],
+    ha:  ['Hectare',    1e4],
+    ac:  ['Acre',       4046.856],
+    ft2: ['ft²',        0.092903],
+    in2: ['in²',        0.00064516],
+    mi2: ['mi²',        2589988],
+  },
+  Volume: {
+    L:   ['Liter',      1],
+    mL:  ['Milliliter', 1e-3],
+    m3:  ['m³',         1000],
+    gal: ['US Gallon',  3.785411784],
+    qt:  ['US Quart',   0.946352946],
+    pt:  ['US Pint',    0.473176473],
+    cup: ['US Cup',     0.2365882365],
+    floz:['fl oz',      0.0295735296],
+    tbsp:['Tablespoon', 0.0147867648],
+    tsp: ['Teaspoon',   0.00492892159],
+  },
+  Data: {
+    B:   ['Byte',       1],
+    KB:  ['Kilobyte',   1024],
+    MB:  ['Megabyte',   1048576],
+    GB:  ['Gigabyte',   1073741824],
+    TB:  ['Terabyte',   1099511627776],
+    Kb:  ['Kilobit',    128],
+    Mb:  ['Megabit',    131072],
+    Gb:  ['Gigabit',    134217728],
+  },
+};
+
+let curCat = 'Length';
+let converting = false;
+
+function buildTabs() {
+  const tabs = document.getElementById('catTabs');
+  tabs.innerHTML = Object.keys(CATS).map(c =>
+    `<button class="cat-tab${c===curCat?' active':''}" onclick="setCat('${c}')">${c}</button>`
+  ).join('');
+}
+
+function setCat(cat) {
+  curCat = cat;
+  buildTabs();
+  document.getElementById('catLabel').textContent = cat;
+  buildGrid();
+}
+
+function buildGrid() {
+  const grid = document.getElementById('convGrid');
+  const units = CATS[curCat];
+  grid.innerHTML = Object.entries(units).map(([key, [label]]) => `
+    <div class="conv-row">
+      <div class="conv-label">${label} <span style="opacity:0.5">(${key})</span></div>
+      <input class="conv-input" type="number" id="unit_${key}" placeholder="0"
+        oninput="convert('${key}', this.value)"
+        onfocus="this.classList.add('active-input')"
+        onblur="this.classList.remove('active-input')">
+    </div>`).join('');
+}
+
+function toBase(cat, key, val) {
+  if (cat === 'Temperature') {
+    const v = parseFloat(val);
+    if (key==='C') return v + 273.15;
+    if (key==='F') return (v + 459.67) * 5/9;
+    if (key==='K') return v;
+    if (key==='R') return v * 5/9;
+  }
+  return parseFloat(val) * CATS[cat][key][1];
+}
+
+function fromBase(cat, key, base) {
+  if (cat === 'Temperature') {
+    if (key==='C') return base - 273.15;
+    if (key==='F') return base * 9/5 - 459.67;
+    if (key==='K') return base;
+    if (key==='R') return base * 9/5;
+  }
+  return base / CATS[cat][key][1];
+}
+
+function convert(fromKey, val) {
+  if (converting) return;
+  converting = true;
+  if (val === '' || isNaN(parseFloat(val))) {
+    Object.keys(CATS[curCat]).forEach(k => { if(k!==fromKey) { const el=document.getElementById('unit_'+k); if(el) el.value=''; }});
+    converting = false; return;
+  }
+  const base = toBase(curCat, fromKey, val);
+  Object.entries(CATS[curCat]).forEach(([key]) => {
+    if (key === fromKey) return;
+    const el = document.getElementById('unit_'+key);
+    if (!el) return;
+    const result = fromBase(curCat, key, base);
+    el.value = Math.abs(result) < 1e-10 && result !== 0 ? result.toExponential(6) :
+               parseFloat(result.toPrecision(10)).toString();
+  });
+  converting = false;
+}
+
+buildTabs();
+buildGrid();
+</script>
+</body>
+</html>

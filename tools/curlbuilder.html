@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>curl Builder — DevBox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.method-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px}
+.method-tab{padding:6px 14px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);font-family:var(--mono);font-size:0.75rem;font-weight:700;cursor:pointer;transition:all var(--transition);color:var(--text-dim)}
+.method-tab:hover{color:var(--text);border-color:var(--border2)}
+.method-tab.active.GET{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+.method-tab.active.POST{background:var(--blue-dim);border-color:var(--blue);color:var(--blue)}
+.method-tab.active.PUT{background:var(--orange-dim);border-color:var(--orange);color:var(--orange)}
+.method-tab.active.PATCH{background:var(--yellow-dim);border-color:var(--yellow);color:var(--yellow)}
+.method-tab.active.DELETE{background:var(--red-dim);border-color:var(--red);color:var(--red)}
+.method-tab.active.HEAD,.method-tab.active.OPTIONS{background:var(--purple-dim);border-color:var(--purple);color:var(--purple)}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.field label{font-family:var(--mono);font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim)}
+.field input,.field select,.field textarea{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:9px 12px;font-family:var(--mono);font-size:0.82rem;color:var(--text);outline:none;transition:border-color var(--transition);width:100%}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--purple)}
+.kv-row{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-bottom:6px;align-items:center}
+.kv-input{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:7px 10px;font-family:var(--mono);font-size:0.78rem;color:var(--text);outline:none;transition:border-color var(--transition);width:100%}
+.kv-input:focus{border-color:var(--purple)}
+.kv-del{background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:0.9rem;padding:4px;transition:color var(--transition)}
+.kv-del:hover{color:var(--red)}
+.add-row-btn{font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);background:none;border:1px dashed var(--border);border-radius:var(--r-sm);padding:5px 12px;cursor:pointer;width:100%;transition:all var(--transition);text-align:center;margin-bottom:10px}
+.add-row-btn:hover{border-color:var(--border2);color:var(--text)}
+#output{color:var(--cyan);font-size:0.8rem;white-space:pre-wrap;word-break:break-all;min-height:60px}
+.opt-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;font-family:var(--mono);font-size:0.75rem;color:var(--text-dim)}
+.opt-row label{display:flex;align-items:center;gap:5px;cursor:pointer}
+.opt-row input[type=checkbox]{accent-color:var(--purple)}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content-wrap">
+    <div class="content">
+      <div class="tool-header">
+        <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">curl</div>
+        <div><div class="tool-title">curl Builder</div><div class="tool-desc">Build curl commands visually with headers, auth, body & query params</div></div>
+      </div>
+
+      <!-- Method -->
+      <div class="method-tabs" id="methodTabs">
+        <button class="method-tab active GET" onclick="setMethod('GET')">GET</button>
+        <button class="method-tab" onclick="setMethod('POST')">POST</button>
+        <button class="method-tab" onclick="setMethod('PUT')">PUT</button>
+        <button class="method-tab" onclick="setMethod('PATCH')">PATCH</button>
+        <button class="method-tab" onclick="setMethod('DELETE')">DELETE</button>
+        <button class="method-tab" onclick="setMethod('HEAD')">HEAD</button>
+        <button class="method-tab" onclick="setMethod('OPTIONS')">OPTIONS</button>
+      </div>
+
+      <!-- URL -->
+      <div class="field">
+        <label>URL</label>
+        <input id="urlInput" type="text" placeholder="https://api.example.com/endpoint" oninput="build()">
+      </div>
+
+      <!-- Query Params -->
+      <div class="panel">
+        <div class="panel-bar"><span class="panel-label">Query Parameters</span></div>
+        <div id="queryRows"></div>
+        <button class="add-row-btn" onclick="addRow('query')">+ Add Parameter</button>
+      </div>
+
+      <!-- Headers -->
+      <div class="panel">
+        <div class="panel-bar">
+          <span class="panel-label">Headers</span>
+          <div class="panel-actions">
+            <select id="commonHeader" onchange="addCommonHeader()" class="btn btn-ghost" style="font-family:var(--mono);font-size:0.72rem">
+              <option value="">Add common…</option>
+              <option value="Content-Type|application/json">Content-Type: application/json</option>
+              <option value="Content-Type|application/x-www-form-urlencoded">Content-Type: form-urlencoded</option>
+              <option value="Accept|application/json">Accept: application/json</option>
+              <option value="Accept|*/*">Accept: */*</option>
+              <option value="Authorization|Bearer TOKEN">Authorization: Bearer</option>
+              <option value="X-API-Key|YOUR_KEY">X-API-Key</option>
+              <option value="User-Agent|DevBox/1.0">User-Agent</option>
+              <option value="Cache-Control|no-cache">Cache-Control: no-cache</option>
+            </select>
+          </div>
+        </div>
+        <div id="headerRows"></div>
+        <button class="add-row-btn" onclick="addRow('header')">+ Add Header</button>
+      </div>
+
+      <!-- Auth -->
+      <div class="panel">
+        <div class="panel-bar"><span class="panel-label">Authentication</span></div>
+        <div class="field">
+          <label>Auth Type</label>
+          <select id="authType" onchange="build()">
+            <option value="">None</option>
+            <option value="bearer">Bearer Token</option>
+            <option value="basic">Basic Auth</option>
+            <option value="apikey">API Key Header</option>
+          </select>
+        </div>
+        <div id="authFields"></div>
+      </div>
+
+      <!-- Body -->
+      <div class="panel" id="bodyPanel">
+        <div class="panel-bar">
+          <span class="panel-label">Request Body</span>
+          <div class="panel-actions">
+            <select id="bodyType" onchange="build()" class="btn btn-ghost" style="font-family:var(--mono);font-size:0.72rem">
+              <option value="json">JSON</option>
+              <option value="form">Form Data</option>
+              <option value="raw">Raw</option>
+            </select>
+          </div>
+        </div>
+        <textarea id="bodyInput" rows="6" placeholder='{"key": "value"}' oninput="build()" style="font-size:0.78rem"></textarea>
+      </div>
+
+      <!-- Options -->
+      <div class="opt-row">
+        <label><input type="checkbox" id="optVerbose" onchange="build()"> -v verbose</label>
+        <label><input type="checkbox" id="optInsecure" onchange="build()"> -k insecure</label>
+        <label><input type="checkbox" id="optFollowRedirect" checked onchange="build()"> -L follow redirects</label>
+        <label><input type="checkbox" id="optSilent" onchange="build()"> -s silent</label>
+        <label><input type="checkbox" id="optMultiline" checked onchange="build()"> Multiline output</label>
+      </div>
+
+      <!-- Output -->
+      <div class="panel">
+        <div class="panel-bar">
+          <span class="panel-label">curl Command</span>
+          <div class="panel-actions">
+            <button class="btn btn-cyan" onclick="copy()">⎘ Copy</button>
+            <button class="btn btn-ghost" onclick="reset()">Reset</button>
+          </div>
+        </div>
+        <div id="output" class="output-area"></div>
+      </div>
+    </div>
+    <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/shared.js" defer></script>
+<script src="../assets/sidebar.js" defer></script>
+<script>
+let method = 'GET';
+let queryCount = 0, headerCount = 0;
+
+function setMethod(m) {
+  method = m;
+  document.querySelectorAll('.method-tab').forEach(b => {
+    b.classList.remove('active','GET','POST','PUT','PATCH','DELETE','HEAD','OPTIONS');
+    if (b.textContent === m) { b.classList.add('active', m); }
+  });
+  document.getElementById('bodyPanel').style.display = ['GET','HEAD','OPTIONS'].includes(m) ? 'none' : '';
+  build();
+}
+
+function addRow(type) {
+  const container = document.getElementById(type+'Rows');
+  const id = type === 'query' ? queryCount++ : headerCount++;
+  const ph = type === 'query' ? ['param','value'] : ['Header-Name','value'];
+  const div = document.createElement('div');
+  div.className = 'kv-row'; div.id = `${type}_${id}`;
+  div.innerHTML = `
+    <input class="kv-input" placeholder="${ph[0]}" oninput="build()">
+    <input class="kv-input" placeholder="${ph[1]}" oninput="build()">
+    <button class="kv-del" onclick="removeRow('${type}_${id}')">✕</button>`;
+  container.appendChild(div);
+  build();
+}
+
+function removeRow(id) { document.getElementById(id)?.remove(); build(); }
+
+function addCommonHeader() {
+  const sel = document.getElementById('commonHeader');
+  if (!sel.value) return;
+  const [k,v] = sel.value.split('|');
+  const container = document.getElementById('headerRows');
+  const id = headerCount++;
+  const div = document.createElement('div');
+  div.className = 'kv-row'; div.id = `header_${id}`;
+  div.innerHTML = `
+    <input class="kv-input" value="${k}" oninput="build()">
+    <input class="kv-input" value="${v}" oninput="build()">
+    <button class="kv-del" onclick="removeRow('header_${id}')">✕</button>`;
+  container.appendChild(div);
+  sel.value = ''; build();
+}
+
+function getAuthFields() {
+  const type = document.getElementById('authType').value;
+  const af = document.getElementById('authFields');
+  if (type === 'bearer') {
+    if (!document.getElementById('authToken'))
+      af.innerHTML = '<div class="field"><label>Token</label><input id="authToken" type="text" placeholder="your-bearer-token" oninput="build()"></div>';
+  } else if (type === 'basic') {
+    if (!document.getElementById('authUser'))
+      af.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div class="field"><label>Username</label><input id="authUser" type="text" placeholder="username" oninput="build()"></div><div class="field"><label>Password</label><input id="authPass" type="password" placeholder="password" oninput="build()"></div></div>';
+  } else if (type === 'apikey') {
+    if (!document.getElementById('authKeyName'))
+      af.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div class="field"><label>Header Name</label><input id="authKeyName" type="text" value="X-API-Key" oninput="build()"></div><div class="field"><label>Key Value</label><input id="authKeyVal" type="text" placeholder="your-api-key" oninput="build()"></div></div>';
+  } else { af.innerHTML = ''; }
+}
+
+function q(s) { return s.includes(' ') || s.includes('"') || s.includes("'") ? `'${s.replace(/'/g,"'\\''")}' ` : s; }
+
+function build() {
+  getAuthFields();
+  const multiline = document.getElementById('optMultiline').checked;
+  const sep = multiline ? ' \\\n  ' : ' ';
+  let url = document.getElementById('urlInput').value.trim() || 'https://api.example.com';
+
+  // Query params
+  const queryPairs = [];
+  document.querySelectorAll('#queryRows .kv-row').forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const k = inputs[0].value.trim(), v = inputs[1].value.trim();
+    if (k) queryPairs.push(`${encodeURIComponent(k)}=${encodeURIComponent(v)}`);
+  });
+  if (queryPairs.length) url += (url.includes('?')?'&':'?') + queryPairs.join('&');
+
+  const parts = [`curl${sep}-X ${method}`];
+  parts.push(`'${url}'`);
+
+  // Verbose/flags
+  if (document.getElementById('optFollowRedirect').checked) parts.push('-L');
+  if (document.getElementById('optVerbose').checked)        parts.push('-v');
+  if (document.getElementById('optInsecure').checked)       parts.push('-k');
+  if (document.getElementById('optSilent').checked)         parts.push('-s');
+
+  // Auth
+  const authType = document.getElementById('authType').value;
+  if (authType === 'bearer') {
+    const tok = document.getElementById('authToken')?.value||'TOKEN';
+    parts.push(`-H 'Authorization: Bearer ${tok}'`);
+  } else if (authType === 'basic') {
+    const u = document.getElementById('authUser')?.value||'user';
+    const p = document.getElementById('authPass')?.value||'pass';
+    parts.push(`-u '${u}:${p}'`);
+  } else if (authType === 'apikey') {
+    const n = document.getElementById('authKeyName')?.value||'X-API-Key';
+    const v = document.getElementById('authKeyVal')?.value||'KEY';
+    parts.push(`-H '${n}: ${v}'`);
+  }
+
+  // Headers
+  document.querySelectorAll('#headerRows .kv-row').forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const k = inputs[0].value.trim(), v = inputs[1].value.trim();
+    if (k) parts.push(`-H '${k}: ${v}'`);
+  });
+
+  // Body
+  if (!['GET','HEAD','OPTIONS'].includes(method)) {
+    const body = document.getElementById('bodyInput').value.trim();
+    const bt = document.getElementById('bodyType').value;
+    if (body) {
+      if (bt === 'json') {
+        if (!document.querySelector('#headerRows input[value="Content-Type"]'))
+          parts.push(`-H 'Content-Type: application/json'`);
+        parts.push(`-d '${body.replace(/'/g,"'\\''")}' `);
+      } else if (bt === 'form') {
+        parts.push(`-H 'Content-Type: application/x-www-form-urlencoded'`);
+        parts.push(`-d '${body.replace(/'/g,"'\\''")}' `);
+      } else {
+        parts.push(`--data-raw '${body.replace(/'/g,"'\\''")}' `);
+      }
+    }
+  }
+
+  document.getElementById('output').textContent = parts.join(sep);
+}
+
+function copy(){const t=document.getElementById('output').textContent;if(t)navigator.clipboard.writeText(t).then(()=>showToast('Copied!'));}
+function reset(){method='GET';document.getElementById('urlInput').value='';document.getElementById('queryRows').innerHTML='';document.getElementById('headerRows').innerHTML='';document.getElementById('bodyInput').value='';document.getElementById('authType').value='';document.getElementById('authFields').innerHTML='';queryCount=0;headerCount=0;setMethod('GET');}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
+
+// Init
+setMethod('GET'); build();
+</script>
+</body>
+</html>
