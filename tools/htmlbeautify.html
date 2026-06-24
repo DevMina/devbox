@@ -58,13 +58,74 @@
         const VOID_TAGS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
         const INLINE_TAGS = new Set(['a', 'abbr', 'b', 'bdi', 'bdo', 'br', 'cite', 'code', 'data', 'dfn', 'em', 'i', 'kbd', 'mark', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup', 'time', 'u', 'var', 'wbr']);
         function htmlBeautify() {
-            let html = document.getElementById('htmlBInput').value.trim(); if (!html) return; let result = '', depth = 0, i = 0; const ind = () => '  '.repeat(depth); while (i < html.length) {
-                if (html[i] === '<') {
-                    const end = html.indexOf('>', i); if (end === -1) { result += html.slice(i); break; } const tag = html.slice(i, end + 1); const tagName = (tag.match(/<\/?([a-zA-Z][a-zA-Z0-9-]*)/)) || []; const tn = (tagName[1] || '').toLowerCase(); const isClose = tag.startsWith('</'); const isSelf = tag.endsWith('/>') || VOID_TAGS.has(tn); const isInline = INLINE_TAGS.has(tn); if (isClose) {
-                        depth = Math.max(0, depth - 1); result += (result.endsWith('\n') ? ind() : '') + tag + '\n';
-                    } else if (isSelf) { result += ind() + tag + '\n'; } else { result += ind() + tag + '\n'; if (!isInline) depth++; } i = end + 1;
-                } else { const nextTag = html.indexOf(' < ', i); const text = (nextTag === -1 ? html.slice(i) : html.slice(i, nextTag)).trim(); if (text) result += ind() + text + '\n'; i = nextTag === -1 ? html.length : nextTag; }
-            } document.getElementById('htmlBOutput').textContent = result.trim();
+            const input = document.getElementById('htmlBInput').value.trim();
+
+            if (!input) {
+                document.getElementById('htmlBOutput').textContent = '';
+                return;
+            }
+
+            const indentSize = '  ';
+            let depth = 0;
+            let output = [];
+
+            // Split HTML safely by tags
+            const tokens = input
+                .replace(/>\s*</g, '><')
+                .split(/(<[^>]+>)/)
+                .filter(Boolean);
+
+            tokens.forEach(token => {
+
+                token = token.trim();
+
+                if (!token) return;
+
+                // Closing tag
+                if (token.startsWith('</')) {
+                    depth = Math.max(depth - 1, 0);
+                    output.push(indentSize.repeat(depth) + token);
+                    return;
+                }
+
+                // Opening/self closing tag
+                if (token.startsWith('<')) {
+
+                    const match = token.match(/^<\s*([a-zA-Z0-9-]+)/);
+                    const tagName = match ? match[1].toLowerCase() : '';
+
+                    const isVoid = VOID_TAGS.has(tagName);
+                    const isSelfClosing = token.endsWith('/>');
+
+                    output.push(
+                        indentSize.repeat(depth) + token
+                    );
+
+                    if (!isVoid && !isSelfClosing) {
+                        depth++;
+                    }
+
+                    return;
+                }
+
+                // Text content
+                if (token.trim()) {
+
+                    const text = token.trim();
+
+                    // Keep inline text with parent tags
+                    if (text.length < 80) {
+                        output[output.length - 1] += text;
+                    } else {
+                        output.push(
+                            indentSize.repeat(depth) + text
+                        );
+                    }
+                }
+            });
+
+            document.getElementById('htmlBOutput').textContent =
+                output.join('\n');
         }
         function htmlMinifyTool() { let html = document.getElementById('htmlBInput').value; html = html.replace(/<!--[\s\S]*?-->/g, '').replace(/\s+/g, ' ').replace(/> </g, '><').trim(); document.getElementById('htmlBOutput').textContent = html; }
         function htmlBSample() { document.getElementById('htmlBInput').value = '<html><head><title>Sample</title><meta charset="UTF-8"><link rel="stylesheet" href="style.css"></head><body><header><nav><ul><li><a href="/">Home</a></li><li><a href="/about">About</a></li></ul></nav></header><main><section><h1>Welcome</h1><p>This is a sample page.</p></section></main><footer><p>&copy; 2024</p></footer></body></html>'; }
