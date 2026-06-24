@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Query and explore JSON with dot-notation paths">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JSON Path Explorer — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="JSON Path Explorer — DevBox">
-<meta property="og:description" content="Query and explore JSON with dot-notation paths">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Query and explore JSON with dot-notation paths">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Path Explorer — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="JSON Path Explorer — DevBox">
+    <meta property="og:description" content="Query and explore JSON with dot-notation paths">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -66,82 +66,82 @@
 
         </main><!-- /content-wrap -->
     </div>
-        <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
-        <script src="../assets/sidebar.js" defer></script>
-        <script>
-            let jpData = null;
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        let jpData = null;
 
-            function jpSample() {
-                document.getElementById('jpInput').value = JSON.stringify({
-                    user: {
-                        name: "Alice", age: 30, email: "alice@example.com", roles: ["admin", "editor"],
-                        address: { city: "New York", zip: "10001", country: "US" }
-                    },
-                    stats: { posts: 142, followers: 3820, following: 98 },
-                    active: true, joinedAt: "2021-03-15"
-                }, null, 2);
-                jpExplore();
+        function jpSample() {
+            document.getElementById('jpInput').value = JSON.stringify({
+                user: {
+                    name: "Alice", age: 30, email: "alice@example.com", roles: ["admin", "editor"],
+                    address: { city: "New York", zip: "10001", country: "US" }
+                },
+                stats: { posts: 142, followers: 3820, following: 98 },
+                active: true, joinedAt: "2021-03-15"
+            }, null, 2);
+            jpExplore();
+        }
+
+        function jpExplore() {
+            const raw = document.getElementById('jpInput').value.trim();
+            if (!raw) { document.getElementById('jpTree').innerHTML = ''; jpData = null; return; }
+            try {
+                jpData = JSON.parse(raw);
+                document.getElementById('jpTree').innerHTML = renderTree(jpData, 'root', 0);
+                jpQuery();
+            } catch (e) { document.getElementById('jpTree').innerHTML = '<span style="color:var(--red)">Invalid JSON: ' + escHtml(e.message) + '</span>'; jpData = null; }
+        }
+
+        function renderTree(obj, key, depth) {
+            const indent = '  '.repeat(depth);
+            const keyColor = 'var(--blue)'; const valColor = 'var(--green)'; const strColor = 'var(--orange)'; const numColor = 'var(--yellow)';
+            if (obj === null) return `${indent}<span style="color:${keyColor}">${key}</span>: <span style="color:var(--red)">null</span>
+`;
+            if (typeof obj === 'boolean') return `${indent}<span style="color:${keyColor}">${key}</span>: <span style="color:var(--purple)">${obj}</span>
+`;
+            if (typeof obj === 'number') return `${indent}<span style="color:${keyColor}">${key}</span>: <span style="color:${numColor}">${obj}</span>
+`;
+            if (typeof obj === 'string') return `${indent}<span style="color:${keyColor}">${key}</span>: <span style="color:${strColor}">"${escHtml(obj)}"</span>
+`;
+            if (Array.isArray(obj)) {
+                if (obj.length === 0) return `${indent}<span style="color:${keyColor}">${key}</span>: []
+`;
+                let out = `${indent}<details open><summary style="cursor:pointer;color:${keyColor}">${key} <span style="color:var(--text-dim)">[${obj.length}]</span></summary>
+`;
+                obj.forEach((v, i) => { out += renderTree(v, '[' + i + ']', depth + 1); });
+                return out + '</details>\n                    ';
             }
-
-            function jpExplore() {
-                const raw = document.getElementById('jpInput').value.trim();
-                if (!raw) { document.getElementById('jpTree').innerHTML = ''; jpData = null; return; }
-                try {
-                    jpData = JSON.parse(raw);
-                    document.getElementById('jpTree').innerHTML = renderTree(jpData, 'root', 0);
-                    jpQuery();
-                } catch (e) { document.getElementById('jpTree').innerHTML = '<span style="color:var(--red)">Invalid JSON: ' + escHtml(e.message) + '</span>'; jpData = null; }
+            if (typeof obj === 'object') {
+                const keys = Object.keys(obj);
+                if (keys.length === 0) return `${indent}<span style="color:${keyColor}">${key}</span>: {}
+`;
+                let out = `${indent}<details open><summary style="cursor:pointer;color:${keyColor}">${key} <span style="color:var(--text-dim)">{${keys.length}}</span></summary>
+`;
+                keys.forEach(k => { out += renderTree(obj[k], k, depth + 1); });
+                return out + '</details>\n                    ';
             }
+            return '';
+        }
 
-            function renderTree(obj, key, depth) {
-                const indent = '  '.repeat(depth);
-                const keyColor = 'var(--blue)'; const valColor = 'var(--green)'; const strColor = 'var(--orange)'; const numColor = 'var(--yellow)';
-                if (obj === null) return `${indent}<span style="color:${keyColor}">${key}</span>: <span style="color:var(--red)">null</span>
-`;
-                if (typeof obj === 'boolean') return `${indent}<span style="color:${keyColor}">${key}</span>: <span style="color:var(--purple)">${obj}</span>
-`;
-                if (typeof obj === 'number') return `${indent}<span style="color:${keyColor}">${key}</span>: <span style="color:${numColor}">${obj}</span>
-`;
-                if (typeof obj === 'string') return `${indent}<span style="color:${keyColor}">${key}</span>: <span style="color:${strColor}">"${escHtml(obj)}"</span>
-`;
-                if (Array.isArray(obj)) {
-                    if (obj.length === 0) return `${indent}<span style="color:${keyColor}">${key}</span>: []
-`;
-                    let out = `${indent}<details open><summary style="cursor:pointer;color:${keyColor}">${key} <span style="color:var(--text-dim)">[${obj.length}]</span></summary>
-`;
-                    obj.forEach((v, i) => { out += renderTree(v, '[' + i + ']', depth + 1); });
-                    return out + '</details>\n                    ';
+        function jpQuery() {
+            if (!jpData) { document.getElementById('jpResult').textContent = 'Parse JSON first'; return; }
+            const q = document.getElementById('jpQuery').value.trim();
+            if (!q) { document.getElementById('jpResult').textContent = JSON.stringify(jpData, null, 2); return; }
+            try {
+                let result = jpData;
+                const parts = q.replace(/\[(\d+)\]/g, '.$1').split('.').filter(Boolean);
+                for (const part of parts) {
+                    if (result === null || result === undefined) { result = undefined; break; }
+                    result = result[isNaN(part) ? part : parseInt(part)];
                 }
-                if (typeof obj === 'object') {
-                    const keys = Object.keys(obj);
-                    if (keys.length === 0) return `${indent}<span style="color:${keyColor}">${key}</span>: {}
-`;
-                    let out = `${indent}<details open><summary style="cursor:pointer;color:${keyColor}">${key} <span style="color:var(--text-dim)">{${keys.length}}</span></summary>
-`;
-                    keys.forEach(k => { out += renderTree(obj[k], k, depth + 1); });
-                    return out + '</details>\n                    ';
-                }
-                return '';
-            }
+                if (result === undefined) { document.getElementById('jpResult').textContent = 'undefined (path not found)'; return; }
+                document.getElementById('jpResult').textContent = JSON.stringify(result, null, 2);
+            } catch (e) { document.getElementById('jpResult').textContent = 'Error: ' + e.message; }
+        }
 
-            function jpQuery() {
-                if (!jpData) { document.getElementById('jpResult').textContent = 'Parse JSON first'; return; }
-                const q = document.getElementById('jpQuery').value.trim();
-                if (!q) { document.getElementById('jpResult').textContent = JSON.stringify(jpData, null, 2); return; }
-                try {
-                    let result = jpData;
-                    const parts = q.replace(/\[(\d+)\]/g, '.$1').split('.').filter(Boolean);
-                    for (const part of parts) {
-                        if (result === null || result === undefined) { result = undefined; break; }
-                        result = result[isNaN(part) ? part : parseInt(part)];
-                    }
-                    if (result === undefined) { document.getElementById('jpResult').textContent = 'undefined (path not found)'; return; }
-                    document.getElementById('jpResult').textContent = JSON.stringify(result, null, 2);
-                } catch (e) { document.getElementById('jpResult').textContent = 'Error: ' + e.message; }
-            }
-
-            document.addEventListener('DOMContentLoaded', jpSample);
-        </script>
+        document.addEventListener('DOMContentLoaded', jpSample);
+    </script>
 </body>
 </html>

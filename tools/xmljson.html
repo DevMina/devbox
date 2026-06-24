@@ -1,158 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XML ↔ JSON — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<style>
-.mode-tabs{display:flex;gap:4px;margin-bottom:14px}
-.mode-tab{padding:7px 16px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:var(--mono);font-size:0.75rem;cursor:pointer;transition:all var(--transition)}
-.mode-tab:hover{color:var(--text);border-color:var(--border2)}
-.mode-tab.active{background:var(--orange-dim);border-color:var(--orange);color:var(--orange)}
-#output{white-space:pre;overflow-x:auto;min-height:120px;font-size:0.8rem;color:var(--green)}
-.err{color:var(--red)!important}
-</style>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML ↔ JSON — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .mode-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 14px
+        }
+
+        .mode-tab {
+            padding: 7px 16px;
+            border-radius: var(--r-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-dim);
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all var(--transition)
+        }
+
+            .mode-tab:hover {
+                color: var(--text);
+                border-color: var(--border2)
+            }
+
+            .mode-tab.active {
+                background: var(--orange-dim);
+                border-color: var(--orange);
+                color: var(--orange)
+            }
+
+        #output {
+            white-space: pre;
+            overflow-x: auto;
+            min-height: 120px;
+            font-size: 0.8rem;
+            color: var(--green)
+        }
+
+        .err {
+            color: var(--red) !important
+        }
+    </style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <main class="content-wrap">
-    <div class="content">
-      <div class="tool-header">
-        <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">X↔J</div>
-        <div><div class="tool-title">XML ↔ JSON</div><div class="tool-desc">Convert between XML and JSON formats instantly</div></div>
-      </div>
-      <div class="mode-tabs">
-        <button class="mode-tab active" id="tab-xj" onclick="setMode('xj')">XML → JSON</button>
-        <button class="mode-tab" id="tab-jx" onclick="setMode('jx')">JSON → XML</button>
-      </div>
-      <div class="panel">
-        <div class="panel-bar">
-          <span class="panel-label" id="inputLabel">XML Input</span>
-          <div class="panel-actions">
-            <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
-            <button class="btn btn-ghost" onclick="document.getElementById('input').value='';run()">Clear</button>
-          </div>
-        </div>
-        <textarea id="input" style="min-height:200px;font-size:0.8rem" oninput="run()" placeholder="Paste XML here…"></textarea>
-      </div>
-      <div class="panel">
-        <div class="panel-bar">
-          <span class="panel-label" id="outputLabel">JSON Output</span>
-          <div class="panel-actions">
-            <button class="btn btn-ghost" onclick="copy()">⎘ Copy</button>
-            <button class="btn btn-ghost" onclick="swap()">⇅ Swap</button>
-          </div>
-        </div>
-        <div id="output" class="output-area"></div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">X↔J</div>
+                    <div><div class="tool-title">XML ↔ JSON</div><div class="tool-desc">Convert between XML and JSON formats instantly</div></div>
+                </div>
+                <div class="mode-tabs">
+                    <button class="mode-tab active" id="tab-xj" onclick="setMode('xj')">XML → JSON</button>
+                    <button class="mode-tab" id="tab-jx" onclick="setMode('jx')">JSON → XML</button>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label" id="inputLabel">XML Input</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
+                            <button class="btn btn-ghost" onclick="document.getElementById('input').value='';run()">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="input" style="min-height:200px;font-size:0.8rem" oninput="run()" placeholder="Paste XML here…"></textarea>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label" id="outputLabel">JSON Output</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="copy()">⎘ Copy</button>
+                            <button class="btn btn-ghost" onclick="swap()">⇅ Swap</button>
+                        </div>
+                    </div>
+                    <div id="output" class="output-area"></div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
     </div>
-    <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
-  </main>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js" defer></script>
-<script src="../assets/sidebar.js" defer></script>
-<script>
-let mode = 'xj';
-function setMode(m) {
-  mode = m;
-  ['xj','jx'].forEach(x => document.getElementById('tab-'+x).classList.toggle('active', x===m));
-  document.getElementById('inputLabel').textContent  = m==='jx' ? 'JSON Input' : 'XML Input';
-  document.getElementById('outputLabel').textContent = m==='jx' ? 'XML Output' : 'JSON Output';
-  document.getElementById('input').placeholder = m==='jx' ? 'Paste JSON here…' : 'Paste XML here…';
-  document.getElementById('output').style.color = m==='jx' ? 'var(--orange)' : 'var(--green)';
-  run();
-}
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        let mode = 'xj';
+        function setMode(m) {
+            mode = m;
+            ['xj', 'jx'].forEach(x => document.getElementById('tab-' + x).classList.toggle('active', x === m));
+            document.getElementById('inputLabel').textContent = m === 'jx' ? 'JSON Input' : 'XML Input';
+            document.getElementById('outputLabel').textContent = m === 'jx' ? 'XML Output' : 'JSON Output';
+            document.getElementById('input').placeholder = m === 'jx' ? 'Paste JSON here…' : 'Paste XML here…';
+            document.getElementById('output').style.color = m === 'jx' ? 'var(--orange)' : 'var(--green)';
+            run();
+        }
 
-/* ── XML → JS object ── */
-function xmlToObj(node) {
-  if (node.nodeType === Node.TEXT_NODE) {
-    const t = node.nodeValue.trim(); return t || null;
-  }
-  if (node.nodeType !== Node.ELEMENT_NODE) return null;
-  const obj = {};
-  // attributes
-  for (const a of node.attributes) obj['@'+a.name] = a.value;
-  // children
-  const children = [...node.childNodes].filter(n => n.nodeType !== Node.TEXT_NODE || n.nodeValue.trim());
-  if (children.length === 0) {
-    const txt = node.textContent.trim();
-    if (Object.keys(obj).length === 0) return txt || null;
-    if (txt) obj['#text'] = txt;
-    return obj;
-  }
-  if (children.length === 1 && children[0].nodeType === Node.TEXT_NODE) {
-    const txt = children[0].nodeValue.trim();
-    if (Object.keys(obj).length === 0) return txt;
-    obj['#text'] = txt; return obj;
-  }
-  for (const child of children) {
-    if (child.nodeType !== Node.ELEMENT_NODE) continue;
-    const key = child.nodeName, val = xmlToObj(child);
-    if (obj[key] === undefined) obj[key] = val;
-    else if (Array.isArray(obj[key])) obj[key].push(val);
-    else obj[key] = [obj[key], val];
-  }
-  return obj;
-}
+        /* ── XML → JS object ── */
+        function xmlToObj(node) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                const t = node.nodeValue.trim(); return t || null;
+            }
+            if (node.nodeType !== Node.ELEMENT_NODE) return null;
+            const obj = {};
+            // attributes
+            for (const a of node.attributes) obj['@' + a.name] = a.value;
+            // children
+            const children = [...node.childNodes].filter(n => n.nodeType !== Node.TEXT_NODE || n.nodeValue.trim());
+            if (children.length === 0) {
+                const txt = node.textContent.trim();
+                if (Object.keys(obj).length === 0) return txt || null;
+                if (txt) obj['#text'] = txt;
+                return obj;
+            }
+            if (children.length === 1 && children[0].nodeType === Node.TEXT_NODE) {
+                const txt = children[0].nodeValue.trim();
+                if (Object.keys(obj).length === 0) return txt;
+                obj['#text'] = txt; return obj;
+            }
+            for (const child of children) {
+                if (child.nodeType !== Node.ELEMENT_NODE) continue;
+                const key = child.nodeName, val = xmlToObj(child);
+                if (obj[key] === undefined) obj[key] = val;
+                else if (Array.isArray(obj[key])) obj[key].push(val);
+                else obj[key] = [obj[key], val];
+            }
+            return obj;
+        }
 
-/* ── JS object → XML string ── */
-function objToXml(key, val, depth) {
-  const pad = '  '.repeat(depth);
-  if (val === null || val === undefined) return `${pad}<${key}/>`;
-  if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
-    return `${pad}<${key}>${esc(String(val))}</${key}>`;
-  }
-  if (Array.isArray(val)) return val.map(v => objToXml(key, v, depth)).join('\n');
-  // object
-  let attrs = '', children = '', text = '';
-  for (const [k, v] of Object.entries(val)) {
-    if (k.startsWith('@')) attrs += ` ${k.slice(1)}="${esc(String(v))}"`;
-    else if (k === '#text') text = esc(String(v));
-    else children += '\n' + objToXml(k, v, depth+1);
-  }
-  if (!children && !text) return `${pad}<${key}${attrs}/>`;
-  if (text && !children) return `${pad}<${key}${attrs}>${text}</${key}>`;
-  return `${pad}<${key}${attrs}>${children}\n${pad}</${key}>`;
-}
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+        /* ── JS object → XML string ── */
+        function objToXml(key, val, depth) {
+            const pad = '  '.repeat(depth);
+            if (val === null || val === undefined) return `${pad}<${key}/>`;
+            if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
+                return `${pad}<${key}>${esc(String(val))}</${key}>`;
+            }
+            if (Array.isArray(val)) return val.map(v => objToXml(key, v, depth)).join('\n');
+            // object
+            let attrs = '', children = '', text = '';
+            for (const [k, v] of Object.entries(val)) {
+                if (k.startsWith('@')) attrs += ` ${k.slice(1)}="${esc(String(v))}"`;
+                else if (k === '#text') text = esc(String(v));
+                else children += '\n' + objToXml(k, v, depth + 1);
+            }
+            if (!children && !text) return `${pad}<${key}${attrs}/>`;
+            if (text && !children) return `${pad}<${key}${attrs}>${text}</${key}>`;
+            return `${pad}<${key}${attrs}>${children}\n${pad}</${key}>`;
+        }
+        function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
-function run() {
-  const src = document.getElementById('input').value.trim();
-  const out = document.getElementById('output');
-  if (!src) { out.textContent=''; out.classList.remove('err'); return; }
-  try {
-    if (mode === 'xj') {
-      const doc = new DOMParser().parseFromString(src, 'application/xml');
-      const err = doc.querySelector('parsererror');
-      if (err) throw new Error(err.textContent.trim().split('\n')[0]);
-      const root = doc.documentElement;
-      const obj = {}; obj[root.nodeName] = xmlToObj(root);
-      out.textContent = JSON.stringify(obj, null, 2);
-    } else {
-      const obj = JSON.parse(src);
-      const keys = Object.keys(obj);
-      if (keys.length === 0) throw new Error('Empty object');
-      const rootKey = keys[0];
-      out.textContent = '<?xml version="1.0" encoding="UTF-8"?>\n' + objToXml(rootKey, obj[rootKey], 0);
-    }
-    out.classList.remove('err');
-  } catch(e) { out.textContent = '✖ '+e.message; out.classList.add('err'); }
-}
-function copy(){const t=document.getElementById('output').textContent;if(t&&!t.startsWith('✖'))navigator.clipboard.writeText(t).then(()=>showToast('Copied!'));}
-function swap(){const o=document.getElementById('output').textContent;if(o&&!o.startsWith('✖')){document.getElementById('input').value=o;setMode(mode==='xj'?'jx':'xj');}}
-function loadSample(){
-  if(mode==='jx') document.getElementById('input').value='{"library":{"@version":"1.0","book":[{"@id":"1","title":"Clean Code","author":"Robert Martin"},{"@id":"2","title":"The Pragmatic Programmer","author":"Hunt & Thomas"}]}}';
-  else document.getElementById('input').value='<?xml version="1.0"?>\n<library version="1.0">\n  <book id="1">\n    <title>Clean Code</title>\n    <author>Robert Martin</author>\n  </book>\n  <book id="2">\n    <title>The Pragmatic Programmer</title>\n    <author>Hunt &amp; Thomas</author>\n  </book>\n</library>';
-  run();
-}
-function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
-</script>
+        function run() {
+            const src = document.getElementById('input').value.trim();
+            const out = document.getElementById('output');
+            if (!src) { out.textContent = ''; out.classList.remove('err'); return; }
+            try {
+                if (mode === 'xj') {
+                    const doc = new DOMParser().parseFromString(src, 'application/xml');
+                    const err = doc.querySelector('parsererror');
+                    if (err) throw new Error(err.textContent.trim().split('\n')[0]);
+                    const root = doc.documentElement;
+                    const obj = {}; obj[root.nodeName] = xmlToObj(root);
+                    out.textContent = JSON.stringify(obj, null, 2);
+                } else {
+                    const obj = JSON.parse(src);
+                    const keys = Object.keys(obj);
+                    if (keys.length === 0) throw new Error('Empty object');
+                    const rootKey = keys[0];
+                    out.textContent = '<?xml version="1.0" encoding="UTF-8"?>\n' + objToXml(rootKey, obj[rootKey], 0);
+                }
+                out.classList.remove('err');
+            } catch (e) { out.textContent = '✖ ' + e.message; out.classList.add('err'); }
+        }
+        function copy() { const t = document.getElementById('output').textContent; if (t && !t.startsWith('✖')) navigator.clipboard.writeText(t).then(() => showToast('Copied!')); }
+        function swap() { const o = document.getElementById('output').textContent; if (o && !o.startsWith('✖')) { document.getElementById('input').value = o; setMode(mode === 'xj' ? 'jx' : 'xj'); } }
+        function loadSample() {
+            if (mode === 'jx') document.getElementById('input').value = '{"library":{"@version":"1.0","book":[{"@id":"1","title":"Clean Code","author":"Robert Martin"},{"@id":"2","title":"The Pragmatic Programmer","author":"Hunt & Thomas"}]}}';
+            else document.getElementById('input').value = '<?xml version="1.0"?>\n<library version="1.0">\n  <book id="1">\n    <title>Clean Code</title>\n    <author>Robert Martin</author>\n  </book>\n  <book id="2">\n    <title>The Pragmatic Programmer</title>\n    <author>Hunt &amp; Thomas</author>\n  </book>\n</library>';
+            run();
+        }
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+    </script>
 </body>
 </html>

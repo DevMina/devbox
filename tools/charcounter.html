@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Count characters with platform-specific limits">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Character Counter — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="Character Counter — DevBox">
-<meta property="og:description" content="Count characters with platform-specific limits">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Count characters with platform-specific limits">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Counter — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="Character Counter — DevBox">
+    <meta property="og:description" content="Count characters with platform-specific limits">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -52,8 +52,9 @@
     <script>
         const CC_LIMITS = [["Twitter / X", 280, "var(--blue)"], ["SMS (GSM-7)", 160, "var(--green)"], ["SMS (Unicode)", 70, "var(--teal)"], ["Meta Description", 160, "var(--orange)"], ["Page Title (SEO)", 60, "var(--yellow)"], ["LinkedIn Post", 3000, "var(--blue)"], ["Instagram Caption", 2200, "var(--pink)"], ["YouTube Title", 100, "var(--red)"], ["Email Subject", 78, "var(--purple)"]];
         function updateCC() {
-            const txt = document.getElementById('ccInput').value; document.getElementById('cc-chars').textContent = txt.length.toLocaleString(); document.getElementById('cc-words').textContent = (txt.trim() ? txt.trim().split(/\s+/).length : 0).toLocaleString(); document.getElementById('cc-lines').textContent = (txt ? txt.split('\n').length:0).toLocaleString();document.getElementById('cc - bytes').textContent=new TextEncoder().encode(txt).length.toLocaleString();const chars=txt.length;document.getElementById('ccLimits').innerHTML=CC_LIMITS.map(([name,limit,color])=>{const over=chars>limit,pct=Math.min(chars/limit*100,100),remaining=limit-chars;return`<div style="padding:10px 16px;border-bottom:1px solid var(--border)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:0.8rem;font-weight:600;color:var(--text)">${name}</span><span style="font-family:var(--mono);font-size:0.76rem;color:${over?'var(--red)':color}">${chars}/${limit} ${over?`<span style="color:var(--red)">(${Math.abs(remaining)} over)</span>`:`<span style="color:var(--text-dim)">(${remaining} left)</span>`}</span></div><div style="height:4px;background:var(--border2);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${over?'var(--red)':color};border-radius:4px;transition:width 0.2s"></div></div></div>`;}).join('');}
-            document.addEventListener('DOMContentLoaded', updateCC);
+            const txt = document.getElementById('ccInput').value; document.getElementById('cc-chars').textContent = txt.length.toLocaleString(); document.getElementById('cc-words').textContent = (txt.trim() ? txt.trim().split(/\s+/).length : 0).toLocaleString(); document.getElementById('cc-lines').textContent = (txt ? txt.split('\n').length : 0).toLocaleString(); document.getElementById('cc - bytes').textContent = new TextEncoder().encode(txt).length.toLocaleString(); const chars = txt.length; document.getElementById('ccLimits').innerHTML = CC_LIMITS.map(([name, limit, color]) => { const over = chars > limit, pct = Math.min(chars / limit * 100, 100), remaining = limit - chars; return `<div style="padding:10px 16px;border-bottom:1px solid var(--border)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:0.8rem;font-weight:600;color:var(--text)">${name}</span><span style="font-family:var(--mono);font-size:0.76rem;color:${over ? 'var(--red)' : color}">${chars}/${limit} ${over ? `<span style="color:var(--red)">(${Math.abs(remaining)} over)</span>` : `<span style="color:var(--text-dim)">(${remaining} left)</span>`}</span></div><div style="height:4px;background:var(--border2);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${over ? 'var(--red)' : color};border-radius:4px;transition:width 0.2s"></div></div></div>`; }).join('');
+        }
+        document.addEventListener('DOMContentLoaded', updateCC);
     </script>
 </body>
 </html>

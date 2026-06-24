@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Preview Markdown with live side-by-side rendering">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Markdown Preview — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="Markdown Preview — DevBox">
-<meta property="og:description" content="Preview Markdown with live side-by-side rendering">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Preview Markdown with live side-by-side rendering">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Preview — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="Markdown Preview — DevBox">
+    <meta property="og:description" content="Preview Markdown with live side-by-side rendering">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -45,12 +45,12 @@
 
         </main><!-- /content-wrap -->
     </div>
-        <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
-        <script src="../assets/sidebar.js" defer></script>
-        <script>
-            function renderMd() { const src = document.getElementById('mdInput').value; let html = src.replace(/^#{6}\s(.+)$/gm, '<h6 style="font-size:0.8em;color:var(--text-dim);margin:10px 0 4px">$1</h6>').replace(/^#{5}\s(.+)$/gm, '<h5 style="font-size:0.9em;color:var(--text-dim);margin:10px 0 4px">$1</h5>').replace(/^#{4}\s(.+)$/gm, '<h4 style="font-size:1em;font-weight:700;margin:12px 0 6px">$1</h4>').replace(/^#{3}\s(.+)$/gm, '<h3 style="font-size:1.1em;font-weight:700;color:var(--text-bright);margin:14px 0 6px">$1</h3>').replace(/^#{2}\s(.+)$/gm, '<h2 style="font-size:1.25em;font-weight:700;color:var(--text-bright);margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border)">$1</h2>').replace(/^#{1}\s(.+)$/gm, '<h1 style="font-size:1.5em;font-weight:700;color:var(--text-bright);margin:0 0 12px;padding-bottom:6px;border-bottom:2px solid var(--border)">$1</h1>').replace(/^&gt;\s?(.+)$/gm, '<blockquote style="border-left:3px solid var(--blue);margin:8px 0;padding:6px 12px;color:var(--text-dim);background:var(--surface2);border-radius:0 4px 4px 0">$1</blockquote>').replace(/```(\w*)\n([\s\S]*?)```/g, '<pre style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;overflow-x:auto;margin:10px 0"><code style="font-family:var(--mono);font-size:0.82em;color:var(--green)">$2</code></pre>').replace(/`([^`]+)`/g, '<code style="background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-family:var(--mono);font-size:0.85em;color:var(--orange)">$1</code>').replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>').replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--text-bright)">$1</strong>').replace(/\*(.+?)\*/g, '<em style="color:var(--text-dim)">$1</em>').replace(/~~(.+?)~~/g, '<del style="color:var(--text-dim)">$1</del>').replace(/^(-{3,}|\*{3,})$/gm, '<hr style="border:none;border-top:1px solid var(--border);margin:16px 0">').replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color:var(--blue);text-decoration:underline">$1</a>').replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:6px;margin:6px 0">').replace(/^\s*[-*+]\s(.+)$/gm, '<li style="margin:3px 0;padding-left:4px">$1</li>').replace(/^\d+\.\s(.+)$/gm, '<li style="margin:3px 0;padding-left:4px;list-style:decimal">$1</li>').replace(/(<li[^>]*>.*<\/li>\n?)+/g, m => `<ul style="padding-left:20px;margin:8px 0">${m}</ul>`).replace(/\n\n+/g, '</p><p style="margin:8px 0">').replace(/\n/g, '<br>'); document.getElementById('mdPreview').innerHTML = `<p style="margin:8px 0">${html}</p>`; }
-            function mdSample() { document.getElementById('mdInput').value = `# Markdown Preview\n\nType on the left, see **live** results here.\n\n## Features\n\n- **Bold**, *italic*, ~~strikethrough~~\n- \`inline code\`\n- [Links](https://example.com)\n\n## Code\n\n\`\`\`javascript\nconst greet = name => \`Hello, \${name}!\`;\n\`\`\`\n\n> Blockquote — great for callouts.\n\n---\n\nMade with ❤️ in DevBox.`; renderMd(); }
-        </script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        function renderMd() { const src = document.getElementById('mdInput').value; let html = src.replace(/^#{6}\s(.+)$/gm, '<h6 style="font-size:0.8em;color:var(--text-dim);margin:10px 0 4px">$1</h6>').replace(/^#{5}\s(.+)$/gm, '<h5 style="font-size:0.9em;color:var(--text-dim);margin:10px 0 4px">$1</h5>').replace(/^#{4}\s(.+)$/gm, '<h4 style="font-size:1em;font-weight:700;margin:12px 0 6px">$1</h4>').replace(/^#{3}\s(.+)$/gm, '<h3 style="font-size:1.1em;font-weight:700;color:var(--text-bright);margin:14px 0 6px">$1</h3>').replace(/^#{2}\s(.+)$/gm, '<h2 style="font-size:1.25em;font-weight:700;color:var(--text-bright);margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border)">$1</h2>').replace(/^#{1}\s(.+)$/gm, '<h1 style="font-size:1.5em;font-weight:700;color:var(--text-bright);margin:0 0 12px;padding-bottom:6px;border-bottom:2px solid var(--border)">$1</h1>').replace(/^&gt;\s?(.+)$/gm, '<blockquote style="border-left:3px solid var(--blue);margin:8px 0;padding:6px 12px;color:var(--text-dim);background:var(--surface2);border-radius:0 4px 4px 0">$1</blockquote>').replace(/```(\w*)\n([\s\S]*?)```/g, '<pre style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;overflow-x:auto;margin:10px 0"><code style="font-family:var(--mono);font-size:0.82em;color:var(--green)">$2</code></pre>').replace(/`([^`]+)`/g, '<code style="background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-family:var(--mono);font-size:0.85em;color:var(--orange)">$1</code>').replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>').replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--text-bright)">$1</strong>').replace(/\*(.+?)\*/g, '<em style="color:var(--text-dim)">$1</em>').replace(/~~(.+?)~~/g, '<del style="color:var(--text-dim)">$1</del>').replace(/^(-{3,}|\*{3,})$/gm, '<hr style="border:none;border-top:1px solid var(--border);margin:16px 0">').replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color:var(--blue);text-decoration:underline">$1</a>').replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:6px;margin:6px 0">').replace(/^\s*[-*+]\s(.+)$/gm, '<li style="margin:3px 0;padding-left:4px">$1</li>').replace(/^\d+\.\s(.+)$/gm, '<li style="margin:3px 0;padding-left:4px;list-style:decimal">$1</li>').replace(/(<li[^>]*>.*<\/li>\n?)+/g, m => `<ul style="padding-left:20px;margin:8px 0">${m}</ul>`).replace(/\n\n+/g, '</p><p style="margin:8px 0">').replace(/\n/g, '<br>'); document.getElementById('mdPreview').innerHTML = `<p style="margin:8px 0">${html}</p>`; }
+        function mdSample() { document.getElementById('mdInput').value = `# Markdown Preview\n\nType on the left, see **live** results here.\n\n## Features\n\n- **Bold**, *italic*, ~~strikethrough~~\n- \`inline code\`\n- [Links](https://example.com)\n\n## Code\n\n\`\`\`javascript\nconst greet = name => \`Hello, \${name}!\`;\n\`\`\`\n\n> Blockquote — great for callouts.\n\n---\n\nMade with ❤️ in DevBox.`; renderMd(); }
+    </script>
 </body>
 </html>

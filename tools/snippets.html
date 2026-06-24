@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Save, organize, and copy code snippets">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snippet Manager — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="Snippet Manager — DevBox">
-<meta property="og:description" content="Save, organize, and copy code snippets">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Save, organize, and copy code snippets">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snippet Manager — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="Snippet Manager — DevBox">
+    <meta property="og:description" content="Save, organize, and copy code snippets">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -65,97 +65,97 @@
 
         </main><!-- /content-wrap -->
     </div>
-        <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
-        <script src="../assets/sidebar.js" defer></script>
-        <script>
-            const LANG_COLORS = { javascript: 'var(--yellow)', python: 'var(--blue)', bash: 'var(--green)', sql: 'var(--orange)', css: 'var(--pink)', html: 'var(--orange)', json: 'var(--cyan)', typescript: 'var(--blue)', rust: 'var(--red)', go: 'var(--cyan)', ruby: 'var(--red)', php: 'var(--purple)', default: 'var(--text-dim)' };
-            let snippets = JSON.parse(localStorage.getItem('devbox_snippets') || '[]');
-            let activeTag = '';
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        const LANG_COLORS = { javascript: 'var(--yellow)', python: 'var(--blue)', bash: 'var(--green)', sql: 'var(--orange)', css: 'var(--pink)', html: 'var(--orange)', json: 'var(--cyan)', typescript: 'var(--blue)', rust: 'var(--red)', go: 'var(--cyan)', ruby: 'var(--red)', php: 'var(--purple)', default: 'var(--text-dim)' };
+        let snippets = JSON.parse(localStorage.getItem('devbox_snippets') || '[]');
+        let activeTag = '';
 
-            function saveStore() { localStorage.setItem('devbox_snippets', JSON.stringify(snippets)); }
+        function saveStore() { localStorage.setItem('devbox_snippets', JSON.stringify(snippets)); }
 
-            function openSnippetModal(id = null) {
-                document.getElementById('editId').value = id || '';
-                if (id) { const s = snippets.find(x => x.id === id); document.getElementById('snipTitle').value = s.title; document.getElementById('snipLang').value = s.lang; document.getElementById('snipDesc').value = s.desc || ''; document.getElementById('snipCode').value = s.code; document.getElementById('modalTitle').textContent = 'Edit Snippet'; }
-                else { document.getElementById('snipTitle').value = ''; document.getElementById('snipLang').value = ''; document.getElementById('snipDesc').value = ''; document.getElementById('snipCode').value = ''; document.getElementById('modalTitle').textContent = 'New Snippet'; }
-                document.getElementById('snippetModal').style.display = 'flex';
-                setTimeout(() => document.getElementById('snipTitle').focus(), 100);
-            }
+        function openSnippetModal(id = null) {
+            document.getElementById('editId').value = id || '';
+            if (id) { const s = snippets.find(x => x.id === id); document.getElementById('snipTitle').value = s.title; document.getElementById('snipLang').value = s.lang; document.getElementById('snipDesc').value = s.desc || ''; document.getElementById('snipCode').value = s.code; document.getElementById('modalTitle').textContent = 'Edit Snippet'; }
+            else { document.getElementById('snipTitle').value = ''; document.getElementById('snipLang').value = ''; document.getElementById('snipDesc').value = ''; document.getElementById('snipCode').value = ''; document.getElementById('modalTitle').textContent = 'New Snippet'; }
+            document.getElementById('snippetModal').style.display = 'flex';
+            setTimeout(() => document.getElementById('snipTitle').focus(), 100);
+        }
 
-            function closeSnippetModal() { document.getElementById('snippetModal').style.display = 'none'; }
+        function closeSnippetModal() { document.getElementById('snippetModal').style.display = 'none'; }
 
-            function saveSnippet() {
-                const title = document.getElementById('snipTitle').value.trim();
-                const code = document.getElementById('snipCode').value.trim();
-                if (!title || !code) { showToast('Title and code are required'); return; }
-                const id = document.getElementById('editId').value;
-                const snip = { id: id || Date.now().toString(), title, lang: document.getElementById('snipLang').value.trim().toLowerCase(), desc: document.getElementById('snipDesc').value.trim(), code, created: id ? (snippets.find(x => x.id === id)?.created || Date.now()) : Date.now(), updated: Date.now() };
-                if (id) { const idx = snippets.findIndex(x => x.id === id); snippets[idx] = snip; }
-                else { snippets.unshift(snip); }
-                saveStore(); closeSnippetModal(); renderSnippets(); showToast(id ? 'Snippet updated' : 'Snippet saved');
-            }
+        function saveSnippet() {
+            const title = document.getElementById('snipTitle').value.trim();
+            const code = document.getElementById('snipCode').value.trim();
+            if (!title || !code) { showToast('Title and code are required'); return; }
+            const id = document.getElementById('editId').value;
+            const snip = { id: id || Date.now().toString(), title, lang: document.getElementById('snipLang').value.trim().toLowerCase(), desc: document.getElementById('snipDesc').value.trim(), code, created: id ? (snippets.find(x => x.id === id)?.created || Date.now()) : Date.now(), updated: Date.now() };
+            if (id) { const idx = snippets.findIndex(x => x.id === id); snippets[idx] = snip; }
+            else { snippets.unshift(snip); }
+            saveStore(); closeSnippetModal(); renderSnippets(); showToast(id ? 'Snippet updated' : 'Snippet saved');
+        }
 
-            function deleteSnippet(id) { if (!confirm('Delete this snippet?')) return; snippets = snippets.filter(x => x.id !== id); saveStore(); renderSnippets(); showToast('Deleted'); }
+        function deleteSnippet(id) { if (!confirm('Delete this snippet?')) return; snippets = snippets.filter(x => x.id !== id); saveStore(); renderSnippets(); showToast('Deleted'); }
 
-            function renderSnippets() {
-                const q = document.getElementById('snippetSearch').value.toLowerCase();
-                const filtered = snippets.filter(s => {
-                    if (activeTag && s.lang !== activeTag) return false;
-                    return !q || s.title.toLowerCase().includes(q) || s.code.toLowerCase().includes(q) || (s.lang || '').includes(q) || (s.desc || '').toLowerCase().includes(q);
-                });
+        function renderSnippets() {
+            const q = document.getElementById('snippetSearch').value.toLowerCase();
+            const filtered = snippets.filter(s => {
+                if (activeTag && s.lang !== activeTag) return false;
+                return !q || s.title.toLowerCase().includes(q) || s.code.toLowerCase().includes(q) || (s.lang || '').includes(q) || (s.desc || '').toLowerCase().includes(q);
+            });
 
-                // Tag filter
-                const tags = [...new Set(snippets.map(s => s.lang).filter(Boolean))].sort();
-                document.getElementById('tagFilter').innerHTML = ['<button class="btn ' + (activeTag === '' ? 'btn-teal' : 'btn-ghost') + '" onclick="activeTag=\'\';renderSnippets()">All</button>',
-                ...tags.map(t => `<button class="btn ${activeTag === t ? 'btn-teal' : 'btn-ghost'}" style="font-size:0.76rem" onclick="activeTag='${t}';renderSnippets()">${t}</button>`)].join('');
+            // Tag filter
+            const tags = [...new Set(snippets.map(s => s.lang).filter(Boolean))].sort();
+            document.getElementById('tagFilter').innerHTML = ['<button class="btn ' + (activeTag === '' ? 'btn-teal' : 'btn-ghost') + '" onclick="activeTag=\'\';renderSnippets()">All</button>',
+            ...tags.map(t => `<button class="btn ${activeTag === t ? 'btn-teal' : 'btn-ghost'}" style="font-size:0.76rem" onclick="activeTag='${t}';renderSnippets()">${t}</button>`)].join('');
 
-                const grid = document.getElementById('snippetGrid');
-                const empty = document.getElementById('emptyState');
-                if (!filtered.length) { grid.innerHTML = ''; empty.style.display = ''; return; }
-                empty.style.display = 'none';
-                const langColor = l => LANG_COLORS[l] || LANG_COLORS.default;
-                grid.innerHTML = filtered.map(s => `
-            <div class="panel" style="margin:0;display:flex;flex-direction:column">
-              <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px">
-                <div style="flex:1;min-width:0">
-                  <div style="font-weight:600;font-size:0.88rem;color:var(--text-bright);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(s.title)}</div>
-                  ${s.desc ? `<div style="font-size:0.72rem;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(s.desc)}</div>` : ''}
-                </div>
-                ${s.lang ? `<span style="font-family:var(--mono);font-size:0.65rem;font-weight:600;padding:2px 8px;background:${langColor(s.lang)}22;color:${langColor(s.lang)};border-radius:999px;flex-shrink:0;border:1px solid ${langColor(s.lang)}44">${escHtml(s.lang)}</span>` : ''}
-              </div>
-              <pre style="padding:12px 14px;font-family:var(--mono);font-size:0.76rem;color:var(--text);overflow:hidden;max-height:100px;line-height:1.55;flex:1;white-space:pre-wrap;word-break:break-all;margin:0">${escHtml(s.code.slice(0, 300) + (s.code.length > 300 ? '\n…':''))}</pre>
-                < div style = "padding:8px 10px;border-top:1px solid var(--border);display:flex;gap:6px" >
-                <button class="btn btn-teal" style="flex:1;font-size:0.76rem" onclick="copy(${JSON.stringify(s.code)})">⎘ Copy</button>
-                <button class="btn btn-ghost" style="font-size:0.76rem" onclick="openSnippetModal('${s.id}')">Edit</button>
-                <button class="btn btn-ghost" style="font-size:0.76rem;color:var(--red)" onclick="deleteSnippet('${s.id}')">Del</button>
-              </div >
-            </div > `).join('');
-}
+            const grid = document.getElementById('snippetGrid');
+            const empty = document.getElementById('emptyState');
+            if (!filtered.length) { grid.innerHTML = ''; empty.style.display = ''; return; }
+            empty.style.display = 'none';
+            const langColor = l => LANG_COLORS[l] || LANG_COLORS.default;
+            grid.innerHTML = filtered.map(s => `
+                <div class="panel" style="margin:0;display:flex;flex-direction:column">
+                  <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px">
+                    <div style="flex:1;min-width:0">
+                      <div style="font-weight:600;font-size:0.88rem;color:var(--text-bright);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(s.title)}</div>
+                      ${s.desc ? `<div style="font-size:0.72rem;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(s.desc)}</div>` : ''}
+                    </div>
+                    ${s.lang ? `<span style="font-family:var(--mono);font-size:0.65rem;font-weight:600;padding:2px 8px;background:${langColor(s.lang)}22;color:${langColor(s.lang)};border-radius:999px;flex-shrink:0;border:1px solid ${langColor(s.lang)}44">${escHtml(s.lang)}</span>` : ''}
+                  </div>
+                  <pre style="padding:12px 14px;font-family:var(--mono);font-size:0.76rem;color:var(--text);overflow:hidden;max-height:100px;line-height:1.55;flex:1;white-space:pre-wrap;word-break:break-all;margin:0">${escHtml(s.code.slice(0, 300) + (s.code.length > 300 ? '\n…' : ''))}</pre>
+                    < div style = "padding:8px 10px;border-top:1px solid var(--border);display:flex;gap:6px" >
+                    <button class="btn btn-teal" style="flex:1;font-size:0.76rem" onclick="copy(${JSON.stringify(s.code)})">⎘ Copy</button>
+                    <button class="btn btn-ghost" style="font-size:0.76rem" onclick="openSnippetModal('${s.id}')">Edit</button>
+                    <button class="btn btn-ghost" style="font-size:0.76rem;color:var(--red)" onclick="deleteSnippet('${s.id}')">Del</button>
+                  </div >
+                </div > `).join('');
+        }
 
-function exportSnippets(){copy(JSON.stringify(snippets,null,2));showToast('Snippets copied as JSON');}
-function importSnippets(input){
-          const f=input.files[0];if(!f)return;
-          const reader=new FileReader();
-          reader.onload=e=>{try{const data=JSON.parse(e.target.result);if(Array.isArray(data)){snippets=[...data,...snippets];saveStore();renderSnippets();showToast(data.length+' snippets imported');}else showToast('Invalid format');}catch(ex){showToast('Parse error: '+ex.message);}};
-          reader.readAsText(f);input.value='';
-}
+        function exportSnippets() { copy(JSON.stringify(snippets, null, 2)); showToast('Snippets copied as JSON'); }
+        function importSnippets(input) {
+            const f = input.files[0]; if (!f) return;
+            const reader = new FileReader();
+            reader.onload = e => { try { const data = JSON.parse(e.target.result); if (Array.isArray(data)) { snippets = [...data, ...snippets]; saveStore(); renderSnippets(); showToast(data.length + ' snippets imported'); } else showToast('Invalid format'); } catch (ex) { showToast('Parse error: ' + ex.message); } };
+            reader.readAsText(f); input.value = '';
+        }
 
-document.getElementById('snippetModal').addEventListener('click',e=>{if(e.target===document.getElementById('snippetModal'))closeSnippetModal();});
+        document.getElementById('snippetModal').addEventListener('click', e => { if (e.target === document.getElementById('snippetModal')) closeSnippetModal(); });
 
-// Seed with examples if empty
-if(!snippets.length){
-          snippets=[
-            {id:'1',title:'Fetch with error handling',lang:'javascript',desc:'Async fetch wrapper with try/catch',code:'async function fetchData(url) {\n          try {\n            const res = await fetch(url);\n            if (!res.ok) throw new Error(`HTTP ${ res.status }`);\n            return await res.json();\n          } catch (err) {\n            console.error("Fetch error:", err);\n            throw err;\n          }\n}',created:Date.now(),updated:Date.now()},
-            {id:'2',title:'Debounce function',lang:'javascript',desc:'Delay execution until after delay ms',code:'function debounce(fn, delay = 300) {\n          let timer;\n          return (...args) => {\n            clearTimeout(timer);\n            timer = setTimeout(() => fn(...args), delay);\n          };\n}',created:Date.now(),updated:Date.now()},
-            {id:'3',title:'Flexbox center',lang:'css',desc:'Center content horizontally and vertically',code:'.center {\n          display: flex;\n          align-items: center;\n          justify-content: center;\n}',created:Date.now(),updated:Date.now()},
-            {id:'4',title:'Select with JOIN',lang:'sql',desc:'Basic SELECT with table join',code:'SELECT u.name, u.email, COUNT(o.id) AS orders\nFROM users u\nLEFT JOIN orders o ON u.id = o.user_id\nWHERE u.active = 1\nGROUP BY u.id\nORDER BY orders DESC\nLIMIT 20;',created:Date.now(),updated:Date.now()},
-            {id:'5',title:'List files recursively',lang:'bash',desc:'Find all files in directory tree',code:'find . -type f -name "*.js" | sort\n\n# Or with size info:\nfind . -type f -name "*.js" -exec ls -lh {} \;',created:Date.now(),updated:Date.now()},
-          ];
-          saveStore();
-}
+        // Seed with examples if empty
+        if (!snippets.length) {
+            snippets = [
+                { id: '1', title: 'Fetch with error handling', lang: 'javascript', desc: 'Async fetch wrapper with try/catch', code: 'async function fetchData(url) {\n          try {\n            const res = await fetch(url);\n            if (!res.ok) throw new Error(`HTTP ${ res.status }`);\n            return await res.json();\n          } catch (err) {\n            console.error("Fetch error:", err);\n            throw err;\n          }\n}', created: Date.now(), updated: Date.now() },
+                { id: '2', title: 'Debounce function', lang: 'javascript', desc: 'Delay execution until after delay ms', code: 'function debounce(fn, delay = 300) {\n          let timer;\n          return (...args) => {\n            clearTimeout(timer);\n            timer = setTimeout(() => fn(...args), delay);\n          };\n}', created: Date.now(), updated: Date.now() },
+                { id: '3', title: 'Flexbox center', lang: 'css', desc: 'Center content horizontally and vertically', code: '.center {\n          display: flex;\n          align-items: center;\n          justify-content: center;\n}', created: Date.now(), updated: Date.now() },
+                { id: '4', title: 'Select with JOIN', lang: 'sql', desc: 'Basic SELECT with table join', code: 'SELECT u.name, u.email, COUNT(o.id) AS orders\nFROM users u\nLEFT JOIN orders o ON u.id = o.user_id\nWHERE u.active = 1\nGROUP BY u.id\nORDER BY orders DESC\nLIMIT 20;', created: Date.now(), updated: Date.now() },
+                { id: '5', title: 'List files recursively', lang: 'bash', desc: 'Find all files in directory tree', code: 'find . -type f -name "*.js" | sort\n\n# Or with size info:\nfind . -type f -name "*.js" -exec ls -lh {} \;', created: Date.now(), updated: Date.now() },
+            ];
+            saveStore();
+        }
 
-document.addEventListener('DOMContentLoaded',renderSnippets);
-        </script>
+        document.addEventListener('DOMContentLoaded', renderSnippets);
+    </script>
 </body>
 </html>

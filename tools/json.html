@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Format, validate, and minify JSON data">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JSON Formatter — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="JSON Formatter — DevBox">
-<meta property="og:description" content="Format, validate, and minify JSON data">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Format, validate, and minify JSON data">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Formatter — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="JSON Formatter — DevBox">
+    <meta property="og:description" content="Format, validate, and minify JSON data">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -56,16 +56,16 @@
 
         </main><!-- /content-wrap -->
     </div>
-        <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
-        <script src="../assets/sidebar.js" defer></script>
-        <script>
-            function jsonLive() { const r = document.getElementById('jsonInput').value.trim(), s = document.getElementById('jsonStatus'); if (!r) { s.innerHTML = ''; return; } try { JSON.parse(r); s.innerHTML = '<span class="status-badge badge-ok">✓ Valid JSON</span>'; } catch (e) { s.innerHTML = '<span class="status-badge badge-err">✗ ' + e.message.split('\n')[0] + '</span>'; } }
-            function jsonFormat() { try { const p = JSON.parse(document.getElementById('jsonInput').value); const o = document.getElementById('jsonOutput'); o.textContent = JSON.stringify(p, null, 2); o.style.color = 'var(--green)'; } catch (e) { const o = document.getElementById('jsonOutput'); o.textContent = '// Error: ' + e.message; o.style.color = 'var(--red)'; } }
-            function jsonMinify() { try { const p = JSON.parse(document.getElementById('jsonInput').value); const o = document.getElementById('jsonOutput'); o.textContent = JSON.stringify(p); o.style.color = 'var(--green)'; } catch (e) { const o = document.getElementById('jsonOutput'); o.textContent = '// Error: ' + e.message; o.style.color = 'var(--red)'; } }
-            function jsonCopyOut() { copy(document.getElementById('jsonOutput').textContent); }
-            function jsonClear() { document.getElementById('jsonInput').value = ''; document.getElementById('jsonOutput').textContent = ''; document.getElementById('jsonStatus').innerHTML = ''; }
-            function jsonSample() { document.getElementById('jsonInput').value = JSON.stringify({ name: "John Doe", age: 30, email: "john@example.com", roles: ["admin", "editor"], address: { city: "New York", zip: "10001" }, active: true }, null, 0); jsonLive(); }
-        </script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        function jsonLive() { const r = document.getElementById('jsonInput').value.trim(), s = document.getElementById('jsonStatus'); if (!r) { s.innerHTML = ''; return; } try { JSON.parse(r); s.innerHTML = '<span class="status-badge badge-ok">✓ Valid JSON</span>'; } catch (e) { s.innerHTML = '<span class="status-badge badge-err">✗ ' + e.message.split('\n')[0] + '</span>'; } }
+        function jsonFormat() { try { const p = JSON.parse(document.getElementById('jsonInput').value); const o = document.getElementById('jsonOutput'); o.textContent = JSON.stringify(p, null, 2); o.style.color = 'var(--green)'; } catch (e) { const o = document.getElementById('jsonOutput'); o.textContent = '// Error: ' + e.message; o.style.color = 'var(--red)'; } }
+        function jsonMinify() { try { const p = JSON.parse(document.getElementById('jsonInput').value); const o = document.getElementById('jsonOutput'); o.textContent = JSON.stringify(p); o.style.color = 'var(--green)'; } catch (e) { const o = document.getElementById('jsonOutput'); o.textContent = '// Error: ' + e.message; o.style.color = 'var(--red)'; } }
+        function jsonCopyOut() { copy(document.getElementById('jsonOutput').textContent); }
+        function jsonClear() { document.getElementById('jsonInput').value = ''; document.getElementById('jsonOutput').textContent = ''; document.getElementById('jsonStatus').innerHTML = ''; }
+        function jsonSample() { document.getElementById('jsonInput').value = JSON.stringify({ name: "John Doe", age: 30, email: "john@example.com", roles: ["admin", "editor"], address: { city: "New York", zip: "10001" }, active: true }, null, 0); jsonLive(); }
+    </script>
 </body>
 </html>

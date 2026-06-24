@@ -1,183 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fake Data Generator — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<style>
-.fields-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:14px}
-.field-toggle{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:all var(--transition);user-select:none;font-family:var(--mono);font-size:0.75rem;color:var(--text-dim)}
-.field-toggle:hover{border-color:var(--border2);color:var(--text)}
-.field-toggle.on{background:var(--orange-dim);border-color:var(--orange);color:var(--orange)}
-.field-toggle input{display:none}
-.controls{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
-.count-input{width:70px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:7px 10px;font-family:var(--mono);font-size:0.85rem;color:var(--text);outline:none;text-align:center;transition:border-color var(--transition)}
-.count-input:focus{border-color:var(--orange)}
-.fmt-tabs{display:flex;gap:4px}
-.fmt-tab{padding:6px 12px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:var(--mono);font-size:0.72rem;cursor:pointer;transition:all var(--transition)}
-.fmt-tab:hover{color:var(--text)}
-.fmt-tab.active{background:var(--orange-dim);border-color:var(--orange);color:var(--orange)}
-#output{font-size:0.78rem;white-space:pre;overflow-x:auto;min-height:120px;color:var(--green)}
-</style>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Data Generator — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .fields-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(160px,1fr));
+            gap: 8px;
+            margin-bottom: 14px
+        }
+
+        .field-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--r-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            user-select: none;
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--text-dim)
+        }
+
+            .field-toggle:hover {
+                border-color: var(--border2);
+                color: var(--text)
+            }
+
+            .field-toggle.on {
+                background: var(--orange-dim);
+                border-color: var(--orange);
+                color: var(--orange)
+            }
+
+            .field-toggle input {
+                display: none
+            }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap
+        }
+
+        .count-input {
+            width: 70px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--r-sm);
+            padding: 7px 10px;
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            color: var(--text);
+            outline: none;
+            text-align: center;
+            transition: border-color var(--transition)
+        }
+
+            .count-input:focus {
+                border-color: var(--orange)
+            }
+
+        .fmt-tabs {
+            display: flex;
+            gap: 4px
+        }
+
+        .fmt-tab {
+            padding: 6px 12px;
+            border-radius: var(--r-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-dim);
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            cursor: pointer;
+            transition: all var(--transition)
+        }
+
+            .fmt-tab:hover {
+                color: var(--text)
+            }
+
+            .fmt-tab.active {
+                background: var(--orange-dim);
+                border-color: var(--orange);
+                color: var(--orange)
+            }
+
+        #output {
+            font-size: 0.78rem;
+            white-space: pre;
+            overflow-x: auto;
+            min-height: 120px;
+            color: var(--green)
+        }
+    </style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <main class="content-wrap">
-    <div class="content">
-      <div class="tool-header">
-        <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">🎲</div>
-        <div><div class="tool-title">Fake Data Generator</div><div class="tool-desc">Generate realistic test data — names, emails, addresses, phones & more</div></div>
-      </div>
-      <div class="panel">
-        <div class="panel-bar"><span class="panel-label">Fields</span></div>
-        <div class="fields-grid" id="fieldsGrid"></div>
-      </div>
-      <div class="controls">
-        <span style="font-family:var(--mono);font-size:0.75rem;color:var(--text-dim)">Rows:</span>
-        <input class="count-input" type="number" id="countInput" value="10" min="1" max="500">
-        <div class="fmt-tabs">
-          <button class="fmt-tab active" id="fmt-json" onclick="setFmt('json')">JSON</button>
-          <button class="fmt-tab" id="fmt-csv"  onclick="setFmt('csv')">CSV</button>
-          <button class="fmt-tab" id="fmt-sql"  onclick="setFmt('sql')">SQL</button>
-        </div>
-        <button class="btn btn-orange" onclick="generate()">Generate</button>
-      </div>
-      <div class="panel" id="outputPanel" style="display:none">
-        <div class="panel-bar">
-          <span class="panel-label" id="outputLabel">Output</span>
-          <div class="panel-actions">
-            <button class="btn btn-ghost" onclick="copyOut()">⎘ Copy</button>
-            <button class="btn btn-ghost" onclick="downloadOut()">↓ Download</button>
-          </div>
-        </div>
-        <div id="output" class="output-area"></div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">🎲</div>
+                    <div><div class="tool-title">Fake Data Generator</div><div class="tool-desc">Generate realistic test data — names, emails, addresses, phones & more</div></div>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Fields</span></div>
+                    <div class="fields-grid" id="fieldsGrid"></div>
+                </div>
+                <div class="controls">
+                    <span style="font-family:var(--mono);font-size:0.75rem;color:var(--text-dim)">Rows:</span>
+                    <input class="count-input" type="number" id="countInput" value="10" min="1" max="500">
+                    <div class="fmt-tabs">
+                        <button class="fmt-tab active" id="fmt-json" onclick="setFmt('json')">JSON</button>
+                        <button class="fmt-tab" id="fmt-csv" onclick="setFmt('csv')">CSV</button>
+                        <button class="fmt-tab" id="fmt-sql" onclick="setFmt('sql')">SQL</button>
+                    </div>
+                    <button class="btn btn-orange" onclick="generate()">Generate</button>
+                </div>
+                <div class="panel" id="outputPanel" style="display:none">
+                    <div class="panel-bar">
+                        <span class="panel-label" id="outputLabel">Output</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="copyOut()">⎘ Copy</button>
+                            <button class="btn btn-ghost" onclick="downloadOut()">↓ Download</button>
+                        </div>
+                    </div>
+                    <div id="output" class="output-area"></div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
     </div>
-    <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
-  </main>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js" defer></script>
-<script src="../assets/sidebar.js" defer></script>
-<script>
-// Data pools
-const F_NAMES=['James','Mary','John','Patricia','Robert','Jennifer','Michael','Linda','William','Barbara','David','Susan','Richard','Jessica','Joseph','Sarah','Thomas','Karen','Charles','Lisa','Emma','Noah','Olivia','Liam','Sophia','Aiden','Isabella','Lucas','Mia','Mason'];
-const L_NAMES=['Smith','Johnson','Williams','Brown','Jones','Garcia','Miller','Davis','Rodriguez','Martinez','Hernandez','Lopez','Gonzalez','Wilson','Anderson','Thomas','Taylor','Moore','Jackson','Martin','Lee','Perez','Thompson','White','Harris','Sanchez','Clark','Lewis','Robinson','Walker'];
-const DOMAINS=['gmail.com','yahoo.com','hotmail.com','outlook.com','protonmail.com','icloud.com','example.com','test.com','devbox.io'];
-const STREETS=['Main St','Oak Ave','Maple Dr','Cedar Ln','Pine Rd','Elm St','Washington Blvd','Park Ave','Lake View Dr','Sunset Blvd','Broadway','5th Ave','Lincoln Way','Highland Ave'];
-const CITIES=['New York','Los Angeles','Chicago','Houston','Phoenix','Philadelphia','San Antonio','San Diego','Dallas','San Jose','Austin','Jacksonville','Columbus','Charlotte','Indianapolis','Seattle','Denver','Nashville','Boston','Portland'];
-const STATES=['NY','CA','IL','TX','AZ','PA','TX','CA','TX','CA','TX','FL','OH','NC','IN','WA','CO','TN','MA','OR'];
-const COMPANIES=['Acme Corp','Globex','Initech','Umbrella Co','Stark Industries','Wayne Enterprises','Dunder Mifflin','Hooli','Pied Piper','Vandelay Industries','Soylent Corp','Oscorp'];
-const TLDS=['.com','.net','.org','.io','.co'];
-const COLORS=['red','blue','green','yellow','purple','orange','pink','black','white','silver'];
-const ANIMALS=['dog','cat','bird','fish','horse','rabbit','hamster','turtle','snake','parrot'];
-const JOBS=['Engineer','Designer','Manager','Analyst','Developer','Consultant','Director','Coordinator','Specialist','Architect','Administrator','Technician'];
-const DEPS=['Engineering','Design','Marketing','Finance','HR','Operations','Sales','Legal','Product','Research'];
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        // Data pools
+        const F_NAMES = ['James', 'Mary', 'John', 'Patricia', 'Robert', 'Jennifer', 'Michael', 'Linda', 'William', 'Barbara', 'David', 'Susan', 'Richard', 'Jessica', 'Joseph', 'Sarah', 'Thomas', 'Karen', 'Charles', 'Lisa', 'Emma', 'Noah', 'Olivia', 'Liam', 'Sophia', 'Aiden', 'Isabella', 'Lucas', 'Mia', 'Mason'];
+        const L_NAMES = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin', 'Lee', 'Perez', 'Thompson', 'White', 'Harris', 'Sanchez', 'Clark', 'Lewis', 'Robinson', 'Walker'];
+        const DOMAINS = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'protonmail.com', 'icloud.com', 'example.com', 'test.com', 'devbox.io'];
+        const STREETS = ['Main St', 'Oak Ave', 'Maple Dr', 'Cedar Ln', 'Pine Rd', 'Elm St', 'Washington Blvd', 'Park Ave', 'Lake View Dr', 'Sunset Blvd', 'Broadway', '5th Ave', 'Lincoln Way', 'Highland Ave'];
+        const CITIES = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Jose', 'Austin', 'Jacksonville', 'Columbus', 'Charlotte', 'Indianapolis', 'Seattle', 'Denver', 'Nashville', 'Boston', 'Portland'];
+        const STATES = ['NY', 'CA', 'IL', 'TX', 'AZ', 'PA', 'TX', 'CA', 'TX', 'CA', 'TX', 'FL', 'OH', 'NC', 'IN', 'WA', 'CO', 'TN', 'MA', 'OR'];
+        const COMPANIES = ['Acme Corp', 'Globex', 'Initech', 'Umbrella Co', 'Stark Industries', 'Wayne Enterprises', 'Dunder Mifflin', 'Hooli', 'Pied Piper', 'Vandelay Industries', 'Soylent Corp', 'Oscorp'];
+        const TLDS = ['.com', '.net', '.org', '.io', '.co'];
+        const COLORS = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'black', 'white', 'silver'];
+        const ANIMALS = ['dog', 'cat', 'bird', 'fish', 'horse', 'rabbit', 'hamster', 'turtle', 'snake', 'parrot'];
+        const JOBS = ['Engineer', 'Designer', 'Manager', 'Analyst', 'Developer', 'Consultant', 'Director', 'Coordinator', 'Specialist', 'Architect', 'Administrator', 'Technician'];
+        const DEPS = ['Engineering', 'Design', 'Marketing', 'Finance', 'HR', 'Operations', 'Sales', 'Legal', 'Product', 'Research'];
 
-function rand(arr){return arr[Math.floor(Math.random()*arr.length)];}
-function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
-function randFloat(a,b,d=2){return+(Math.random()*(b-a)+a).toFixed(d);}
-function pad(n,l=2){return String(n).padStart(l,'0');}
-function uuid(){return'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&0x3|0x8)).toString(16);});}
+        function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        function randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+        function randFloat(a, b, d = 2) { return +(Math.random() * (b - a) + a).toFixed(d); }
+        function pad(n, l = 2) { return String(n).padStart(l, '0'); }
+        function uuid() { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16); }); }
 
-const GENERATORS = {
-  'First Name':   ()=>rand(F_NAMES),
-  'Last Name':    ()=>rand(L_NAMES),
-  'Full Name':    ()=>`${rand(F_NAMES)} ${rand(L_NAMES)}`,
-  'Email':        ()=>{const f=rand(F_NAMES).toLowerCase(),l=rand(L_NAMES).toLowerCase();return`${f}.${l}${randInt(1,99)}@${rand(DOMAINS)}`;},
-  'Phone':        ()=>`+1 (${randInt(200,999)}) ${randInt(200,999)}-${pad(randInt(0,9999),4)}`,
-  'Age':          ()=>randInt(18,80),
-  'Date of Birth':()=>{const y=randInt(1944,2006),m=randInt(1,12),d=randInt(1,28);return`${y}-${pad(m)}-${pad(d)}`;},
-  'Address':      ()=>`${randInt(1,9999)} ${rand(STREETS)}`,
-  'City':         ()=>rand(CITIES),
-  'State':        ()=>rand(STATES),
-  'ZIP':          ()=>pad(randInt(10000,99999),5),
-  'Country':      ()=>'USA',
-  'Company':      ()=>rand(COMPANIES),
-  'Job Title':    ()=>`${rand(JOBS)}`,
-  'Department':   ()=>rand(DEPS),
-  'Salary':       ()=>`$${(randInt(40,200)*1000).toLocaleString()}`,
-  'Website':      ()=>`https://${rand(F_NAMES).toLowerCase()}${rand(L_NAMES).toLowerCase()}${rand(TLDS)}`,
-  'Username':     ()=>`${rand(F_NAMES).toLowerCase()}${rand(L_NAMES).toLowerCase()}${randInt(1,999)}`,
-  'Password':     ()=>{const c='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$';return Array.from({length:12},()=>c[randInt(0,c.length-1)]).join('');},
-  'UUID':         ()=>uuid(),
-  'IP Address':   ()=>`${randInt(1,254)}.${randInt(0,255)}.${randInt(0,255)}.${randInt(1,254)}`,
-  'Credit Card':  ()=>`4${Array.from({length:15},()=>randInt(0,9)).join('').replace(/(.{4})/g,'$1 ').trim()}`,
-  'Price':        ()=>`$${randFloat(1,999,2)}`,
-  'Rating':       ()=>randFloat(1,5,1),
-  'Boolean':      ()=>Math.random()>0.5?'true':'false',
-  'Color':        ()=>`#${Array.from({length:6},()=>'0123456789ABCDEF'[randInt(0,15)]).join('')}`,
-  'Latitude':     ()=>randFloat(-90,90,6),
-  'Longitude':    ()=>randFloat(-180,180,6),
-};
+        const GENERATORS = {
+            'First Name': () => rand(F_NAMES),
+            'Last Name': () => rand(L_NAMES),
+            'Full Name': () => `${rand(F_NAMES)} ${rand(L_NAMES)}`,
+            'Email': () => { const f = rand(F_NAMES).toLowerCase(), l = rand(L_NAMES).toLowerCase(); return `${f}.${l}${randInt(1, 99)}@${rand(DOMAINS)}`; },
+            'Phone': () => `+1 (${randInt(200, 999)}) ${randInt(200, 999)}-${pad(randInt(0, 9999), 4)}`,
+            'Age': () => randInt(18, 80),
+            'Date of Birth': () => { const y = randInt(1944, 2006), m = randInt(1, 12), d = randInt(1, 28); return `${y}-${pad(m)}-${pad(d)}`; },
+            'Address': () => `${randInt(1, 9999)} ${rand(STREETS)}`,
+            'City': () => rand(CITIES),
+            'State': () => rand(STATES),
+            'ZIP': () => pad(randInt(10000, 99999), 5),
+            'Country': () => 'USA',
+            'Company': () => rand(COMPANIES),
+            'Job Title': () => `${rand(JOBS)}`,
+            'Department': () => rand(DEPS),
+            'Salary': () => `$${(randInt(40, 200) * 1000).toLocaleString()}`,
+            'Website': () => `https://${rand(F_NAMES).toLowerCase()}${rand(L_NAMES).toLowerCase()}${rand(TLDS)}`,
+            'Username': () => `${rand(F_NAMES).toLowerCase()}${rand(L_NAMES).toLowerCase()}${randInt(1, 999)}`,
+            'Password': () => { const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$'; return Array.from({ length: 12 }, () => c[randInt(0, c.length - 1)]).join(''); },
+            'UUID': () => uuid(),
+            'IP Address': () => `${randInt(1, 254)}.${randInt(0, 255)}.${randInt(0, 255)}.${randInt(1, 254)}`,
+            'Credit Card': () => `4${Array.from({ length: 15 }, () => randInt(0, 9)).join('').replace(/(.{4})/g, '$1 ').trim()}`,
+            'Price': () => `$${randFloat(1, 999, 2)}`,
+            'Rating': () => randFloat(1, 5, 1),
+            'Boolean': () => Math.random() > 0.5 ? 'true' : 'false',
+            'Color': () => `#${Array.from({ length: 6 }, () => '0123456789ABCDEF'[randInt(0, 15)]).join('')}`,
+            'Latitude': () => randFloat(-90, 90, 6),
+            'Longitude': () => randFloat(-180, 180, 6),
+        };
 
-const DEFAULT_ON = ['Full Name','Email','Phone','Age','City','Company','Job Title','UUID'];
-let selectedFields = new Set(DEFAULT_ON);
-let fmt = 'json';
+        const DEFAULT_ON = ['Full Name', 'Email', 'Phone', 'Age', 'City', 'Company', 'Job Title', 'UUID'];
+        let selectedFields = new Set(DEFAULT_ON);
+        let fmt = 'json';
 
-function buildFields() {
-  document.getElementById('fieldsGrid').innerHTML = Object.keys(GENERATORS).map(f =>
-    `<label class="field-toggle${selectedFields.has(f)?' on':''}">
-      <input type="checkbox" ${selectedFields.has(f)?'checked':''} onchange="toggleField('${f}',this)">
-      ${f}
-    </label>`
-  ).join('');
-}
+        function buildFields() {
+            document.getElementById('fieldsGrid').innerHTML = Object.keys(GENERATORS).map(f =>
+                `<label class="field-toggle${selectedFields.has(f) ? ' on' : ''}">
+          <input type="checkbox" ${selectedFields.has(f) ? 'checked' : ''} onchange="toggleField('${f}',this)">
+          ${f}
+        </label>`
+            ).join('');
+        }
 
-function toggleField(f, el) {
-  el.checked ? selectedFields.add(f) : selectedFields.delete(f);
-  el.closest('.field-toggle').classList.toggle('on', el.checked);
-}
+        function toggleField(f, el) {
+            el.checked ? selectedFields.add(f) : selectedFields.delete(f);
+            el.closest('.field-toggle').classList.toggle('on', el.checked);
+        }
 
-function setFmt(f) {
-  fmt=f; ['json','csv','sql'].forEach(x=>document.getElementById('fmt-'+x).classList.toggle('active',x===f));
-}
+        function setFmt(f) {
+            fmt = f;['json', 'csv', 'sql'].forEach(x => document.getElementById('fmt-' + x).classList.toggle('active', x === f));
+        }
 
-function generate() {
-  const fields = [...selectedFields];
-  if (!fields.length) { showToast('Select at least one field'); return; }
-  const count = Math.min(500, Math.max(1, +document.getElementById('countInput').value || 10));
-  const rows = Array.from({length:count}, ()=>{
-    const row={};
-    fields.forEach(f=>row[f.replace(/\s+/g,'_').toLowerCase()]=GENERATORS[f]());
-    return row;
-  });
+        function generate() {
+            const fields = [...selectedFields];
+            if (!fields.length) { showToast('Select at least one field'); return; }
+            const count = Math.min(500, Math.max(1, +document.getElementById('countInput').value || 10));
+            const rows = Array.from({ length: count }, () => {
+                const row = {};
+                fields.forEach(f => row[f.replace(/\s+/g, '_').toLowerCase()] = GENERATORS[f]());
+                return row;
+            });
 
-  let out='';
-  const ext = fmt;
-  if (fmt==='json') {
-    out = JSON.stringify(rows,null,2);
-    document.getElementById('outputLabel').textContent = `JSON (${count} records)`;
-  } else if (fmt==='csv') {
-    const keys=fields.map(f=>f.replace(/\s+/g,'_').toLowerCase());
-    out = keys.join(',')+'\n'+rows.map(r=>keys.map(k=>`"${String(r[k]).replace(/"/g,'""')}"`).join(',')).join('\n');
-    document.getElementById('outputLabel').textContent = `CSV (${count} rows)`;
-  } else {
-    const tbl='fake_data';
-    const keys=fields.map(f=>f.replace(/\s+/g,'_').toLowerCase());
-    out = `INSERT INTO ${tbl} (${keys.join(', ')}) VALUES\n`+
-      rows.map(r=>`  (${keys.map(k=>`'${String(r[k]).replace(/'/g,"''")}'`).join(', ')})`).join(',\n')+';';
-    document.getElementById('outputLabel').textContent = `SQL (${count} rows)`;
-  }
+            let out = '';
+            const ext = fmt;
+            if (fmt === 'json') {
+                out = JSON.stringify(rows, null, 2);
+                document.getElementById('outputLabel').textContent = `JSON (${count} records)`;
+            } else if (fmt === 'csv') {
+                const keys = fields.map(f => f.replace(/\s+/g, '_').toLowerCase());
+                out = keys.join(',') + '\n' + rows.map(r => keys.map(k => `"${String(r[k]).replace(/"/g, '""')}"`).join(',')).join('\n');
+                document.getElementById('outputLabel').textContent = `CSV (${count} rows)`;
+            } else {
+                const tbl = 'fake_data';
+                const keys = fields.map(f => f.replace(/\s+/g, '_').toLowerCase());
+                out = `INSERT INTO ${tbl} (${keys.join(', ')}) VALUES\n` +
+                    rows.map(r => `  (${keys.map(k => `'${String(r[k]).replace(/'/g, "''")}'`).join(', ')})`).join(',\n') + ';';
+                document.getElementById('outputLabel').textContent = `SQL (${count} rows)`;
+            }
 
-  document.getElementById('output').textContent = out;
-  document.getElementById('outputPanel').style.display='';
-}
+            document.getElementById('output').textContent = out;
+            document.getElementById('outputPanel').style.display = '';
+        }
 
-function copyOut(){const t=document.getElementById('output').textContent;navigator.clipboard.writeText(t).then(()=>showToast('Copied!'));}
-function downloadOut(){
-  const t=document.getElementById('output').textContent; if(!t)return;
-  const ext=fmt==='json'?'json':fmt==='csv'?'csv':'sql';
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download=`fake-data.${ext}`;a.click();
-}
-function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
-buildFields();
-</script>
+        function copyOut() { const t = document.getElementById('output').textContent; navigator.clipboard.writeText(t).then(() => showToast('Copied!')); }
+        function downloadOut() {
+            const t = document.getElementById('output').textContent; if (!t) return;
+            const ext = fmt === 'json' ? 'json' : fmt === 'csv' ? 'csv' : 'sql';
+            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([t], { type: 'text/plain' })); a.download = `fake-data.${ext}`; a.click();
+        }
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        buildFields();
+    </script>
 </body>
 </html>

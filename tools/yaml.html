@@ -1,106 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YAML ↔ JSON — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<style>
-.mode-tabs{display:flex;gap:4px;margin-bottom:14px}
-.mode-tab{padding:7px 16px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:var(--mono);font-size:0.75rem;cursor:pointer;transition:all var(--transition)}
-.mode-tab:hover{color:var(--text);border-color:var(--border2)}
-.mode-tab.active{background:var(--yellow-dim);border-color:var(--yellow);color:var(--yellow)}
-#output{color:var(--green);white-space:pre;overflow-x:auto;min-height:120px;font-size:0.8rem}
-.err{color:var(--red)!important}
-</style>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAML ↔ JSON — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .mode-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 14px
+        }
+
+        .mode-tab {
+            padding: 7px 16px;
+            border-radius: var(--r-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-dim);
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all var(--transition)
+        }
+
+            .mode-tab:hover {
+                color: var(--text);
+                border-color: var(--border2)
+            }
+
+            .mode-tab.active {
+                background: var(--yellow-dim);
+                border-color: var(--yellow);
+                color: var(--yellow)
+            }
+
+        #output {
+            color: var(--green);
+            white-space: pre;
+            overflow-x: auto;
+            min-height: 120px;
+            font-size: 0.8rem
+        }
+
+        .err {
+            color: var(--red) !important
+        }
+    </style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <main class="content-wrap">
-    <div class="content">
-      <div class="tool-header">
-        <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">YML</div>
-        <div><div class="tool-title">YAML ↔ JSON</div><div class="tool-desc">Convert between YAML and JSON formats with validation</div></div>
-      </div>
-      <div class="mode-tabs">
-        <button class="mode-tab active" id="tab-yj" onclick="setMode('yj')">YAML → JSON</button>
-        <button class="mode-tab" id="tab-jy" onclick="setMode('jy')">JSON → YAML</button>
-        <button class="mode-tab" id="tab-fmt" onclick="setMode('fmt')">Format YAML</button>
-      </div>
-      <div class="panel">
-        <div class="panel-bar">
-          <span class="panel-label" id="inputLabel">YAML Input</span>
-          <div class="panel-actions">
-            <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
-            <button class="btn btn-ghost" onclick="document.getElementById('input').value='';run()">Clear</button>
-          </div>
-        </div>
-        <textarea id="input" style="min-height:200px;font-size:0.8rem" oninput="run()" placeholder="Paste YAML here…"></textarea>
-      </div>
-      <div class="panel">
-        <div class="panel-bar">
-          <span class="panel-label" id="outputLabel">JSON Output</span>
-          <div class="panel-actions">
-            <select id="indent" onchange="run()" class="btn btn-ghost" style="font-family:var(--mono);font-size:0.72rem">
-              <option value="2">2 spaces</option>
-              <option value="4">4 spaces</option>
-            </select>
-            <button class="btn btn-ghost" onclick="copy()">⎘ Copy</button>
-            <button class="btn btn-ghost" onclick="swap()">⇅ Swap</button>
-          </div>
-        </div>
-        <div id="output" class="output-area"></div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">YML</div>
+                    <div><div class="tool-title">YAML ↔ JSON</div><div class="tool-desc">Convert between YAML and JSON formats with validation</div></div>
+                </div>
+                <div class="mode-tabs">
+                    <button class="mode-tab active" id="tab-yj" onclick="setMode('yj')">YAML → JSON</button>
+                    <button class="mode-tab" id="tab-jy" onclick="setMode('jy')">JSON → YAML</button>
+                    <button class="mode-tab" id="tab-fmt" onclick="setMode('fmt')">Format YAML</button>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label" id="inputLabel">YAML Input</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
+                            <button class="btn btn-ghost" onclick="document.getElementById('input').value='';run()">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="input" style="min-height:200px;font-size:0.8rem" oninput="run()" placeholder="Paste YAML here…"></textarea>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label" id="outputLabel">JSON Output</span>
+                        <div class="panel-actions">
+                            <select id="indent" onchange="run()" class="btn btn-ghost" style="font-family:var(--mono);font-size:0.72rem">
+                                <option value="2">2 spaces</option>
+                                <option value="4">4 spaces</option>
+                            </select>
+                            <button class="btn btn-ghost" onclick="copy()">⎘ Copy</button>
+                            <button class="btn btn-ghost" onclick="swap()">⇅ Swap</button>
+                        </div>
+                    </div>
+                    <div id="output" class="output-area"></div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
     </div>
-    <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
-  </main>
-</div>
-<div class="toast" id="toast"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
-<script src="../assets/shared.js" defer></script>
-<script src="../assets/sidebar.js" defer></script>
-<script>
-let mode = 'yj';
-function setMode(m) {
-  mode = m;
-  ['yj','jy','fmt'].forEach(x => document.getElementById('tab-'+x).classList.toggle('active', x===m));
-  document.getElementById('inputLabel').textContent  = m==='jy' ? 'JSON Input' : 'YAML Input';
-  document.getElementById('outputLabel').textContent = m==='jy' ? 'YAML Output' : m==='fmt' ? 'Formatted YAML' : 'JSON Output';
-  document.getElementById('input').placeholder = m==='jy' ? 'Paste JSON here…' : 'Paste YAML here…';
-  document.getElementById('output').style.color = m==='jy' ? 'var(--yellow)' : 'var(--green)';
-  run();
-}
-function run() {
-  const src = document.getElementById('input').value.trim();
-  const out = document.getElementById('output');
-  if (!src) { out.textContent=''; out.className='output-area'; return; }
-  try {
-    if (mode === 'yj') {
-      const obj = jsyaml.load(src);
-      out.textContent = JSON.stringify(obj, null, +document.getElementById('indent').value);
-    } else if (mode === 'jy') {
-      const obj = JSON.parse(src);
-      out.textContent = jsyaml.dump(obj, {indent: +document.getElementById('indent').value, lineWidth: -1});
-    } else {
-      const obj = jsyaml.load(src);
-      out.textContent = jsyaml.dump(obj, {indent: +document.getElementById('indent').value, lineWidth: -1});
-    }
-    out.classList.remove('err');
-  } catch(e) { out.textContent = '✖ '+e.message; out.classList.add('err'); }
-}
-function copy() { const t=document.getElementById('output').textContent; if(t) navigator.clipboard.writeText(t).then(()=>showToast('Copied!')); }
-function swap() { const o=document.getElementById('output').textContent; if(o&&!o.startsWith('✖')){document.getElementById('input').value=o;run();} }
-function loadSample() {
-  if (mode==='jy') { document.getElementById('input').value='{"name":"DevBox","version":"1.0","features":["YAML","JSON","XML"],"config":{"debug":true,"port":3000}}'; }
-  else { document.getElementById('input').value='name: DevBox\nversion: "1.0"\nfeatures:\n  - YAML\n  - JSON\n  - XML\nconfig:\n  debug: true\n  port: 3000\ndatabase:\n  host: localhost\n  name: devbox_db'; }
-  run();
-}
-function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
-</script>
+    <div class="toast" id="toast"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        let mode = 'yj';
+        function setMode(m) {
+            mode = m;
+            ['yj', 'jy', 'fmt'].forEach(x => document.getElementById('tab-' + x).classList.toggle('active', x === m));
+            document.getElementById('inputLabel').textContent = m === 'jy' ? 'JSON Input' : 'YAML Input';
+            document.getElementById('outputLabel').textContent = m === 'jy' ? 'YAML Output' : m === 'fmt' ? 'Formatted YAML' : 'JSON Output';
+            document.getElementById('input').placeholder = m === 'jy' ? 'Paste JSON here…' : 'Paste YAML here…';
+            document.getElementById('output').style.color = m === 'jy' ? 'var(--yellow)' : 'var(--green)';
+            run();
+        }
+        function run() {
+            const src = document.getElementById('input').value.trim();
+            const out = document.getElementById('output');
+            if (!src) { out.textContent = ''; out.className = 'output-area'; return; }
+            try {
+                if (mode === 'yj') {
+                    const obj = jsyaml.load(src);
+                    out.textContent = JSON.stringify(obj, null, +document.getElementById('indent').value);
+                } else if (mode === 'jy') {
+                    const obj = JSON.parse(src);
+                    out.textContent = jsyaml.dump(obj, { indent: +document.getElementById('indent').value, lineWidth: -1 });
+                } else {
+                    const obj = jsyaml.load(src);
+                    out.textContent = jsyaml.dump(obj, { indent: +document.getElementById('indent').value, lineWidth: -1 });
+                }
+                out.classList.remove('err');
+            } catch (e) { out.textContent = '✖ ' + e.message; out.classList.add('err'); }
+        }
+        function copy() { const t = document.getElementById('output').textContent; if (t) navigator.clipboard.writeText(t).then(() => showToast('Copied!')); }
+        function swap() { const o = document.getElementById('output').textContent; if (o && !o.startsWith('✖')) { document.getElementById('input').value = o; run(); } }
+        function loadSample() {
+            if (mode === 'jy') { document.getElementById('input').value = '{"name":"DevBox","version":"1.0","features":["YAML","JSON","XML"],"config":{"debug":true,"port":3000}}'; }
+            else { document.getElementById('input').value = 'name: DevBox\nversion: "1.0"\nfeatures:\n  - YAML\n  - JSON\n  - XML\nconfig:\n  debug: true\n  port: 3000\ndatabase:\n  host: localhost\n  name: devbox_db'; }
+            run();
+        }
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+    </script>
 </body>
 </html>

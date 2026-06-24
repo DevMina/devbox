@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Parse cron expressions into plain English">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cron Parser — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="Cron Parser — DevBox">
-<meta property="og:description" content="Parse cron expressions into plain English">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Parse cron expressions into plain English">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cron Parser — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="Cron Parser — DevBox">
+    <meta property="og:description" content="Parse cron expressions into plain English">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -52,19 +52,19 @@
 
         </main><!-- /content-wrap -->
     </div>
-        <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
-        <script src="../assets/sidebar.js" defer></script>
-        <script>
-            function cronSample(e) { document.getElementById('cronInput').value = e; parseCron(); }
-            function parseCron() {
-                const raw = document.getElementById('cronInput').value.trim(), meaning = document.getElementById('cronMeaning'), fields = document.getElementById('cronFields'), next = document.getElementById('cronNext'); if (!raw) { meaning.textContent = ''; fields.innerHTML = ''; next.textContent = ''; return; } const parts = raw.split(/\s+/); if (parts.length !== 5) { meaning.textContent = '⚠ Expected 5 fields: minute hour day month weekday'; fields.innerHTML = ''; next.textContent = ''; return; } const [min, hr, dom, mon, dow] = parts, fieldDefs = [{ label: 'Minute', val: min, range: '0–59' }, { label: 'Hour', val: hr, range: '0–23' }, { label: 'Day', val: dom, range: '1–31' }, { label: 'Month', val: mon, range: '1–12' }, { label: 'Weekday', val: dow, range: '0–6 (Sun=0)' }]; fields.innerHTML = fieldDefs.map(f => `<div class="hash-row"><div class="hash-algo">${f.label}</div><div class="hash-val" style="color:var(--yellow)">${f.val}</div><div style="font-size:0.68rem;color:var(--text-dim);padding-top:3px">${f.range}</div></div>`).join('');
-                const ff = (v, unit, vals) => { if (v === '*') return `every ${unit}`; if (v.startsWith('*/')) return `every ${v.slice(2)} ${unit}s`; if (v.includes('-')) { const [a, b] = v.split('-'); return `${unit}s ${a}–${b}`; } if (v.includes(',')) return `${unit}s ${v}`; return `${unit} ${vals ? vals[parseInt(v)] || v : v}`; };
-                const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                meaning.textContent = `Runs at ${ff(min, 'minute')} of ${ff(hr, 'hour')}, on ${ff(dom, 'day')} of ${ff(mon, 'month', MONTHS)}, on ${ff(dow, 'weekday', DAYS)}.`;
-                try { const runs = []; const now = new Date(); now.setSeconds(0, 0); let d = new Date(now); d.setMinutes(d.getMinutes() + 1); let att = 0; while (runs.length < 5 && att < 100000) { att++; const mf = (val, cur) => { if (val === '*') return true; if (val.startsWith('*/')) return cur % parseInt(val.slice(2)) === 0; if (val.includes('-')) { const [a, b] = val.split('-').map(Number); return cur >= a && cur <= b; } if (val.includes(',')) return val.split(',').map(Number).includes(cur); return parseInt(val) === cur; }; if (mf(mon, d.getMonth() + 1) && mf(dom, d.getDate()) && mf(dow, d.getDay()) && mf(hr, d.getHours()) && mf(min, d.getMinutes())) runs.push(new Date(d)); d.setMinutes(d.getMinutes() + 1); } next.textContent = runs.length ? runs.map((r, i) => `${i + 1}. ${r.toLocaleString()}`).join('\n') : 'Could not compute next runs.'; } catch (e) { next.textContent = ''; }
-            }
-            document.addEventListener('DOMContentLoaded', () => cronSample('*/5 * * * *'));
-        </script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        function cronSample(e) { document.getElementById('cronInput').value = e; parseCron(); }
+        function parseCron() {
+            const raw = document.getElementById('cronInput').value.trim(), meaning = document.getElementById('cronMeaning'), fields = document.getElementById('cronFields'), next = document.getElementById('cronNext'); if (!raw) { meaning.textContent = ''; fields.innerHTML = ''; next.textContent = ''; return; } const parts = raw.split(/\s+/); if (parts.length !== 5) { meaning.textContent = '⚠ Expected 5 fields: minute hour day month weekday'; fields.innerHTML = ''; next.textContent = ''; return; } const [min, hr, dom, mon, dow] = parts, fieldDefs = [{ label: 'Minute', val: min, range: '0–59' }, { label: 'Hour', val: hr, range: '0–23' }, { label: 'Day', val: dom, range: '1–31' }, { label: 'Month', val: mon, range: '1–12' }, { label: 'Weekday', val: dow, range: '0–6 (Sun=0)' }]; fields.innerHTML = fieldDefs.map(f => `<div class="hash-row"><div class="hash-algo">${f.label}</div><div class="hash-val" style="color:var(--yellow)">${f.val}</div><div style="font-size:0.68rem;color:var(--text-dim);padding-top:3px">${f.range}</div></div>`).join('');
+            const ff = (v, unit, vals) => { if (v === '*') return `every ${unit}`; if (v.startsWith('*/')) return `every ${v.slice(2)} ${unit}s`; if (v.includes('-')) { const [a, b] = v.split('-'); return `${unit}s ${a}–${b}`; } if (v.includes(',')) return `${unit}s ${v}`; return `${unit} ${vals ? vals[parseInt(v)] || v : v}`; };
+            const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            meaning.textContent = `Runs at ${ff(min, 'minute')} of ${ff(hr, 'hour')}, on ${ff(dom, 'day')} of ${ff(mon, 'month', MONTHS)}, on ${ff(dow, 'weekday', DAYS)}.`;
+            try { const runs = []; const now = new Date(); now.setSeconds(0, 0); let d = new Date(now); d.setMinutes(d.getMinutes() + 1); let att = 0; while (runs.length < 5 && att < 100000) { att++; const mf = (val, cur) => { if (val === '*') return true; if (val.startsWith('*/')) return cur % parseInt(val.slice(2)) === 0; if (val.includes('-')) { const [a, b] = val.split('-').map(Number); return cur >= a && cur <= b; } if (val.includes(',')) return val.split(',').map(Number).includes(cur); return parseInt(val) === cur; }; if (mf(mon, d.getMonth() + 1) && mf(dom, d.getDate()) && mf(dow, d.getDay()) && mf(hr, d.getHours()) && mf(min, d.getMinutes())) runs.push(new Date(d)); d.setMinutes(d.getMinutes() + 1); } next.textContent = runs.length ? runs.map((r, i) => `${i + 1}. ${r.toLocaleString()}`).join('\n') : 'Could not compute next runs.'; } catch (e) { next.textContent = ''; }
+        }
+        document.addEventListener('DOMContentLoaded', () => cronSample('*/5 * * * *'));
+    </script>
 </body>
 </html>

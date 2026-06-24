@@ -82,7 +82,7 @@ function buildSidebar() {
         { section: 'Productivity' },
         { href: 'pomodoro.html', label: 'Pomodoro Timer', dot: '--red' },
         { href: 'countdown.html', label: 'Countdown', dot: '--pink' },
-        ];
+    ];
 
     const currentFile = window.location.pathname.split('/').pop() || 'index.html';
     const chevronSVG = `<svg class="sb-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg>`;

@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Convert between JSON arrays and CSV format">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JSON ↔ CSV — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="JSON ↔ CSV — DevBox">
-<meta property="og:description" content="Convert between JSON arrays and CSV format">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Convert between JSON arrays and CSV format">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON ↔ CSV — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="JSON ↔ CSV — DevBox">
+    <meta property="og:description" content="Convert between JSON arrays and CSV format">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -58,9 +58,12 @@
         function jsonToCsv() {
             try {
                 const data = JSON.parse(document.getElementById('jcInput').value); if (!Array.isArray(data) || !data.length) { document.getElementById('jcOutput').textContent = 'Error: Input must be a JSON array of objects'; return; } const keys = [...new Set(data.flatMap(Object.keys))]; const rows = [keys.join(','), ...data.map(row => keys.map(k => {
-                    const v = row[k] === undefined ? '' : String(row[k]); return v.includes(',') || v.includes('"') || v.includes('\n') ? `"${v.replace(/"/g, '""')}"`:v;}).join(', '))];document.getElementById('jcOutput').textContent=rows.join('\n');}catch(e){document.getElementById('jcOutput').textContent='Error: '+e.message;}}
-                    function csvToJson() { try { const lines = document.getElementById('jcInput').value.trim().split('\n'); if (lines.length < 2) { document.getElementById('jcOutput').textContent = 'Error: Need header row + data rows'; return; } const pCsv = line => { const r = []; let cur = '', inQ = false; for (let c of line) { if (c === '"') inQ = !inQ; else if (c === ',' && !inQ) { r.push(cur.trim()); cur = ''; } else cur += c; } r.push(cur.trim()); return r; }; const headers = pCsv(lines[0]); const data = lines.slice(1).filter(l => l.trim()).map(line => { const vals = pCsv(line); const obj = {}; headers.forEach((h, i) => { const v = vals[i] || ''; obj[h] = isNaN(v) || v === '' ? v : Number(v); }); return obj; }); document.getElementById('jcOutput').textContent = JSON.stringify(data, null, 2); } catch (e) { document.getElementById('jcOutput').textContent = 'Error: ' + e.message; } }
-                    function jcSample() { document.getElementById('jcInput').value = '[{"name":"Alice","age":30,"city":"New York"},{"name":"Bob","age":25,"city":"London"},{"name":"Carol","age":35,"city":"Tokyo"}]'; }
+                    const v = row[k] === undefined ? '' : String(row[k]); return v.includes(',') || v.includes('"') || v.includes('\n') ? `"${v.replace(/"/g, '""')}"` : v;
+                }).join(', '))]; document.getElementById('jcOutput').textContent = rows.join('\n');
+            } catch (e) { document.getElementById('jcOutput').textContent = 'Error: ' + e.message; }
+        }
+        function csvToJson() { try { const lines = document.getElementById('jcInput').value.trim().split('\n'); if (lines.length < 2) { document.getElementById('jcOutput').textContent = 'Error: Need header row + data rows'; return; } const pCsv = line => { const r = []; let cur = '', inQ = false; for (let c of line) { if (c === '"') inQ = !inQ; else if (c === ',' && !inQ) { r.push(cur.trim()); cur = ''; } else cur += c; } r.push(cur.trim()); return r; }; const headers = pCsv(lines[0]); const data = lines.slice(1).filter(l => l.trim()).map(line => { const vals = pCsv(line); const obj = {}; headers.forEach((h, i) => { const v = vals[i] || ''; obj[h] = isNaN(v) || v === '' ? v : Number(v); }); return obj; }); document.getElementById('jcOutput').textContent = JSON.stringify(data, null, 2); } catch (e) { document.getElementById('jcOutput').textContent = 'Error: ' + e.message; } }
+        function jcSample() { document.getElementById('jcInput').value = '[{"name":"Alice","age":30,"city":"New York"},{"name":"Bob","age":25,"city":"London"},{"name":"Carol","age":35,"city":"Tokyo"}]'; }
     </script>
 </body>
 </html>

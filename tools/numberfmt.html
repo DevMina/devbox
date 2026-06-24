@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Format numbers as currency, scientific notation, and more">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Number Formatter — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="Number Formatter — DevBox">
-<meta property="og:description" content="Format numbers as currency, scientific notation, and more">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Format numbers as currency, scientific notation, and more">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Formatter — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="Number Formatter — DevBox">
+    <meta property="og:description" content="Format numbers as currency, scientific notation, and more">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -62,11 +62,11 @@
 
         </main><!-- /content-wrap -->
     </div>
-        <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
-        <script src="../assets/sidebar.js" defer></script>
-        <script>
-            function numFormat() { const raw = document.getElementById('nfInput').value.trim(), num = parseFloat(raw.replace(/,/g, '')), locale = document.getElementById('nfLocale').value, currency = document.getElementById('nfCurrency').value, out = document.getElementById('nfOutput'); if (!raw || isNaN(num)) { out.innerHTML = '<div class="hash-row" style="color:var(--text-dim)">Enter a number above</div>'; return; } const fmt = opts => { try { return num.toLocaleString(locale, opts); } catch (e) { return 'N/A'; } }; const rows = [['Standard', fmt({})], ['Currency', fmt({ style: 'currency', currency })], ['Percentage', fmt({ style: 'percent', maximumFractionDigits: 2 })], ['Scientific', num.toExponential(4)], ['Fixed (2dp)', num.toFixed(2)], ['Fixed (4dp)', num.toFixed(4)], ['Compact', fmt({ notation: 'compact', maximumFractionDigits: 2 })], ['No decimals', fmt({ maximumFractionDigits: 0 })], ['Binary', Number.isInteger(num) && num >= 0 && num < 2 ** 32 ? num.toString(2) : '(integers only)'], ['Hex', Number.isInteger(num) && num >= 0 ? '0x' + num.toString(16).toUpperCase() : '(integers only)'], ['Ordinal', (() => { const n = Math.abs(Math.round(num)); const s = ['th', 'st', 'nd', 'rd']; const v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); })()]]; out.innerHTML = rows.map(([l, v]) => `<div class="hash-row"><div class="hash-algo" style="min-width:110px">${l}</div><div class="hash-val" style="color:var(--red)">${escHtml(String(v))}</div><button class="uuid-copy" onclick="copy(${JSON.stringify(String(v))})">⎘</button></div>`).join(''); }
-        </script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        function numFormat() { const raw = document.getElementById('nfInput').value.trim(), num = parseFloat(raw.replace(/,/g, '')), locale = document.getElementById('nfLocale').value, currency = document.getElementById('nfCurrency').value, out = document.getElementById('nfOutput'); if (!raw || isNaN(num)) { out.innerHTML = '<div class="hash-row" style="color:var(--text-dim)">Enter a number above</div>'; return; } const fmt = opts => { try { return num.toLocaleString(locale, opts); } catch (e) { return 'N/A'; } }; const rows = [['Standard', fmt({})], ['Currency', fmt({ style: 'currency', currency })], ['Percentage', fmt({ style: 'percent', maximumFractionDigits: 2 })], ['Scientific', num.toExponential(4)], ['Fixed (2dp)', num.toFixed(2)], ['Fixed (4dp)', num.toFixed(4)], ['Compact', fmt({ notation: 'compact', maximumFractionDigits: 2 })], ['No decimals', fmt({ maximumFractionDigits: 0 })], ['Binary', Number.isInteger(num) && num >= 0 && num < 2 ** 32 ? num.toString(2) : '(integers only)'], ['Hex', Number.isInteger(num) && num >= 0 ? '0x' + num.toString(16).toUpperCase() : '(integers only)'], ['Ordinal', (() => { const n = Math.abs(Math.round(num)); const s = ['th', 'st', 'nd', 'rd']; const v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); })()]]; out.innerHTML = rows.map(([l, v]) => `<div class="hash-row"><div class="hash-algo" style="min-width:110px">${l}</div><div class="hash-val" style="color:var(--red)">${escHtml(String(v))}</div><button class="uuid-copy" onclick="copy(${JSON.stringify(String(v))})">⎘</button></div>`).join(''); }
+    </script>
 </body>
 </html>

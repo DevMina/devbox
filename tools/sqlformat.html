@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Beautify and minify SQL queries">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SQL Formatter — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="SQL Formatter — DevBox">
-<meta property="og:description" content="Beautify and minify SQL queries">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Beautify and minify SQL queries">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Formatter — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="SQL Formatter — DevBox">
+    <meta property="og:description" content="Beautify and minify SQL queries">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -42,7 +42,9 @@
                 </div>
                 <div class="panel">
                     <div class="panel-bar"><span class="panel-label">Output</span><div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('sqlOutput').innerText)">⎘ Copy</button></div></div>
-                    <div id="sqlOutput" class="output-area" style="min-height:160px;white-space:pre-wrap;line-height:1.8;"></div>
+                    <pre id="sqlOutput"
+                         class="output-area"
+                         style="min-height:160px;white-space:pre-wrap;line-height:1.8;margin:0;"></pre>
                 </div>
             </div>
             <footer class="site-footer">
@@ -55,13 +57,122 @@
     <script src="../assets/shared.js" defer></script>
     <script src="../assets/sidebar.js" defer></script>
     <script>
-        const SQL_KW = ['SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'NOT', 'IN', 'IS', 'NULL', 'ORDER BY', 'GROUP BY', 'HAVING', 'LIMIT', 'OFFSET', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'OUTER JOIN', 'ON', 'AS', 'DISTINCT', 'COUNT', 'SUM', 'AVG', 'MIN', 'MAX', 'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM', 'CREATE TABLE', 'DROP TABLE', 'ALTER TABLE', 'ADD', 'COLUMN', 'PRIMARY KEY', 'FOREIGN KEY', 'REFERENCES', 'INDEX', 'UNIQUE', 'DEFAULT', 'NOT NULL', 'AUTO_INCREMENT', 'BETWEEN', 'LIKE', 'EXISTS', 'UNION', 'ALL'];
+        const SQL_KW = [
+            'SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'NOT', 'IN', 'IS', 'NULL',
+            'ORDER BY', 'GROUP BY', 'HAVING', 'LIMIT', 'OFFSET',
+            'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'OUTER JOIN', 'JOIN',
+            'ON', 'AS', 'DISTINCT',
+            'COUNT', 'SUM', 'AVG', 'MIN', 'MAX',
+            'INSERT INTO', 'VALUES',
+            'UPDATE', 'SET',
+            'DELETE FROM',
+            'CREATE TABLE', 'DROP TABLE', 'ALTER TABLE',
+            'ADD', 'COLUMN',
+            'PRIMARY KEY', 'FOREIGN KEY', 'REFERENCES',
+            'INDEX', 'UNIQUE', 'DEFAULT', 'NOT NULL',
+            'AUTO_INCREMENT',
+            'BETWEEN', 'LIKE', 'EXISTS',
+            'UNION', 'ALL'
+        ];
+
+        function escapeRegExp(str) {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
         function sqlFormat() {
-            let sql = document.getElementById('sqlInput').value.trim(); if (!sql) return; sql = sql.replace(/\s+/g, ' ');['SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'ORDER BY', 'GROUP BY', 'HAVING', 'LIMIT', 'OFFSET', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'OUTER JOIN', 'JOIN', 'ON', 'UNION', 'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM'].forEach(kw => {
-                sql = sql.replace(new RegExp('\b' + kw + '\b', 'gi'), '\n'+kw);});sql=sql.replace(/\n\s*(AND|OR)\b/gi,'\n      $1');SQL_KW.forEach(kw=>{sql=sql.replace(new RegExp('\b'+kw+'\b','gi'),kw);});document.getElementById('sqlOutput').innerHTML=highlightSql(sql.trim());}
-function sqlMinify() { let sql = document.getElementById('sqlInput').value.replace(/\s+/g, ' ').trim(); SQL_KW.forEach(kw => { sql = sql.replace(new RegExp('\b' + kw + '\b', 'gi'), kw); }); document.getElementById('sqlOutput').innerHTML = highlightSql(sql); }
-function highlightSql(sql) { let h = escHtml(sql); SQL_KW.forEach(kw => { h = h.replace(new RegExp('\b' + kw + '\b', 'g'), `<span style="color:var(--blue);font-weight:600">${kw}</span>`); }); h = h.replace(/'([^']*)'/g, `<span style="color:var(--green)">'$1'</span>`); h = h.replace(/\b(\d+)\b/g, `<span style="color:var(--orange)">$1</span>`); h = h.replace(/--.*/g, m => `<span style="color:var(--text-dim);font-style:italic">${m}</span>`); return h; }
-function sqlSample() { document.getElementById('sqlInput').value = "SELECT u.id, u.name, u.email, COUNT(o.id) AS order_count FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE u.active = 1 AND u.created_at > '2023-01-01' GROUP BY u.id HAVING order_count > 0 ORDER BY order_count DESC LIMIT 50;"; }
+            let sql = document.getElementById('sqlInput').value.trim();
+
+            if (!sql) return;
+
+            sql = sql.replace(/\s+/g, ' ');
+            sql = sql.replace(/,\s*/g, ',\n    ');
+            const breaks = [
+                'LEFT JOIN',
+                'RIGHT JOIN',
+                'INNER JOIN',
+                'OUTER JOIN',
+                'GROUP BY',
+                'ORDER BY',
+                'INSERT INTO',
+                'DELETE FROM',
+                'SELECT',
+                'FROM',
+                'WHERE',
+                'JOIN',
+                'ON',
+                'HAVING',
+                'LIMIT',
+                'UNION',
+                'UPDATE',
+                'SET',
+                'VALUES'
+            ];
+
+            breaks.forEach(kw => {
+                sql = sql.replace(
+                    new RegExp(`\\b${escapeRegExp(kw)}\\b`, 'gi'),
+                    '\n' + kw.toUpperCase()
+                );
+            });
+
+            sql = sql.replace(/\bAND\b/gi, '\n    AND');
+            sql = sql.replace(/\bOR\b/gi, '\n    OR');
+
+            document.getElementById('sqlOutput').innerHTML =
+                highlightSql(sql.trim());
+        }
+
+        function sqlMinify() {
+            let sql = document.getElementById('sqlInput').value;
+
+            if (!sql.trim()) return;
+
+            sql = sql.replace(/\s+/g, ' ').trim();
+
+            document.getElementById('sqlOutput').innerHTML =
+                highlightSql(sql);
+        }
+
+        function highlightSql(sql) {
+            let h = escHtml(sql);
+
+            // Strings
+            h = h.replace(
+                /'([^']*)'/g,
+                '<span style="color:var(--green)">\'$1\'</span>'
+            );
+
+            // Numbers
+            h = h.replace(
+                /\b(\d+)\b/g,
+                '<span style="color:var(--orange)">$1</span>'
+            );
+
+            // Keywords (longest first)
+            [...SQL_KW]
+                .sort((a, b) => b.length - a.length)
+                .forEach(kw => {
+                    h = h.replace(
+                        new RegExp(`\\b${escapeRegExp(kw)}\\b`, 'gi'),
+                        `<span style="color:var(--blue);font-weight:600">${kw}</span>`
+                    );
+                });
+
+            return h;
+        }
+
+        function sqlSample() {
+            document.getElementById('sqlInput').value =
+                `SELECT u.id, u.name, u.email, COUNT(o.id) AS order_count
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE u.active = 1
+AND u.created_at > '2023-01-01'
+GROUP BY u.id
+HAVING order_count > 0
+ORDER BY order_count DESC
+LIMIT 50;`;
+        }
     </script>
 </body>
 </html>

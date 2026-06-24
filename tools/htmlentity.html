@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Encode and decode HTML special characters">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HTML Entities — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="HTML Entities — DevBox">
-<meta property="og:description" content="Encode and decode HTML special characters">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Encode and decode HTML special characters">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Entities — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="HTML Entities — DevBox">
+    <meta property="og:description" content="Encode and decode HTML special characters">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -51,14 +51,14 @@
 
         </main><!-- /content-wrap -->
     </div>
-        <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
-        <script src="../assets/sidebar.js" defer></script>
-        <script>
-            function htmlEncode() { const t = document.getElementById('htmlEntInput').value; document.getElementById('htmlEntOutput').textContent = t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
-            function htmlDecode() { const t = document.getElementById('htmlEntInput').value, el = document.createElement('div'); el.innerHTML = t; document.getElementById('htmlEntOutput').textContent = el.textContent; }
-            function htmlSwap() { const o = document.getElementById('htmlEntOutput').textContent; document.getElementById('htmlEntInput').value = o; document.getElementById('htmlEntOutput').textContent = ''; }
-            function htmlClear() { document.getElementById('htmlEntInput').value = ''; document.getElementById('htmlEntOutput').textContent = ''; }
-        </script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        function htmlEncode() { const t = document.getElementById('htmlEntInput').value; document.getElementById('htmlEntOutput').textContent = t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+        function htmlDecode() { const t = document.getElementById('htmlEntInput').value, el = document.createElement('div'); el.innerHTML = t; document.getElementById('htmlEntOutput').textContent = el.textContent; }
+        function htmlSwap() { const o = document.getElementById('htmlEntOutput').textContent; document.getElementById('htmlEntInput').value = o; document.getElementById('htmlEntOutput').textContent = ''; }
+        function htmlClear() { document.getElementById('htmlEntInput').value = ''; document.getElementById('htmlEntOutput').textContent = ''; }
+    </script>
 </body>
 </html>

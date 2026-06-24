@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Focus timer with work sessions and breaks">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pomodoro Timer — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="Pomodoro Timer — DevBox">
-<meta property="og:description" content="Focus timer with work sessions and breaks">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Focus timer with work sessions and breaks">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="Pomodoro Timer — DevBox">
+    <meta property="og:description" content="Focus timer with work sessions and breaks">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -72,52 +72,52 @@
 
         </main><!-- /content-wrap -->
     </div>
-        <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
-        <script src="../assets/sidebar.js" defer></script>
-        <script>
-            let pomTimer = null, pomSeconds = 25 * 60, pomPhase = 'work', pomSessionNum = 1, pomRunning = false;
-            let statPomos = 0, statFocus = 0, statBreaks = 0;
-            function pomGetWork() { return parseInt(document.getElementById('pomWork').value) * 60; }
-            function pomGetShort() { return parseInt(document.getElementById('pomShort').value) * 60; }
-            function pomGetLong() { return parseInt(document.getElementById('pomLong').value) * 60; }
-            function pomGetSessions() { return parseInt(document.getElementById('pomSessions').value); }
-            function pomFmt(s) { return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; }
-            function pomUpdateDisplay() {
-                document.getElementById('pomDisplay').textContent = pomFmt(pomSeconds);
-                document.title = pomFmt(pomSeconds) + ' — ' + pomPhase + ' | DevBox';
-                document.getElementById('pomMode').textContent = pomPhase === 'work' ? 'WORK SESSION' : pomPhase === 'short' ? 'SHORT BREAK' : 'LONG BREAK';
-                document.getElementById('pomSession').textContent = `Session ${pomSessionNum} of ${pomGetSessions()}`;
-                document.getElementById('statPomos').textContent = statPomos;
-                document.getElementById('statFocus').textContent = Math.round(statFocus / 60) + 'm';
-                document.getElementById('statBreaks').textContent = statBreaks;
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        let pomTimer = null, pomSeconds = 25 * 60, pomPhase = 'work', pomSessionNum = 1, pomRunning = false;
+        let statPomos = 0, statFocus = 0, statBreaks = 0;
+        function pomGetWork() { return parseInt(document.getElementById('pomWork').value) * 60; }
+        function pomGetShort() { return parseInt(document.getElementById('pomShort').value) * 60; }
+        function pomGetLong() { return parseInt(document.getElementById('pomLong').value) * 60; }
+        function pomGetSessions() { return parseInt(document.getElementById('pomSessions').value); }
+        function pomFmt(s) { return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; }
+        function pomUpdateDisplay() {
+            document.getElementById('pomDisplay').textContent = pomFmt(pomSeconds);
+            document.title = pomFmt(pomSeconds) + ' — ' + pomPhase + ' | DevBox';
+            document.getElementById('pomMode').textContent = pomPhase === 'work' ? 'WORK SESSION' : pomPhase === 'short' ? 'SHORT BREAK' : 'LONG BREAK';
+            document.getElementById('pomSession').textContent = `Session ${pomSessionNum} of ${pomGetSessions()}`;
+            document.getElementById('statPomos').textContent = statPomos;
+            document.getElementById('statFocus').textContent = Math.round(statFocus / 60) + 'm';
+            document.getElementById('statBreaks').textContent = statBreaks;
+        }
+        function pomToggle() {
+            if (pomRunning) { clearInterval(pomTimer); pomRunning = false; document.getElementById('pomStartBtn').textContent = '▶ Start'; }
+            else {
+                pomRunning = true; document.getElementById('pomStartBtn').textContent = '⏸ Pause';
+                pomTimer = setInterval(() => {
+                    pomSeconds--;
+                    if (pomPhase === 'work') statFocus++;
+                    if (pomSeconds <= 0) { pomAdvance(); }
+                    pomUpdateDisplay();
+                }, 1000);
             }
-            function pomToggle() {
-                if (pomRunning) { clearInterval(pomTimer); pomRunning = false; document.getElementById('pomStartBtn').textContent = '▶ Start'; }
-                else {
-                    pomRunning = true; document.getElementById('pomStartBtn').textContent = '⏸ Pause';
-                    pomTimer = setInterval(() => {
-                        pomSeconds--;
-                        if (pomPhase === 'work') statFocus++;
-                        if (pomSeconds <= 0) { pomAdvance(); }
-                        pomUpdateDisplay();
-                    }, 1000);
-                }
-            }
-            function pomAdvance() {
-                clearInterval(pomTimer); pomRunning = false; document.getElementById('pomStartBtn').textContent = '▶ Start';
-                if (pomPhase === 'work') {
-                    statPomos++;
-                    if (pomSessionNum >= pomGetSessions()) { pomPhase = 'long'; pomSeconds = pomGetLong(); pomSessionNum = 1; }
-                    else { pomPhase = 'short'; pomSeconds = pomGetShort(); pomSessionNum++; }
-                    statBreaks++;
-                } else { pomPhase = 'work'; pomSeconds = pomGetWork(); }
-                try { new Notification('DevBox Pomodoro', { body: pomPhase === 'work' ? 'Break over — time to focus!' : 'Session complete — take a break!' }); } catch (e) { }
-                pomUpdateDisplay(); showToast(pomPhase === 'work' ? 'Break time! 🌿' : 'Focus time! 🍅');
-            }
-            function pomReset() { clearInterval(pomTimer); pomRunning = false; pomPhase = 'work'; pomSessionNum = 1; pomSeconds = pomGetWork(); document.getElementById('pomStartBtn').textContent = '▶ Start'; document.title = 'Pomodoro Timer | DevBox'; pomUpdateDisplay(); }
-            function pomSkip() { clearInterval(pomTimer); pomRunning = false; pomSeconds = 0; pomAdvance(); }
-            document.addEventListener('DOMContentLoaded', () => { if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission(); pomUpdateDisplay(); });
-        </script>
+        }
+        function pomAdvance() {
+            clearInterval(pomTimer); pomRunning = false; document.getElementById('pomStartBtn').textContent = '▶ Start';
+            if (pomPhase === 'work') {
+                statPomos++;
+                if (pomSessionNum >= pomGetSessions()) { pomPhase = 'long'; pomSeconds = pomGetLong(); pomSessionNum = 1; }
+                else { pomPhase = 'short'; pomSeconds = pomGetShort(); pomSessionNum++; }
+                statBreaks++;
+            } else { pomPhase = 'work'; pomSeconds = pomGetWork(); }
+            try { new Notification('DevBox Pomodoro', { body: pomPhase === 'work' ? 'Break over — time to focus!' : 'Session complete — take a break!' }); } catch (e) { }
+            pomUpdateDisplay(); showToast(pomPhase === 'work' ? 'Break time! 🌿' : 'Focus time! 🍅');
+        }
+        function pomReset() { clearInterval(pomTimer); pomRunning = false; pomPhase = 'work'; pomSessionNum = 1; pomSeconds = pomGetWork(); document.getElementById('pomStartBtn').textContent = '▶ Start'; document.title = 'Pomodoro Timer | DevBox'; pomUpdateDisplay(); }
+        function pomSkip() { clearInterval(pomTimer); pomRunning = false; pomSeconds = 0; pomAdvance(); }
+        document.addEventListener('DOMContentLoaded', () => { if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission(); pomUpdateDisplay(); });
+    </script>
 </body>
 </html>

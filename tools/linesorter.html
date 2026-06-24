@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Sort, deduplicate, and transform lines of text">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Line Sorter — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="Line Sorter — DevBox">
-<meta property="og:description" content="Sort, deduplicate, and transform lines of text">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Sort, deduplicate, and transform lines of text">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Line Sorter — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="Line Sorter — DevBox">
+    <meta property="og:description" content="Sort, deduplicate, and transform lines of text">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -66,16 +66,19 @@
 
         </main><!-- /content-wrap -->
     </div>
-        <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
-        <script src="../assets/sidebar.js" defer></script>
-        <script>
-            function lsStats() {
-                const l = document.getElementById('lsInput').value.split('\n'),e=document.getElementById('lsStatsEl');if(e)e.textContent=`${l.length} lines · ${l.filter(x=>x.trim()).length} non-empty`;}
-function lsDo(op) {
-                        let lines = document.getElementById('lsInput').value.split('\n');switch(op){case 'sortaz':lines.sort((a,b)=>a.localeCompare(b));break;case 'sortza':lines.sort((a,b)=>b.localeCompare(a));break;case 'sortlen':lines.sort((a,b)=>a.length-b.length);break;case 'reverse':lines.reverse();break;case 'shuffle':for(let i=lines.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[lines[i],lines[j]]=[lines[j],lines[i]];}break;case 'dedup':lines=[...new Set(lines)];break;case 'trim':lines=lines.map(l=>l.trim());break;case 'empty':lines=lines.filter(l=>l.trim());break;case 'lower':lines=lines.map(l=>l.toLowerCase());break;case 'upper':lines=lines.map(l=>l.toUpperCase());break;case 'number':lines=lines.map((l,i)=>`${i+1}. ${l}`);break;}document.getElementById('lsOutput').textContent=lines.join('\n');const e=document.getElementById('lsStatsEl');if(e)e.textContent=`${lines.length} lines`;}
-function lsSample() {
-                                document.getElementById('lsInput').value = 'banana\n                                apple\n                                cherry\n                                apple\n                                date\n                                banana\n                                elderberry\n                                fig\n                                grape\nbanana';lsStats();}
-        </script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        function lsStats() {
+            const l = document.getElementById('lsInput').value.split('\n'), e = document.getElementById('lsStatsEl'); if (e) e.textContent = `${l.length} lines · ${l.filter(x => x.trim()).length} non-empty`;
+        }
+        function lsDo(op) {
+            let lines = document.getElementById('lsInput').value.split('\n'); switch (op) { case 'sortaz': lines.sort((a, b) => a.localeCompare(b)); break; case 'sortza': lines.sort((a, b) => b.localeCompare(a)); break; case 'sortlen': lines.sort((a, b) => a.length - b.length); break; case 'reverse': lines.reverse(); break; case 'shuffle': for (let i = lines.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[lines[i], lines[j]] = [lines[j], lines[i]]; } break; case 'dedup': lines = [...new Set(lines)]; break; case 'trim': lines = lines.map(l => l.trim()); break; case 'empty': lines = lines.filter(l => l.trim()); break; case 'lower': lines = lines.map(l => l.toLowerCase()); break; case 'upper': lines = lines.map(l => l.toUpperCase()); break; case 'number': lines = lines.map((l, i) => `${i + 1}. ${l}`); break; }document.getElementById('lsOutput').textContent = lines.join('\n'); const e = document.getElementById('lsStatsEl'); if (e) e.textContent = `${lines.length} lines`;
+        }
+        function lsSample() {
+            document.getElementById('lsInput').value = 'banana\n                                apple\n                                cherry\n                                apple\n                                date\n                                banana\n                                elderberry\n                                fig\n                                grape\nbanana'; lsStats();
+        }
+    </script>
 </body>
 </html>

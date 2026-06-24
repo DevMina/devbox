@@ -1,144 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Slug Generator — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<style>
-.opt-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;font-family:var(--mono);font-size:0.75rem;color:var(--text-dim)}
-.opt-row label{display:flex;align-items:center;gap:5px;cursor:pointer}
-.opt-row input[type=checkbox]{accent-color:var(--green)}
-.sep-select{font-family:var(--mono);font-size:0.72rem;padding:4px 8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none}
-.result-big{font-family:var(--mono);font-size:1.1rem;color:var(--green);word-break:break-all;padding:16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;min-height:52px;line-height:1.5;cursor:text}
-.variants-grid{display:grid;gap:6px}
-.var-row{display:grid;grid-template-columns:130px 1fr auto;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm)}
-.var-label{font-family:var(--mono);font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim)}
-.var-val{font-family:var(--mono);font-size:0.8rem;color:var(--text);word-break:break-all}
-.var-copy{padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);font-family:var(--mono);font-size:0.68rem;cursor:pointer;transition:all var(--transition)}
-.var-copy:hover{color:var(--text);border-color:var(--border2)}
-</style>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slug Generator — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .opt-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--text-dim)
+        }
+
+            .opt-row label {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                cursor: pointer
+            }
+
+            .opt-row input[type=checkbox] {
+                accent-color: var(--green)
+            }
+
+        .sep-select {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            padding: 4px 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+            color: var(--text);
+            outline: none
+        }
+
+        .result-big {
+            font-family: var(--mono);
+            font-size: 1.1rem;
+            color: var(--green);
+            word-break: break-all;
+            padding: 16px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            margin-bottom: 10px;
+            min-height: 52px;
+            line-height: 1.5;
+            cursor: text
+        }
+
+        .variants-grid {
+            display: grid;
+            gap: 6px
+        }
+
+        .var-row {
+            display: grid;
+            grid-template-columns: 130px 1fr auto;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm)
+        }
+
+        .var-label {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--text-dim)
+        }
+
+        .var-val {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            color: var(--text);
+            word-break: break-all
+        }
+
+        .var-copy {
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--text-dim);
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            cursor: pointer;
+            transition: all var(--transition)
+        }
+
+            .var-copy:hover {
+                color: var(--text);
+                border-color: var(--border2)
+            }
+    </style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <main class="content-wrap">
-    <div class="content">
-      <div class="tool-header">
-        <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">slug</div>
-        <div><div class="tool-title">Slug Generator</div><div class="tool-desc">Convert text to URL-safe slugs with transliteration & multiple formats</div></div>
-      </div>
-      <div class="panel">
-        <div class="panel-bar">
-          <span class="panel-label">Input Text</span>
-          <div class="panel-actions">
-            <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
-            <button class="btn btn-ghost" onclick="document.getElementById('slugInput').value='';run()">Clear</button>
-          </div>
-        </div>
-        <textarea id="slugInput" placeholder="Paste your title or text here…" oninput="run()" style="min-height:80px"></textarea>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">slug</div>
+                    <div><div class="tool-title">Slug Generator</div><div class="tool-desc">Convert text to URL-safe slugs with transliteration & multiple formats</div></div>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Input Text</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
+                            <button class="btn btn-ghost" onclick="document.getElementById('slugInput').value='';run()">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="slugInput" placeholder="Paste your title or text here…" oninput="run()" style="min-height:80px"></textarea>
+                </div>
 
-      <div class="opt-row">
-        <span>Separator:</span>
-        <select class="sep-select" id="sepSel" onchange="run()">
-          <option value="-">Hyphen (-)</option>
-          <option value="_">Underscore (_)</option>
-          <option value=".">Dot (.)</option>
-        </select>
-        <label><input type="checkbox" id="optLower" checked onchange="run()"> Lowercase</label>
-        <label><input type="checkbox" id="optStrip" checked onchange="run()"> Strip numbers</label>
-        <label><input type="checkbox" id="optTrim" checked onchange="run()"> Trim separators</label>
-      </div>
+                <div class="opt-row">
+                    <span>Separator:</span>
+                    <select class="sep-select" id="sepSel" onchange="run()">
+                        <option value="-">Hyphen (-)</option>
+                        <option value="_">Underscore (_)</option>
+                        <option value=".">Dot (.)</option>
+                    </select>
+                    <label><input type="checkbox" id="optLower" checked onchange="run()"> Lowercase</label>
+                    <label><input type="checkbox" id="optStrip" checked onchange="run()"> Strip numbers</label>
+                    <label><input type="checkbox" id="optTrim" checked onchange="run()"> Trim separators</label>
+                </div>
 
-      <!-- Main result -->
-      <div class="result-big" id="resultMain" onclick="copyMain()">—</div>
-      <div style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);margin-bottom:14px">Click result to copy</div>
+                <!-- Main result -->
+                <div class="result-big" id="resultMain" onclick="copyMain()">—</div>
+                <div style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);margin-bottom:14px">Click result to copy</div>
 
-      <!-- Variants -->
-      <div class="panel" id="varPanel" style="display:none">
-        <div class="panel-bar"><span class="panel-label">All Variants</span></div>
-        <div class="variants-grid" id="varGrid"></div>
-      </div>
+                <!-- Variants -->
+                <div class="panel" id="varPanel" style="display:none">
+                    <div class="panel-bar"><span class="panel-label">All Variants</span></div>
+                    <div class="variants-grid" id="varGrid"></div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
     </div>
-    <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
-  </main>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js" defer></script>
-<script src="../assets/sidebar.js" defer></script>
-<script>
-// Transliteration map for common non-ASCII
-const MAP = {
-  'à':'a','á':'a','â':'a','ã':'a','ä':'a','å':'a','æ':'ae','ç':'c','è':'e','é':'e','ê':'e','ë':'e',
-  'ì':'i','í':'i','î':'i','ï':'i','ð':'d','ñ':'n','ò':'o','ó':'o','ô':'o','õ':'o','ö':'o','ø':'o',
-  'ù':'u','ú':'u','û':'u','ü':'u','ý':'y','þ':'th','ÿ':'y','ß':'ss','œ':'oe','À':'A','Á':'A','Â':'A',
-  'Ã':'A','Ä':'A','Å':'A','Æ':'AE','Ç':'C','È':'E','É':'E','Ê':'E','Ë':'E','Ì':'I','Í':'I','Î':'I',
-  'Ï':'I','Ñ':'N','Ò':'O','Ó':'O','Ô':'O','Õ':'O','Ö':'O','Ø':'O','Ù':'U','Ú':'U','Û':'U','Ü':'U',
-  'Ý':'Y','©':'c','®':'r','™':'tm','&':'and','@':'at','#':'','+':'plus','%':'percent',
-  '–':'-','—':'-','\u2018':"'",'′':"'",'″':'"','\u201C':'"','\u201D':'"','…':'',
-  // Arabic transliteration (basic)
-  'ا':'a','ب':'b','ت':'t','ث':'th','ج':'j','ح':'h','خ':'kh','د':'d','ذ':'dh','ر':'r','ز':'z',
-  'س':'s','ش':'sh','ص':'s','ض':'d','ط':'t','ظ':'z','ع':'a','غ':'gh','ف':'f','ق':'q','ك':'k',
-  'ل':'l','م':'m','ن':'n','ه':'h','و':'w','ي':'y','ى':'a','ة':'h','ء':'','ئ':'y','ؤ':'w',
-  'لا':'la','لأ':'la','لإ':'la','لآ':'la',
-};
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        // Transliteration map for common non-ASCII
+        const MAP = {
+            'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a', 'æ': 'ae', 'ç': 'c', 'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',
+            'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i', 'ð': 'd', 'ñ': 'n', 'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o', 'ø': 'o',
+            'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u', 'ý': 'y', 'þ': 'th', 'ÿ': 'y', 'ß': 'ss', 'œ': 'oe', 'À': 'A', 'Á': 'A', 'Â': 'A',
+            'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Æ': 'AE', 'Ç': 'C', 'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E', 'Ì': 'I', 'Í': 'I', 'Î': 'I',
+            'Ï': 'I', 'Ñ': 'N', 'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O', 'Ø': 'O', 'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U',
+            'Ý': 'Y', '©': 'c', '®': 'r', '™': 'tm', '&': 'and', '@': 'at', '#': '', '+': 'plus', '%': 'percent',
+            '–': '-', '—': '-', '\u2018': "'", '′': "'", '″': '"', '\u201C': '"', '\u201D': '"', '…': '',
+            // Arabic transliteration (basic)
+            'ا': 'a', 'ب': 'b', 'ت': 't', 'ث': 'th', 'ج': 'j', 'ح': 'h', 'خ': 'kh', 'د': 'd', 'ذ': 'dh', 'ر': 'r', 'ز': 'z',
+            'س': 's', 'ش': 'sh', 'ص': 's', 'ض': 'd', 'ط': 't', 'ظ': 'z', 'ع': 'a', 'غ': 'gh', 'ف': 'f', 'ق': 'q', 'ك': 'k',
+            'ل': 'l', 'م': 'm', 'ن': 'n', 'ه': 'h', 'و': 'w', 'ي': 'y', 'ى': 'a', 'ة': 'h', 'ء': '', 'ئ': 'y', 'ؤ': 'w',
+            'لا': 'la', 'لأ': 'la', 'لإ': 'la', 'لآ': 'la',
+        };
 
-function transliterate(str) {
-  return str.split('').map(c => MAP[c] !== undefined ? MAP[c] : c).join('');
-}
+        function transliterate(str) {
+            return str.split('').map(c => MAP[c] !== undefined ? MAP[c] : c).join('');
+        }
 
-function slugify(text, sep='-', lower=true, stripNums=false, trim=true) {
-  let s = transliterate(text);
-  if (lower) s = s.toLowerCase();
-  s = s.replace(/[^\w\s-]/g, '');    // remove non-word chars
-  if (stripNums) s = s.replace(/\d/g,'');
-  s = s.replace(/[\s_]+/g, sep);      // spaces → sep
-  s = s.replace(/-+/g, sep);          // multiple hyphens → one
-  if (trim) s = s.replace(new RegExp(`^[${sep}]+|[${sep}]+$`,'g'), '');
-  return s;
-}
+        function slugify(text, sep = '-', lower = true, stripNums = false, trim = true) {
+            let s = transliterate(text);
+            if (lower) s = s.toLowerCase();
+            s = s.replace(/[^\w\s-]/g, '');    // remove non-word chars
+            if (stripNums) s = s.replace(/\d/g, '');
+            s = s.replace(/[\s_]+/g, sep);      // spaces → sep
+            s = s.replace(/-+/g, sep);          // multiple hyphens → one
+            if (trim) s = s.replace(new RegExp(`^[${sep}]+|[${sep}]+$`, 'g'), '');
+            return s;
+        }
 
-function run() {
-  const text = document.getElementById('slugInput').value;
-  const sep  = document.getElementById('sepSel').value;
-  const low  = document.getElementById('optLower').checked;
-  const strip= document.getElementById('optStrip').checked;
-  const trim = document.getElementById('optTrim').checked;
+        function run() {
+            const text = document.getElementById('slugInput').value;
+            const sep = document.getElementById('sepSel').value;
+            const low = document.getElementById('optLower').checked;
+            const strip = document.getElementById('optStrip').checked;
+            const trim = document.getElementById('optTrim').checked;
 
-  const main = slugify(text, sep, low, strip, trim);
-  document.getElementById('resultMain').textContent = main || '—';
+            const main = slugify(text, sep, low, strip, trim);
+            document.getElementById('resultMain').textContent = main || '—';
 
-  if (!text.trim()) { document.getElementById('varPanel').style.display='none'; return; }
+            if (!text.trim()) { document.getElementById('varPanel').style.display = 'none'; return; }
 
-  const variants = [
-    ['kebab-case',  slugify(text,'-',true,false,true)],
-    ['snake_case',  slugify(text,'_',true,false,true)],
-    ['dot.case',    slugify(text,'.',true,false,true)],
-    ['SCREAMING',   slugify(text,'-',false,false,true).toUpperCase()],
-    ['SNAKE',       slugify(text,'_',false,false,true).toUpperCase()],
-    ['No numbers',  slugify(text,sep,low,true,trim)],
-    ['Raw lower',   text.toLowerCase().trim()],
-  ];
+            const variants = [
+                ['kebab-case', slugify(text, '-', true, false, true)],
+                ['snake_case', slugify(text, '_', true, false, true)],
+                ['dot.case', slugify(text, '.', true, false, true)],
+                ['SCREAMING', slugify(text, '-', false, false, true).toUpperCase()],
+                ['SNAKE', slugify(text, '_', false, false, true).toUpperCase()],
+                ['No numbers', slugify(text, sep, low, true, trim)],
+                ['Raw lower', text.toLowerCase().trim()],
+            ];
 
-  document.getElementById('varGrid').innerHTML = variants.map(([label,val]) =>
-    `<div class="var-row">
-      <span class="var-label">${label}</span>
-      <span class="var-val">${val||'—'}</span>
-      <button class="var-copy" onclick="cp('${val.replace(/'/g,"\\'")}')">⎘</button>
-    </div>`
-  ).join('');
-  document.getElementById('varPanel').style.display='';
-}
+            document.getElementById('varGrid').innerHTML = variants.map(([label, val]) =>
+                `<div class="var-row">
+          <span class="var-label">${label}</span>
+          <span class="var-val">${val || '—'}</span>
+          <button class="var-copy" onclick="cp('${val.replace(/'/g, "\\'")}')">⎘</button>
+        </div>`
+            ).join('');
+            document.getElementById('varPanel').style.display = '';
+        }
 
-function copyMain(){const t=document.getElementById('resultMain').textContent;if(t&&t!=='—')cp(t);}
-function cp(t){navigator.clipboard.writeText(t).then(()=>showToast('Copied!'));}
-function loadSample(){document.getElementById('slugInput').value="Hello World! This is a Test — with Ñ, Ü & 'Special' Characters...";run();}
-function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
-</script>
+        function copyMain() { const t = document.getElementById('resultMain').textContent; if (t && t !== '—') cp(t); }
+        function cp(t) { navigator.clipboard.writeText(t).then(() => showToast('Copied!')); }
+        function loadSample() { document.getElementById('slugInput').value = "Hello World! This is a Test — with Ñ, Ü & 'Special' Characters..."; run(); }
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+    </script>
 </body>
 </html>

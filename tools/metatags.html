@@ -1,217 +1,352 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meta Tag Generator — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<style>
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
-.field{display:flex;flex-direction:column;gap:5px}
-.field.full{grid-column:1/-1}
-.field label{font-family:var(--mono);font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim)}
-.field input,.field select,.field textarea{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:9px 12px;font-family:var(--mono);font-size:0.82rem;color:var(--text);outline:none;transition:border-color var(--transition);width:100%}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--purple)}
-.char-hint{font-family:var(--mono);font-size:0.68rem;color:var(--text-dim);text-align:right}
-.char-hint.warn{color:var(--yellow)}
-.char-hint.over{color:var(--red)}
-.preview-card{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
-.preview-header{padding:8px 14px;font-family:var(--mono);font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);background:var(--surface2);border-bottom:1px solid var(--border)}
-.google-preview{padding:16px;background:var(--panel)}
-.gp-url{font-size:0.75rem;color:var(--green);margin-bottom:2px;font-family:var(--mono)}
-.gp-title{font-size:1.1rem;color:#4285f4;margin-bottom:4px;font-weight:500;line-height:1.3}
-.gp-desc{font-size:0.82rem;color:var(--text-dim);line-height:1.5}
-.og-preview{padding:0;background:var(--surface2)}
-.og-img{width:100%;height:110px;background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-family:var(--mono);font-size:0.75rem;border-bottom:1px solid var(--border)}
-.og-body{padding:12px}
-.og-site{font-family:var(--mono);font-size:0.68rem;color:var(--text-dim);text-transform:uppercase;margin-bottom:3px}
-.og-title{font-size:0.9rem;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3}
-.og-desc{font-size:0.78rem;color:var(--text-dim);line-height:1.4}
-#output{color:var(--green);font-size:0.78rem;white-space:pre;overflow-x:auto}
-</style>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Tag Generator — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        @media(max-width:600px) {
+            .form-grid {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px
+        }
+
+            .field.full {
+                grid-column: 1/-1
+            }
+
+            .field label {
+                font-family: var(--mono);
+                font-size: 0.68rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: var(--text-dim)
+            }
+
+            .field input, .field select, .field textarea {
+                background: var(--surface);
+                border: 1.5px solid var(--border);
+                border-radius: var(--r-sm);
+                padding: 9px 12px;
+                font-family: var(--mono);
+                font-size: 0.82rem;
+                color: var(--text);
+                outline: none;
+                transition: border-color var(--transition);
+                width: 100%
+            }
+
+                .field input:focus, .field select:focus, .field textarea:focus {
+                    border-color: var(--purple)
+                }
+
+        .char-hint {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            color: var(--text-dim);
+            text-align: right
+        }
+
+            .char-hint.warn {
+                color: var(--yellow)
+            }
+
+            .char-hint.over {
+                color: var(--red)
+            }
+
+        .preview-card {
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            overflow: hidden;
+            margin-bottom: 12px
+        }
+
+        .preview-header {
+            padding: 8px 14px;
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            background: var(--surface2);
+            border-bottom: 1px solid var(--border)
+        }
+
+        .google-preview {
+            padding: 16px;
+            background: var(--panel)
+        }
+
+        .gp-url {
+            font-size: 0.75rem;
+            color: var(--green);
+            margin-bottom: 2px;
+            font-family: var(--mono)
+        }
+
+        .gp-title {
+            font-size: 1.1rem;
+            color: #4285f4;
+            margin-bottom: 4px;
+            font-weight: 500;
+            line-height: 1.3
+        }
+
+        .gp-desc {
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            line-height: 1.5
+        }
+
+        .og-preview {
+            padding: 0;
+            background: var(--surface2)
+        }
+
+        .og-img {
+            width: 100%;
+            height: 110px;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dim);
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .og-body {
+            padding: 12px
+        }
+
+        .og-site {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 3px
+        }
+
+        .og-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+            line-height: 1.3
+        }
+
+        .og-desc {
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            line-height: 1.4
+        }
+
+        #output {
+            color: var(--green);
+            font-size: 0.78rem;
+            white-space: pre;
+            overflow-x: auto
+        }
+    </style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <main class="content-wrap">
-    <div class="content">
-      <div class="tool-header">
-        <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">&lt;m&gt;</div>
-        <div><div class="tool-title">Meta Tag Generator</div><div class="tool-desc">Generate SEO, Open Graph & Twitter Card meta tags with live preview</div></div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">&lt;m&gt;</div>
+                    <div><div class="tool-title">Meta Tag Generator</div><div class="tool-desc">Generate SEO, Open Graph & Twitter Card meta tags with live preview</div></div>
+                </div>
 
-      <div class="panel">
-        <div class="panel-bar"><span class="panel-label">Page Info</span></div>
-        <div class="form-grid">
-          <div class="field full">
-            <label>Page Title <span class="char-hint" id="titleHint">0 / 60</span></label>
-            <input id="fTitle" type="text" placeholder="My Awesome Page" oninput="update();countChars('fTitle','titleHint',60)" maxlength="120">
-          </div>
-          <div class="field full">
-            <label>Description <span class="char-hint" id="descHint">0 / 160</span></label>
-            <textarea id="fDesc" placeholder="A brief description of the page…" oninput="update();countChars('fDesc','descHint',160)" rows="3" maxlength="300"></textarea>
-          </div>
-          <div class="field full">
-            <label>Canonical URL</label>
-            <input id="fUrl" type="text" placeholder="https://example.com/my-page" oninput="update()">
-          </div>
-          <div class="field">
-            <label>OG Image URL</label>
-            <input id="fImage" type="text" placeholder="https://example.com/og.png" oninput="update()">
-          </div>
-          <div class="field">
-            <label>Site Name</label>
-            <input id="fSite" type="text" placeholder="My Website" oninput="update()">
-          </div>
-          <div class="field">
-            <label>Type</label>
-            <select id="fType" onchange="update()">
-              <option value="website">website</option>
-              <option value="article">article</option>
-              <option value="product">product</option>
-              <option value="profile">profile</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Twitter Card</label>
-            <select id="fTwitterCard" onchange="update()">
-              <option value="summary_large_image">Summary Large Image</option>
-              <option value="summary">Summary</option>
-              <option value="app">App</option>
-              <option value="player">Player</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Twitter / X Handle</label>
-            <input id="fTwitter" type="text" placeholder="@username" oninput="update()">
-          </div>
-          <div class="field">
-            <label>Author</label>
-            <input id="fAuthor" type="text" placeholder="Author name" oninput="update()">
-          </div>
-          <div class="field">
-            <label>Keywords (comma-separated)</label>
-            <input id="fKeywords" type="text" placeholder="devtools, utilities, developer" oninput="update()">
-          </div>
-          <div class="field">
-            <label>Robots</label>
-            <select id="fRobots" onchange="update()">
-              <option value="index, follow">index, follow</option>
-              <option value="noindex, follow">noindex, follow</option>
-              <option value="index, nofollow">index, nofollow</option>
-              <option value="noindex, nofollow">noindex, nofollow</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Language</label>
-            <input id="fLang" type="text" placeholder="en" value="en" oninput="update()">
-          </div>
-        </div>
-      </div>
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Page Info</span></div>
+                    <div class="form-grid">
+                        <div class="field full">
+                            <label>Page Title <span class="char-hint" id="titleHint">0 / 60</span></label>
+                            <input id="fTitle" type="text" placeholder="My Awesome Page" oninput="update();countChars('fTitle','titleHint',60)" maxlength="120">
+                        </div>
+                        <div class="field full">
+                            <label>Description <span class="char-hint" id="descHint">0 / 160</span></label>
+                            <textarea id="fDesc" placeholder="A brief description of the page…" oninput="update();countChars('fDesc','descHint',160)" rows="3" maxlength="300"></textarea>
+                        </div>
+                        <div class="field full">
+                            <label>Canonical URL</label>
+                            <input id="fUrl" type="text" placeholder="https://example.com/my-page" oninput="update()">
+                        </div>
+                        <div class="field">
+                            <label>OG Image URL</label>
+                            <input id="fImage" type="text" placeholder="https://example.com/og.png" oninput="update()">
+                        </div>
+                        <div class="field">
+                            <label>Site Name</label>
+                            <input id="fSite" type="text" placeholder="My Website" oninput="update()">
+                        </div>
+                        <div class="field">
+                            <label>Type</label>
+                            <select id="fType" onchange="update()">
+                                <option value="website">website</option>
+                                <option value="article">article</option>
+                                <option value="product">product</option>
+                                <option value="profile">profile</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Twitter Card</label>
+                            <select id="fTwitterCard" onchange="update()">
+                                <option value="summary_large_image">Summary Large Image</option>
+                                <option value="summary">Summary</option>
+                                <option value="app">App</option>
+                                <option value="player">Player</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Twitter / X Handle</label>
+                            <input id="fTwitter" type="text" placeholder="@username" oninput="update()">
+                        </div>
+                        <div class="field">
+                            <label>Author</label>
+                            <input id="fAuthor" type="text" placeholder="Author name" oninput="update()">
+                        </div>
+                        <div class="field">
+                            <label>Keywords (comma-separated)</label>
+                            <input id="fKeywords" type="text" placeholder="devtools, utilities, developer" oninput="update()">
+                        </div>
+                        <div class="field">
+                            <label>Robots</label>
+                            <select id="fRobots" onchange="update()">
+                                <option value="index, follow">index, follow</option>
+                                <option value="noindex, follow">noindex, follow</option>
+                                <option value="index, nofollow">index, nofollow</option>
+                                <option value="noindex, nofollow">noindex, nofollow</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Language</label>
+                            <input id="fLang" type="text" placeholder="en" value="en" oninput="update()">
+                        </div>
+                    </div>
+                </div>
 
-      <!-- Previews -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px">
-        <div class="preview-card">
-          <div class="preview-header">Google Preview</div>
-          <div class="google-preview">
-            <div class="gp-url" id="gpUrl">https://example.com</div>
-            <div class="gp-title" id="gpTitle">Page Title</div>
-            <div class="gp-desc" id="gpDesc">Page description will appear here…</div>
-          </div>
-        </div>
-        <div class="preview-card">
-          <div class="preview-header">Open Graph / Social Preview</div>
-          <div class="og-preview">
-            <div class="og-img" id="ogImgWrap">🖼 No image set</div>
-            <div class="og-body">
-              <div class="og-site" id="ogSite">EXAMPLE.COM</div>
-              <div class="og-title" id="ogTitle">Page Title</div>
-              <div class="og-desc" id="ogDesc">Page description…</div>
+                <!-- Previews -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px">
+                    <div class="preview-card">
+                        <div class="preview-header">Google Preview</div>
+                        <div class="google-preview">
+                            <div class="gp-url" id="gpUrl">https://example.com</div>
+                            <div class="gp-title" id="gpTitle">Page Title</div>
+                            <div class="gp-desc" id="gpDesc">Page description will appear here…</div>
+                        </div>
+                    </div>
+                    <div class="preview-card">
+                        <div class="preview-header">Open Graph / Social Preview</div>
+                        <div class="og-preview">
+                            <div class="og-img" id="ogImgWrap">🖼 No image set</div>
+                            <div class="og-body">
+                                <div class="og-site" id="ogSite">EXAMPLE.COM</div>
+                                <div class="og-title" id="ogTitle">Page Title</div>
+                                <div class="og-desc" id="ogDesc">Page description…</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output -->
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Generated HTML</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-purple" onclick="copy()">⎘ Copy All</button>
+                        </div>
+                    </div>
+                    <div id="output" class="output-area"></div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Output -->
-      <div class="panel">
-        <div class="panel-bar">
-          <span class="panel-label">Generated HTML</span>
-          <div class="panel-actions">
-            <button class="btn btn-purple" onclick="copy()">⎘ Copy All</button>
-          </div>
-        </div>
-        <div id="output" class="output-area"></div>
-      </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
     </div>
-    <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
-  </main>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js" defer></script>
-<script src="../assets/sidebar.js" defer></script>
-<script>
-function v(id){return document.getElementById(id).value.trim();}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function countChars(inputId, hintId, max) {
-  const len = document.getElementById(inputId).value.length;
-  const hint = document.getElementById(hintId);
-  hint.textContent = `${len} / ${max}`;
-  hint.className = 'char-hint' + (len > max ? ' over' : len > max*0.85 ? ' warn' : '');
-}
-function update() {
-  const title=v('fTitle'),desc=v('fDesc'),url=v('fUrl'),img=v('fImage'),
-        site=v('fSite'),type=v('fType'),tc=v('fTwitterCard'),tw=v('fTwitter'),
-        author=v('fAuthor'),kw=v('fKeywords'),robots=v('fRobots'),lang=v('fLang');
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        function v(id) { return document.getElementById(id).value.trim(); }
+        function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+        function countChars(inputId, hintId, max) {
+            const len = document.getElementById(inputId).value.length;
+            const hint = document.getElementById(hintId);
+            hint.textContent = `${len} / ${max}`;
+            hint.className = 'char-hint' + (len > max ? ' over' : len > max * 0.85 ? ' warn' : '');
+        }
+        function update() {
+            const title = v('fTitle'), desc = v('fDesc'), url = v('fUrl'), img = v('fImage'),
+                site = v('fSite'), type = v('fType'), tc = v('fTwitterCard'), tw = v('fTwitter'),
+                author = v('fAuthor'), kw = v('fKeywords'), robots = v('fRobots'), lang = v('fLang');
 
-  // Update previews
-  document.getElementById('gpTitle').textContent = title || 'Page Title';
-  document.getElementById('gpDesc').textContent  = desc  || 'Page description will appear here…';
-  document.getElementById('gpUrl').textContent   = url   || 'https://example.com';
-  document.getElementById('ogTitle').textContent = title || 'Page Title';
-  document.getElementById('ogDesc').textContent  = desc  || 'Page description…';
-  document.getElementById('ogSite').textContent  = (site || (url ? new URL(url.startsWith('http')?url:'https://'+url).hostname : 'EXAMPLE.COM')).toUpperCase();
-  const ogImg = document.getElementById('ogImgWrap');
-  if (img) { ogImg.innerHTML=`<img src="${esc(img)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.textContent='🖼 Image failed to load'">`; }
-  else { ogImg.innerHTML='🖼 No image set'; }
+            // Update previews
+            document.getElementById('gpTitle').textContent = title || 'Page Title';
+            document.getElementById('gpDesc').textContent = desc || 'Page description will appear here…';
+            document.getElementById('gpUrl').textContent = url || 'https://example.com';
+            document.getElementById('ogTitle').textContent = title || 'Page Title';
+            document.getElementById('ogDesc').textContent = desc || 'Page description…';
+            document.getElementById('ogSite').textContent = (site || (url ? new URL(url.startsWith('http') ? url : 'https://' + url).hostname : 'EXAMPLE.COM')).toUpperCase();
+            const ogImg = document.getElementById('ogImgWrap');
+            if (img) { ogImg.innerHTML = `<img src="${esc(img)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.textContent='🖼 Image failed to load'">`; }
+            else { ogImg.innerHTML = '🖼 No image set'; }
 
-  // Build output
-  const lines = ['<!-- Primary Meta Tags -->'];
-  if (title)   lines.push(`<title>${esc(title)}</title>`);
-  if (title)   lines.push(`<meta name="title"       content="${esc(title)}">`);
-  if (desc)    lines.push(`<meta name="description" content="${esc(desc)}">`);
-  if (kw)      lines.push(`<meta name="keywords"    content="${esc(kw)}">`);
-  if (author)  lines.push(`<meta name="author"      content="${esc(author)}">`);
-  if (robots)  lines.push(`<meta name="robots"      content="${esc(robots)}">`);
-  if (lang)    lines.push(`<meta http-equiv="content-language" content="${esc(lang)}">`);
-  if (url)     lines.push(`<link rel="canonical"    href="${esc(url)}">`);
+            // Build output
+            const lines = ['<!-- Primary Meta Tags -->'];
+            if (title) lines.push(`<title>${esc(title)}</title>`);
+            if (title) lines.push(`<meta name="title"       content="${esc(title)}">`);
+            if (desc) lines.push(`<meta name="description" content="${esc(desc)}">`);
+            if (kw) lines.push(`<meta name="keywords"    content="${esc(kw)}">`);
+            if (author) lines.push(`<meta name="author"      content="${esc(author)}">`);
+            if (robots) lines.push(`<meta name="robots"      content="${esc(robots)}">`);
+            if (lang) lines.push(`<meta http-equiv="content-language" content="${esc(lang)}">`);
+            if (url) lines.push(`<link rel="canonical"    href="${esc(url)}">`);
 
-  lines.push('', '<!-- Open Graph / Facebook -->');
-  lines.push(`<meta property="og:type"        content="${esc(type)}">`);
-  if (url)   lines.push(`<meta property="og:url"         content="${esc(url)}">`);
-  if (title) lines.push(`<meta property="og:title"       content="${esc(title)}">`);
-  if (desc)  lines.push(`<meta property="og:description" content="${esc(desc)}">`);
-  if (img)   lines.push(`<meta property="og:image"       content="${esc(img)}">`);
-  if (site)  lines.push(`<meta property="og:site_name"   content="${esc(site)}">`);
+            lines.push('', '<!-- Open Graph / Facebook -->');
+            lines.push(`<meta property="og:type"        content="${esc(type)}">`);
+            if (url) lines.push(`<meta property="og:url"         content="${esc(url)}">`);
+            if (title) lines.push(`<meta property="og:title"       content="${esc(title)}">`);
+            if (desc) lines.push(`<meta property="og:description" content="${esc(desc)}">`);
+            if (img) lines.push(`<meta property="og:image"       content="${esc(img)}">`);
+            if (site) lines.push(`<meta property="og:site_name"   content="${esc(site)}">`);
 
-  lines.push('', '<!-- Twitter / X -->');
-  lines.push(`<meta name="twitter:card"        content="${esc(tc)}">`);
-  if (url)   lines.push(`<meta name="twitter:url"         content="${esc(url)}">`);
-  if (title) lines.push(`<meta name="twitter:title"       content="${esc(title)}">`);
-  if (desc)  lines.push(`<meta name="twitter:description" content="${esc(desc)}">`);
-  if (img)   lines.push(`<meta name="twitter:image"       content="${esc(img)}">`);
-  if (tw)    lines.push(`<meta name="twitter:site"        content="${esc(tw.startsWith('@')?tw:'@'+tw)}">`);
-  if (tw)    lines.push(`<meta name="twitter:creator"     content="${esc(tw.startsWith('@')?tw:'@'+tw)}">`);
+            lines.push('', '<!-- Twitter / X -->');
+            lines.push(`<meta name="twitter:card"        content="${esc(tc)}">`);
+            if (url) lines.push(`<meta name="twitter:url"         content="${esc(url)}">`);
+            if (title) lines.push(`<meta name="twitter:title"       content="${esc(title)}">`);
+            if (desc) lines.push(`<meta name="twitter:description" content="${esc(desc)}">`);
+            if (img) lines.push(`<meta name="twitter:image"       content="${esc(img)}">`);
+            if (tw) lines.push(`<meta name="twitter:site"        content="${esc(tw.startsWith('@') ? tw : '@' + tw)}">`);
+            if (tw) lines.push(`<meta name="twitter:creator"     content="${esc(tw.startsWith('@') ? tw : '@' + tw)}">`);
 
-  document.getElementById('output').textContent = lines.join('\n');
-}
-function copy(){const t=document.getElementById('output').textContent;if(t)navigator.clipboard.writeText(t).then(()=>showToast('Copied!'));}
-function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
-update();
-</script>
+            document.getElementById('output').textContent = lines.join('\n');
+        }
+        function copy() { const t = document.getElementById('output').textContent; if (t) navigator.clipboard.writeText(t).then(() => showToast('Copied!')); }
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        update();
+    </script>
 </body>
 </html>

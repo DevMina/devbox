@@ -1,523 +1,616 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Convert text to Unicode escape sequences and back">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unicode Converter — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="Unicode Converter — DevBox">
-<meta property="og:description" content="Convert text to Unicode code points, escape sequences, HTML entities, and more">
-<meta property="og:type" content="website">
-<style>
-  /* Mode tabs */
-  .mode-tabs { display:flex; gap:4px; margin-bottom:14px; flex-wrap:wrap; }
-  .mode-tab {
-    padding:7px 14px; border-radius:var(--r-sm); border:1px solid var(--border);
-    background:var(--surface); color:var(--text-dim); font-family:var(--mono);
-    font-size:0.75rem; cursor:pointer; transition:all var(--transition);
-  }
-  .mode-tab:hover { color:var(--text); border-color:var(--border2); }
-  .mode-tab.active { background:var(--purple-dim); border-color:var(--purple); color:var(--purple); }
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Convert text to Unicode escape sequences and back">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unicode Converter — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="Unicode Converter — DevBox">
+    <meta property="og:description" content="Convert text to Unicode code points, escape sequences, HTML entities, and more">
+    <meta property="og:type" content="website">
+    <style>
+        /* Mode tabs */
+        .mode-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
 
-  /* Character inspector table */
-  .char-table {
-    width:100%; border-collapse:collapse;
-    font-family:var(--mono); font-size:0.78rem;
-  }
-  .char-table th {
-    text-align:left; padding:8px 12px;
-    font-size:0.68rem; font-weight:600; text-transform:uppercase;
-    letter-spacing:0.08em; color:var(--text-dim);
-    border-bottom:1px solid var(--border);
-    background:var(--surface2); user-select:none;
-  }
-  .char-table td {
-    padding:7px 12px; border-bottom:1px solid var(--border);
-    vertical-align:middle; line-height:1.4;
-  }
-  .char-table tr:last-child td { border-bottom:none; }
-  .char-table tr:hover td { background:var(--surface2); }
-  .char-glyph {
-    font-size:1.2rem; text-align:center;
-    width:44px; min-width:44px;
-  }
-  .char-cp   { color:var(--purple); }
-  .char-name { color:var(--text-dim); font-size:0.72rem; }
-  .char-hex  { color:var(--blue); }
-  .char-html { color:var(--green); }
-  .char-esc  { color:var(--orange); }
-  .char-copy-btn {
-    padding:3px 8px; border-radius:4px; border:1px solid var(--border);
-    background:var(--surface2); color:var(--text-dim); font-family:var(--mono);
-    font-size:0.68rem; cursor:pointer; transition:all var(--transition);
-    white-space:nowrap;
-  }
-  .char-copy-btn:hover { color:var(--text); border-color:var(--border2); }
+        .mode-tab {
+            padding: 7px 14px;
+            border-radius: var(--r-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-dim);
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
 
-  /* Stats bar */
-  .stats-bar {
-    display:flex; gap:16px; flex-wrap:wrap; padding:8px 0;
-    font-family:var(--mono); font-size:0.75rem; color:var(--text-dim);
-    border-bottom:1px solid var(--border); margin-bottom:10px;
-  }
-  .stats-bar strong { color:var(--text); }
+            .mode-tab:hover {
+                color: var(--text);
+                border-color: var(--border2);
+            }
 
-  /* Output colour */
-  #unicodeOutput { color:var(--purple); word-break:break-all; white-space:pre-wrap; min-height:80px; }
+            .mode-tab.active {
+                background: var(--purple-dim);
+                border-color: var(--purple);
+                color: var(--purple);
+            }
 
-  /* Inspector scroll */
-  .char-table-wrap { max-height:380px; overflow-y:auto; }
+        /* Character inspector table */
+        .char-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--mono);
+            font-size: 0.78rem;
+        }
 
-  /* Format selector */
-  .fmt-select {
-    font-family:var(--mono); font-size:0.72rem;
-    padding:5px 10px; cursor:pointer;
-    background:var(--surface); color:var(--text-dim);
-    border:1px solid var(--border); border-radius:var(--r-sm);
-  }
-  .fmt-select:focus { outline:none; border-color:var(--purple); }
-</style>
+            .char-table th {
+                text-align: left;
+                padding: 8px 12px;
+                font-size: 0.68rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: var(--text-dim);
+                border-bottom: 1px solid var(--border);
+                background: var(--surface2);
+                user-select: none;
+            }
+
+            .char-table td {
+                padding: 7px 12px;
+                border-bottom: 1px solid var(--border);
+                vertical-align: middle;
+                line-height: 1.4;
+            }
+
+            .char-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .char-table tr:hover td {
+                background: var(--surface2);
+            }
+
+        .char-glyph {
+            font-size: 1.2rem;
+            text-align: center;
+            width: 44px;
+            min-width: 44px;
+        }
+
+        .char-cp {
+            color: var(--purple);
+        }
+
+        .char-name {
+            color: var(--text-dim);
+            font-size: 0.72rem;
+        }
+
+        .char-hex {
+            color: var(--blue);
+        }
+
+        .char-html {
+            color: var(--green);
+        }
+
+        .char-esc {
+            color: var(--orange);
+        }
+
+        .char-copy-btn {
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--text-dim);
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+
+            .char-copy-btn:hover {
+                color: var(--text);
+                border-color: var(--border2);
+            }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 8px 0;
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 10px;
+        }
+
+            .stats-bar strong {
+                color: var(--text);
+            }
+
+        /* Output colour */
+        #unicodeOutput {
+            color: var(--purple);
+            word-break: break-all;
+            white-space: pre-wrap;
+            min-height: 80px;
+        }
+
+        /* Inspector scroll */
+        .char-table-wrap {
+            max-height: 380px;
+            overflow-y: auto;
+        }
+
+        /* Format selector */
+        .fmt-select {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            padding: 5px 10px;
+            cursor: pointer;
+            background: var(--surface);
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+        }
+
+            .fmt-select:focus {
+                outline: none;
+                border-color: var(--purple);
+            }
+    </style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <main class="content-wrap">
-    <div class="content" style="min-width:0">
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content" style="min-width:0">
 
-      <div class="tool-header">
-        <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">U+</div>
-        <div>
-          <div class="tool-title">Unicode Converter</div>
-          <div class="tool-desc">Convert text ↔ Unicode code points, escape sequences, HTML entities &amp; binary</div>
-        </div>
-      </div>
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">U+</div>
+                    <div>
+                        <div class="tool-title">Unicode Converter</div>
+                        <div class="tool-desc">Convert text ↔ Unicode code points, escape sequences, HTML entities &amp; binary</div>
+                    </div>
+                </div>
 
-      <!-- Mode tabs -->
-      <div class="mode-tabs">
-        <button class="mode-tab active" id="tab-encode" onclick="setMode('encode')">Text → Unicode</button>
-        <button class="mode-tab"        id="tab-decode" onclick="setMode('decode')">Unicode → Text</button>
-        <button class="mode-tab"        id="tab-inspect" onclick="setMode('inspect')">Character Inspector</button>
-      </div>
+                <!-- Mode tabs -->
+                <div class="mode-tabs">
+                    <button class="mode-tab active" id="tab-encode" onclick="setMode('encode')">Text → Unicode</button>
+                    <button class="mode-tab" id="tab-decode" onclick="setMode('decode')">Unicode → Text</button>
+                    <button class="mode-tab" id="tab-inspect" onclick="setMode('inspect')">Character Inspector</button>
+                </div>
 
-      <!-- Input panel -->
-      <div class="panel">
-        <div class="panel-bar">
-          <span class="panel-label" id="inputLabel">Input Text</span>
-          <div class="panel-actions">
-            <button class="btn btn-ghost" id="sampleBtn" onclick="loadSample()">Sample</button>
-            <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
-          </div>
-        </div>
-        <textarea id="unicodeInput" placeholder="Type or paste text here…" oninput="runConvert()" style="min-height:120px"></textarea>
-      </div>
+                <!-- Input panel -->
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label" id="inputLabel">Input Text</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" id="sampleBtn" onclick="loadSample()">Sample</button>
+                            <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="unicodeInput" placeholder="Type or paste text here…" oninput="runConvert()" style="min-height:120px"></textarea>
+                </div>
 
-      <!-- Encode options -->
-      <div id="encodeOptions" style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
-        <span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)">Format:</span>
-        <select class="fmt-select" id="encFmt" onchange="runConvert()">
-          <option value="u_plus">U+XXXX code points</option>
-          <option value="js">JavaScript \uXXXX</option>
-          <option value="js_full">\u{XXXXX} (ES6 full)</option>
-          <option value="css">CSS \XXXXX</option>
-          <option value="html_dec">HTML &#dddd;</option>
-          <option value="html_hex">HTML &#xXXXX;</option>
-          <option value="python">Python \uXXXX / \UXXXXXXXX</option>
-          <option value="hex">Hex bytes (UTF-8)</option>
-          <option value="binary">Binary (UTF-8)</option>
-          <option value="decimal">Decimal code points</option>
-        </select>
-        <label style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);display:flex;align-items:center;gap:5px">
-          <input type="checkbox" id="asciiOnly" onchange="runConvert()" style="accent-color:var(--purple)">
-          Non-ASCII only
-        </label>
-      </div>
+                <!-- Encode options -->
+                <div id="encodeOptions" style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+                    <span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)">Format:</span>
+                    <select class="fmt-select" id="encFmt" onchange="runConvert()">
+                        <option value="u_plus">U+XXXX code points</option>
+                        <option value="js">JavaScript \uXXXX</option>
+                        <option value="js_full">\u{XXXXX} (ES6 full)</option>
+                        <option value="css">CSS \XXXXX</option>
+                        <option value="html_dec">HTML &#dddd;</option>
+                        <option value="html_hex">HTML &#xXXXX;</option>
+                        <option value="python">Python \uXXXX / \UXXXXXXXX</option>
+                        <option value="hex">Hex bytes (UTF-8)</option>
+                        <option value="binary">Binary (UTF-8)</option>
+                        <option value="decimal">Decimal code points</option>
+                    </select>
+                    <label style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);display:flex;align-items:center;gap:5px">
+                        <input type="checkbox" id="asciiOnly" onchange="runConvert()" style="accent-color:var(--purple)">
+                        Non-ASCII only
+                    </label>
+                </div>
 
-      <!-- Decode options -->
-      <div id="decodeOptions" style="display:none;align-items:center;gap:10px;margin-bottom:12px">
-        <span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)">Auto-detects:</span>
-        <span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);opacity:0.7">U+XXXX · \uXXXX · &#dddd; · &#xXXXX; · 0xXX hex bytes</span>
-      </div>
+                <!-- Decode options -->
+                <div id="decodeOptions" style="display:none;align-items:center;gap:10px;margin-bottom:12px">
+                    <span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)">Auto-detects:</span>
+                    <span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);opacity:0.7">U+XXXX · \uXXXX · &#dddd; · &#xXXXX; · 0xXX hex bytes</span>
+                </div>
 
-      <!-- Output / inspector -->
-      <div id="outputWrap">
-        <!-- Encode / Decode output -->
-        <div class="panel" id="outputPanel">
-          <div class="panel-bar">
-            <span class="panel-label" id="outputLabel">Unicode Output</span>
-            <div class="panel-actions">
-              <button class="btn btn-ghost" onclick="copyOutput()">⎘ Copy</button>
-              <button class="btn btn-ghost" onclick="swapIO()">⇅ Swap</button>
+                <!-- Output / inspector -->
+                <div id="outputWrap">
+                    <!-- Encode / Decode output -->
+                    <div class="panel" id="outputPanel">
+                        <div class="panel-bar">
+                            <span class="panel-label" id="outputLabel">Unicode Output</span>
+                            <div class="panel-actions">
+                                <button class="btn btn-ghost" onclick="copyOutput()">⎘ Copy</button>
+                                <button class="btn btn-ghost" onclick="swapIO()">⇅ Swap</button>
+                            </div>
+                        </div>
+                        <div class="stats-bar" id="statsBar" style="display:none"></div>
+                        <div id="unicodeOutput" class="output-area"></div>
+                    </div>
+                </div>
+
+                <!-- Inspector panel (hidden until inspect mode) -->
+                <div id="inspectorWrap" style="display:none">
+                    <div class="panel" style="padding:0;overflow:hidden">
+                        <div class="panel-bar">
+                            <span class="panel-label">Character Breakdown</span>
+                            <div class="panel-actions" id="inspectorActions"></div>
+                        </div>
+                        <div class="stats-bar" id="inspectStats" style="padding:8px 14px;margin:0;border-bottom:1px solid var(--border)"></div>
+                        <div class="char-table-wrap">
+                            <table class="char-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:50px">Char</th>
+                                        <th>Code Point</th>
+                                        <th>Name</th>
+                                        <th>UTF-8 Hex</th>
+                                        <th>HTML Entity</th>
+                                        <th>JS Escape</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="charTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-          </div>
-          <div class="stats-bar" id="statsBar" style="display:none"></div>
-          <div id="unicodeOutput" class="output-area"></div>
-        </div>
-      </div>
-
-      <!-- Inspector panel (hidden until inspect mode) -->
-      <div id="inspectorWrap" style="display:none">
-        <div class="panel" style="padding:0;overflow:hidden">
-          <div class="panel-bar">
-            <span class="panel-label">Character Breakdown</span>
-            <div class="panel-actions" id="inspectorActions"></div>
-          </div>
-          <div class="stats-bar" id="inspectStats" style="padding:8px 14px;margin:0;border-bottom:1px solid var(--border)"></div>
-          <div class="char-table-wrap">
-            <table class="char-table">
-              <thead>
-                <tr>
-                  <th style="width:50px">Char</th>
-                  <th>Code Point</th>
-                  <th>Name</th>
-                  <th>UTF-8 Hex</th>
-                  <th>HTML Entity</th>
-                  <th>JS Escape</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="charTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
     </div>
-    <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
-  </main>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js" defer></script>
-<script src="../assets/sidebar.js" defer></script>
-<script>
-'use strict';
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        'use strict';
 
-let currentMode = 'encode';
+        let currentMode = 'encode';
 
-/* ══ Mode switching ══ */
-function setMode(mode) {
-  currentMode = mode;
-  ['encode','decode','inspect'].forEach(m => {
-    document.getElementById('tab-' + m).classList.toggle('active', m === mode);
-  });
-  document.getElementById('encodeOptions').style.display  = mode === 'encode'  ? 'flex' : 'none';
-  document.getElementById('decodeOptions').style.display  = mode === 'decode'  ? 'flex' : 'none';
-  document.getElementById('outputWrap').style.display     = mode !== 'inspect' ? ''     : 'none';
-  document.getElementById('inspectorWrap').style.display  = mode === 'inspect' ? ''     : 'none';
-  document.getElementById('inputLabel').textContent       = mode === 'decode'  ? 'Unicode / Escape Input' : 'Input Text';
-  document.getElementById('outputLabel').textContent      = mode === 'decode'  ? 'Decoded Text' : 'Unicode Output';
-  document.getElementById('unicodeInput').placeholder     =
-    mode === 'encode'  ? 'Type or paste text here…' :
-    mode === 'decode'  ? 'Paste Unicode escapes: U+0041 or \\u0041 or &#65; …' :
-                         'Type or paste text to inspect each character…';
-  runConvert();
-}
+        /* ══ Mode switching ══ */
+        function setMode(mode) {
+            currentMode = mode;
+            ['encode', 'decode', 'inspect'].forEach(m => {
+                document.getElementById('tab-' + m).classList.toggle('active', m === mode);
+            });
+            document.getElementById('encodeOptions').style.display = mode === 'encode' ? 'flex' : 'none';
+            document.getElementById('decodeOptions').style.display = mode === 'decode' ? 'flex' : 'none';
+            document.getElementById('outputWrap').style.display = mode !== 'inspect' ? '' : 'none';
+            document.getElementById('inspectorWrap').style.display = mode === 'inspect' ? '' : 'none';
+            document.getElementById('inputLabel').textContent = mode === 'decode' ? 'Unicode / Escape Input' : 'Input Text';
+            document.getElementById('outputLabel').textContent = mode === 'decode' ? 'Decoded Text' : 'Unicode Output';
+            document.getElementById('unicodeInput').placeholder =
+                mode === 'encode' ? 'Type or paste text here…' :
+                    mode === 'decode' ? 'Paste Unicode escapes: U+0041 or \\u0041 or &#65; …' :
+                        'Type or paste text to inspect each character…';
+            runConvert();
+        }
 
-/* ══ UTF-8 bytes for a code point ══ */
-function utf8Bytes(cp) {
-  if (cp < 0x80)   return [cp];
-  if (cp < 0x800)  return [0xC0|(cp>>6), 0x80|(cp&0x3F)];
-  if (cp < 0x10000)return [0xE0|(cp>>12), 0x80|((cp>>6)&0x3F), 0x80|(cp&0x3F)];
-  return [0xF0|(cp>>18), 0x80|((cp>>12)&0x3F), 0x80|((cp>>6)&0x3F), 0x80|(cp&0x3F)];
-}
-function toHex(n, pad) { return n.toString(16).toUpperCase().padStart(pad,'0'); }
+        /* ══ UTF-8 bytes for a code point ══ */
+        function utf8Bytes(cp) {
+            if (cp < 0x80) return [cp];
+            if (cp < 0x800) return [0xC0 | (cp >> 6), 0x80 | (cp & 0x3F)];
+            if (cp < 0x10000) return [0xE0 | (cp >> 12), 0x80 | ((cp >> 6) & 0x3F), 0x80 | (cp & 0x3F)];
+            return [0xF0 | (cp >> 18), 0x80 | ((cp >> 12) & 0x3F), 0x80 | ((cp >> 6) & 0x3F), 0x80 | (cp & 0x3F)];
+        }
+        function toHex(n, pad) { return n.toString(16).toUpperCase().padStart(pad, '0'); }
 
-/* ══ Encode ══ */
-function encodeText(text) {
-  const fmt      = document.getElementById('encFmt').value;
-  const nonAscii = document.getElementById('asciiOnly').checked;
-  const parts = [];
+        /* ══ Encode ══ */
+        function encodeText(text) {
+            const fmt = document.getElementById('encFmt').value;
+            const nonAscii = document.getElementById('asciiOnly').checked;
+            const parts = [];
 
-  for (const ch of text) {                       // iterates full code points
-    const cp = ch.codePointAt(0);
-    if (nonAscii && cp < 128) { parts.push(ch); continue; }
+            for (const ch of text) {                       // iterates full code points
+                const cp = ch.codePointAt(0);
+                if (nonAscii && cp < 128) { parts.push(ch); continue; }
 
-    switch (fmt) {
-      case 'u_plus':    parts.push(`U+${toHex(cp,4)}`); break;
-      case 'js':        cp > 0xFFFF
-                          ? parts.push(`\\u{${toHex(cp,1)}}`)
-                          : parts.push(`\\u${toHex(cp,4)}`); break;
-      case 'js_full':   parts.push(`\\u{${toHex(cp,1)}}`); break;
-      case 'css':       parts.push(`\\${toHex(cp,1)} `); break;
-      case 'html_dec':  parts.push(`&#${cp};`); break;
-      case 'html_hex':  parts.push(`&#x${toHex(cp,1)};`); break;
-      case 'python':    cp > 0xFFFF
-                          ? parts.push(`\\U${toHex(cp,8)}`)
-                          : parts.push(`\\u${toHex(cp,4)}`); break;
-      case 'hex': {
-        const bytes = utf8Bytes(cp);
-        parts.push(bytes.map(b => toHex(b,2)).join(' ')); break;
-      }
-      case 'binary': {
-        const bytes = utf8Bytes(cp);
-        parts.push(bytes.map(b => b.toString(2).padStart(8,'0')).join(' ')); break;
-      }
-      case 'decimal': parts.push(String(cp)); break;
-    }
-  }
+                switch (fmt) {
+                    case 'u_plus': parts.push(`U+${toHex(cp, 4)}`); break;
+                    case 'js': cp > 0xFFFF
+                        ? parts.push(`\\u{${toHex(cp, 1)}}`)
+                        : parts.push(`\\u${toHex(cp, 4)}`); break;
+                    case 'js_full': parts.push(`\\u{${toHex(cp, 1)}}`); break;
+                    case 'css': parts.push(`\\${toHex(cp, 1)} `); break;
+                    case 'html_dec': parts.push(`&#${cp};`); break;
+                    case 'html_hex': parts.push(`&#x${toHex(cp, 1)};`); break;
+                    case 'python': cp > 0xFFFF
+                        ? parts.push(`\\U${toHex(cp, 8)}`)
+                        : parts.push(`\\u${toHex(cp, 4)}`); break;
+                    case 'hex': {
+                        const bytes = utf8Bytes(cp);
+                        parts.push(bytes.map(b => toHex(b, 2)).join(' ')); break;
+                    }
+                    case 'binary': {
+                        const bytes = utf8Bytes(cp);
+                        parts.push(bytes.map(b => b.toString(2).padStart(8, '0')).join(' ')); break;
+                    }
+                    case 'decimal': parts.push(String(cp)); break;
+                }
+            }
 
-  const sep = ['hex','binary','decimal','u_plus'].includes(fmt) ? ' ' : '';
-  return parts.join(sep);
-}
+            const sep = ['hex', 'binary', 'decimal', 'u_plus'].includes(fmt) ? ' ' : '';
+            return parts.join(sep);
+        }
 
-/* ══ Decode ══ */
-function decodeText(text) {
-  let result = text;
-  // \uXXXX or \u{XXXXX}
-  result = result.replace(/\\u\{([0-9a-fA-F]+)\}/g, (_,h) => String.fromCodePoint(parseInt(h,16)));
-  result = result.replace(/\\u([0-9a-fA-F]{4})/g,   (_,h) => String.fromCodePoint(parseInt(h,16)));
-  // \UXXXXXXXX (Python)
-  result = result.replace(/\\U([0-9a-fA-F]{8})/g,   (_,h) => String.fromCodePoint(parseInt(h,16)));
-  // U+XXXX
-  result = result.replace(/U\+([0-9a-fA-F]{1,6})/g, (_,h) => String.fromCodePoint(parseInt(h,16)));
-  // HTML &#dddd; and &#xXXXX;
-  result = result.replace(/&#x([0-9a-fA-F]+);/gi,   (_,h) => String.fromCodePoint(parseInt(h,16)));
-  result = result.replace(/&#(\d+);/g,               (_,d) => String.fromCodePoint(parseInt(d,10)));
-  // CSS \XXXXX (hex followed by optional space)
-  result = result.replace(/\\([0-9a-fA-F]{1,6}) ?/g,(_,h) => String.fromCodePoint(parseInt(h,16)));
-  // Hex bytes: "41 42 43" or "0x41 0x42"
-  const hexByteSeq = result.replace(/0x/gi,'').trim();
-  if (/^([0-9a-fA-F]{2}\s*)+$/.test(hexByteSeq)) {
-    try {
-      const bytes = hexByteSeq.trim().split(/\s+/).map(h => parseInt(h,16));
-      result = new TextDecoder('utf-8').decode(new Uint8Array(bytes));
-    } catch(e) {}
-  }
-  return result;
-}
+        /* ══ Decode ══ */
+        function decodeText(text) {
+            let result = text;
+            // \uXXXX or \u{XXXXX}
+            result = result.replace(/\\u\{([0-9a-fA-F]+)\}/g, (_, h) => String.fromCodePoint(parseInt(h, 16)));
+            result = result.replace(/\\u([0-9a-fA-F]{4})/g, (_, h) => String.fromCodePoint(parseInt(h, 16)));
+            // \UXXXXXXXX (Python)
+            result = result.replace(/\\U([0-9a-fA-F]{8})/g, (_, h) => String.fromCodePoint(parseInt(h, 16)));
+            // U+XXXX
+            result = result.replace(/U\+([0-9a-fA-F]{1,6})/g, (_, h) => String.fromCodePoint(parseInt(h, 16)));
+            // HTML &#dddd; and &#xXXXX;
+            result = result.replace(/&#x([0-9a-fA-F]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)));
+            result = result.replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(parseInt(d, 10)));
+            // CSS \XXXXX (hex followed by optional space)
+            result = result.replace(/\\([0-9a-fA-F]{1,6}) ?/g, (_, h) => String.fromCodePoint(parseInt(h, 16)));
+            // Hex bytes: "41 42 43" or "0x41 0x42"
+            const hexByteSeq = result.replace(/0x/gi, '').trim();
+            if (/^([0-9a-fA-F]{2}\s*)+$/.test(hexByteSeq)) {
+                try {
+                    const bytes = hexByteSeq.trim().split(/\s+/).map(h => parseInt(h, 16));
+                    result = new TextDecoder('utf-8').decode(new Uint8Array(bytes));
+                } catch (e) { }
+            }
+            return result;
+        }
 
-/* ══ Inspector ══ */
-function buildInspector(text) {
-  if (!text) { document.getElementById('charTableBody').innerHTML = ''; document.getElementById('inspectStats').innerHTML=''; return; }
+        /* ══ Inspector ══ */
+        function buildInspector(text) {
+            if (!text) { document.getElementById('charTableBody').innerHTML = ''; document.getElementById('inspectStats').innerHTML = ''; return; }
 
-  const chars = [...text];  // split by code point
-  let addedCP = 0, nonAsciiCount = 0, uniqueSet = new Set();
+            const chars = [...text];  // split by code point
+            let addedCP = 0, nonAsciiCount = 0, uniqueSet = new Set();
 
-  const rows = chars.map((ch, i) => {
-    const cp    = ch.codePointAt(0);
-    const bytes = utf8Bytes(cp);
-    const hexBytes = bytes.map(b => toHex(b,2)).join(' ');
-    const htmlEnt  = cp > 127 ? `&#x${toHex(cp,1)};` : (cp < 32 ? `&#${cp};` : escH(ch));
-    const jsEsc    = cp > 0xFFFF ? `\\u{${toHex(cp,1)}}` : (cp > 127 || cp < 32 ? `\\u${toHex(cp,4)}` : escH(ch));
-    const cpStr    = `U+${toHex(cp,4)}`;
-    const name     = charName(cp);
-    if (cp > 127) nonAsciiCount++;
-    uniqueSet.add(cp);
+            const rows = chars.map((ch, i) => {
+                const cp = ch.codePointAt(0);
+                const bytes = utf8Bytes(cp);
+                const hexBytes = bytes.map(b => toHex(b, 2)).join(' ');
+                const htmlEnt = cp > 127 ? `&#x${toHex(cp, 1)};` : (cp < 32 ? `&#${cp};` : escH(ch));
+                const jsEsc = cp > 0xFFFF ? `\\u{${toHex(cp, 1)}}` : (cp > 127 || cp < 32 ? `\\u${toHex(cp, 4)}` : escH(ch));
+                const cpStr = `U+${toHex(cp, 4)}`;
+                const name = charName(cp);
+                if (cp > 127) nonAsciiCount++;
+                uniqueSet.add(cp);
 
-    return `<tr>
-      <td class="char-glyph">${cp < 32 || (cp >= 127 && cp < 160) ? '<span style="color:var(--text-dim);font-size:0.65rem">CTRL</span>' : escH(ch)}</td>
-      <td class="char-cp">${escH(cpStr)}</td>
-      <td class="char-name">${escH(name)}</td>
-      <td class="char-hex">${escH(hexBytes)}</td>
-      <td class="char-html">${escH(htmlEnt)}</td>
-      <td class="char-esc">${escH(jsEsc)}</td>
-      <td><button class="char-copy-btn" onclick="copyRow('${escH(cpStr)}','${escH(jsEsc)}','${escH(htmlEnt)}')">⎘ Copy</button></td>
-    </tr>`;
-  });
+                return `<tr>
+          <td class="char-glyph">${cp < 32 || (cp >= 127 && cp < 160) ? '<span style="color:var(--text-dim);font-size:0.65rem">CTRL</span>' : escH(ch)}</td>
+          <td class="char-cp">${escH(cpStr)}</td>
+          <td class="char-name">${escH(name)}</td>
+          <td class="char-hex">${escH(hexBytes)}</td>
+          <td class="char-html">${escH(htmlEnt)}</td>
+          <td class="char-esc">${escH(jsEsc)}</td>
+          <td><button class="char-copy-btn" onclick="copyRow('${escH(cpStr)}','${escH(jsEsc)}','${escH(htmlEnt)}')">⎘ Copy</button></td>
+        </tr>`;
+            });
 
-  document.getElementById('charTableBody').innerHTML = rows.join('');
-  document.getElementById('inspectStats').innerHTML =
-    `<span>Characters: <strong>${chars.length}</strong></span>` +
-    `<span>Code points: <strong>${chars.length}</strong></span>` +
-    `<span>Unique: <strong>${uniqueSet.size}</strong></span>` +
-    `<span>Non-ASCII: <strong style="color:var(--purple)">${nonAsciiCount}</strong></span>` +
-    `<span>UTF-8 bytes: <strong>${chars.reduce((a,c)=>a+utf8Bytes(c.codePointAt(0)).length,0)}</strong></span>`;
-  document.getElementById('inspectStats').style.display = 'flex';
-  document.getElementById('inspectStats').style.gap = '16px';
-  document.getElementById('inspectStats').style.flexWrap = 'wrap';
-}
+            document.getElementById('charTableBody').innerHTML = rows.join('');
+            document.getElementById('inspectStats').innerHTML =
+                `<span>Characters: <strong>${chars.length}</strong></span>` +
+                `<span>Code points: <strong>${chars.length}</strong></span>` +
+                `<span>Unique: <strong>${uniqueSet.size}</strong></span>` +
+                `<span>Non-ASCII: <strong style="color:var(--purple)">${nonAsciiCount}</strong></span>` +
+                `<span>UTF-8 bytes: <strong>${chars.reduce((a, c) => a + utf8Bytes(c.codePointAt(0)).length, 0)}</strong></span>`;
+            document.getElementById('inspectStats').style.display = 'flex';
+            document.getElementById('inspectStats').style.gap = '16px';
+            document.getElementById('inspectStats').style.flexWrap = 'wrap';
+        }
 
-function copyRow(cp, jsEsc, html) {
-  const text = `${cp}  JS: ${jsEsc}  HTML: ${html}`;
-  navigator.clipboard.writeText(text).then(() => showToast('Copied!'));
-}
+        function copyRow(cp, jsEsc, html) {
+            const text = `${cp}  JS: ${jsEsc}  HTML: ${html}`;
+            navigator.clipboard.writeText(text).then(() => showToast('Copied!'));
+        }
 
-/* ══ Stats bar for encode/decode ══ */
-function updateStats(input, output) {
-  const sb = document.getElementById('statsBar');
-  const chars = [...input];
-  const nonAscii = chars.filter(c => c.codePointAt(0) > 127).length;
-  sb.style.display = 'flex';
-  sb.style.gap = '16px';
-  sb.style.flexWrap = 'wrap';
-  sb.innerHTML =
-    `<span>Input chars: <strong>${chars.length}</strong></span>` +
-    `<span>Non-ASCII: <strong style="color:var(--purple)">${nonAscii}</strong></span>` +
-    `<span>Output length: <strong>${output.length}</strong></span>`;
-}
+        /* ══ Stats bar for encode/decode ══ */
+        function updateStats(input, output) {
+            const sb = document.getElementById('statsBar');
+            const chars = [...input];
+            const nonAscii = chars.filter(c => c.codePointAt(0) > 127).length;
+            sb.style.display = 'flex';
+            sb.style.gap = '16px';
+            sb.style.flexWrap = 'wrap';
+            sb.innerHTML =
+                `<span>Input chars: <strong>${chars.length}</strong></span>` +
+                `<span>Non-ASCII: <strong style="color:var(--purple)">${nonAscii}</strong></span>` +
+                `<span>Output length: <strong>${output.length}</strong></span>`;
+        }
 
-/* ══ Main run ══ */
-function runConvert() {
-  const input = document.getElementById('unicodeInput').value;
-  if (currentMode === 'inspect') { buildInspector(input); return; }
-  if (!input) {
-    document.getElementById('unicodeOutput').textContent = '';
-    document.getElementById('statsBar').style.display = 'none';
-    return;
-  }
-  let out = '';
-  try {
-    out = currentMode === 'encode' ? encodeText(input) : decodeText(input);
-  } catch(e) { out = 'Error: ' + e.message; }
-  document.getElementById('unicodeOutput').textContent = out;
-  updateStats(input, out);
-}
+        /* ══ Main run ══ */
+        function runConvert() {
+            const input = document.getElementById('unicodeInput').value;
+            if (currentMode === 'inspect') { buildInspector(input); return; }
+            if (!input) {
+                document.getElementById('unicodeOutput').textContent = '';
+                document.getElementById('statsBar').style.display = 'none';
+                return;
+            }
+            let out = '';
+            try {
+                out = currentMode === 'encode' ? encodeText(input) : decodeText(input);
+            } catch (e) { out = 'Error: ' + e.message; }
+            document.getElementById('unicodeOutput').textContent = out;
+            updateStats(input, out);
+        }
 
-function copyOutput() {
-  const txt = document.getElementById('unicodeOutput').textContent;
-  if (!txt) return;
-  navigator.clipboard.writeText(txt).then(() => showToast('Copied!'));
-}
+        function copyOutput() {
+            const txt = document.getElementById('unicodeOutput').textContent;
+            if (!txt) return;
+            navigator.clipboard.writeText(txt).then(() => showToast('Copied!'));
+        }
 
-function swapIO() {
-  const out = document.getElementById('unicodeOutput').textContent;
-  if (!out) return;
-  document.getElementById('unicodeInput').value = out;
-  document.getElementById('unicodeOutput').textContent = '';
-  document.getElementById('statsBar').style.display = 'none';
-  // flip mode
-  setMode(currentMode === 'encode' ? 'decode' : 'encode');
-}
+        function swapIO() {
+            const out = document.getElementById('unicodeOutput').textContent;
+            if (!out) return;
+            document.getElementById('unicodeInput').value = out;
+            document.getElementById('unicodeOutput').textContent = '';
+            document.getElementById('statsBar').style.display = 'none';
+            // flip mode
+            setMode(currentMode === 'encode' ? 'decode' : 'encode');
+        }
 
-function clearAll() {
-  document.getElementById('unicodeInput').value = '';
-  document.getElementById('unicodeOutput').textContent = '';
-  document.getElementById('statsBar').style.display = 'none';
-  document.getElementById('charTableBody').innerHTML = '';
-  document.getElementById('inspectStats').innerHTML = '';
-}
+        function clearAll() {
+            document.getElementById('unicodeInput').value = '';
+            document.getElementById('unicodeOutput').textContent = '';
+            document.getElementById('statsBar').style.display = 'none';
+            document.getElementById('charTableBody').innerHTML = '';
+            document.getElementById('inspectStats').innerHTML = '';
+        }
 
-function loadSample() {
-  const samples = {
-    encode:  'Hello, World! 🌍 Café naïve résumé 中文 العربية 日本語',
-    decode:  'U+0048 U+0065 U+006C U+006C U+006F U+0020 U+1F30D',
-    inspect: 'Hello 🌍 Ñ ñ © ™ → ∞',
-  };
-  document.getElementById('unicodeInput').value = samples[currentMode] || samples.encode;
-  runConvert();
-}
+        function loadSample() {
+            const samples = {
+                encode: 'Hello, World! 🌍 Café naïve résumé 中文 العربية 日本語',
+                decode: 'U+0048 U+0065 U+006C U+006C U+006F U+0020 U+1F30D',
+                inspect: 'Hello 🌍 Ñ ñ © ™ → ∞',
+            };
+            document.getElementById('unicodeInput').value = samples[currentMode] || samples.encode;
+            runConvert();
+        }
 
-/* ══ Helpers ══ */
-function escH(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
+        /* ══ Helpers ══ */
+        function escH(s) {
+            return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  if (!t) return;
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 1800);
-}
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            if (!t) return;
+            t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 1800);
+        }
 
-/* ══ Character name lookup (common ranges) ══ */
-function charName(cp) {
-  if (cp === 9)  return 'CHARACTER TABULATION';
-  if (cp === 10) return 'LINE FEED';
-  if (cp === 13) return 'CARRIAGE RETURN';
-  if (cp === 32) return 'SPACE';
-  if (cp === 33) return 'EXCLAMATION MARK';
-  if (cp === 34) return 'QUOTATION MARK';
-  if (cp === 35) return 'NUMBER SIGN';
-  if (cp === 36) return 'DOLLAR SIGN';
-  if (cp === 37) return 'PERCENT SIGN';
-  if (cp === 38) return 'AMPERSAND';
-  if (cp === 39) return 'APOSTROPHE';
-  if (cp === 40) return 'LEFT PARENTHESIS';
-  if (cp === 41) return 'RIGHT PARENTHESIS';
-  if (cp === 42) return 'ASTERISK';
-  if (cp === 43) return 'PLUS SIGN';
-  if (cp === 44) return 'COMMA';
-  if (cp === 45) return 'HYPHEN-MINUS';
-  if (cp === 46) return 'FULL STOP';
-  if (cp === 47) return 'SOLIDUS';
-  if (cp >= 48 && cp <= 57)  return `DIGIT ${String.fromCodePoint(cp)}`;
-  if (cp === 58) return 'COLON';
-  if (cp === 59) return 'SEMICOLON';
-  if (cp === 60) return 'LESS-THAN SIGN';
-  if (cp === 61) return 'EQUALS SIGN';
-  if (cp === 62) return 'GREATER-THAN SIGN';
-  if (cp === 63) return 'QUESTION MARK';
-  if (cp === 64) return 'COMMERCIAL AT';
-  if (cp >= 65 && cp <= 90)  return `LATIN CAPITAL LETTER ${String.fromCodePoint(cp)}`;
-  if (cp === 91) return 'LEFT SQUARE BRACKET';
-  if (cp === 92) return 'REVERSE SOLIDUS';
-  if (cp === 93) return 'RIGHT SQUARE BRACKET';
-  if (cp === 94) return 'CIRCUMFLEX ACCENT';
-  if (cp === 95) return 'LOW LINE';
-  if (cp === 96) return 'GRAVE ACCENT';
-  if (cp >= 97 && cp <= 122) return `LATIN SMALL LETTER ${String.fromCodePoint(cp).toUpperCase()}`;
-  if (cp === 123) return 'LEFT CURLY BRACKET';
-  if (cp === 124) return 'VERTICAL LINE';
-  if (cp === 125) return 'RIGHT CURLY BRACKET';
-  if (cp === 126) return 'TILDE';
-  if (cp === 160) return 'NO-BREAK SPACE';
-  if (cp === 169) return 'COPYRIGHT SIGN';
-  if (cp === 174) return 'REGISTERED SIGN';
-  if (cp === 176) return 'DEGREE SIGN';
-  if (cp === 177) return 'PLUS-MINUS SIGN';
-  if (cp === 180) return 'ACUTE ACCENT';
-  if (cp === 181) return 'MICRO SIGN';
-  if (cp === 183) return 'MIDDLE DOT';
-  if (cp === 191) return 'INVERTED QUESTION MARK';
-  if (cp >= 192 && cp <= 214) return `LATIN CAPITAL LETTER ${String.fromCodePoint(cp)}`;
-  if (cp >= 216 && cp <= 246) return `LATIN LETTER (U+${toHex(cp,4)})`;
-  if (cp === 8192) return 'EN QUAD';
-  if (cp === 8194) return 'EN SPACE';
-  if (cp === 8195) return 'EM SPACE';
-  if (cp === 8203) return 'ZERO WIDTH SPACE';
-  if (cp === 8204) return 'ZERO WIDTH NON-JOINER';
-  if (cp === 8205) return 'ZERO WIDTH JOINER';
-  if (cp === 8206) return 'LEFT-TO-RIGHT MARK';
-  if (cp === 8207) return 'RIGHT-TO-LEFT MARK';
-  if (cp === 8211) return 'EN DASH';
-  if (cp === 8212) return 'EM DASH';
-  if (cp === 8216) return 'LEFT SINGLE QUOTATION MARK';
-  if (cp === 8217) return 'RIGHT SINGLE QUOTATION MARK';
-  if (cp === 8220) return 'LEFT DOUBLE QUOTATION MARK';
-  if (cp === 8221) return 'RIGHT DOUBLE QUOTATION MARK';
-  if (cp === 8226) return 'BULLET';
-  if (cp === 8230) return 'HORIZONTAL ELLIPSIS';
-  if (cp === 8364) return 'EURO SIGN';
-  if (cp === 8482) return 'TRADE MARK SIGN';
-  if (cp === 8592) return 'LEFTWARDS ARROW';
-  if (cp === 8593) return 'UPWARDS ARROW';
-  if (cp === 8594) return 'RIGHTWARDS ARROW';
-  if (cp === 8595) return 'DOWNWARDS ARROW';
-  if (cp === 8596) return 'LEFT RIGHT ARROW';
-  if (cp === 8598) return 'NORTH WEST ARROW';
-  if (cp === 8658) return 'RIGHTWARDS DOUBLE ARROW';
-  if (cp === 8710) return 'INCREMENT';
-  if (cp === 8734) return 'INFINITY';
-  if (cp === 8800) return 'NOT EQUAL TO';
-  if (cp === 8804) return 'LESS-THAN OR EQUAL TO';
-  if (cp === 8805) return 'GREATER-THAN OR EQUAL TO';
-  if (cp === 9654) return 'BLACK RIGHT-POINTING TRIANGLE';
-  if (cp === 9733) return 'BLACK STAR';
-  if (cp === 9734) return 'WHITE STAR';
-  if (cp === 9829) return 'BLACK HEART SUIT';
-  if (cp === 9834) return 'EIGHTH NOTE';
-  if (cp >= 0x1F300 && cp <= 0x1F5FF) return 'MISCELLANEOUS SYMBOL AND PICTOGRAPH';
-  if (cp >= 0x1F600 && cp <= 0x1F64F) return 'EMOTICON';
-  if (cp >= 0x1F680 && cp <= 0x1F6FF) return 'TRANSPORT AND MAP SYMBOL';
-  if (cp >= 0x1F900 && cp <= 0x1F9FF) return 'SUPPLEMENTAL SYMBOL';
-  if (cp >= 0x2600  && cp <= 0x26FF)  return 'MISCELLANEOUS SYMBOL';
-  if (cp >= 0x2700  && cp <= 0x27BF)  return 'DINGBAT';
-  if (cp >= 0x4E00  && cp <= 0x9FFF)  return 'CJK UNIFIED IDEOGRAPH';
-  if (cp >= 0xAC00  && cp <= 0xD7AF)  return 'HANGUL SYLLABLE';
-  if (cp >= 0x0600  && cp <= 0x06FF)  return 'ARABIC LETTER';
-  if (cp >= 0x0400  && cp <= 0x04FF)  return 'CYRILLIC LETTER';
-  if (cp >= 0x0370  && cp <= 0x03FF)  return 'GREEK LETTER';
-  if (cp >= 0x0900  && cp <= 0x097F)  return 'DEVANAGARI LETTER';
-  if (cp >= 0x3040  && cp <= 0x309F)  return 'HIRAGANA';
-  if (cp >= 0x30A0  && cp <= 0x30FF)  return 'KATAKANA';
-  if (cp < 32) return 'CONTROL CHARACTER';
-  return `U+${toHex(cp,4)}`;
-}
-</script>
+        /* ══ Character name lookup (common ranges) ══ */
+        function charName(cp) {
+            if (cp === 9) return 'CHARACTER TABULATION';
+            if (cp === 10) return 'LINE FEED';
+            if (cp === 13) return 'CARRIAGE RETURN';
+            if (cp === 32) return 'SPACE';
+            if (cp === 33) return 'EXCLAMATION MARK';
+            if (cp === 34) return 'QUOTATION MARK';
+            if (cp === 35) return 'NUMBER SIGN';
+            if (cp === 36) return 'DOLLAR SIGN';
+            if (cp === 37) return 'PERCENT SIGN';
+            if (cp === 38) return 'AMPERSAND';
+            if (cp === 39) return 'APOSTROPHE';
+            if (cp === 40) return 'LEFT PARENTHESIS';
+            if (cp === 41) return 'RIGHT PARENTHESIS';
+            if (cp === 42) return 'ASTERISK';
+            if (cp === 43) return 'PLUS SIGN';
+            if (cp === 44) return 'COMMA';
+            if (cp === 45) return 'HYPHEN-MINUS';
+            if (cp === 46) return 'FULL STOP';
+            if (cp === 47) return 'SOLIDUS';
+            if (cp >= 48 && cp <= 57) return `DIGIT ${String.fromCodePoint(cp)}`;
+            if (cp === 58) return 'COLON';
+            if (cp === 59) return 'SEMICOLON';
+            if (cp === 60) return 'LESS-THAN SIGN';
+            if (cp === 61) return 'EQUALS SIGN';
+            if (cp === 62) return 'GREATER-THAN SIGN';
+            if (cp === 63) return 'QUESTION MARK';
+            if (cp === 64) return 'COMMERCIAL AT';
+            if (cp >= 65 && cp <= 90) return `LATIN CAPITAL LETTER ${String.fromCodePoint(cp)}`;
+            if (cp === 91) return 'LEFT SQUARE BRACKET';
+            if (cp === 92) return 'REVERSE SOLIDUS';
+            if (cp === 93) return 'RIGHT SQUARE BRACKET';
+            if (cp === 94) return 'CIRCUMFLEX ACCENT';
+            if (cp === 95) return 'LOW LINE';
+            if (cp === 96) return 'GRAVE ACCENT';
+            if (cp >= 97 && cp <= 122) return `LATIN SMALL LETTER ${String.fromCodePoint(cp).toUpperCase()}`;
+            if (cp === 123) return 'LEFT CURLY BRACKET';
+            if (cp === 124) return 'VERTICAL LINE';
+            if (cp === 125) return 'RIGHT CURLY BRACKET';
+            if (cp === 126) return 'TILDE';
+            if (cp === 160) return 'NO-BREAK SPACE';
+            if (cp === 169) return 'COPYRIGHT SIGN';
+            if (cp === 174) return 'REGISTERED SIGN';
+            if (cp === 176) return 'DEGREE SIGN';
+            if (cp === 177) return 'PLUS-MINUS SIGN';
+            if (cp === 180) return 'ACUTE ACCENT';
+            if (cp === 181) return 'MICRO SIGN';
+            if (cp === 183) return 'MIDDLE DOT';
+            if (cp === 191) return 'INVERTED QUESTION MARK';
+            if (cp >= 192 && cp <= 214) return `LATIN CAPITAL LETTER ${String.fromCodePoint(cp)}`;
+            if (cp >= 216 && cp <= 246) return `LATIN LETTER (U+${toHex(cp, 4)})`;
+            if (cp === 8192) return 'EN QUAD';
+            if (cp === 8194) return 'EN SPACE';
+            if (cp === 8195) return 'EM SPACE';
+            if (cp === 8203) return 'ZERO WIDTH SPACE';
+            if (cp === 8204) return 'ZERO WIDTH NON-JOINER';
+            if (cp === 8205) return 'ZERO WIDTH JOINER';
+            if (cp === 8206) return 'LEFT-TO-RIGHT MARK';
+            if (cp === 8207) return 'RIGHT-TO-LEFT MARK';
+            if (cp === 8211) return 'EN DASH';
+            if (cp === 8212) return 'EM DASH';
+            if (cp === 8216) return 'LEFT SINGLE QUOTATION MARK';
+            if (cp === 8217) return 'RIGHT SINGLE QUOTATION MARK';
+            if (cp === 8220) return 'LEFT DOUBLE QUOTATION MARK';
+            if (cp === 8221) return 'RIGHT DOUBLE QUOTATION MARK';
+            if (cp === 8226) return 'BULLET';
+            if (cp === 8230) return 'HORIZONTAL ELLIPSIS';
+            if (cp === 8364) return 'EURO SIGN';
+            if (cp === 8482) return 'TRADE MARK SIGN';
+            if (cp === 8592) return 'LEFTWARDS ARROW';
+            if (cp === 8593) return 'UPWARDS ARROW';
+            if (cp === 8594) return 'RIGHTWARDS ARROW';
+            if (cp === 8595) return 'DOWNWARDS ARROW';
+            if (cp === 8596) return 'LEFT RIGHT ARROW';
+            if (cp === 8598) return 'NORTH WEST ARROW';
+            if (cp === 8658) return 'RIGHTWARDS DOUBLE ARROW';
+            if (cp === 8710) return 'INCREMENT';
+            if (cp === 8734) return 'INFINITY';
+            if (cp === 8800) return 'NOT EQUAL TO';
+            if (cp === 8804) return 'LESS-THAN OR EQUAL TO';
+            if (cp === 8805) return 'GREATER-THAN OR EQUAL TO';
+            if (cp === 9654) return 'BLACK RIGHT-POINTING TRIANGLE';
+            if (cp === 9733) return 'BLACK STAR';
+            if (cp === 9734) return 'WHITE STAR';
+            if (cp === 9829) return 'BLACK HEART SUIT';
+            if (cp === 9834) return 'EIGHTH NOTE';
+            if (cp >= 0x1F300 && cp <= 0x1F5FF) return 'MISCELLANEOUS SYMBOL AND PICTOGRAPH';
+            if (cp >= 0x1F600 && cp <= 0x1F64F) return 'EMOTICON';
+            if (cp >= 0x1F680 && cp <= 0x1F6FF) return 'TRANSPORT AND MAP SYMBOL';
+            if (cp >= 0x1F900 && cp <= 0x1F9FF) return 'SUPPLEMENTAL SYMBOL';
+            if (cp >= 0x2600 && cp <= 0x26FF) return 'MISCELLANEOUS SYMBOL';
+            if (cp >= 0x2700 && cp <= 0x27BF) return 'DINGBAT';
+            if (cp >= 0x4E00 && cp <= 0x9FFF) return 'CJK UNIFIED IDEOGRAPH';
+            if (cp >= 0xAC00 && cp <= 0xD7AF) return 'HANGUL SYLLABLE';
+            if (cp >= 0x0600 && cp <= 0x06FF) return 'ARABIC LETTER';
+            if (cp >= 0x0400 && cp <= 0x04FF) return 'CYRILLIC LETTER';
+            if (cp >= 0x0370 && cp <= 0x03FF) return 'GREEK LETTER';
+            if (cp >= 0x0900 && cp <= 0x097F) return 'DEVANAGARI LETTER';
+            if (cp >= 0x3040 && cp <= 0x309F) return 'HIRAGANA';
+            if (cp >= 0x30A0 && cp <= 0x30FF) return 'KATAKANA';
+            if (cp < 32) return 'CONTROL CHARACTER';
+            return `U+${toHex(cp, 4)}`;
+        }
+    </script>
 </body>
 </html>

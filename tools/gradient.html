@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Build CSS linear, radial, and conic gradients">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CSS Gradient Generator — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="CSS Gradient Generator — DevBox">
-<meta property="og:description" content="Build CSS linear, radial, and conic gradients">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Build CSS linear, radial, and conic gradients">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Gradient Generator — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="CSS Gradient Generator — DevBox">
+    <meta property="og:description" content="Build CSS linear, radial, and conic gradients">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -97,100 +97,100 @@
 
         </main><!-- /content-wrap -->
     </div>
-        <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
-        <script src="../assets/sidebar.js" defer></script>
-        <script>
-            let gradType = 'linear', gradDir = 'to right', gradAngleDeg = 90;
-            let stops = [{ color: '#B07EFF', pos: 0 }, { color: '#5BA4FF', pos: 50 }, { color: '#22D9F0', pos: 100 }];
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        let gradType = 'linear', gradDir = 'to right', gradAngleDeg = 90;
+        let stops = [{ color: '#B07EFF', pos: 0 }, { color: '#5BA4FF', pos: 50 }, { color: '#22D9F0', pos: 100 }];
 
-            const PRESETS = [
-                { name: 'Sunset', stops: [{ color: '#f12711', pos: 0 }, { color: '#f5af19', pos: 100 }] },
-                { name: 'Ocean', stops: [{ color: '#2193b0', pos: 0 }, { color: '#6dd5ed', pos: 100 }] },
-                { name: 'Purple', stops: [{ color: '#834d9b', pos: 0 }, { color: '#d04ed6', pos: 100 }] },
-                { name: 'Neon', stops: [{ color: '#00c6ff', pos: 0 }, { color: '#0072ff', pos: 100 }] },
-                { name: 'Forest', stops: [{ color: '#134e5e', pos: 0 }, { color: '#71b280', pos: 100 }] },
-                { name: 'Rose', stops: [{ color: '#f953c6', pos: 0 }, { color: '#b91d73', pos: 100 }] },
-                { name: 'Midnight', stops: [{ color: '#232526', pos: 0 }, { color: '#414345', pos: 100 }] },
-                { name: 'Gold', stops: [{ color: '#f7971e', pos: 0 }, { color: '#ffd200', pos: 100 }] },
-                { name: 'Rainbow', stops: [{ color: '#ff0000', pos: 0 }, { color: '#ffff00', pos: 33 }, { color: '#00ff00', pos: 66 }, { color: '#0000ff', pos: 100 }] },
-            ];
+        const PRESETS = [
+            { name: 'Sunset', stops: [{ color: '#f12711', pos: 0 }, { color: '#f5af19', pos: 100 }] },
+            { name: 'Ocean', stops: [{ color: '#2193b0', pos: 0 }, { color: '#6dd5ed', pos: 100 }] },
+            { name: 'Purple', stops: [{ color: '#834d9b', pos: 0 }, { color: '#d04ed6', pos: 100 }] },
+            { name: 'Neon', stops: [{ color: '#00c6ff', pos: 0 }, { color: '#0072ff', pos: 100 }] },
+            { name: 'Forest', stops: [{ color: '#134e5e', pos: 0 }, { color: '#71b280', pos: 100 }] },
+            { name: 'Rose', stops: [{ color: '#f953c6', pos: 0 }, { color: '#b91d73', pos: 100 }] },
+            { name: 'Midnight', stops: [{ color: '#232526', pos: 0 }, { color: '#414345', pos: 100 }] },
+            { name: 'Gold', stops: [{ color: '#f7971e', pos: 0 }, { color: '#ffd200', pos: 100 }] },
+            { name: 'Rainbow', stops: [{ color: '#ff0000', pos: 0 }, { color: '#ffff00', pos: 33 }, { color: '#00ff00', pos: 66 }, { color: '#0000ff', pos: 100 }] },
+        ];
 
-            function setGradType(t) {
-                gradType = t;
-                ['linear', 'radial', 'conic'].forEach(x => {
-                    document.getElementById('type' + x.charAt(0).toUpperCase() + x.slice(1)).className = 'btn ' + (x === t ? 'btn-pink' : 'btn-ghost');
-                });
-                document.getElementById('linearOpts').style.display = t === 'linear' ? '' : 'none';
-                renderGrad();
-            }
+        function setGradType(t) {
+            gradType = t;
+            ['linear', 'radial', 'conic'].forEach(x => {
+                document.getElementById('type' + x.charAt(0).toUpperCase() + x.slice(1)).className = 'btn ' + (x === t ? 'btn-pink' : 'btn-ghost');
+            });
+            document.getElementById('linearOpts').style.display = t === 'linear' ? '' : 'none';
+            renderGrad();
+        }
 
-            function setDir(d) { gradDir = d; renderGrad(); }
+        function setDir(d) { gradDir = d; renderGrad(); }
 
-            function gradAngleUpdate() {
-                gradAngleDeg = parseInt(document.getElementById('gradAngle').value);
-                document.getElementById('gradAngleVal').textContent = gradAngleDeg + '°';
-                gradDir = gradAngleDeg + 'deg';
-                renderGrad();
-            }
+        function gradAngleUpdate() {
+            gradAngleDeg = parseInt(document.getElementById('gradAngle').value);
+            document.getElementById('gradAngleVal').textContent = gradAngleDeg + '°';
+            gradDir = gradAngleDeg + 'deg';
+            renderGrad();
+        }
 
-            function buildGradCSS() {
-                const stopStr = stops.map(s => s.color + (s.pos !== undefined ? ' ' + s.pos + '%' : '')).join(', ');
-                if (gradType === 'radial') return `radial-gradient(circle, ${stopStr})`;
-                if (gradType === 'conic') return `conic-gradient(${stopStr})`;
-                return `linear-gradient(${gradDir}, ${stopStr})`;
-            }
+        function buildGradCSS() {
+            const stopStr = stops.map(s => s.color + (s.pos !== undefined ? ' ' + s.pos + '%' : '')).join(', ');
+            if (gradType === 'radial') return `radial-gradient(circle, ${stopStr})`;
+            if (gradType === 'conic') return `conic-gradient(${stopStr})`;
+            return `linear-gradient(${gradDir}, ${stopStr})`;
+        }
 
-            function renderGrad() {
-                const css = buildGradCSS();
-                document.getElementById('gradPreview').style.background = css;
-                document.getElementById('gradOut').textContent = `background: ${css};
+        function renderGrad() {
+            const css = buildGradCSS();
+            document.getElementById('gradPreview').style.background = css;
+            document.getElementById('gradOut').textContent = `background: ${css};
 background: -webkit-${css};`;
-                document.getElementById('gradFormats').innerHTML = [
-                    ['background', css],
-                    ['background-image', css],
-                    ['-webkit-', '-webkit-' + css],
-                    ['CSS var', 'var(--gradient)  /* ' + css.slice(0, 40) + '… */'],
-                ].map(([l, v]) => `<div class="hash-row"><div class="hash-algo" style="min-width:110px">${l}</div><div class="hash-val" style="color:var(--pink);font-size:0.76rem;word-break:break-all">${escHtml(v)}</div><button class="uuid-copy" onclick="copy(${JSON.stringify(v)})">⎘</button></div>`).join('');
-                renderStops();
-            }
+            document.getElementById('gradFormats').innerHTML = [
+                ['background', css],
+                ['background-image', css],
+                ['-webkit-', '-webkit-' + css],
+                ['CSS var', 'var(--gradient)  /* ' + css.slice(0, 40) + '… */'],
+            ].map(([l, v]) => `<div class="hash-row"><div class="hash-algo" style="min-width:110px">${l}</div><div class="hash-val" style="color:var(--pink);font-size:0.76rem;word-break:break-all">${escHtml(v)}</div><button class="uuid-copy" onclick="copy(${JSON.stringify(v)})">⎘</button></div>`).join('');
+            renderStops();
+        }
 
-            function renderStops() {
-                const list = document.getElementById('stopsList');
-                list.innerHTML = '';
-                stops.forEach((s, i) => {
-                    const row = document.createElement('div');
-                    row.style.cssText = 'display:flex;align-items:center;gap:10px';
-                    row.innerHTML = `
-              <input type="color" value="${s.color}" oninput="stops[${i}].color=this.value;renderGrad()" style="width:40px;height:36px;border:none;background:none;cursor:pointer;padding:0;border-radius:6px;overflow:hidden;flex-shrink:0">
-              <input type="text" value="${s.color}" oninput="stops[${i}].color=this.value;renderGrad()" style="width:90px;padding:7px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.82rem;color:var(--text);outline:none;flex:1">
-              <input type="range" min="0" max="100" value="${s.pos}" oninput="stops[${i}].pos=parseInt(this.value);this.nextElementSibling.textContent=this.value+'%';renderGrad()" style="flex:2">
-              <span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);min-width:36px">${s.pos}%</span>`;
-                    list.appendChild(row);
-                });
-            }
+        function renderStops() {
+            const list = document.getElementById('stopsList');
+            list.innerHTML = '';
+            stops.forEach((s, i) => {
+                const row = document.createElement('div');
+                row.style.cssText = 'display:flex;align-items:center;gap:10px';
+                row.innerHTML = `
+                  <input type="color" value="${s.color}" oninput="stops[${i}].color=this.value;renderGrad()" style="width:40px;height:36px;border:none;background:none;cursor:pointer;padding:0;border-radius:6px;overflow:hidden;flex-shrink:0">
+                  <input type="text" value="${s.color}" oninput="stops[${i}].color=this.value;renderGrad()" style="width:90px;padding:7px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.82rem;color:var(--text);outline:none;flex:1">
+                  <input type="range" min="0" max="100" value="${s.pos}" oninput="stops[${i}].pos=parseInt(this.value);this.nextElementSibling.textContent=this.value+'%';renderGrad()" style="flex:2">
+                  <span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);min-width:36px">${s.pos}%</span>`;
+                list.appendChild(row);
+            });
+        }
 
-            function addStop() {
-                const lastPos = stops[stops.length - 1]?.pos || 100;
-                stops.push({ color: '#ffffff', pos: Math.min(100, lastPos + 10) });
-                renderGrad();
-            }
+        function addStop() {
+            const lastPos = stops[stops.length - 1]?.pos || 100;
+            stops.push({ color: '#ffffff', pos: Math.min(100, lastPos + 10) });
+            renderGrad();
+        }
 
-            function removeStop() { if (stops.length > 2) stops.pop(); renderGrad(); }
+        function removeStop() { if (stops.length > 2) stops.pop(); renderGrad(); }
 
-            function initPresets() {
-                const grid = document.getElementById('presetGrid');
-                PRESETS.forEach(p => {
-                    const swatch = document.createElement('div');
-                    const css = 'linear-gradient(to right,' + p.stops.map(s => s.color + ' ' + s.pos + '%').join(',') + ')';
-                    swatch.style.cssText = `width:70px;height:32px;border-radius:6px;cursor:pointer;background:${css};border:1px solid var(--border);flex-shrink:0;position:relative`;
-                    swatch.title = p.name;
-                    swatch.onclick = () => { stops = p.stops.map(s => ({ ...s })); renderGrad(); showToast(p.name + ' loaded'); };
-                    grid.appendChild(swatch);
-                });
-            }
+        function initPresets() {
+            const grid = document.getElementById('presetGrid');
+            PRESETS.forEach(p => {
+                const swatch = document.createElement('div');
+                const css = 'linear-gradient(to right,' + p.stops.map(s => s.color + ' ' + s.pos + '%').join(',') + ')';
+                swatch.style.cssText = `width:70px;height:32px;border-radius:6px;cursor:pointer;background:${css};border:1px solid var(--border);flex-shrink:0;position:relative`;
+                swatch.title = p.name;
+                swatch.onclick = () => { stops = p.stops.map(s => ({ ...s })); renderGrad(); showToast(p.name + ' loaded'); };
+                grid.appendChild(swatch);
+            });
+        }
 
-            document.addEventListener('DOMContentLoaded', () => { initPresets(); renderGrad(); });
-        </script>
+        document.addEventListener('DOMContentLoaded', () => { initPresets(); renderGrad(); });
+    </script>
 </body>
 </html>

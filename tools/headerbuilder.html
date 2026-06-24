@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Build and reference common HTTP headers">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HTTP Header Builder — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="HTTP Header Builder — DevBox">
-<meta property="og:description" content="Build and reference common HTTP headers">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Build and reference common HTTP headers">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Header Builder — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="HTTP Header Builder — DevBox">
+    <meta property="og:description" content="Build and reference common HTTP headers">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -61,99 +61,100 @@
 
         </main><!-- /content-wrap -->
     </div>
-        <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
-        <script src="../assets/sidebar.js" defer></script>
-        <script>
-            const HEADERS = [
-                // [name, example, desc, category]
-                ['Accept', 'application/json', 'Media types the client accepts', 'request'],
-                ['Accept-Encoding', 'gzip, deflate, br', 'Acceptable content encodings', 'request'],
-                ['Accept-Language', 'en-US,en;q=0.9', 'Preferred languages', 'request'],
-                ['Authorization', 'Bearer eyJhbGci…', 'Authentication credentials', 'request'],
-                ['Cache-Control', 'no-cache, no-store', 'Caching directives', 'request'],
-                ['Content-Type', 'application/json; charset=utf-8', 'Media type of request body', 'request'],
-                ['Cookie', 'session=abc123; theme=dark', 'Stored cookies', 'request'],
-                ['Host', 'api.example.com', 'Target host', 'request'],
-                ['Origin', 'https://example.com', 'Request origin for CORS', 'request'],
-                ['Referer', 'https://example.com/page', 'Previous page URL', 'request'],
-                ['User-Agent', 'Mozilla/5.0 (…)', 'Browser/client identifier', 'request'],
-                ['X-Requested-With', 'XMLHttpRequest', 'AJAX request identifier', 'request'],
-                ['If-None-Match', '"abc123etag"', 'Conditional request (ETag)', 'request'],
-                ['If-Modified-Since', 'Mon, 01 Jan 2024 00:00:00 GMT', 'Conditional request (date)', 'request'],
-                // Response
-                ['Access-Control-Allow-Origin', '*', 'CORS: allowed origins', 'response'],
-                ['Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE', 'CORS: allowed methods', 'response'],
-                ['Access-Control-Allow-Headers', 'Content-Type, Authorization', 'CORS: allowed headers', 'response'],
-                ['Cache-Control', 'public, max-age=3600', 'Response caching directive', 'response'],
-                ['Content-Encoding', 'gzip', 'Applied content encoding', 'response'],
-                ['Content-Length', '1234', 'Body size in bytes', 'response'],
-                ['Content-Type', 'application/json; charset=utf-8', 'Body media type', 'response'],
-                ['ETag', '"abc123etag"', 'Resource version identifier', 'response'],
-                ['Last-Modified', 'Mon, 01 Jan 2024 00:00:00 GMT', 'Last modification date', 'response'],
-                ['Location', 'https://example.com/new', 'Redirect target', 'response'],
-                ['Set-Cookie', 'session=abc; HttpOnly; Secure; SameSite=Strict', 'Set a cookie', 'response'],
-                ['Vary', 'Accept-Encoding', 'Cache differentiation fields', 'response'],
-                ['X-RateLimit-Limit', '100', 'Max requests per window', 'response'],
-                ['X-RateLimit-Remaining', '95', 'Remaining requests', 'response'],
-                // Security
-                ['Content-Security-Policy', "default-src 'self'", "Restrict resource origins", 'security'],
-                ['Strict-Transport-Security', 'max-age=31536000; includeSubDomains', 'Force HTTPS', 'security'],
-                ['X-Content-Type-Options', 'nosniff', 'Prevent MIME sniffing', 'security'],
-                ['X-Frame-Options', 'DENY', 'Prevent clickjacking', 'security'],
-                ['X-XSS-Protection', '1; mode=block', 'XSS protection (legacy)', 'security'],
-                ['Referrer-Policy', 'strict-origin-when-cross-origin', 'Control Referer header', 'security'],
-                ['Permissions-Policy', 'camera=(), microphone=()', 'Control browser features', 'security'],
-                ['Cross-Origin-Opener-Policy', 'same-origin', 'Isolate browsing context', 'security'],
-            ];
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        const HEADERS = [
+            // [name, example, desc, category]
+            ['Accept', 'application/json', 'Media types the client accepts', 'request'],
+            ['Accept-Encoding', 'gzip, deflate, br', 'Acceptable content encodings', 'request'],
+            ['Accept-Language', 'en-US,en;q=0.9', 'Preferred languages', 'request'],
+            ['Authorization', 'Bearer eyJhbGci…', 'Authentication credentials', 'request'],
+            ['Cache-Control', 'no-cache, no-store', 'Caching directives', 'request'],
+            ['Content-Type', 'application/json; charset=utf-8', 'Media type of request body', 'request'],
+            ['Cookie', 'session=abc123; theme=dark', 'Stored cookies', 'request'],
+            ['Host', 'api.example.com', 'Target host', 'request'],
+            ['Origin', 'https://example.com', 'Request origin for CORS', 'request'],
+            ['Referer', 'https://example.com/page', 'Previous page URL', 'request'],
+            ['User-Agent', 'Mozilla/5.0 (…)', 'Browser/client identifier', 'request'],
+            ['X-Requested-With', 'XMLHttpRequest', 'AJAX request identifier', 'request'],
+            ['If-None-Match', '"abc123etag"', 'Conditional request (ETag)', 'request'],
+            ['If-Modified-Since', 'Mon, 01 Jan 2024 00:00:00 GMT', 'Conditional request (date)', 'request'],
+            // Response
+            ['Access-Control-Allow-Origin', '*', 'CORS: allowed origins', 'response'],
+            ['Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE', 'CORS: allowed methods', 'response'],
+            ['Access-Control-Allow-Headers', 'Content-Type, Authorization', 'CORS: allowed headers', 'response'],
+            ['Cache-Control', 'public, max-age=3600', 'Response caching directive', 'response'],
+            ['Content-Encoding', 'gzip', 'Applied content encoding', 'response'],
+            ['Content-Length', '1234', 'Body size in bytes', 'response'],
+            ['Content-Type', 'application/json; charset=utf-8', 'Body media type', 'response'],
+            ['ETag', '"abc123etag"', 'Resource version identifier', 'response'],
+            ['Last-Modified', 'Mon, 01 Jan 2024 00:00:00 GMT', 'Last modification date', 'response'],
+            ['Location', 'https://example.com/new', 'Redirect target', 'response'],
+            ['Set-Cookie', 'session=abc; HttpOnly; Secure; SameSite=Strict', 'Set a cookie', 'response'],
+            ['Vary', 'Accept-Encoding', 'Cache differentiation fields', 'response'],
+            ['X-RateLimit-Limit', '100', 'Max requests per window', 'response'],
+            ['X-RateLimit-Remaining', '95', 'Remaining requests', 'response'],
+            // Security
+            ['Content-Security-Policy', "default-src 'self'", "Restrict resource origins", 'security'],
+            ['Strict-Transport-Security', 'max-age=31536000; includeSubDomains', 'Force HTTPS', 'security'],
+            ['X-Content-Type-Options', 'nosniff', 'Prevent MIME sniffing', 'security'],
+            ['X-Frame-Options', 'DENY', 'Prevent clickjacking', 'security'],
+            ['X-XSS-Protection', '1; mode=block', 'XSS protection (legacy)', 'security'],
+            ['Referrer-Policy', 'strict-origin-when-cross-origin', 'Control Referer header', 'security'],
+            ['Permissions-Policy', 'camera=(), microphone=()', 'Control browser features', 'security'],
+            ['Cross-Origin-Opener-Policy', 'same-origin', 'Isolate browsing context', 'security'],
+        ];
 
-            let customHeaders = [{ name: 'Content-Type', value: 'application/json' }, { name: 'Authorization', value: 'Bearer ' }];
+        let customHeaders = [{ name: 'Content-Type', value: 'application/json' }, { name: 'Authorization', value: 'Bearer ' }];
 
-            function renderCustom() {
-                const rows = document.getElementById('headerRows');
-                rows.innerHTML = '';
-                customHeaders.forEach((h, i) => {
-                    const row = document.createElement('div');
-                    row.style.cssText = 'display:flex;gap:8px;align-items:center';
-                    row.innerHTML = `<input type="text" value="${escHtml(h.name)}" placeholder="Header-Name" oninput="customHeaders[${i}].name=this.value;updateOutput()" style="flex:1;padding:7px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.82rem;color:var(--text);outline:none"><input type="text" value="${escHtml(h.value)}" placeholder="value" oninput="customHeaders[${i}].value=this.value;updateOutput()" style="flex:2;padding:7px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.82rem;color:var(--text);outline:none"><button class="uuid-copy" onclick="customHeaders.splice(${i},1);renderCustom()" style="color:var(--red)">✕</button>`;
-                    rows.appendChild(row);
-                });
-                updateOutput();
-            }
+        function renderCustom() {
+            const rows = document.getElementById('headerRows');
+            rows.innerHTML = '';
+            customHeaders.forEach((h, i) => {
+                const row = document.createElement('div');
+                row.style.cssText = 'display:flex;gap:8px;align-items:center';
+                row.innerHTML = `<input type="text" value="${escHtml(h.name)}" placeholder="Header-Name" oninput="customHeaders[${i}].name=this.value;updateOutput()" style="flex:1;padding:7px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.82rem;color:var(--text);outline:none"><input type="text" value="${escHtml(h.value)}" placeholder="value" oninput="customHeaders[${i}].value=this.value;updateOutput()" style="flex:2;padding:7px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.82rem;color:var(--text);outline:none"><button class="uuid-copy" onclick="customHeaders.splice(${i},1);renderCustom()" style="color:var(--red)">✕</button>`;
+                rows.appendChild(row);
+            });
+            updateOutput();
+        }
 
-            function updateOutput() {
-                document.getElementById('headerOutput').textContent = customHeaders.filter(h => h.name).map(h => `${h.name}: ${h.value}`).join('\n');
-}
+        function updateOutput() {
+            document.getElementById('headerOutput').textContent = customHeaders.filter(h => h.name).map(h => `${h.name}: ${h.value}`).join('\n');
+        }
 
-            function addHeader() { customHeaders.push({ name: '', value: '' }); renderCustom(); }
-            function clearHeaders() { customHeaders = []; renderCustom(); }
-            function copyHeaders() {
-                copy(customHeaders.filter(h => h.name).map(h => `${h.name}: ${h.value}`).join('\n'));}
+        function addHeader() { customHeaders.push({ name: '', value: '' }); renderCustom(); }
+        function clearHeaders() { customHeaders = []; renderCustom(); }
+        function copyHeaders() {
+            copy(customHeaders.filter(h => h.name).map(h => `${h.name}: ${h.value}`).join('\n'));
+        }
 
-function renderRef() {
-                        const q = document.getElementById('headerSearch').value.toLowerCase();
-                        const showReq = document.getElementById('showRequest').checked;
-                        const showRes = document.getElementById('showResponse').checked;
-                        const showSec = document.getElementById('showSecurity').checked;
-                        const filtered = HEADERS.filter(([name, , desc, cat]) => {
-                            if (cat === 'request' && !showReq) return false;
-                            if (cat === 'response' && !showRes) return false;
-                            if (cat === 'security' && !showSec) return false;
-                            return !q || name.toLowerCase().includes(q) || desc.toLowerCase().includes(q);
-                        });
-                        const CAT_COLORS = { request: 'var(--blue)', response: 'var(--green)', security: 'var(--red)' };
-                        document.getElementById('headerRef').innerHTML = filtered.map(([name, ex, desc, cat]) =>
-                            `<div class="hash-row" style="flex-wrap:wrap;gap:4px">
-              <div style="font-family:var(--mono);font-weight:600;font-size:0.8rem;color:${CAT_COLORS[cat]};min-width:180px;flex-shrink:0">${name}</div>
-              <div style="flex:1;min-width:0">
-                <div style="font-size:0.75rem;color:var(--text-dim)">${desc}</div>
-                <div style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);margin-top:2px;opacity:0.7">${escHtml(ex)}</div>
-              </div>
-              <button class="uuid-copy" onclick="customHeaders.push({name:'${name}',value:${JSON.stringify(ex)}});renderCustom();showToast('Added to builder')">+</button>
-            </div>`).join('');
-                    }
+        function renderRef() {
+            const q = document.getElementById('headerSearch').value.toLowerCase();
+            const showReq = document.getElementById('showRequest').checked;
+            const showRes = document.getElementById('showResponse').checked;
+            const showSec = document.getElementById('showSecurity').checked;
+            const filtered = HEADERS.filter(([name, , desc, cat]) => {
+                if (cat === 'request' && !showReq) return false;
+                if (cat === 'response' && !showRes) return false;
+                if (cat === 'security' && !showSec) return false;
+                return !q || name.toLowerCase().includes(q) || desc.toLowerCase().includes(q);
+            });
+            const CAT_COLORS = { request: 'var(--blue)', response: 'var(--green)', security: 'var(--red)' };
+            document.getElementById('headerRef').innerHTML = filtered.map(([name, ex, desc, cat]) =>
+                `<div class="hash-row" style="flex-wrap:wrap;gap:4px">
+                  <div style="font-family:var(--mono);font-weight:600;font-size:0.8rem;color:${CAT_COLORS[cat]};min-width:180px;flex-shrink:0">${name}</div>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:0.75rem;color:var(--text-dim)">${desc}</div>
+                    <div style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);margin-top:2px;opacity:0.7">${escHtml(ex)}</div>
+                  </div>
+                  <button class="uuid-copy" onclick="customHeaders.push({name:'${name}',value:${JSON.stringify(ex)}});renderCustom();showToast('Added to builder')">+</button>
+                </div>`).join('');
+        }
 
-document.addEventListener('DOMContentLoaded', () => { renderCustom(); renderRef(); });
-        </script>
+        document.addEventListener('DOMContentLoaded', () => { renderCustom(); renderRef(); });
+    </script>
 </body>
 </html>

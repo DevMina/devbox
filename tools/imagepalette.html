@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Extract dominant colors from any image">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Image Color Extractor — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="Image Color Extractor — DevBox">
-<meta property="og:description" content="Extract dominant colors from any image">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Extract dominant colors from any image">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Color Extractor — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="Image Color Extractor — DevBox">
+    <meta property="og:description" content="Extract dominant colors from any image">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -72,64 +72,65 @@
 
         </main><!-- /content-wrap -->
     </div>
-        <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
-        <script src="../assets/sidebar.js" defer></script>
-        <script>
-            let colorCount = 8;
-            function handleDrop(e) { e.preventDefault(); document.getElementById('dropZone').style.borderColor = 'var(--border)'; const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) loadImage(f); }
-            function loadImage(file) {
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const img = document.getElementById('imgPreview');
-                    img.onload = () => {
-                        document.getElementById('imgPreviewWrap').style.display = '';
-                        document.getElementById('imgInfo').textContent = `${file.name} — ${img.naturalWidth}×${img.naturalHeight}px — ${(file.size / 1024).toFixed(1)}KB`;
-                        extractColors(img);
-                    };
-                    img.src = e.target.result;
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        let colorCount = 8;
+        function handleDrop(e) { e.preventDefault(); document.getElementById('dropZone').style.borderColor = 'var(--border)'; const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) loadImage(f); }
+        function loadImage(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = document.getElementById('imgPreview');
+                img.onload = () => {
+                    document.getElementById('imgPreviewWrap').style.display = '';
+                    document.getElementById('imgInfo').textContent = `${file.name} — ${img.naturalWidth}×${img.naturalHeight}px — ${(file.size / 1024).toFixed(1)}KB`;
+                    extractColors(img);
                 };
-                reader.readAsDataURL(file);
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        function changeColorCount() { colorCount = colorCount === 8 ? 16 : colorCount === 16 ? 4 : 8; document.getElementById('colorCountBtn').textContent = colorCount + ' colors'; extractColors(document.getElementById('imgPreview')); }
+        function extractColors(img) {
+            const canvas = document.getElementById('imgCanvas');
+            const ctx = canvas.getContext('2d');
+            const MAX = 150;
+            const scale = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
+            canvas.width = Math.round(img.naturalWidth * scale);
+            canvas.height = Math.round(img.naturalHeight * scale);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            // Sample pixels and quantize
+            const buckets = {};
+            for (let i = 0; i < data.length; i += 16) {
+                const r = data[i] & 0xF0, g = data[i + 1] & 0xF0, b = data[i + 2] & 0xF0;
+                if (data[i + 3] < 128) continue;
+                const key = `${r},${g},${b}`;
+                buckets[key] = (buckets[key] || { count: 0, r: 0, g: 0, b: 0 });
+                buckets[key].count++; buckets[key].r += data[i]; buckets[key].g += data[i + 1]; buckets[key].b += data[i + 2];
             }
-            function changeColorCount() { colorCount = colorCount === 8 ? 16 : colorCount === 16 ? 4 : 8; document.getElementById('colorCountBtn').textContent = colorCount + ' colors'; extractColors(document.getElementById('imgPreview')); }
-            function extractColors(img) {
-                const canvas = document.getElementById('imgCanvas');
-                const ctx = canvas.getContext('2d');
-                const MAX = 150;
-                const scale = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
-                canvas.width = Math.round(img.naturalWidth * scale);
-                canvas.height = Math.round(img.naturalHeight * scale);
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-                // Sample pixels and quantize
-                const buckets = {};
-                for (let i = 0; i < data.length; i += 16) {
-                    const r = data[i] & 0xF0, g = data[i + 1] & 0xF0, b = data[i + 2] & 0xF0;
-                    if (data[i + 3] < 128) continue;
-                    const key = `${r},${g},${b}`;
-                    buckets[key] = (buckets[key] || { count: 0, r: 0, g: 0, b: 0 });
-                    buckets[key].count++; buckets[key].r += data[i]; buckets[key].g += data[i + 1]; buckets[key].b += data[i + 2];
-                }
-                const sorted = Object.entries(buckets).sort((a, b) => b[1].count - a[1].count);
-                const colors = []; const MIN_DIFF = 40;
-                for (const [, v] of sorted) {
-                    if (colors.length >= colorCount) break;
-                    const r = Math.round(v.r / v.count), g = Math.round(v.g / v.count), b = Math.round(v.b / v.count);
-                    const tooClose = colors.some(c => Math.abs(c[0] - r) + Math.abs(c[1] - g) + Math.abs(c[2] - b) < MIN_DIFF);
-                    if (!tooClose) colors.push([r, g, b]);
-                }
-                renderPalette(colors);
+            const sorted = Object.entries(buckets).sort((a, b) => b[1].count - a[1].count);
+            const colors = []; const MIN_DIFF = 40;
+            for (const [, v] of sorted) {
+                if (colors.length >= colorCount) break;
+                const r = Math.round(v.r / v.count), g = Math.round(v.g / v.count), b = Math.round(v.b / v.count);
+                const tooClose = colors.some(c => Math.abs(c[0] - r) + Math.abs(c[1] - g) + Math.abs(c[2] - b) < MIN_DIFF);
+                if (!tooClose) colors.push([r, g, b]);
             }
-            function toHex(r, g, b) { return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('').toUpperCase(); }
-            function renderPalette(colors) {
-                const row = document.getElementById('paletteRow');
-                const vals = document.getElementById('paletteValues');
-                row.innerHTML = colors.map(([r, g, b]) => { const hex = toHex(r, g, b); return `<div title="${hex}" onclick="copy('${hex}')" style="flex:1;min-height:60px;background:${hex};cursor:pointer;transition:flex 0.15s" onmouseover="this.style.flex='1.5'" onmouseout="this.style.flex='1'"></div>`; }).join('');
-                vals.innerHTML = colors.map(([r, g, b]) => { const hex = toHex(r, g, b); return `<div class="hash-row"><div style="width:18px;height:18px;border-radius:4px;background:${hex};flex-shrink:0;border:1px solid var(--border)"></div><div class="hash-val" style="color:var(--orange)">${hex}</div><div style="font-size:0.72rem;color:var(--text-dim);min-width:120px">rgb(${r},${g},${b})</div><button class="uuid-copy" onclick="copy('${hex}')">⎘</button></div>`; }).join('');
-            }
-            function copyAllColors() {
-                const hexes = [...document.querySelectorAll('#paletteValues .hash-val')].map(el => el.textContent); copy(hexes.join('\n'));}
-        </script>
+            renderPalette(colors);
+        }
+        function toHex(r, g, b) { return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('').toUpperCase(); }
+        function renderPalette(colors) {
+            const row = document.getElementById('paletteRow');
+            const vals = document.getElementById('paletteValues');
+            row.innerHTML = colors.map(([r, g, b]) => { const hex = toHex(r, g, b); return `<div title="${hex}" onclick="copy('${hex}')" style="flex:1;min-height:60px;background:${hex};cursor:pointer;transition:flex 0.15s" onmouseover="this.style.flex='1.5'" onmouseout="this.style.flex='1'"></div>`; }).join('');
+            vals.innerHTML = colors.map(([r, g, b]) => { const hex = toHex(r, g, b); return `<div class="hash-row"><div style="width:18px;height:18px;border-radius:4px;background:${hex};flex-shrink:0;border:1px solid var(--border)"></div><div class="hash-val" style="color:var(--orange)">${hex}</div><div style="font-size:0.72rem;color:var(--text-dim);min-width:120px">rgb(${r},${g},${b})</div><button class="uuid-copy" onclick="copy('${hex}')">⎘</button></div>`; }).join('');
+        }
+        function copyAllColors() {
+            const hexes = [...document.querySelectorAll('#paletteValues .hash-val')].map(el => el.textContent); copy(hexes.join('\n'));
+        }
+    </script>
 </body>
 </html>

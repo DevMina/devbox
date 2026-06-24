@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Test regular expressions with live match highlighting">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Regex Tester — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="Regex Tester — DevBox">
-<meta property="og:description" content="Test regular expressions with live match highlighting">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Test regular expressions with live match highlighting">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regex Tester — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="Regex Tester — DevBox">
+    <meta property="og:description" content="Test regular expressions with live match highlighting">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -64,11 +64,11 @@
 
         </main><!-- /content-wrap -->
     </div>
-        <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
-        <script src="../assets/sidebar.js" defer></script>
-        <script>
-            function regexTest() { const pat = document.getElementById('regexPattern').value, str = document.getElementById('regexInput').value, g = document.getElementById('regexGlobal').checked, i = document.getElementById('regexInsens').checked, m = document.getElementById('regexMulti').checked, out = document.getElementById('regexOutput'), cnt = document.getElementById('matchCount'), st = document.getElementById('regexStatus'), gp = document.getElementById('regexGroupPanel'); if (!pat) { out.innerHTML = escHtml(str); cnt.textContent = ''; st.innerHTML = ''; gp.style.display = 'none'; return; } let rx; try { rx = new RegExp(pat, (g ? 'g' : '') + (i ? 'i' : '') + (m ? 'm' : '')); st.innerHTML = '<span class="status-badge badge-ok">✓</span>'; } catch (e) { st.innerHTML = '<span class="status-badge badge-err">Invalid regex</span>'; out.innerHTML = escHtml(str); cnt.textContent = ''; gp.style.display = 'none'; return; } const matches = [...str.matchAll(new RegExp(pat, 'g' + (i ? 'i' : '') + (m ? 'm' : '')))]; cnt.textContent = matches.length ? matches.length + ' match' + (matches.length !== 1 ? 'es' : '') : 'No matches'; let result = '', last = 0; const hRx = new RegExp(pat, 'g' + (i ? 'i' : '') + (m ? 'm' : '')); let match; while ((match = hRx.exec(str)) !== null) { result += escHtml(str.slice(last, match.index)); result += `<span class="regex-match">${escHtml(match[0])}</span>`; last = hRx.lastIndex; if (!g) break; } result += escHtml(str.slice(last)); out.innerHTML = result; const hasGroups = matches.some(m => m.length > 1); if (hasGroups) { gp.style.display = ''; document.getElementById('regexGroups').textContent = matches.map((m, i) => `Match ${i + 1}: ${m.slice(1).map((g, j) => 'Group ' + (j + 1) + ': "' + g + '"').join(', ')}`).join('\n'); } else gp.style.display = 'none'; }
-        </script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        function regexTest() { const pat = document.getElementById('regexPattern').value, str = document.getElementById('regexInput').value, g = document.getElementById('regexGlobal').checked, i = document.getElementById('regexInsens').checked, m = document.getElementById('regexMulti').checked, out = document.getElementById('regexOutput'), cnt = document.getElementById('matchCount'), st = document.getElementById('regexStatus'), gp = document.getElementById('regexGroupPanel'); if (!pat) { out.innerHTML = escHtml(str); cnt.textContent = ''; st.innerHTML = ''; gp.style.display = 'none'; return; } let rx; try { rx = new RegExp(pat, (g ? 'g' : '') + (i ? 'i' : '') + (m ? 'm' : '')); st.innerHTML = '<span class="status-badge badge-ok">✓</span>'; } catch (e) { st.innerHTML = '<span class="status-badge badge-err">Invalid regex</span>'; out.innerHTML = escHtml(str); cnt.textContent = ''; gp.style.display = 'none'; return; } const matches = [...str.matchAll(new RegExp(pat, 'g' + (i ? 'i' : '') + (m ? 'm' : '')))]; cnt.textContent = matches.length ? matches.length + ' match' + (matches.length !== 1 ? 'es' : '') : 'No matches'; let result = '', last = 0; const hRx = new RegExp(pat, 'g' + (i ? 'i' : '') + (m ? 'm' : '')); let match; while ((match = hRx.exec(str)) !== null) { result += escHtml(str.slice(last, match.index)); result += `<span class="regex-match">${escHtml(match[0])}</span>`; last = hRx.lastIndex; if (!g) break; } result += escHtml(str.slice(last)); out.innerHTML = result; const hasGroups = matches.some(m => m.length > 1); if (hasGroups) { gp.style.display = ''; document.getElementById('regexGroups').textContent = matches.map((m, i) => `Match ${i + 1}: ${m.slice(1).map((g, j) => 'Group ' + (j + 1) + ': "' + g + '"').join(', ')}`).join('\n'); } else gp.style.display = 'none'; }
+    </script>
 </body>
 </html>

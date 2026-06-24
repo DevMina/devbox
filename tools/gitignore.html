@@ -1,143 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>.gitignore Generator — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<style>
-.tag-cloud{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:4px}
-.tag{padding:5px 13px;border-radius:20px;font-family:var(--mono);font-size:0.73rem;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);cursor:pointer;transition:all var(--transition);user-select:none}
-.tag:hover{border-color:var(--border2);color:var(--text)}
-.tag.selected{background:var(--teal-dim);border-color:var(--teal);color:var(--teal)}
-.search-input{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:9px 12px;font-family:var(--mono);font-size:0.82rem;color:var(--text);outline:none;transition:border-color var(--transition);margin-bottom:12px}
-.search-input:focus{border-color:var(--teal)}
-.selected-list{display:flex;flex-wrap:wrap;gap:6px;min-height:30px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:10px}
-.sel-tag{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;background:var(--teal-dim);border:1px solid var(--teal);color:var(--teal);font-family:var(--mono);font-size:0.72rem}
-.sel-tag button{background:none;border:none;cursor:pointer;color:var(--teal);font-size:0.75rem;padding:0;line-height:1}
-#output{font-size:0.78rem;white-space:pre;overflow-x:auto;color:var(--text-dim);min-height:100px}
-.section-head{font-family:var(--mono);font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dim);margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
-</style>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.gitignore Generator — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-bottom: 4px
+        }
+
+        .tag {
+            padding: 5px 13px;
+            border-radius: 20px;
+            font-family: var(--mono);
+            font-size: 0.73rem;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all var(--transition);
+            user-select: none
+        }
+
+            .tag:hover {
+                border-color: var(--border2);
+                color: var(--text)
+            }
+
+            .tag.selected {
+                background: var(--teal-dim);
+                border-color: var(--teal);
+                color: var(--teal)
+            }
+
+        .search-input {
+            width: 100%;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--r-sm);
+            padding: 9px 12px;
+            font-family: var(--mono);
+            font-size: 0.82rem;
+            color: var(--text);
+            outline: none;
+            transition: border-color var(--transition);
+            margin-bottom: 12px
+        }
+
+            .search-input:focus {
+                border-color: var(--teal)
+            }
+
+        .selected-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            min-height: 30px;
+            padding: 8px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+            margin-bottom: 10px
+        }
+
+        .sel-tag {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: var(--teal-dim);
+            border: 1px solid var(--teal);
+            color: var(--teal);
+            font-family: var(--mono);
+            font-size: 0.72rem
+        }
+
+            .sel-tag button {
+                background: none;
+                border: none;
+                cursor: pointer;
+                color: var(--teal);
+                font-size: 0.75rem;
+                padding: 0;
+                line-height: 1
+            }
+
+        #output {
+            font-size: 0.78rem;
+            white-space: pre;
+            overflow-x: auto;
+            color: var(--text-dim);
+            min-height: 100px
+        }
+
+        .section-head {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            margin: 12px 0 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--border)
+        }
+    </style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <main class="content-wrap">
-    <div class="content">
-      <div class="tool-header">
-        <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">.gi</div>
-        <div><div class="tool-title">.gitignore Generator</div><div class="tool-desc">Generate .gitignore files for any language, framework or tool</div></div>
-      </div>
-      <div class="panel">
-        <div class="panel-bar"><span class="panel-label">Select Technologies</span></div>
-        <input class="search-input" id="searchInput" placeholder="Search languages & frameworks…" oninput="filterTags()">
-        <div style="font-family:var(--mono);font-size:0.68rem;color:var(--text-dim);margin-bottom:6px">Selected:</div>
-        <div class="selected-list" id="selectedList"><span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);opacity:0.5">None selected — click tags below</span></div>
-        <div id="tagCloud" class="tag-cloud"></div>
-      </div>
-      <div class="panel" id="outputPanel" style="display:none">
-        <div class="panel-bar">
-          <span class="panel-label">.gitignore</span>
-          <div class="panel-actions">
-            <button class="btn btn-ghost" onclick="copy()">⎘ Copy</button>
-            <button class="btn btn-ghost" onclick="download()">↓ Download</button>
-          </div>
-        </div>
-        <div id="output" class="output-area"></div>
-      </div>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">.gi</div>
+                    <div><div class="tool-title">.gitignore Generator</div><div class="tool-desc">Generate .gitignore files for any language, framework or tool</div></div>
+                </div>
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Select Technologies</span></div>
+                    <input class="search-input" id="searchInput" placeholder="Search languages & frameworks…" oninput="filterTags()">
+                    <div style="font-family:var(--mono);font-size:0.68rem;color:var(--text-dim);margin-bottom:6px">Selected:</div>
+                    <div class="selected-list" id="selectedList"><span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);opacity:0.5">None selected — click tags below</span></div>
+                    <div id="tagCloud" class="tag-cloud"></div>
+                </div>
+                <div class="panel" id="outputPanel" style="display:none">
+                    <div class="panel-bar">
+                        <span class="panel-label">.gitignore</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="copy()">⎘ Copy</button>
+                            <button class="btn btn-ghost" onclick="download()">↓ Download</button>
+                        </div>
+                    </div>
+                    <div id="output" class="output-area"></div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
     </div>
-    <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
-  </main>
-</div>
-<div class="toast" id="toast"></div>
-<script src="../assets/shared.js" defer></script>
-<script src="../assets/sidebar.js" defer></script>
-<script>
-const TEMPLATES = {
-  'Node.js':    `# Node.js\nnode_modules/\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*\n.npm\n.yarn-integrity\n.env\n.env.local\n.env.*.local\ndist/\nbuild/\n.cache/\n*.log`,
-  'Python':     `# Python\n__pycache__/\n*.py[cod]\n*$py.class\n*.so\n.Python\nbuild/\ndist/\n*.egg-info/\n.eggs/\n*.egg\n.venv/\nvenv/\nenv/\n.env\n*.pyo\npip-log.txt\npip-delete-this-directory.txt\n.pytest_cache/\n.mypy_cache/\n.ruff_cache/\n*.cover\n.hypothesis/`,
-  'React':      `# React\nnode_modules/\nbuild/\n.env\n.env.local\n.env.*.local\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*\n.DS_Store`,
-  'Vue':        `# Vue\nnode_modules/\ndist/\ndist-ssr/\n*.local\n.DS_Store`,
-  'Next.js':    `# Next.js\nnode_modules/\n.next/\nout/\nbuild/\n.env\n.env.local\n.env.*.local\nnpm-debug.log*`,
-  'Angular':    `# Angular\nnode_modules/\ndist/\n.angular/\n.cache/\n*.js.map\n.env`,
-  'Django':     `# Django\n*.pyc\n__pycache__/\ndb.sqlite3\nmedia/\nstaticfiles/\n.env\nvenv/\n*.log`,
-  'Flask':      `# Flask\n__pycache__/\n*.pyc\n.env\nvenv/\ninstance/\n.webassets-cache`,
-  'Laravel':    `# Laravel\nvendor/\n.env\n.env.backup\n.phpunit.result.cache\nstorage/*.key\npublic/storage\nbootstrap/cache/`,
-  'Ruby on Rails': `# Rails\n*.rbc\ncapybara-*.html\n.rspec\n/log/\n/tmp/\n/db/*.sqlite3\n/public/system\n/spec/tmp\n**.orig\nrerun.txt\npickle-email-*.html\n.bundle\nbundle/\ndb/*.sqlite3`,
-  'Java':       `# Java\n*.class\n*.log\n*.jar\n*.war\n*.ear\n*.zip\n*.tar.gz\n*.rar\ntarget/\nbuild/\nout/\n.gradle/\n.idea/\n*.iml`,
-  'Kotlin':     `# Kotlin\n*.class\n.gradle/\nbuild/\n.idea/\n*.iml\nout/\n*.kotlin_module`,
-  'Swift':      `# Swift\n.build/\n.swiftpm/\n*.xcodeproj/xcuserdata/\n*.xcworkspace/xcuserdata/\nDerivedData/\n.DS_Store`,
-  'Go':         `# Go\n*.exe\n*.exe~\n*.dll\n*.so\n*.dylib\n*.test\n*.out\nvendor/\nbin/`,
-  'Rust':       `# Rust\n/target/\nCargo.lock`,
-  'C/C++':      `# C/C++\n*.d\n*.slo\n*.lo\n*.o\n*.obj\n*.so\n*.dylib\n*.dll\n*.exe\nbuild/\ncmake-build-*/`,
-  'C#':         `# C#\nbuild/\nBin/\nObj/\n*.user\n*.suo\n*.userosscache\n*.sln.docstates\n[Dd]ebug/\n[Rr]elease/\n.vs/`,
-  'PHP':        `# PHP\nvendor/\ncomposer.phar\n*.log`,
-  'TypeScript': `# TypeScript\nnode_modules/\ndist/\n*.js.map\n*.d.ts.map\n.tsbuildinfo`,
-  'Svelte':     `# Svelte\nnode_modules/\n.svelte-kit/\nbuild/\n.env`,
-  'Nuxt.js':    `# Nuxt\nnode_modules/\n.nuxt/\ndist/\n.output/\n.env`,
-  'Docker':     `# Docker\n.env\ndocker-compose.override.yml`,
-  'Terraform':  `# Terraform\n.terraform/\n*.tfstate\n*.tfstate.backup\n*.tfvars\noverride.tf\noverride.tf.json\n*_override.tf\ncrash.log`,
-  'macOS':      `# macOS\n.DS_Store\n.AppleDouble\n.LSOverride\nIcon\n._*\n.DocumentRevisions-V100\n.fseventsd\n.Spotlight-V100\n.TemporaryItems\n.Trashes\n.VolumeIcon.icns\n.com.apple.timemachine.donotpresent`,
-  'Windows':    `# Windows\nThumbs.db\nThumbs.db:encryptable\nehthumbs.db\nehthumbs_vista.db\n*.stackdump\n[Dd]esktop.ini\n$RECYCLE.BIN/\n*.cab\n*.msi\n*.msix\n*.msm\n*.msp\n*.lnk`,
-  'Linux':      `# Linux\n*~\n.fuse_hidden*\n.directory\n.Trash-*\n.nfs*`,
-  'VS Code':    `# VS Code\n.vscode/*\n!.vscode/settings.json\n!.vscode/tasks.json\n!.vscode/launch.json\n!.vscode/extensions.json\n!.vscode/*.code-snippets\n.history/\n*.vsix`,
-  'JetBrains':  `# JetBrains IDEs\n.idea/\n*.iml\n*.iws\nout/\n.idea_modules/`,
-  'Vim':        `# Vim\n[._]*.s[a-v][a-z]\n!*.svg\n[._]*.sw[a-p]\n[._]s[a-rt-v][a-z]\n[._]ss[a-gi-z]\n[._]sw[a-p]\n.netrwhist\n*~\ntags\n[._]*.un~`,
-  'Jupyter':    `# Jupyter\n.ipynb_checkpoints/\n*.ipynb_checkpoints`,
-  'Sass/SCSS':  `# Sass\n.sass-cache/\n*.css.map\n*.sass.map\n*.scss.map`,
-  'WordPress':  `# WordPress\nwp-content/uploads/\nwp-content/cache/\n*.log\n.env`,
-  'Unity':      `# Unity\n[Ll]ibrary/\n[Tt]emp/\n[Oo]bj/\n[Bb]uild/\n[Bb]uilds/\n[Ll]ogs/\n*.pidb\n*.booproj\n*.svd\n*.userprefs\n*.csproj\n*.unityproj\n*.sln`,
-};
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        const TEMPLATES = {
+            'Node.js': `# Node.js\nnode_modules/\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*\n.npm\n.yarn-integrity\n.env\n.env.local\n.env.*.local\ndist/\nbuild/\n.cache/\n*.log`,
+            'Python': `# Python\n__pycache__/\n*.py[cod]\n*$py.class\n*.so\n.Python\nbuild/\ndist/\n*.egg-info/\n.eggs/\n*.egg\n.venv/\nvenv/\nenv/\n.env\n*.pyo\npip-log.txt\npip-delete-this-directory.txt\n.pytest_cache/\n.mypy_cache/\n.ruff_cache/\n*.cover\n.hypothesis/`,
+            'React': `# React\nnode_modules/\nbuild/\n.env\n.env.local\n.env.*.local\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*\n.DS_Store`,
+            'Vue': `# Vue\nnode_modules/\ndist/\ndist-ssr/\n*.local\n.DS_Store`,
+            'Next.js': `# Next.js\nnode_modules/\n.next/\nout/\nbuild/\n.env\n.env.local\n.env.*.local\nnpm-debug.log*`,
+            'Angular': `# Angular\nnode_modules/\ndist/\n.angular/\n.cache/\n*.js.map\n.env`,
+            'Django': `# Django\n*.pyc\n__pycache__/\ndb.sqlite3\nmedia/\nstaticfiles/\n.env\nvenv/\n*.log`,
+            'Flask': `# Flask\n__pycache__/\n*.pyc\n.env\nvenv/\ninstance/\n.webassets-cache`,
+            'Laravel': `# Laravel\nvendor/\n.env\n.env.backup\n.phpunit.result.cache\nstorage/*.key\npublic/storage\nbootstrap/cache/`,
+            'Ruby on Rails': `# Rails\n*.rbc\ncapybara-*.html\n.rspec\n/log/\n/tmp/\n/db/*.sqlite3\n/public/system\n/spec/tmp\n**.orig\nrerun.txt\npickle-email-*.html\n.bundle\nbundle/\ndb/*.sqlite3`,
+            'Java': `# Java\n*.class\n*.log\n*.jar\n*.war\n*.ear\n*.zip\n*.tar.gz\n*.rar\ntarget/\nbuild/\nout/\n.gradle/\n.idea/\n*.iml`,
+            'Kotlin': `# Kotlin\n*.class\n.gradle/\nbuild/\n.idea/\n*.iml\nout/\n*.kotlin_module`,
+            'Swift': `# Swift\n.build/\n.swiftpm/\n*.xcodeproj/xcuserdata/\n*.xcworkspace/xcuserdata/\nDerivedData/\n.DS_Store`,
+            'Go': `# Go\n*.exe\n*.exe~\n*.dll\n*.so\n*.dylib\n*.test\n*.out\nvendor/\nbin/`,
+            'Rust': `# Rust\n/target/\nCargo.lock`,
+            'C/C++': `# C/C++\n*.d\n*.slo\n*.lo\n*.o\n*.obj\n*.so\n*.dylib\n*.dll\n*.exe\nbuild/\ncmake-build-*/`,
+            'C#': `# C#\nbuild/\nBin/\nObj/\n*.user\n*.suo\n*.userosscache\n*.sln.docstates\n[Dd]ebug/\n[Rr]elease/\n.vs/`,
+            'PHP': `# PHP\nvendor/\ncomposer.phar\n*.log`,
+            'TypeScript': `# TypeScript\nnode_modules/\ndist/\n*.js.map\n*.d.ts.map\n.tsbuildinfo`,
+            'Svelte': `# Svelte\nnode_modules/\n.svelte-kit/\nbuild/\n.env`,
+            'Nuxt.js': `# Nuxt\nnode_modules/\n.nuxt/\ndist/\n.output/\n.env`,
+            'Docker': `# Docker\n.env\ndocker-compose.override.yml`,
+            'Terraform': `# Terraform\n.terraform/\n*.tfstate\n*.tfstate.backup\n*.tfvars\noverride.tf\noverride.tf.json\n*_override.tf\ncrash.log`,
+            'macOS': `# macOS\n.DS_Store\n.AppleDouble\n.LSOverride\nIcon\n._*\n.DocumentRevisions-V100\n.fseventsd\n.Spotlight-V100\n.TemporaryItems\n.Trashes\n.VolumeIcon.icns\n.com.apple.timemachine.donotpresent`,
+            'Windows': `# Windows\nThumbs.db\nThumbs.db:encryptable\nehthumbs.db\nehthumbs_vista.db\n*.stackdump\n[Dd]esktop.ini\n$RECYCLE.BIN/\n*.cab\n*.msi\n*.msix\n*.msm\n*.msp\n*.lnk`,
+            'Linux': `# Linux\n*~\n.fuse_hidden*\n.directory\n.Trash-*\n.nfs*`,
+            'VS Code': `# VS Code\n.vscode/*\n!.vscode/settings.json\n!.vscode/tasks.json\n!.vscode/launch.json\n!.vscode/extensions.json\n!.vscode/*.code-snippets\n.history/\n*.vsix`,
+            'JetBrains': `# JetBrains IDEs\n.idea/\n*.iml\n*.iws\nout/\n.idea_modules/`,
+            'Vim': `# Vim\n[._]*.s[a-v][a-z]\n!*.svg\n[._]*.sw[a-p]\n[._]s[a-rt-v][a-z]\n[._]ss[a-gi-z]\n[._]sw[a-p]\n.netrwhist\n*~\ntags\n[._]*.un~`,
+            'Jupyter': `# Jupyter\n.ipynb_checkpoints/\n*.ipynb_checkpoints`,
+            'Sass/SCSS': `# Sass\n.sass-cache/\n*.css.map\n*.sass.map\n*.scss.map`,
+            'WordPress': `# WordPress\nwp-content/uploads/\nwp-content/cache/\n*.log\n.env`,
+            'Unity': `# Unity\n[Ll]ibrary/\n[Tt]emp/\n[Oo]bj/\n[Bb]uild/\n[Bb]uilds/\n[Ll]ogs/\n*.pidb\n*.booproj\n*.svd\n*.userprefs\n*.csproj\n*.unityproj\n*.sln`,
+        };
 
-let selected = new Set();
-let allKeys = Object.keys(TEMPLATES);
+        let selected = new Set();
+        let allKeys = Object.keys(TEMPLATES);
 
-function filterTags() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  renderTags(allKeys.filter(k => k.toLowerCase().includes(q)));
-}
+        function filterTags() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            renderTags(allKeys.filter(k => k.toLowerCase().includes(q)));
+        }
 
-function renderTags(keys) {
-  document.getElementById('tagCloud').innerHTML = keys.map(k =>
-    `<div class="tag${selected.has(k)?' selected':''}" onclick="toggleTag('${k}')">${k}</div>`
-  ).join('');
-}
+        function renderTags(keys) {
+            document.getElementById('tagCloud').innerHTML = keys.map(k =>
+                `<div class="tag${selected.has(k) ? ' selected' : ''}" onclick="toggleTag('${k}')">${k}</div>`
+            ).join('');
+        }
 
-function toggleTag(k) {
-  selected.has(k) ? selected.delete(k) : selected.add(k);
-  renderTags(allKeys.filter(k2 => k2.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase())));
-  renderSelected();
-  buildOutput();
-}
+        function toggleTag(k) {
+            selected.has(k) ? selected.delete(k) : selected.add(k);
+            renderTags(allKeys.filter(k2 => k2.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase())));
+            renderSelected();
+            buildOutput();
+        }
 
-function renderSelected() {
-  const list = document.getElementById('selectedList');
-  if (!selected.size) {
-    list.innerHTML='<span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);opacity:0.5">None selected — click tags below</span>';
-    return;
-  }
-  list.innerHTML = [...selected].map(k =>
-    `<div class="sel-tag">${k}<button onclick="toggleTag('${k}')">✕</button></div>`
-  ).join('');
-}
+        function renderSelected() {
+            const list = document.getElementById('selectedList');
+            if (!selected.size) {
+                list.innerHTML = '<span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);opacity:0.5">None selected — click tags below</span>';
+                return;
+            }
+            list.innerHTML = [...selected].map(k =>
+                `<div class="sel-tag">${k}<button onclick="toggleTag('${k}')">✕</button></div>`
+            ).join('');
+        }
 
-function buildOutput() {
-  if (!selected.size) { document.getElementById('outputPanel').style.display='none'; return; }
-  const parts = [...selected].map(k => TEMPLATES[k]);
-  const out = `# Generated by DevBox .gitignore Generator\n# https://devtoolstack.github.io\n\n` + parts.join('\n\n');
-  document.getElementById('output').textContent = out;
-  document.getElementById('outputPanel').style.display='';
-}
+        function buildOutput() {
+            if (!selected.size) { document.getElementById('outputPanel').style.display = 'none'; return; }
+            const parts = [...selected].map(k => TEMPLATES[k]);
+            const out = `# Generated by DevBox .gitignore Generator\n# https://devtoolstack.github.io\n\n` + parts.join('\n\n');
+            document.getElementById('output').textContent = out;
+            document.getElementById('outputPanel').style.display = '';
+        }
 
-function copy(){const t=document.getElementById('output').textContent;navigator.clipboard.writeText(t).then(()=>showToast('Copied!'));}
-function download(){const t=document.getElementById('output').textContent;if(!t)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='.gitignore';a.click();}
-function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
+        function copy() { const t = document.getElementById('output').textContent; navigator.clipboard.writeText(t).then(() => showToast('Copied!')); }
+        function download() { const t = document.getElementById('output').textContent; if (!t) return; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([t], { type: 'text/plain' })); a.download = '.gitignore'; a.click(); }
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
 
-renderTags(allKeys);
-</script>
+        renderTags(allKeys);
+    </script>
 </body>
 </html>

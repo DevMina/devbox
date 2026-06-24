@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Generate robots.txt and XML sitemaps">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SEO Tools — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="SEO Tools — DevBox">
-<meta property="og:description" content="Generate robots.txt and XML sitemaps">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Generate robots.txt and XML sitemaps">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Tools — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="SEO Tools — DevBox">
+    <meta property="og:description" content="Generate robots.txt and XML sitemaps">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -78,8 +78,8 @@
         function genRobots() {
             const site = document.getElementById('robotsSite').value.trim() || 'https://example.com';
             const disallowRaw = document.getElementById('robotsDisallow').value.trim();
-            const disallows = disallowRaw ? disallowRaw.split('\n').filter(l=>l.trim()):[];
-      const blockAI = document.getElementById('robotsAI').checked;
+            const disallows = disallowRaw ? disallowRaw.split('\n').filter(l => l.trim()) : [];
+            const blockAI = document.getElementById('robotsAI').checked;
             const showSitemap = document.getElementById('robotsSitemap').checked;
             let out = 'User-agent: *\n            ';
             disallows.forEach(p => {
@@ -88,35 +88,37 @@
             });
             if (!disallows.length) out += 'Disallow:\n            ';
             if (blockAI) {
-                out += '\n# Block AI crawlers\n                User - agent: GPTBot\n                Disallow: /\n\n                User - agent: ChatGPT - User\n                Disallow: /\n\n                User - agent: CCBot\n                Disallow: /\n\n                User - agent: anthropic - ai\n                Disallow: /\n                ';}
-                if (document.getElementById('robotsGooglebot').checked) {
-                    out += '\n                    User - agent: Googlebot\n                    Allow: /\n                    ';}
-                    if (showSitemap) {
-                        out += `
+                out += '\n# Block AI crawlers\n                User - agent: GPTBot\n                Disallow: /\n\n                User - agent: ChatGPT - User\n                Disallow: /\n\n                User - agent: CCBot\n                Disallow: /\n\n                User - agent: anthropic - ai\n                Disallow: /\n                ';
+            }
+            if (document.getElementById('robotsGooglebot').checked) {
+                out += '\n                    User - agent: Googlebot\n                    Allow: /\n                    ';
+            }
+            if (showSitemap) {
+                out += `
 Sitemap: ${site}/sitemap.xml
 `;
-                    }
-                    document.getElementById('robotsOut').textContent = out;
-                }
-                function genSitemap() {
-                    const base = (document.getElementById('sitemapBase').value.trim() || 'https://example.com').replace(/\/$/, '');
-                    const pages = document.getElementById('sitemapPages').value.trim().split('\n').filter(l=>l.trim());
-      const freq = document.getElementById('sitemapFreq').value;
-                    const today = new Date().toISOString().slice(0, 10);
-                    let out = '<?xml version="1.0" encoding="UTF-8"?>\n                        < urlset xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9" >\n                            ';
-                    pages.forEach(p => {
-                        const path = p.trim().startsWith('/') ? p.trim() : '/' + p.trim(); out += `  <url>
-        <loc>${base}${path}</loc>
-        <lastmod>${today}</lastmod>
-        <changefreq>${freq}</changefreq>
-        <priority>${p.trim() === '/' ? '1.0' : '0.8'}</priority>
-      </url>
+            }
+            document.getElementById('robotsOut').textContent = out;
+        }
+        function genSitemap() {
+            const base = (document.getElementById('sitemapBase').value.trim() || 'https://example.com').replace(/\/$/, '');
+            const pages = document.getElementById('sitemapPages').value.trim().split('\n').filter(l => l.trim());
+            const freq = document.getElementById('sitemapFreq').value;
+            const today = new Date().toISOString().slice(0, 10);
+            let out = '<?xml version="1.0" encoding="UTF-8"?>\n                        < urlset xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9" >\n                            ';
+            pages.forEach(p => {
+                const path = p.trim().startsWith('/') ? p.trim() : '/' + p.trim(); out += `  <url>
+            <loc>${base}${path}</loc>
+            <lastmod>${today}</lastmod>
+            <changefreq>${freq}</changefreq>
+            <priority>${p.trim() === '/' ? '1.0' : '0.8'}</priority>
+          </url>
 `;
-                    });
-                    out += '</urlset>';
-                    document.getElementById('sitemapOut').textContent = out;
-                }
-                document.addEventListener('DOMContentLoaded', () => { genRobots(); genSitemap(); });
+            });
+            out += '</urlset>';
+            document.getElementById('sitemapOut').textContent = out;
+        }
+        document.addEventListener('DOMContentLoaded', () => { genRobots(); genSitemap(); });
     </script>
 </body>
 </html>

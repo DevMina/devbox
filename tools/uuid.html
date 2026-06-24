@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Generate RFC 4122 v4 UUIDs in bulk">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UUID Generator — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="UUID Generator — DevBox">
-<meta property="og:description" content="Generate RFC 4122 v4 UUIDs in bulk">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Generate RFC 4122 v4 UUIDs in bulk">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UUID Generator — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="UUID Generator — DevBox">
+    <meta property="og:description" content="Generate RFC 4122 v4 UUIDs in bulk">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -54,14 +54,14 @@
 
         </main><!-- /content-wrap -->
     </div>
-        <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
-        <script src="../assets/sidebar.js" defer></script>
-        <script>
-            function uuidV4() { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8); return v.toString(16); }); }
-            function uuidGenerate() { const n = Math.max(1, Math.min(50, parseInt(document.getElementById('uuidCount').value) || 5)); const list = document.getElementById('uuidList'); list.innerHTML = ''; for (let i = 0; i < n; i++) { const id = uuidV4(); const row = document.createElement('div'); row.className = 'uuid-row'; row.innerHTML = `<span>${id}</span><button class="uuid-copy" onclick="copy('${id}')">⎘</button>`; list.appendChild(row); } }
-            function uuidCopyAll() { const ids = [...document.querySelectorAll('.uuid-row span')].map(s => s.textContent).join('\n'); copy(ids); }
-            document.addEventListener('DOMContentLoaded', uuidGenerate);
-        </script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        function uuidV4() { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8); return v.toString(16); }); }
+        function uuidGenerate() { const n = Math.max(1, Math.min(50, parseInt(document.getElementById('uuidCount').value) || 5)); const list = document.getElementById('uuidList'); list.innerHTML = ''; for (let i = 0; i < n; i++) { const id = uuidV4(); const row = document.createElement('div'); row.className = 'uuid-row'; row.innerHTML = `<span>${id}</span><button class="uuid-copy" onclick="copy('${id}')">⎘</button>`; list.appendChild(row); } }
+        function uuidCopyAll() { const ids = [...document.querySelectorAll('.uuid-row span')].map(s => s.textContent).join('\n'); copy(ids); }
+        document.addEventListener('DOMContentLoaded', uuidGenerate);
+    </script>
 </body>
 </html>

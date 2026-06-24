@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Minify and beautify CSS with size savings">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CSS Minifier — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="CSS Minifier — DevBox">
-<meta property="og:description" content="Minify and beautify CSS with size savings">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Minify and beautify CSS with size savings">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Minifier — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="CSS Minifier — DevBox">
+    <meta property="og:description" content="Minify and beautify CSS with size savings">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -58,29 +58,62 @@
     <script>
         function cssMinify() { const css = document.getElementById('cssInput').value; if (!css.trim()) return; let min = css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ').replace(/\s*{\s*/g, '{').replace(/\s*}\s*/g, '}').replace(/\s*:\s*/g, ':').replace(/\s*;\s*/g, ';').replace(/\s*,\s*/g, ',').replace(/;}/g, '}').trim(); document.getElementById('cssOutput').textContent = min; showSavings(css, min); }
         function cssBeautify() {
-            let css = document.getElementById('cssInput').value; if (!css.trim()) return; css = css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ').trim(); let result = '', depth = 0; for (let i = 0; i < css.length; i++) {
-                const c = css[i]; if (c === '{') {
-                    result += ' {\n                    '+'  '.repeat(++depth);}else if(c==='\n                } '){result=result.trimEnd();result+='\n                '+'  '.repeat(--depth)+'\n            }\n\n            ';}else if(c==='; '){result+=';\n            '+'  '.repeat(depth);}else if(c===', '){result+=depth===0?',\n                ':', ';}else result+=c;}result=result.replace(/\n{3,}/g,'\n\n            ').trim();document.getElementById('cssOutput').textContent=result;showSavings(css,result);}
-            function showSavings(o, r) { const saved = o.length - r.length, pct = o.length > 0 ? Math.round(saved / o.length * 100) : 0, color = saved >= 0 ? 'var(--green)' : 'var(--red)'; document.getElementById('cssSavings').innerHTML = `<div style="display:flex;gap:16px;font-family:var(--mono);font-size:0.78rem;padding:4px 0"><span style="color:var(--text-dim)">Original: <strong style="color:var(--text)">${o.length} chars</strong></span><span style="color:var(--text-dim)">Output: <strong style="color:var(--text)">${r.length} chars</strong></span><span style="color:var(--text-dim)">Saved: <strong style="color:${color}">${saved >= 0 ? '-' : '+'}${Math.abs(saved)} chars (${pct}%)</strong></span></div>`; }
-            function cssSample() {
-                document.getElementById('cssInput').value = `.container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      padding: 24px 32px;
-      background-color: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            const css = document.getElementById('cssInput').value;
+
+            if (!css.trim()) return;
+
+            let formatted = css
+                .replace(/\/\*[\s\S]*?\*\//g, '')
+                .replace(/\s*{\s*/g, ' {\n')
+                .replace(/\s*}\s*/g, '\n}\n')
+                .replace(/\s*;\s*/g, ';\n')
+                .replace(/\n{2,}/g, '\n');
+
+            let indent = 0;
+            const lines = formatted.split('\n');
+            let output = '';
+
+            lines.forEach(line => {
+                line = line.trim();
+
+                if (!line) return;
+
+                if (line.startsWith('}')) {
+                    indent--;
+                }
+
+                output += '  '.repeat(Math.max(0, indent)) + line + '\n';
+
+                if (line.endsWith('{')) {
+                    indent++;
+                }
+            });
+
+            output = output.trim();
+
+            document.getElementById('cssOutput').textContent = output;
+            showSavings(css, output);
+        }
+        function showSavings(o, r) { const saved = o.length - r.length, pct = o.length > 0 ? Math.round(saved / o.length * 100) : 0, color = saved >= 0 ? 'var(--green)' : 'var(--red)'; document.getElementById('cssSavings').innerHTML = `<div style="display:flex;gap:16px;font-family:var(--mono);font-size:0.78rem;padding:4px 0"><span style="color:var(--text-dim)">Original: <strong style="color:var(--text)">${o.length} chars</strong></span><span style="color:var(--text-dim)">Output: <strong style="color:var(--text)">${r.length} chars</strong></span><span style="color:var(--text-dim)">Saved: <strong style="color:${color}">${saved >= 0 ? '-' : '+'}${Math.abs(saved)} chars (${pct}%)</strong></span></div>`; }
+        function cssSample() {
+            document.getElementById('cssInput').value = `.container {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  gap: 16px;
+                  padding: 24px 32px;
+                  background-color: #ffffff;
+                  border-radius: 12px;
+                  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
 .title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #1a1a2e;
-      margin: 0 0 8px 0;
+                  font-size: 1.5rem;
+                  font-weight: 700;
+                  color: #1a1a2e;
+                  margin: 0 0 8px 0;
 }`;
-            }
+        }
     </script>
 </body>
 </html>

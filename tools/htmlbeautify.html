@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script>(function(){var k='devbox_theme',t=localStorage.getItem(k)||'dark';document.documentElement.setAttribute('data-theme',t);function a(th){document.documentElement.setAttribute('data-theme',th);localStorage.setItem(k,th);document.querySelectorAll('.theme-toggle').forEach(function(b){var i=b.querySelector('.theme-toggle-icon'),l=b.querySelector('.theme-toggle-label');if(i)i.textContent=th==='light'?'🌙':'☀️';if(l)l.textContent=th==='light'?'Dark mode':'Light mode';});}window.toggleTheme=function(){a(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');};window.applyTheme=a;})();</script>
-<meta name="description" content="DevBox — Format and indent HTML markup">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HTML Beautifier — DevBox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="../assets/style.css">
-<meta property="og:title" content="HTML Beautifier — DevBox">
-<meta property="og:description" content="Format and indent HTML markup">
-<meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Format and indent HTML markup">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Beautifier — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="HTML Beautifier — DevBox">
+    <meta property="og:description" content="Format and indent HTML markup">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -61,9 +61,13 @@
             let html = document.getElementById('htmlBInput').value.trim(); if (!html) return; let result = '', depth = 0, i = 0; const ind = () => '  '.repeat(depth); while (i < html.length) {
                 if (html[i] === '<') {
                     const end = html.indexOf('>', i); if (end === -1) { result += html.slice(i); break; } const tag = html.slice(i, end + 1); const tagName = (tag.match(/<\/?([a-zA-Z][a-zA-Z0-9-]*)/)) || []; const tn = (tagName[1] || '').toLowerCase(); const isClose = tag.startsWith('</'); const isSelf = tag.endsWith('/>') || VOID_TAGS.has(tn); const isInline = INLINE_TAGS.has(tn); if (isClose) {
-                        depth = Math.max(0, depth - 1); result += (result.endsWith('\n')?ind():'')+tag+'\n';}else if(isSelf){result+=ind()+tag+'\n';}else{result+=ind()+tag+'\n';if(!isInline)depth++;}i=end+1;}else{const nextTag=html.indexOf(' < ',i);const text=(nextTag===-1?html.slice(i):html.slice(i,nextTag)).trim();if(text)result+=ind()+text+'\n';i=nextTag===-1?html.length:nextTag;}}document.getElementById('htmlBOutput').textContent=result.trim();}
-function htmlMinifyTool() { let html = document.getElementById('htmlBInput').value; html = html.replace(/<!--[\s\S]*?-->/g, '').replace(/\s+/g, ' ').replace(/> </g, '><').trim(); document.getElementById('htmlBOutput').textContent = html; }
-function htmlBSample() { document.getElementById('htmlBInput').value = '<html><head><title>Sample</title><meta charset="UTF-8"><link rel="stylesheet" href="style.css"></head><body><header><nav><ul><li><a href="/">Home</a></li><li><a href="/about">About</a></li></ul></nav></header><main><section><h1>Welcome</h1><p>This is a sample page.</p></section></main><footer><p>&copy; 2024</p></footer></body></html>'; }
+                        depth = Math.max(0, depth - 1); result += (result.endsWith('\n') ? ind() : '') + tag + '\n';
+                    } else if (isSelf) { result += ind() + tag + '\n'; } else { result += ind() + tag + '\n'; if (!isInline) depth++; } i = end + 1;
+                } else { const nextTag = html.indexOf(' < ', i); const text = (nextTag === -1 ? html.slice(i) : html.slice(i, nextTag)).trim(); if (text) result += ind() + text + '\n'; i = nextTag === -1 ? html.length : nextTag; }
+            } document.getElementById('htmlBOutput').textContent = result.trim();
+        }
+        function htmlMinifyTool() { let html = document.getElementById('htmlBInput').value; html = html.replace(/<!--[\s\S]*?-->/g, '').replace(/\s+/g, ' ').replace(/> </g, '><').trim(); document.getElementById('htmlBOutput').textContent = html; }
+        function htmlBSample() { document.getElementById('htmlBInput').value = '<html><head><title>Sample</title><meta charset="UTF-8"><link rel="stylesheet" href="style.css"></head><body><header><nav><ul><li><a href="/">Home</a></li><li><a href="/about">About</a></li></ul></nav></header><main><section><h1>Welcome</h1><p>This is a sample page.</p></section></main><footer><p>&copy; 2024</p></footer></body></html>'; }
     </script>
 </body>
 </html>
