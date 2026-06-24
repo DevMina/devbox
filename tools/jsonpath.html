@@ -111,8 +111,7 @@
                     let out = `${indent}<details open><summary style="cursor:pointer;color:${keyColor}">${key} <span style="color:var(--text-dim)">[${obj.length}]</span></summary>
 `;
                     obj.forEach((v, i) => { out += renderTree(v, '[' + i + ']', depth + 1); });
-                    return out + '</details>
-                    ';
+                    return out + '</details>\n                    ';
                 }
                 if (typeof obj === 'object') {
                     const keys = Object.keys(obj);
@@ -121,8 +120,7 @@
                     let out = `${indent}<details open><summary style="cursor:pointer;color:${keyColor}">${key} <span style="color:var(--text-dim)">{${keys.length}}</span></summary>
 `;
                     keys.forEach(k => { out += renderTree(obj[k], k, depth + 1); });
-                    return out + '</details>
-                    ';
+                    return out + '</details>\n                    ';
                 }
                 return '';
             }

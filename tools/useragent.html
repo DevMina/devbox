@@ -111,8 +111,7 @@
             document.getElementById('uaResults').innerHTML = r.map(([l, v]) => `<div class="hash-row"><div class="hash-algo" style="min-width:110px">${l}</div><div class="hash-val" style="color:var(--teal)">${escHtml(v)}</div></div>`).join('');
             // Tokens
             const tokens = ua.match(/[^()\s]+|\([^)]*\)/g) || [];
-            document.getElementById('uaTokens').textContent = tokens.map((t, i) => `[${i}] ${t}`).join('
-');
+            document.getElementById('uaTokens').textContent = tokens.map((t, i) => `[${i}] ${t}`).join('\n');
 }
         document.addEventListener('DOMContentLoaded', useMyUA);
     </script>

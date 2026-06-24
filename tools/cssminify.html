@@ -60,18 +60,7 @@
         function cssBeautify() {
             let css = document.getElementById('cssInput').value; if (!css.trim()) return; css = css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ').trim(); let result = '', depth = 0; for (let i = 0; i < css.length; i++) {
                 const c = css[i]; if (c === '{') {
-                    result += ' {
-                    '+'  '.repeat(++depth);}else if(c==='
-                } '){result=result.trimEnd();result+='
-                '+'  '.repeat(--depth)+'
-            }
-
-            ';}else if(c==='; '){result+=';
-            '+'  '.repeat(depth);}else if(c===', '){result+=depth===0?',
-                ':', ';}else result+=c;}result=result.replace(/
-            { 3,}/g,'
-
-            ').trim();document.getElementById('cssOutput').textContent=result;showSavings(css,result);}
+                    result += ' {\n                    '+'  '.repeat(++depth);}else if(c==='\n                } '){result=result.trimEnd();result+='\n                '+'  '.repeat(--depth)+'\n            }\n\n            ';}else if(c==='; '){result+=';\n            '+'  '.repeat(depth);}else if(c===', '){result+=depth===0?',\n                ':', ';}else result+=c;}result=result.replace(/\n{3,}/g,'\n\n            ').trim();document.getElementById('cssOutput').textContent=result;showSavings(css,result);}
             function showSavings(o, r) { const saved = o.length - r.length, pct = o.length > 0 ? Math.round(saved / o.length * 100) : 0, color = saved >= 0 ? 'var(--green)' : 'var(--red)'; document.getElementById('cssSavings').innerHTML = `<div style="display:flex;gap:16px;font-family:var(--mono);font-size:0.78rem;padding:4px 0"><span style="color:var(--text-dim)">Original: <strong style="color:var(--text)">${o.length} chars</strong></span><span style="color:var(--text-dim)">Output: <strong style="color:var(--text)">${r.length} chars</strong></span><span style="color:var(--text-dim)">Saved: <strong style="color:${color}">${saved >= 0 ? '-' : '+'}${Math.abs(saved)} chars (${pct}%)</strong></span></div>`; }
             function cssSample() {
                 document.getElementById('cssInput').value = `.container {

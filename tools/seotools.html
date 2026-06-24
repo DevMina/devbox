@@ -78,38 +78,19 @@
         function genRobots() {
             const site = document.getElementById('robotsSite').value.trim() || 'https://example.com';
             const disallowRaw = document.getElementById('robotsDisallow').value.trim();
-            const disallows = disallowRaw ? disallowRaw.split('
-').filter(l=>l.trim()):[];
+            const disallows = disallowRaw ? disallowRaw.split('\n').filter(l=>l.trim()):[];
       const blockAI = document.getElementById('robotsAI').checked;
             const showSitemap = document.getElementById('robotsSitemap').checked;
-            let out = 'User-agent: *
-            ';
+            let out = 'User-agent: *\n            ';
             disallows.forEach(p => {
                 out += `Disallow: ${p.trim()}
 `;
             });
-            if (!disallows.length) out += 'Disallow:
-            ';
+            if (!disallows.length) out += 'Disallow:\n            ';
             if (blockAI) {
-                out += '
-# Block AI crawlers
-                User - agent: GPTBot
-                Disallow: /
-
-                User - agent: ChatGPT - User
-                Disallow: /
-
-                User - agent: CCBot
-                Disallow: /
-
-                User - agent: anthropic - ai
-                Disallow: /
-                ';}
+                out += '\n# Block AI crawlers\n                User - agent: GPTBot\n                Disallow: /\n\n                User - agent: ChatGPT - User\n                Disallow: /\n\n                User - agent: CCBot\n                Disallow: /\n\n                User - agent: anthropic - ai\n                Disallow: /\n                ';}
                 if (document.getElementById('robotsGooglebot').checked) {
-                    out += '
-                    User - agent: Googlebot
-                    Allow: /
-                    ';}
+                    out += '\n                    User - agent: Googlebot\n                    Allow: /\n                    ';}
                     if (showSitemap) {
                         out += `
 Sitemap: ${site}/sitemap.xml
@@ -119,13 +100,10 @@ Sitemap: ${site}/sitemap.xml
                 }
                 function genSitemap() {
                     const base = (document.getElementById('sitemapBase').value.trim() || 'https://example.com').replace(/\/$/, '');
-                    const pages = document.getElementById('sitemapPages').value.trim().split('
-').filter(l=>l.trim());
+                    const pages = document.getElementById('sitemapPages').value.trim().split('\n').filter(l=>l.trim());
       const freq = document.getElementById('sitemapFreq').value;
                     const today = new Date().toISOString().slice(0, 10);
-                    let out = '<?xml version="1.0" encoding="UTF-8"?>
-                        < urlset xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9" >
-                            ';
+                    let out = '<?xml version="1.0" encoding="UTF-8"?>\n                        < urlset xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9" >\n                            ';
                     pages.forEach(p => {
                         const path = p.trim().startsWith('/') ? p.trim() : '/' + p.trim(); out += `  <url>
         <loc>${base}${path}</loc>

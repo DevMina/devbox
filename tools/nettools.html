@@ -133,8 +133,7 @@ ${'─'.repeat(40)}
                     fmt(a, 'A'); fmt(aaaa, 'AAAA'); fmt(mx, 'MX'); fmt(txt, 'TXT');
                     document.getElementById('dnsResult').textContent = out;
                 } catch (e) {
-                    document.getElementById('dnsResult').textContent = 'Error: ' + e.message + '
-                        (Note: may be blocked by CORS in some environments)';}
+                    document.getElementById('dnsResult').textContent = 'Error: ' + e.message + '\n                        (Note: may be blocked by CORS in some environments)';}
                 }
 
                 async function getMyIP() {

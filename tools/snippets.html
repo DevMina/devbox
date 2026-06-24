@@ -124,8 +124,7 @@
                 </div>
                 ${s.lang ? `<span style="font-family:var(--mono);font-size:0.65rem;font-weight:600;padding:2px 8px;background:${langColor(s.lang)}22;color:${langColor(s.lang)};border-radius:999px;flex-shrink:0;border:1px solid ${langColor(s.lang)}44">${escHtml(s.lang)}</span>` : ''}
               </div>
-              <pre style="padding:12px 14px;font-family:var(--mono);font-size:0.76rem;color:var(--text);overflow:hidden;max-height:100px;line-height:1.55;flex:1;white-space:pre-wrap;word-break:break-all;margin:0">${escHtml(s.code.slice(0, 300) + (s.code.length > 300 ? '
-…':''))}</pre>
+              <pre style="padding:12px 14px;font-family:var(--mono);font-size:0.76rem;color:var(--text);overflow:hidden;max-height:100px;line-height:1.55;flex:1;white-space:pre-wrap;word-break:break-all;margin:0">${escHtml(s.code.slice(0, 300) + (s.code.length > 300 ? '\n…':''))}</pre>
                 < div style = "padding:8px 10px;border-top:1px solid var(--border);display:flex;gap:6px" >
                 <button class="btn btn-teal" style="flex:1;font-size:0.76rem" onclick="copy(${JSON.stringify(s.code)})">⎘ Copy</button>
                 <button class="btn btn-ghost" style="font-size:0.76rem" onclick="openSnippetModal('${s.id}')">Edit</button>
@@ -147,39 +146,11 @@ document.getElementById('snippetModal').addEventListener('click',e=>{if(e.target
 // Seed with examples if empty
 if(!snippets.length){
           snippets=[
-            {id:'1',title:'Fetch with error handling',lang:'javascript',desc:'Async fetch wrapper with try/catch',code:'async function fetchData(url) {
-          try {
-            const res = await fetch(url);
-            if (!res.ok) throw new Error(`HTTP ${ res.status }`);
-            return await res.json();
-          } catch (err) {
-            console.error("Fetch error:", err);
-            throw err;
-          }
-}',created:Date.now(),updated:Date.now()},
-            {id:'2',title:'Debounce function',lang:'javascript',desc:'Delay execution until after delay ms',code:'function debounce(fn, delay = 300) {
-          let timer;
-          return (...args) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => fn(...args), delay);
-          };
-}',created:Date.now(),updated:Date.now()},
-            {id:'3',title:'Flexbox center',lang:'css',desc:'Center content horizontally and vertically',code:'.center {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-}',created:Date.now(),updated:Date.now()},
-            {id:'4',title:'Select with JOIN',lang:'sql',desc:'Basic SELECT with table join',code:'SELECT u.name, u.email, COUNT(o.id) AS orders
-FROM users u
-LEFT JOIN orders o ON u.id = o.user_id
-WHERE u.active = 1
-GROUP BY u.id
-ORDER BY orders DESC
-LIMIT 20;',created:Date.now(),updated:Date.now()},
-            {id:'5',title:'List files recursively',lang:'bash',desc:'Find all files in directory tree',code:'find . -type f -name "*.js" | sort
-
-# Or with size info:
-find . -type f -name "*.js" -exec ls -lh {} \;',created:Date.now(),updated:Date.now()},
+            {id:'1',title:'Fetch with error handling',lang:'javascript',desc:'Async fetch wrapper with try/catch',code:'async function fetchData(url) {\n          try {\n            const res = await fetch(url);\n            if (!res.ok) throw new Error(`HTTP ${ res.status }`);\n            return await res.json();\n          } catch (err) {\n            console.error("Fetch error:", err);\n            throw err;\n          }\n}',created:Date.now(),updated:Date.now()},
+            {id:'2',title:'Debounce function',lang:'javascript',desc:'Delay execution until after delay ms',code:'function debounce(fn, delay = 300) {\n          let timer;\n          return (...args) => {\n            clearTimeout(timer);\n            timer = setTimeout(() => fn(...args), delay);\n          };\n}',created:Date.now(),updated:Date.now()},
+            {id:'3',title:'Flexbox center',lang:'css',desc:'Center content horizontally and vertically',code:'.center {\n          display: flex;\n          align-items: center;\n          justify-content: center;\n}',created:Date.now(),updated:Date.now()},
+            {id:'4',title:'Select with JOIN',lang:'sql',desc:'Basic SELECT with table join',code:'SELECT u.name, u.email, COUNT(o.id) AS orders\nFROM users u\nLEFT JOIN orders o ON u.id = o.user_id\nWHERE u.active = 1\nGROUP BY u.id\nORDER BY orders DESC\nLIMIT 20;',created:Date.now(),updated:Date.now()},
+            {id:'5',title:'List files recursively',lang:'bash',desc:'Find all files in directory tree',code:'find . -type f -name "*.js" | sort\n\n# Or with size info:\nfind . -type f -name "*.js" -exec ls -lh {} \;',created:Date.now(),updated:Date.now()},
           ];
           saveStore();
 }

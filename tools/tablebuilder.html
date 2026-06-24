@@ -115,38 +115,23 @@
                 if (fmt === 'md') {
                     const colW = headers.map((_, i) => Math.max(headers[i].length, ...rows.map(r => (r[i] || '').length)));
                     const pad = (s, w) => s.padEnd(w, ' ');
-                    out = '| ' + headers.map((h, i) => pad(h, colW[i])).join(' | ') + ' |
-                    ';
-                    out += '| ' + headers.map((_, i) => '-'.repeat(colW[i])).join(' | ') + ' |
-                    ';
+                    out = '| ' + headers.map((h, i) => pad(h, colW[i])).join(' | ') + ' |\n                    ';
+                    out += '| ' + headers.map((_, i) => '-'.repeat(colW[i])).join(' | ') + ' |\n                    ';
                     rows.forEach(r => {
-                        out += '| ' + headers.map((_, i) => pad(r[i] || '', colW[i])).join(' | ') + ' |
-                        ';});
+                        out += '| ' + headers.map((_, i) => pad(r[i] || '', colW[i])).join(' | ') + ' |\n                        ';});
                     }else if (fmt === 'html') {
-                        out = '<table>
-                            < thead >
-                            <tr>
-                                ';
+                        out = '<table>\n                            < thead >\n                            <tr>\n                                ';
             headers.forEach(h=>{out += `      <th>${esc(h)}</th>
 `;});
-                                out+='    </tr>
-          </thead >
-                            <tbody>
-                                ';
-            rows.forEach(r=>{out += '    <tr>
-';headers.forEach((_,i)=>{out+=`      <td>${esc(r[i]||'')}</td>
-`;});out+='    </tr>
-                        ';});
-                        out += '  </tbody>
-</table > ';
+                                out+='    </tr>\n          </thead >\n                            <tbody>\n                                ';
+            rows.forEach(r=>{out += '    <tr>\n';headers.forEach((_,i)=>{out+=`      <td>${esc(r[i]||'')}</td>
+`;});out+='    </tr>\n                        ';});
+                        out += '  </tbody>\n</table > ';
                     } else {
                         const csvRow = arr => arr.map(v => {
-                            const s = String(v || ''); return s.includes(',') || s.includes('"') || s.includes('
-')?'"'+s.replace(/" / g, '""') + '"': s;
+                            const s = String(v || ''); return s.includes(',') || s.includes('"') || s.includes('\n')?'"'+s.replace(/"/g, '""') + '"': s;
                         }).join(',');
-                        out = csvRow(headers) + '
-                        '+rows.map(r=>csvRow(headers.map((_,i)=>r[i]||''))).join('
-                        ');
+                        out = csvRow(headers) + '\n'+rows.map(r=>csvRow(headers.map((_,i)=>r[i]||''))).join('\n');
                     }
                     document.getElementById('tableOut').textContent = out;
                 }

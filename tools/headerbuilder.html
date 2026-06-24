@@ -122,15 +122,13 @@
             }
 
             function updateOutput() {
-                document.getElementById('headerOutput').textContent = customHeaders.filter(h => h.name).map(h => `${h.name}: ${h.value}`).join('
-');
+                document.getElementById('headerOutput').textContent = customHeaders.filter(h => h.name).map(h => `${h.name}: ${h.value}`).join('\n');
 }
 
             function addHeader() { customHeaders.push({ name: '', value: '' }); renderCustom(); }
             function clearHeaders() { customHeaders = []; renderCustom(); }
             function copyHeaders() {
-                copy(customHeaders.filter(h => h.name).map(h => `${h.name}: ${h.value}`).join('
-'));}
+                copy(customHeaders.filter(h => h.name).map(h => `${h.name}: ${h.value}`).join('\n'));}
 
 function renderRef() {
                         const q = document.getElementById('headerSearch').value.toLowerCase();

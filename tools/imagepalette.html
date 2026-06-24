@@ -129,8 +129,7 @@
                 vals.innerHTML = colors.map(([r, g, b]) => { const hex = toHex(r, g, b); return `<div class="hash-row"><div style="width:18px;height:18px;border-radius:4px;background:${hex};flex-shrink:0;border:1px solid var(--border)"></div><div class="hash-val" style="color:var(--orange)">${hex}</div><div style="font-size:0.72rem;color:var(--text-dim);min-width:120px">rgb(${r},${g},${b})</div><button class="uuid-copy" onclick="copy('${hex}')">⎘</button></div>`; }).join('');
             }
             function copyAllColors() {
-                const hexes = [...document.querySelectorAll('#paletteValues .hash-val')].map(el => el.textContent); copy(hexes.join('
-'));}
+                const hexes = [...document.querySelectorAll('#paletteValues .hash-val')].map(el => el.textContent); copy(hexes.join('\n'));}
         </script>
 </body>
 </html>
