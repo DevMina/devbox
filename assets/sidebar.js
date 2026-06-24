@@ -161,49 +161,31 @@ function buildSidebar() {
     return html;
 }
 
-const SB_COLLAPSE_KEY = 'devbox_sb_sections';
-
-function getSectionStates() {
-    try { return JSON.parse(localStorage.getItem(SB_COLLAPSE_KEY) || '{}'); } catch(e) { return {}; }
-}
-
-function saveSectionState(key, collapsed) {
-    const states = getSectionStates();
-    states[key] = collapsed;
-    try { localStorage.setItem(SB_COLLAPSE_KEY, JSON.stringify(states)); } catch(e) {}
-}
-
 function initSidebarCollapse() {
     const sidebar = document.getElementById('sidebar');
     if (!sidebar) return;
 
-    // Restore saved per-section collapse states
-    const states = getSectionStates();
+    // On load: always open the section containing the active item, collapse all others
     sidebar.querySelectorAll('.sb-group-header').forEach(header => {
-        const key = header.dataset.key;
-        // If we have a saved state, use it; otherwise keep the default (active section open, others closed)
-        if (key && key in states) {
-            const isCollapsed = states[key];
-            header.classList.toggle('collapsed', isCollapsed);
-            header.nextElementSibling.classList.toggle('collapsed', isCollapsed);
-        }
+        const body = header.nextElementSibling;
+        const hasActive = body && body.querySelector('.nav-item.active');
+        header.classList.toggle('collapsed', !hasActive);
+        if (body) body.classList.toggle('collapsed', !hasActive);
     });
 
+    // Accordion: clicking a header opens it and closes all others
     sidebar.addEventListener('click', e => {
         const header = e.target.closest('.sb-group-header');
         if (!header) return;
 
         const isNowCollapsed = header.classList.toggle('collapsed');
         header.nextElementSibling.classList.toggle('collapsed', isNowCollapsed);
-        saveSectionState(header.dataset.key, isNowCollapsed);
 
-        // Accordion: collapse all other sections when one is expanded
         if (!isNowCollapsed) {
             sidebar.querySelectorAll('.sb-group-header').forEach(h => {
                 if (h === header) return;
                 h.classList.add('collapsed');
                 h.nextElementSibling.classList.add('collapsed');
-                saveSectionState(h.dataset.key, true);
             });
         }
     });
@@ -217,7 +199,6 @@ function initSidebarCollapse() {
             sidebar.querySelectorAll('.sb-group-header').forEach(h => {
                 h.classList.remove('collapsed');
                 h.nextElementSibling.classList.remove('collapsed');
-                saveSectionState(h.dataset.key, false);
             });
         });
     }
@@ -226,7 +207,6 @@ function initSidebarCollapse() {
             sidebar.querySelectorAll('.sb-group-header').forEach(h => {
                 h.classList.add('collapsed');
                 h.nextElementSibling.classList.add('collapsed');
-                saveSectionState(h.dataset.key, true);
             });
         });
     }
