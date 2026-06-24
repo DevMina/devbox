@@ -82,6 +82,7 @@ function buildSidebar() {
         { section: 'Productivity' },
         { href: 'pomodoro.html', label: 'Pomodoro Timer', dot: '--red' },
         { href: 'countdown.html', label: 'Countdown', dot: '--pink' },
+        { href: 'todo.html', label: 'Todo List', dot: '--blue' },
     ];
 
     const currentFile = window.location.pathname.split('/').pop() || 'index.html';

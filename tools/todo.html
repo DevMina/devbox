@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Manage tasks and stay organized">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload"
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
+          as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap">
+    </noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="Todo List — DevBox">
+    <meta property="og:description" content="Manage tasks and stay organized">
+    <meta property="og:type" content="website">
+</head>
+
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">✓</div>
+                    <div>
+                        <div class="tool-title">Todo List</div>
+                        <div class="tool-desc">Manage tasks and stay organized</div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-bottom:14px">
+                    <div class="panel-bar"><span class="panel-label">New Task</span></div>
+                    <div style="display:grid;gap:12px;padding:10px 14px">
+                        <input id="todoInput" placeholder="What needs to be done?"
+                               style="width:100%;padding:8px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
+                        <div style="display:flex;gap:10px;flex-wrap:wrap">
+                            <select id="todoPriority"
+                                    style="padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
+                                <option value="high">🔴 High</option>
+                                <option value="medium" selected>🟡 Medium</option>
+                                <option value="low">🟢 Low</option>
+                            </select>
+                            <input type="date" id="todoDate"
+                                   style="padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
+                            <input id="todoTag" placeholder="Tag"
+                                   style="padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none;flex:1">
+                            <button class="btn btn-green" onclick="addTodo()">+ Add Task</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Tasks (<span id="todoCount">0</span>)</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="setFilter('all')">All</button>
+                            <button class="btn btn-ghost" onclick="setFilter('active')">Active</button>
+                            <button class="btn btn-ghost" onclick="setFilter('done')">Done</button>
+                            <button class="btn btn-ghost" onclick="clearCompleted()">Clear Done</button>
+                            <button class="btn btn-ghost" onclick="exportTodos()">Export</button>
+                            <input type="file" id="importFile" hidden onchange="importTodos(event)">
+                            <button class="btn btn-ghost"
+                                    onclick="document.getElementById('importFile').click()">
+                                Import
+                            </button>
+                        </div>
+                    </div>
+                    <input id="todoSearch" placeholder="Search tasks..." oninput="renderTodos()"
+                           style="margin:10px 14px;width:calc(100% - 28px);padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.84rem;color:var(--text);outline:none">
+                    <div id="todoProgress" style="padding:0 14px 10px"></div>
+                    <div id="todoList"></div>
+                </div>
+
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </main><!-- /content-wrap -->
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        const TODO_KEY = "devbox_todos";
+        let todos = JSON.parse(localStorage.getItem(TODO_KEY) || "[]");
+        let filter = "all";
+
+        function saveTodos() {
+            localStorage.setItem(TODO_KEY, JSON.stringify(todos));
+        }
+
+        function addTodo() {
+            let text = todoInput.value.trim();
+            if (!text) return;
+            todos.unshift({
+                id: Date.now(),
+                text: text,
+                priority: todoPriority.value,
+                date: todoDate.value,
+                tag: todoTag.value,
+                done: false
+            });
+            todoInput.value = "";
+            todoDate.value = "";
+            todoTag.value = "";
+            saveTodos();
+            renderTodos();
+        }
+
+        function toggleTodo(id) {
+            let task = todos.find(t => t.id === id);
+            if (task) task.done = !task.done;
+            saveTodos();
+            renderTodos();
+        }
+
+        function deleteTodo(id) {
+            todos = todos.filter(t => t.id !== id);
+            saveTodos();
+            renderTodos();
+        }
+
+        function editTodo(id) {
+            let task = todos.find(t => t.id === id);
+            let text = prompt("Edit task", task.text);
+            if (text !== null) {
+                task.text = text.trim();
+                saveTodos();
+                renderTodos();
+            }
+        }
+
+        function setFilter(value) {
+            filter = value;
+            renderTodos();
+        }
+
+        function clearCompleted() {
+            todos = todos.filter(t => !t.done);
+            saveTodos();
+            renderTodos();
+        }
+
+        function renderTodos() {
+            let search = todoSearch.value.toLowerCase();
+            let list = todos.filter(t => {
+                let match = t.text.toLowerCase().includes(search) || (t.tag || "").toLowerCase().includes(search);
+                if (filter === "active") return !t.done && match;
+                if (filter === "done") return t.done && match;
+                return match;
+            });
+            todoCount.textContent = todos.length;
+            let completed = todos.filter(t => t.done).length;
+            let percentage = todos.length ? Math.round(completed / todos.length * 100) : 0;
+            todoProgress.innerHTML = `
+<div style="margin:10px 0">
+<div style="height:8px;background:var(--border);border-radius:10px">
+<div style="height:100%;width:${percentage}%;background:var(--green);border-radius:10px"></div>
+</div>
+<small>${completed}/${todos.length} completed (${percentage}%)</small>
+</div>`;
+            todoList.innerHTML = list.map(t => `
+<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border)">
+<input type="checkbox" ${t.done ? 'checked' : ''} onclick="toggleTodo(${t.id})">
+<div style="flex:1;text-decoration:${t.done ? 'line-through' : 'none'};opacity:${t.done ? '.6' : '1'}">${escHtml(t.text)}
+<div style="font-size:0.8rem;color:var(--text-dim)">${priorityIcon(t.priority)}${t.date ? ' 📅 ' + t.date : ''}${t.tag ? ' 🏷 ' + escHtml(t.tag) : ''}</div>
+</div>
+<button class="btn btn-ghost" onclick="editTodo(${t.id})">✏️</button>
+<button class="btn btn-ghost" onclick="deleteTodo(${t.id})">🗑</button>
+</div>`).join("");
+            if (!list.length) {
+                todoList.innerHTML = `<div style="padding:30px;text-align:center;color:var(--text-dim)">No tasks found</div>`;
+            }
+        }
+
+        function priorityIcon(p) {
+            return { high: "🔴", medium: "🟡", low: "🟢" }[p];
+        }
+
+        function exportTodos() {
+            let blob = new Blob([JSON.stringify(todos, null, 2)], { type: "application/json" });
+            let link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "devbox-todos.json";
+            link.click();
+        }
+
+        function importTodos(e) {
+            let file = e.target.files[0];
+            if (!file) return;
+            let reader = new FileReader();
+            reader.onload = function () {
+                todos = JSON.parse(reader.result);
+                saveTodos();
+                renderTodos();
+            };
+            reader.readAsText(file);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderTodos();
+            todoInput.addEventListener("keydown", e => { if (e.key === "Enter") addTodo(); });
+        });
+    </script>
+</body>
+
+</html>
