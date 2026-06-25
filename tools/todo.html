@@ -10,11 +10,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload"
-        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
-        as="style" onload="this.onload=null;this.rel='stylesheet'">
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
+          as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
         <link rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap">
+              href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap">
     </noscript>
     <link rel="stylesheet" href="../assets/style.css">
     <meta property="og:title" content="To-Do List — DevBox">
@@ -28,11 +28,13 @@
         <main class="content-wrap">
             <div class="content" style="min-width:0">
                 <div class="tool-header">
-                    <div class="tool-icon" style="background:var(--teal-dim,rgba(0,200,180,0.12));color:var(--teal)">✅
+                    <div class="tool-icon" style="background:var(--teal-dim,rgba(0,200,180,0.12));color:var(--teal)">
+                        ✅
                     </div>
                     <div>
                         <div class="tool-title">To-Do List</div>
-                        <div class="tool-desc">Add, update, complete and remove tasks — saved locally in your browser
+                        <div class="tool-desc">
+                            Add, update, complete and remove tasks — saved locally in your browser
                         </div>
                     </div>
                 </div>
@@ -42,22 +44,24 @@
                     <div class="panel-bar"><span class="panel-label">New task</span></div>
                     <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
                         <input type="text" id="todoInput" placeholder="What needs to be done?" maxlength="300"
-                            style="font-family:var(--sans);font-size:0.9rem;padding:10px 12px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;width:100%;box-sizing:border-box"
-                            onkeydown="if(event.key==='Enter')addTodo()">
+                               style="font-family:var(--sans);font-size:0.9rem;padding:10px 12px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;width:100%;box-sizing:border-box"
+                               onkeydown="if(event.key==='Enter')addTodo()">
                         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
                             <select id="todoPriority"
-                                style="font-family:var(--mono);font-size:0.78rem;padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;cursor:pointer">
+                                    style="font-family:var(--mono);font-size:0.78rem;padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;cursor:pointer">
                                 <option value="high">🔴 High priority</option>
                                 <option value="med">🟡 Medium priority</option>
                                 <option value="low">🟢 Low priority</option>
                             </select>
                             <input type="date" id="todoDate"
-                                style="font-family:var(--mono);font-size:0.78rem;padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;cursor:pointer">
+                                   style="font-family:var(--mono);font-size:0.78rem;padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;cursor:pointer">
                             <input type="text" id="todoTag" placeholder="Tag (optional)" maxlength="30"
-                                style="font-family:var(--mono);font-size:0.78rem;padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;width:140px"
-                                onkeydown="if(event.key==='Enter')addTodo()">
-                            <button class="btn btn-teal" onclick="addTodo()" style="margin-left:auto;padding:7px 20px">+
-                                Add task</button>
+                                   style="font-family:var(--mono);font-size:0.78rem;padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;width:140px"
+                                   onkeydown="if(event.key==='Enter')addTodo()">
+                            <button class="btn btn-teal" onclick="addTodo()" style="margin-left:auto;padding:7px 20px">
+                                +
+                                Add task
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -67,18 +71,28 @@
                     <span id="todoStats" style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)"></span>
                     <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">
                         <button class="btn btn-ghost filter-btn active" id="fAll"
-                            onclick="setFilter('all')">All</button>
+                                onclick="setFilter('all')">
+                            All
+                        </button>
                         <button class="btn btn-ghost filter-btn" id="fActive"
-                            onclick="setFilter('active')">Active</button>
+                                onclick="setFilter('active')">
+                            Active
+                        </button>
                         <button class="btn btn-ghost filter-btn" id="fDone" onclick="setFilter('done')">Done</button>
                     </div>
                     <button class="btn btn-ghost" style="font-size:0.72rem;padding:4px 10px;color:var(--text-dim)"
-                        onclick="clearDone()">Clear done</button>
+                            onclick="clearDone()">
+                        Clear done
+                    </button>
                     <button class="btn btn-ghost" style="font-size:0.72rem;padding:4px 10px;color:var(--text-dim)"
-                        onclick="exportTodos()">Export</button>
+                            onclick="exportTodos()">
+                        Export
+                    </button>
                     <input type="file" id="importFile" hidden onchange="importTodos(event)">
                     <button class="btn btn-ghost" style="font-size:0.72rem;padding:4px 10px;color:var(--text-dim)"
-                        onclick="document.getElementById('importFile').click()">Import</button>
+                            onclick="document.getElementById('importFile').click()">
+                        Import
+                    </button>
                 </div>
 
                 <!-- Tag filter -->
@@ -116,7 +130,9 @@
         function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 
         function fmtDate(ts) {
+            if (!ts) return '';
             const d = new Date(ts);
+            if (isNaN(d.getTime())) return '';
             return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
         }
 
@@ -179,25 +195,24 @@
         }
 
         function exportTodos() {
-            let blob = new Blob([JSON.stringify(todos, null, 2)], { type: "application/json" });
-            let link = document.createElement("a");
+            const blob = new Blob([JSON.stringify(todos, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = "devbox-todos.json";
+            link.download = 'devbox-todos.json';
             link.click();
             showToast('Tasks exported');
         }
 
         function importTodos(e) {
-            let file = e.target.files[0];
+            const file = e.target.files[0];
             if (!file) return;
-            let reader = new FileReader();
+            const reader = new FileReader();
             reader.onload = function () {
                 try {
                     const imported = JSON.parse(reader.result);
                     if (Array.isArray(imported)) {
                         todos = imported;
-                        save();
-                        render();
+                        save(); render();
                         showToast('Tasks imported');
                     } else {
                         showToast('Invalid file format');
@@ -230,13 +245,13 @@
         }
 
         function render() {
-            // Stats
-            const total = todos.length, done = todos.filter(x => x.done).length, active = total - done;
+            const total = todos.length;
+            const done = todos.filter(x => x.done).length;
+            const active = total - done;
             document.getElementById('todoStats').textContent = total
                 ? active + ' remaining · ' + done + ' done'
                 : 'No tasks yet';
 
-            // Progress
             const pw = document.getElementById('progressWrap');
             const pf = document.getElementById('progressFill');
             if (total > 0) {
@@ -246,7 +261,6 @@
                 pw.style.display = 'none';
             }
 
-            // Tag cloud
             const allTags = [...new Set(todos.map(t => t.tag).filter(Boolean))].sort();
             const tagRow = document.getElementById('tagFilterRow');
             if (allTags.length) {
@@ -258,8 +272,7 @@
                 tagRow.innerHTML = '';
             }
 
-            // Filter todos
-            let visible = todos.filter(t => {
+            const visible = todos.filter(t => {
                 if (filter === 'active' && t.done) return false;
                 if (filter === 'done' && !t.done) return false;
                 if (activeTag && t.tag !== activeTag) return false;
@@ -280,6 +293,8 @@
             list.innerHTML = visible.map(t => {
                 const isEditing = editingId === t.id;
                 const dotClass = priorityClass(t.priority);
+                const created = fmtDate(t.created);
+                const metaDate = created ? created : 'No date added';
 
                 return '<div class="todo-item' + (t.done ? ' done' : '') + '" id="item-' + t.id + '">'
                     + '<div class="priority-dot ' + dotClass + '"></div>'
@@ -295,7 +310,7 @@
                     + '</div>'
                     + (t.tag && !isEditing ? '<span class="tag-badge">' + escHtml(t.tag) + '</span>' : '')
                     + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'
-                    + '<span class="todo-meta">' + fmtDate(t.created) + (t.date ? ' · 📅 ' + t.date : '') + '</span>'
+                    + '<span class="todo-meta">' + metaDate + (t.date ? ' · 📅 ' + t.date : '') + '</span>'
                     + (!isEditing
                         ? '<div class="todo-actions">'
                         + '<button class="edit-btn" onclick="startEdit(\'' + t.id + '\')">edit</button>'
