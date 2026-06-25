@@ -1745,3 +1745,14 @@ input[type="checkbox"] {
 .sb-nav-controls button:hover {
     color: var(--green) !important;
 }
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-dim);
+    font-size: 0.82rem;
+}
+
+    .empty-state .icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
