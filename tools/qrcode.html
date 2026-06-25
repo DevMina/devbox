@@ -85,13 +85,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
     <script>
         let qrType = 'url';
+        let qrContainer = null;
+
         const QR_FIELDS = {
             url: [{ id: 'qrUrl', label: 'URL', placeholder: 'https://example.com', type: 'text' }],
-            text: [],// uses raw textarea
-            email: [{ id: 'qrEmailTo', label: 'To', placeholder: 'user@example.com', type: 'text' }, { id: 'qrEmailSub', label: 'Subject', placeholder: 'Hello', type: 'text' }, { id: 'qrEmailBody', label: 'Body', placeholder: 'Message…', type: 'text' }],
+            text: [],
+            email: [{ id: 'qrEmailTo', label: 'To', placeholder: 'user@example.com', type: 'text' },
+            { id: 'qrEmailSub', label: 'Subject', placeholder: 'Hello', type: 'text' },
+            { id: 'qrEmailBody', label: 'Body', placeholder: 'Message…', type: 'text' }],
             phone: [{ id: 'qrPhone', label: 'Phone', placeholder: '+1 555 000 0000', type: 'tel' }],
-            wifi: [{ id: 'qrSsid', label: 'SSID', placeholder: 'Network name', type: 'text' }, { id: 'qrWifiPass', label: 'Password', placeholder: 'WiFi password', type: 'text' }, { id: 'qrWifiSec', label: 'Security', placeholder: 'WPA2', type: 'text' }],
-            sms: [{ id: 'qrSmsNum', label: 'Number', placeholder: '+1 555 000 0000', type: 'tel' }, { id: 'qrSmsMsg', label: 'Message', placeholder: 'SMS content…', type: 'text' }],
+            wifi: [{ id: 'qrSsid', label: 'SSID', placeholder: 'Network name', type: 'text' },
+            { id: 'qrWifiPass', label: 'Password', placeholder: 'WiFi password', type: 'text' },
+            { id: 'qrWifiSec', label: 'Security', placeholder: 'WPA2', type: 'text' }],
+            sms: [{ id: 'qrSmsNum', label: 'Number', placeholder: '+1 555 000 0000', type: 'tel' },
+            { id: 'qrSmsMsg', label: 'Message', placeholder: 'SMS content…', type: 'text' }],
         };
 
         function setQrType(t) {
@@ -103,49 +110,118 @@
             const fields = QR_FIELDS[t];
             const rawRow = document.getElementById('qrRawRow');
             const dynFields = document.getElementById('qrDynFields');
-            if (!fields || fields.length === 0) { rawRow.style.display = ''; dynFields.innerHTML = ''; }
-            else {
+            if (!fields || fields.length === 0) {
+                rawRow.style.display = '';
+                dynFields.innerHTML = '';
+            } else {
                 rawRow.style.display = 'none';
-                dynFields.innerHTML = fields.map((f, i) => `<div class="input-row" style="${i === fields.length - 1 ? 'border-bottom:none' : ''}"><label>${f.label}</label><input type="${f.type}" id="${f.id}" placeholder="${f.placeholder}" oninput="updateQR()" style="font-family:var(--mono)"></div>`).join('');
+                dynFields.innerHTML = fields.map((f, i) =>
+                    `<div class="input-row" style="${i === fields.length - 1 ? 'border-bottom:none' : ''}">
+                            <label>${f.label}</label>
+                            <input type="${f.type}" id="${f.id}" placeholder="${f.placeholder}"
+                                   oninput="updateQR()" style="font-family:var(--mono)">
+                        </div>`
+                ).join('');
             }
             updateQR();
         }
 
         function buildQrData() {
             switch (qrType) {
-                case 'url': return (document.getElementById('qrUrl')?.value || '').trim() || 'https://example.com';
-                case 'text': return (document.getElementById('qrRaw')?.value || '').trim();
-                case 'email': { const to = document.getElementById('qrEmailTo')?.value || ''; const sub = document.getElementById('qrEmailSub')?.value || ''; const body = document.getElementById('qrEmailBody')?.value || ''; return `mailto:${to}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(body)}`; }
-                case 'phone': return 'tel:' + (document.getElementById('qrPhone')?.value || '').replace(/\s/g, '');
-                case 'wifi': { const ssid = document.getElementById('qrSsid')?.value || ''; const pass = document.getElementById('qrWifiPass')?.value || ''; const sec = document.getElementById('qrWifiSec')?.value || 'WPA'; return `WIFI:T:${sec};S:${ssid};P:${pass};;`; }
-                case 'sms': { const num = document.getElementById('qrSmsNum')?.value || ''; const msg = document.getElementById('qrSmsMsg')?.value || ''; return `smsto:${num}:${msg}`; }
+                case 'url':
+                    return (document.getElementById('qrUrl')?.value || '').trim() || 'https://example.com';
+                case 'text':
+                    return (document.getElementById('qrRaw')?.value || '').trim();
+                case 'email': {
+                    const to = document.getElementById('qrEmailTo')?.value || '';
+                    const sub = document.getElementById('qrEmailSub')?.value || '';
+                    const body = document.getElementById('qrEmailBody')?.value || '';
+                    return `mailto:${to}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(body)}`;
+                }
+                case 'phone':
+                    return 'tel:' + (document.getElementById('qrPhone')?.value || '').replace(/\s/g, '');
+                case 'wifi': {
+                    const ssid = document.getElementById('qrSsid')?.value || '';
+                    const pass = document.getElementById('qrWifiPass')?.value || '';
+                    const sec = document.getElementById('qrWifiSec')?.value || 'WPA';
+                    return `WIFI:T:${sec};S:${ssid};P:${pass};;`;
+                }
+                case 'sms': {
+                    const num = document.getElementById('qrSmsNum')?.value || '';
+                    const msg = document.getElementById('qrSmsMsg')?.value || '';
+                    return `smsto:${num}:${msg}`;
+                }
                 default: return '';
             }
         }
 
-        let qrLib = null;
         function updateQR() {
             const data = buildQrData();
-            if (!data) { document.getElementById('qrDataPreview').textContent = 'No data yet'; return; }
+            const preview = document.getElementById('qrDataPreview');
+            if (!data) { preview.textContent = 'No data yet'; return; }
+
             const size = parseInt(document.getElementById('qrSize').value);
             const dark = document.getElementById('qrDark').value;
             const light = document.getElementById('qrLight').value;
             const canvas = document.getElementById('qrCanvas');
-            canvas.width = size; canvas.height = size;
-            document.getElementById('qrDataPreview').textContent = data;
+            canvas.width = size;
+            canvas.height = size;
+            preview.textContent = data;
+
+            if (!qrContainer) {
+                qrContainer = document.createElement('div');
+                qrContainer.style.display = 'none';
+                document.body.appendChild(qrContainer);
+            }
+            qrContainer.innerHTML = '';
+
             try {
-                if (qrLib) { qrLib.clear(); qrLib.makeCode(data); }
-                else {
-                    const div = document.createElement('div');
-                    qrLib = new QRCode(div, { text: data, width: size, height: size, colorDark: dark, colorLight: light, correctLevel: QRCode.CorrectLevel.M });
-                    setTimeout(() => { const img = div.querySelector('img'); if (img) { const ctx = canvas.getContext('2d'); const i = new Image(); i.onload = () => ctx.drawImage(i, 0, 0, size, size); i.src = img.src; } }, 100);
-                    return;
-                }
-            } catch (e) { const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, size, size); ctx.fillStyle = light; ctx.fillRect(0, 0, size, size); ctx.fillStyle = dark; ctx.font = '14px monospace'; ctx.fillText('Error: ' + e.message, 10, 30); }
+                new QRCode(qrContainer, {
+                    text: data,
+                    width: size,
+                    height: size,
+                    colorDark: dark,
+                    colorLight: light,
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+
+                setTimeout(() => {
+                    const img = qrContainer.querySelector('img');
+                    if (img) {
+                        const i = new Image();
+                        i.onload = () => {
+                            const ctx = canvas.getContext('2d');
+                            ctx.clearRect(0, 0, size, size);
+                            ctx.drawImage(i, 0, 0, size, size);
+                        };
+                        i.src = img.src;
+                    }
+                }, 100);
+            } catch (e) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, size, size);
+                ctx.fillStyle = light;
+                ctx.fillRect(0, 0, size, size);
+                ctx.fillStyle = dark;
+                ctx.font = '14px monospace';
+                ctx.fillText('Error: ' + e.message, 10, 30);
+            }
         }
 
-        function qrSizeUpdate() { document.getElementById('qrSizeVal').textContent = document.getElementById('qrSize').value + 'px'; updateQR(); }
-        function downloadQR() { const a = document.createElement('a'); a.href = document.getElementById('qrCanvas').toDataURL('image/png'); a.download = 'qrcode.png'; a.click(); showToast('QR code downloaded'); }
+        function qrSizeUpdate() {
+            document.getElementById('qrSizeVal').textContent =
+                document.getElementById('qrSize').value + 'px';
+            updateQR();
+        }
+
+        function downloadQR() {
+            const a = document.createElement('a');
+            a.href = document.getElementById('qrCanvas').toDataURL('image/png');
+            a.download = 'qrcode.png';
+            a.click();
+            showToast('QR code downloaded');
+        }
+
         function copyQrData() { copy(buildQrData()); }
 
         document.addEventListener('DOMContentLoaded', () => { setQrType('url'); });

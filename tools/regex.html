@@ -27,7 +27,23 @@
                         <div class="tool-desc">Test regular expressions with live match highlighting and capture groups</div>
                     </div>
                 </div>
-
+                <div class="panel" style="margin-bottom:14px">
+                    <div class="panel-bar"><span class="panel-label">Common patterns</span></div>
+                    <div style="display:flex;gap:6px;padding:10px 14px;flex-wrap:wrap">
+                        <button class="btn btn-ghost" onclick="setPattern('([\\w.+-]+)@([\\w-]+\\.[\\w.]+)', 'Email')">📧 Email</button>
+                        <button class="btn btn-ghost" onclick="setPattern('https?:\\/\\/[^\\s]+', 'URL')">🔗 URL</button>
+                        <button class="btn btn-ghost" onclick="setPattern('\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b', 'IP Address')">🌐 IP address</button>
+                        <button class="btn btn-ghost" onclick="setPattern('[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}', 'Phone')">📱 Phone</button>
+                        <button class="btn btn-ghost" onclick="setPattern('\\b\\d{4}-\\d{2}-\\d{2}\\b', 'Date')">📅 Date (YYYY-MM-DD)</button>
+                        <button class="btn btn-ghost" onclick="setPattern('#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\\b', 'Hex color')">🎨 Hex color</button>
+                        <button class="btn btn-ghost" onclick="setPattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$', 'Password')">🔒 Strong password</button>
+                        <button class="btn btn-ghost" onclick="setPattern('\\b[A-Z]{2}\\d{2}[A-Z0-9]{4}\\d{7}([A-Z0-9]?){0,16}\\b', 'IBAN')">🏦 IBAN</button>
+                        <button class="btn btn-ghost" onclick="setPattern('<([a-z][a-z0-9]*)\\b[^>]*>.*?<\\/\\1>', 'HTML tag')">🏷️ HTML tag</button>
+                        <button class="btn btn-ghost" onclick="setPattern('\\b(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\b', 'IPv4 strict')">🌍 IPv4 strict</button>
+                        <button class="btn btn-ghost" onclick="setPattern('[\\w\\-]+(\\.[\\w\\-]+)*\\.(com|org|net|io|dev|co)', 'Domain')">🌐 Domain</button>
+                        <button class="btn btn-ghost" onclick="setPattern('\\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\b', 'UUID')">🔑 UUID</button>
+                    </div>
+                </div>
                 <div class="panel">
                     <div class="panel-bar">
                         <span class="panel-label">Pattern</span>
@@ -68,7 +84,88 @@
     <script src="../assets/shared.js" defer></script>
     <script src="../assets/sidebar.js" defer></script>
     <script>
-        function regexTest() { const pat = document.getElementById('regexPattern').value, str = document.getElementById('regexInput').value, g = document.getElementById('regexGlobal').checked, i = document.getElementById('regexInsens').checked, m = document.getElementById('regexMulti').checked, out = document.getElementById('regexOutput'), cnt = document.getElementById('matchCount'), st = document.getElementById('regexStatus'), gp = document.getElementById('regexGroupPanel'); if (!pat) { out.innerHTML = escHtml(str); cnt.textContent = ''; st.innerHTML = ''; gp.style.display = 'none'; return; } let rx; try { rx = new RegExp(pat, (g ? 'g' : '') + (i ? 'i' : '') + (m ? 'm' : '')); st.innerHTML = '<span class="status-badge badge-ok">✓</span>'; } catch (e) { st.innerHTML = '<span class="status-badge badge-err">Invalid regex</span>'; out.innerHTML = escHtml(str); cnt.textContent = ''; gp.style.display = 'none'; return; } const matches = [...str.matchAll(new RegExp(pat, 'g' + (i ? 'i' : '') + (m ? 'm' : '')))]; cnt.textContent = matches.length ? matches.length + ' match' + (matches.length !== 1 ? 'es' : '') : 'No matches'; let result = '', last = 0; const hRx = new RegExp(pat, 'g' + (i ? 'i' : '') + (m ? 'm' : '')); let match; while ((match = hRx.exec(str)) !== null) { result += escHtml(str.slice(last, match.index)); result += `<span class="regex-match">${escHtml(match[0])}</span>`; last = hRx.lastIndex; if (!g) break; } result += escHtml(str.slice(last)); out.innerHTML = result; const hasGroups = matches.some(m => m.length > 1); if (hasGroups) { gp.style.display = ''; document.getElementById('regexGroups').textContent = matches.map((m, i) => `Match ${i + 1}: ${m.slice(1).map((g, j) => 'Group ' + (j + 1) + ': "' + g + '"').join(', ')}`).join('\n'); } else gp.style.display = 'none'; }
+        function setPattern(pat, label) {
+            document.getElementById('regexPattern').value = pat;
+            document.querySelectorAll('.btn-sample-active').forEach(b => {
+                b.classList.remove('btn-sample-active', 'btn-red');
+                b.classList.add('btn-ghost');
+            });
+            event.currentTarget.classList.remove('btn-ghost');
+            event.currentTarget.classList.add('btn-red', 'btn-sample-active');
+            regexTest();
+        }
+
+        function regexTest() {
+            const pat = document.getElementById('regexPattern').value;
+            const str = document.getElementById('regexInput').value;
+            const g = document.getElementById('regexGlobal').checked;
+            const i = document.getElementById('regexInsens').checked;
+            const m = document.getElementById('regexMulti').checked;
+            const out = document.getElementById('regexOutput');
+            const cnt = document.getElementById('matchCount');
+            const st = document.getElementById('regexStatus');
+            const gp = document.getElementById('regexGroupPanel');
+
+            if (!pat) {
+                out.innerHTML = escHtml(str);
+                cnt.textContent = '';
+                st.innerHTML = '';
+                gp.style.display = 'none';
+                return;
+            }
+
+            let rx;
+            try {
+                rx = new RegExp(pat, (g ? 'g' : '') + (i ? 'i' : '') + (m ? 'm' : ''));
+                st.innerHTML = '<span class="status-badge badge-ok">✓</span>';
+            } catch (e) {
+                st.innerHTML = '<span class="status-badge badge-err">Invalid regex</span>';
+                out.innerHTML = escHtml(str);
+                cnt.textContent = '';
+                gp.style.display = 'none';
+                return;
+            }
+
+            const flags = 'g' + (i ? 'i' : '') + (m ? 'm' : '');
+            const matches = [...str.matchAll(new RegExp(pat, flags))];
+
+            cnt.textContent = matches.length
+                ? matches.length + ' match' + (matches.length !== 1 ? 'es' : '')
+                : 'No matches';
+
+            let result = '', last = 0;
+            const hRx = new RegExp(pat, flags);
+            let match;
+            while ((match = hRx.exec(str)) !== null) {
+                result += escHtml(str.slice(last, match.index));
+                result += `<span class="regex-match">${escHtml(match[0])}</span>`;
+                last = hRx.lastIndex;
+                if (!g) break;
+                if (match[0].length === 0) hRx.lastIndex++; // prevent infinite loop on zero-width match
+            }
+            result += escHtml(str.slice(last));
+            out.innerHTML = result;
+
+            const hasGroups = matches.some(match => match.length > 1);
+            if (hasGroups) {
+                gp.style.display = '';
+                document.getElementById('regexGroups').textContent = matches
+                    .map((match, idx) =>
+                        `Match ${idx + 1}: ` +
+                        match.slice(1).map((grp, j) => `Group ${j + 1}: "${grp}"`).join(', ')
+                    )
+                    .join('\n');
+            } else {
+                gp.style.display = 'none';
+            }
+
+            // Deactivate sample buttons if user manually edited the pattern
+            const activeBtn = document.querySelector('.btn-sample-active');
+            if (activeBtn && activeBtn.dataset.pat !== pat) {
+                activeBtn.classList.remove('btn-sample-active', 'btn-red');
+                activeBtn.classList.add('btn-ghost');
+            }
+        }
     </script>
 </body>
 </html>
