@@ -28,14 +28,10 @@
         <main class="content-wrap">
             <div class="content" style="min-width:0">
                 <div class="tool-header">
-                    <div class="tool-icon" style="background:var(--teal-dim,rgba(0,200,180,0.12));color:var(--teal)">
-                        ✅
-                    </div>
+                    <div class="tool-icon" style="background:var(--teal-dim,rgba(0,200,180,0.12));color:var(--teal)">✅</div>
                     <div>
                         <div class="tool-title">To-Do List</div>
-                        <div class="tool-desc">
-                            Add, update, complete and remove tasks — saved locally in your browser
-                        </div>
+                        <div class="tool-desc">Add, update, complete and remove tasks — saved locally in your browser</div>
                     </div>
                 </div>
 
@@ -53,15 +49,15 @@
                                 <option value="med">🟡 Medium priority</option>
                                 <option value="low">🟢 Low priority</option>
                             </select>
-                            <input type="date" id="todoDate"
-                                   style="font-family:var(--mono);font-size:0.78rem;padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;cursor:pointer">
+                            <label style="font-family:var(--mono);font-size:0.78rem;color:var(--text-dim);display:flex;align-items:center;gap:6px">
+                                Due date
+                                <input type="date" id="todoDate"
+                                       style="font-family:var(--mono);font-size:0.78rem;padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;cursor:pointer">
+                            </label>
                             <input type="text" id="todoTag" placeholder="Tag (optional)" maxlength="30"
                                    style="font-family:var(--mono);font-size:0.78rem;padding:6px 10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;width:140px"
                                    onkeydown="if(event.key==='Enter')addTodo()">
-                            <button class="btn btn-teal" onclick="addTodo()" style="margin-left:auto;padding:7px 20px">
-                                +
-                                Add task
-                            </button>
+                            <button class="btn btn-teal" onclick="addTodo()" style="margin-left:auto;padding:7px 20px">+ Add task</button>
                         </div>
                     </div>
                 </div>
@@ -70,29 +66,14 @@
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
                     <span id="todoStats" style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)"></span>
                     <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">
-                        <button class="btn btn-ghost filter-btn active" id="fAll"
-                                onclick="setFilter('all')">
-                            All
-                        </button>
-                        <button class="btn btn-ghost filter-btn" id="fActive"
-                                onclick="setFilter('active')">
-                            Active
-                        </button>
+                        <button class="btn btn-ghost filter-btn active" id="fAll" onclick="setFilter('all')">All</button>
+                        <button class="btn btn-ghost filter-btn" id="fActive" onclick="setFilter('active')">Active</button>
                         <button class="btn btn-ghost filter-btn" id="fDone" onclick="setFilter('done')">Done</button>
                     </div>
-                    <button class="btn btn-ghost" style="font-size:0.72rem;padding:4px 10px;color:var(--text-dim)"
-                            onclick="clearDone()">
-                        Clear done
-                    </button>
-                    <button class="btn btn-ghost" style="font-size:0.72rem;padding:4px 10px;color:var(--text-dim)"
-                            onclick="exportTodos()">
-                        Export
-                    </button>
+                    <button class="btn btn-ghost" style="font-size:0.72rem;padding:4px 10px;color:var(--text-dim)" onclick="clearDone()">Clear done</button>
+                    <button class="btn btn-ghost" style="font-size:0.72rem;padding:4px 10px;color:var(--text-dim)" onclick="exportTodos()">Export</button>
                     <input type="file" id="importFile" hidden onchange="importTodos(event)">
-                    <button class="btn btn-ghost" style="font-size:0.72rem;padding:4px 10px;color:var(--text-dim)"
-                            onclick="document.getElementById('importFile').click()">
-                        Import
-                    </button>
+                    <button class="btn btn-ghost" style="font-size:0.72rem;padding:4px 10px;color:var(--text-dim)" onclick="document.getElementById('importFile').click()">Import</button>
                 </div>
 
                 <!-- Tag filter -->
@@ -169,16 +150,26 @@
             editingId = id;
             render();
             const ta = document.getElementById('edit-' + id);
-            if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+            if (ta) { ta.focus(); const len = ta.value.length; ta.setSelectionRange(len, len); }
         }
 
         function saveEdit(id) {
             const ta = document.getElementById('edit-' + id);
+            const selEl = document.getElementById('edit-priority-' + id);
+            const dateEl = document.getElementById('edit-date-' + id);
+            const tagEl = document.getElementById('edit-tag-' + id);
             if (!ta) return;
             const newText = ta.value.trim();
             if (!newText) { showToast('Task cannot be empty'); return; }
             const t = todos.find(x => x.id === id);
-            if (t) { t.text = newText; t.updated = Date.now(); save(); }
+            if (t) {
+                t.text = newText;
+                t.priority = selEl ? selEl.value : t.priority;
+                t.date = dateEl ? dateEl.value : t.date;
+                t.tag = tagEl ? tagEl.value.trim().toLowerCase() : t.tag;
+                t.updated = Date.now();
+                save();
+            }
             editingId = null;
             render();
             showToast('Task updated');
@@ -241,7 +232,35 @@
         function priorityClass(p) { return p === 'high' ? 'p-high' : p === 'low' ? 'p-low' : 'p-med'; }
 
         function escHtml(s) {
-            return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            return String(s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function makeSelect(id, value) {
+            const sel = document.createElement('select');
+            sel.id = id;
+            sel.style.cssText = 'font-family:var(--mono);font-size:0.78rem;padding:5px 8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;cursor:pointer';
+            [['high', '🔴 High'], ['med', '🟡 Medium'], ['low', '🟢 Low']].forEach(([val, label]) => {
+                const opt = document.createElement('option');
+                opt.value = val;
+                opt.textContent = label;
+                opt.selected = val === value;
+                sel.appendChild(opt);
+            });
+            return sel;
+        }
+
+        function editLabel(text, el) {
+            const wrap = document.createElement('label');
+            wrap.style.cssText = 'font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);display:flex;flex-direction:column;gap:3px';
+            const span = document.createElement('span');
+            span.textContent = text;
+            wrap.appendChild(span);
+            wrap.appendChild(el);
+            return wrap;
         }
 
         function render() {
@@ -263,13 +282,20 @@
 
             const allTags = [...new Set(todos.map(t => t.tag).filter(Boolean))].sort();
             const tagRow = document.getElementById('tagFilterRow');
+            tagRow.innerHTML = '';
             if (allTags.length) {
-                tagRow.innerHTML = '<span style="font-size:0.72rem;color:var(--text-dim);font-family:var(--mono);margin-right:2px">Tags:</span>'
-                    + allTags.map(tag =>
-                        '<button class="btn btn-ghost filter-btn' + (activeTag === tag ? ' active' : '') + '" style="font-size:0.7rem;padding:3px 10px" onclick="setTag(\'' + escHtml(tag) + '\')">' + escHtml(tag) + '</button>'
-                    ).join('');
-            } else {
-                tagRow.innerHTML = '';
+                const lbl = document.createElement('span');
+                lbl.style.cssText = 'font-size:0.72rem;color:var(--text-dim);font-family:var(--mono);margin-right:2px';
+                lbl.textContent = 'Tags:';
+                tagRow.appendChild(lbl);
+                allTags.forEach(tag => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn btn-ghost filter-btn' + (activeTag === tag ? ' active' : '');
+                    btn.style.cssText = 'font-size:0.7rem;padding:3px 10px';
+                    btn.textContent = tag;
+                    btn.addEventListener('click', () => setTag(tag));
+                    tagRow.appendChild(btn);
+                });
             }
 
             const visible = todos.filter(t => {
@@ -290,37 +316,146 @@
                 return;
             }
 
-            list.innerHTML = visible.map(t => {
-                const isEditing = editingId === t.id;
-                const dotClass = priorityClass(t.priority);
-                const created = fmtDate(t.created);
-                const metaDate = created ? created : 'No date added';
+            list.innerHTML = '';
 
-                return '<div class="todo-item' + (t.done ? ' done' : '') + '" id="item-' + t.id + '">'
-                    + '<div class="priority-dot ' + dotClass + '"></div>'
-                    + '<div style="flex:1;min-width:0">'
-                    + (isEditing
-                        ? '<textarea id="edit-' + t.id + '" class="todo-text" rows="2" style="width:100%;resize:vertical;border:1.5px solid var(--blue);border-radius:var(--r-sm);padding:4px 6px;background:var(--surface2)" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();saveEdit(\'' + t.id + '\')}if(event.key===\'Escape\')cancelEdit()">' + escHtml(t.text) + '</textarea>'
-                        + '<div style="display:flex;gap:6px;margin-top:6px">'
-                        + '<button class="btn btn-teal" style="font-size:0.72rem;padding:3px 10px" onclick="saveEdit(\'' + t.id + '\')">Save</button>'
-                        + '<button class="btn btn-ghost" style="font-size:0.72rem;padding:3px 10px" onclick="cancelEdit()">Cancel</button>'
-                        + '</div>'
-                        : '<span class="todo-text" style="display:block">' + escHtml(t.text) + '</span>'
-                    )
-                    + '</div>'
-                    + (t.tag && !isEditing ? '<span class="tag-badge">' + escHtml(t.tag) + '</span>' : '')
-                    + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'
-                    + '<span class="todo-meta">' + metaDate + (t.date ? ' · 📅 ' + t.date : '') + '</span>'
-                    + (!isEditing
-                        ? '<div class="todo-actions">'
-                        + '<button class="edit-btn" onclick="startEdit(\'' + t.id + '\')">edit</button>'
-                        + '<button class="done-btn" onclick="toggleDone(\'' + t.id + '\')">mark as done</button>'
-                        + '<button onclick="removeTodo(\'' + t.id + '\')">remove</button>'
-                        + '</div>'
-                        : '')
-                    + '</div>'
-                    + '</div>';
-            }).join('');
+            visible.forEach(t => {
+                const isEditing = editingId === t.id;
+                const created = fmtDate(t.created);
+                const metaDate = created || 'No date added';
+
+                const item = document.createElement('div');
+                item.className = 'todo-item' + (t.done ? ' done' : '');
+                item.id = 'item-' + t.id;
+
+                // Priority emoji
+                const dot = document.createElement('span');
+                dot.style.cssText = 'font-size:1rem;flex-shrink:0;line-height:1';
+                dot.textContent = t.priority === 'high' ? '🔴' : t.priority === 'low' ? '🟢' : '🟡';
+                item.appendChild(dot);
+
+                // Body
+                const body = document.createElement('div');
+                body.style.cssText = 'flex:1;min-width:0';
+
+                if (isEditing) {
+                    // Text textarea
+                    const ta = document.createElement('textarea');
+                    ta.id = 'edit-' + t.id;
+                    ta.className = 'todo-text';
+                    ta.rows = 2;
+                    ta.style.cssText = 'width:100%;resize:vertical;border:1.5px solid var(--blue);border-radius:var(--r-sm);padding:4px 6px;background:var(--surface2);box-sizing:border-box';
+                    ta.value = t.text;
+                    ta.addEventListener('keydown', e => {
+                        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); saveEdit(t.id); }
+                        if (e.key === 'Escape') cancelEdit();
+                    });
+                    body.appendChild(ta);
+
+                    // Fields row: priority + due date + tag
+                    const fieldsRow = document.createElement('div');
+                    fieldsRow.style.cssText = 'display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;align-items:flex-end';
+
+                    // Priority
+                    const sel = makeSelect('edit-priority-' + t.id, t.priority);
+                    sel.addEventListener('change', () => {
+                        dot.textContent = sel.value === 'high' ? '🔴' : sel.value === 'low' ? '🟢' : '🟡';
+                    });
+                    fieldsRow.appendChild(editLabel('Priority', sel));
+
+                    // Due date
+                    const dateIn = document.createElement('input');
+                    dateIn.type = 'date';
+                    dateIn.id = 'edit-date-' + t.id;
+                    dateIn.value = t.date || '';
+                    dateIn.style.cssText = 'font-family:var(--mono);font-size:0.78rem;padding:5px 8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;cursor:pointer';
+                    fieldsRow.appendChild(editLabel('Due date', dateIn));
+
+                    // Tag
+                    const tagIn = document.createElement('input');
+                    tagIn.type = 'text';
+                    tagIn.id = 'edit-tag-' + t.id;
+                    tagIn.value = t.tag || '';
+                    tagIn.placeholder = 'e.g. work';
+                    tagIn.maxLength = 30;
+                    tagIn.style.cssText = 'font-family:var(--mono);font-size:0.78rem;padding:5px 8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);outline:none;width:110px';
+                    fieldsRow.appendChild(editLabel('Tag', tagIn));
+
+                    body.appendChild(fieldsRow);
+
+                    // Save / Cancel buttons
+                    const btnRow = document.createElement('div');
+                    btnRow.style.cssText = 'display:flex;gap:6px;margin-top:8px';
+
+                    const saveBtn = document.createElement('button');
+                    saveBtn.className = 'btn btn-teal';
+                    saveBtn.style.cssText = 'font-size:0.72rem;padding:3px 10px';
+                    saveBtn.textContent = 'Save';
+                    saveBtn.addEventListener('click', () => saveEdit(t.id));
+
+                    const cancelBtn = document.createElement('button');
+                    cancelBtn.className = 'btn btn-ghost';
+                    cancelBtn.style.cssText = 'font-size:0.72rem;padding:3px 10px';
+                    cancelBtn.textContent = 'Cancel';
+                    cancelBtn.addEventListener('click', () => cancelEdit());
+
+                    btnRow.appendChild(saveBtn);
+                    btnRow.appendChild(cancelBtn);
+                    body.appendChild(btnRow);
+
+                } else {
+                    const span = document.createElement('span');
+                    span.className = 'todo-text';
+                    span.style.display = 'block';
+                    span.textContent = t.text;
+                    body.appendChild(span);
+                }
+
+                item.appendChild(body);
+
+                // Tag badge (view mode only)
+                if (t.tag && !isEditing) {
+                    const badge = document.createElement('span');
+                    badge.className = 'tag-badge';
+                    badge.textContent = t.tag;
+                    item.appendChild(badge);
+                }
+
+                // Right column: meta + actions
+                const right = document.createElement('div');
+                right.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end;gap:4px';
+
+                const meta = document.createElement('span');
+                meta.className = 'todo-meta';
+                meta.textContent = '🕐 Start: ' + metaDate + (t.date ? '  ·  📅 Due: ' + t.date : '');
+                right.appendChild(meta);
+
+                if (!isEditing) {
+                    const actions = document.createElement('div');
+                    actions.className = 'todo-actions';
+
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'edit-btn';
+                    editBtn.textContent = 'edit';
+                    editBtn.addEventListener('click', () => startEdit(t.id));
+
+                    const doneBtn = document.createElement('button');
+                    doneBtn.className = 'done-btn';
+                    doneBtn.textContent = 'mark as done';
+                    doneBtn.addEventListener('click', () => toggleDone(t.id));
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.textContent = 'remove';
+                    removeBtn.addEventListener('click', () => removeTodo(t.id));
+
+                    actions.appendChild(editBtn);
+                    actions.appendChild(doneBtn);
+                    actions.appendChild(removeBtn);
+                    right.appendChild(actions);
+                }
+
+                item.appendChild(right);
+                list.appendChild(item);
+            });
         }
 
         load();
