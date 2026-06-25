@@ -7,7 +7,6 @@
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-
         gtag('config', 'G-DP87QPTMND');
     </script>
     <meta charset="UTF-8">
@@ -262,11 +261,9 @@
     </style>
 </head>
 <body>
-    <!-- Mobile hamburger -->
     <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open navigation">
         <span></span><span></span><span></span>
     </button>
-    <!-- Sidebar overlay backdrop -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="app">
@@ -286,8 +283,6 @@
                         </div>
                     </div>
 
-
-                    <!-- Favourites — injected by JS if any starred -->
                     <div id="favSection">
                         <div class="fav-section-header">
                             ⭐ Favourites
@@ -296,7 +291,6 @@
                         <div id="favList" style="display:flex;gap:6px;flex-wrap:wrap"></div>
                     </div>
 
-                    <!-- Recently viewed — injected by JS if history exists -->
                     <div id="recentSection" style="display:none;margin-bottom:20px">
                         <div style="font-family:var(--mono);font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-dim);margin-bottom:8px;display:flex;align-items:center;gap:8px">
                             Recent
@@ -310,7 +304,7 @@
                             <circle cx="11" cy="11" r="8" />
                             <path d="m21 21-4.35-4.35" />
                         </svg>
-                        <input class="search-input" type="text" id="searchInput" style="padding-left: 40px;" placeholder="Search tools… e.g. JSON, password, regex, color" oninput="filterTools()">
+                        <input class="search-input" type="text" id="searchInput" style="padding-left:40px" placeholder="Search tools… e.g. JSON, password, regex, color" oninput="filterTools()">
                         <button class="search-clear" id="searchClear" onclick="clearSearch()" title="Clear search">✕</button>
                         <span class="search-hint"><span class="kbd">⌘K</span> or <span class="kbd">/</span></span>
                     </div>
@@ -320,10 +314,9 @@
                         No tools match your search.
                     </div>
 
-
                     <!-- FORMAT -->
                     <div class="section" data-section="Format">
-                        <div class="section-header">Format <span class="section-count">6</span></div>
+                        <div class="section-header">Format <span class="section-count"></span></div>
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/json.html" data-tags="format pretty print validate minify beautify">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">{}</div>
@@ -342,19 +335,58 @@
                                 <div class="tool-card-text"><div class="tool-name">CSS Minifier</div><div class="tool-desc">Minify & beautify CSS</div></div>
                             </a>
                             <a class="tool-card" href="tools/htmlbeautify.html" data-tags="html format indent beautify tidy">
-                                <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)"></></div>
+                                <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">&lt;/&gt;</div>
                                 <div class="tool-card-text"><div class="tool-name">HTML Beautifier</div><div class="tool-desc">Format & indent HTML</div></div>
                             </a>
+                        </div>
+                    </div>
+
+                    <!-- INSPECT -->
+                    <div class="section" data-section="Inspect">
+                        <div class="section-header">Inspect <span class="section-count"></span></div>
+                        <div class="tool-grid">
                             <a class="tool-card" href="tools/diff.html" data-tags="compare diff text lines changes unified">
                                 <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">⇄</div>
                                 <div class="tool-card-text"><div class="tool-name">Diff Checker</div><div class="tool-desc">Compare two texts line by line</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/regex.html" data-tags="pattern test match replace flags groups">
+                                <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">.*</div>
+                                <div class="tool-card-text"><div class="tool-name">Regex Tester</div><div class="tool-desc">Live match & group highlighting</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/timestamp.html" data-tags="unix epoch date time convert human">
+                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">TS</div>
+                                <div class="tool-card-text"><div class="tool-name">Timestamp</div><div class="tool-desc">Unix ↔ human-readable</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/httpstatus.html" data-tags="404 200 500 201 301 codes meaning reference">
+                                <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">HTTP</div>
+                                <div class="tool-card-text"><div class="tool-name">HTTP Status</div><div class="tool-desc">All status codes reference</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/useragent.html" data-tags="browser parse detect device os chrome firefox">
+                                <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">UA</div>
+                                <div class="tool-card-text"><div class="tool-name">User Agent Inspector</div><div class="tool-desc">Parse browser UA strings</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/keytester.html" data-tags="keyboard keycode event modifier ctrl alt">
+                                <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">⌨</div>
+                                <div class="tool-card-text"><div class="tool-name">Key Tester</div><div class="tool-desc">Key codes & modifiers</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/jsonpath.html" data-tags="json query explore tree jq path filter">
+                                <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">{?}</div>
+                                <div class="tool-card-text"><div class="tool-name">JSON Path Explorer</div><div class="tool-desc">Query & tree-explore JSON</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/urlparser.html" data-tags="url parse protocol host path query params fragment debug">
+                                <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">URL</div>
+                                <div class="tool-card-text"><div class="tool-name">URL Parser</div><div class="tool-desc">Break URLs into components & query params</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/hash.html" data-tags="md5 sha sha256 sha1 checksum digest fingerprint inspect verify">
+                                <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">#</div>
+                                <div class="tool-card-text"><div class="tool-name">Hash Generator</div><div class="tool-desc">MD5, SHA-1, SHA-256</div></div>
                             </a>
                         </div>
                     </div>
 
                     <!-- ENCODE -->
                     <div class="section" data-section="Encode">
-                        <div class="section-header">Encode <span class="section-count">7</span></div>
+                        <div class="section-header">Encode <span class="section-count"></span></div>
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/base64.html" data-tags="encode decode text string base64">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">B64</div>
@@ -376,36 +408,47 @@
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">U+</div>
                                 <div class="tool-card-text"><div class="tool-name">Unicode Converter</div><div class="tool-desc">Text ↔ code points, escapes, HTML entities</div></div>
                             </a>
-                            <a class="tool-card" href="tools/morse.html" data-tags="morse code encode decode audio beep signal sos">
-                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">·−</div>
-                                <div class="tool-card-text"><div class="tool-name">Morse Code</div><div class="tool-desc">Encode & decode with audio playback</div></div>
+                        </div>
+                    </div>
+
+                    <!-- SECURITY -->
+                    <div class="section" data-section="Security">
+                        <div class="section-header">Security <span class="section-count"></span></div>
+                        <div class="tool-grid">
+                            <a class="tool-card" href="tools/password.html" data-tags="generate random secure strong passphrase security">
+                                <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">🔑</div>
+                                <div class="tool-card-text"><div class="tool-name">Password Generator</div><div class="tool-desc">Cryptographically random</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/textencrypt.html" data-tags="aes encrypt decrypt secure password cipher security">
+                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">🔐</div>
+                                <div class="tool-card-text"><div class="tool-name">Text Encrypt</div><div class="tool-desc">AES-256 in-browser</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/jwt.html" data-tags="token decode header payload claims expiry security">
+                                <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">JWT</div>
+                                <div class="tool-card-text"><div class="tool-name">JWT Decoder</div><div class="tool-desc">Header, payload, expiry</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/jwtencoder.html" data-tags="token encode sign secret algorithm security">
+                                <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">JWT+</div>
+                                <div class="tool-card-text"><div class="tool-name">JWT Encoder</div><div class="tool-desc">Build & sign JWT tokens</div></div>
                             </a>
                         </div>
                     </div>
 
                     <!-- GENERATE -->
                     <div class="section" data-section="Generate">
-                        <div class="section-header">Generate <span class="section-count">9</span></div>
+                        <div class="section-header">Generate <span class="section-count"></span></div>
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/uuid.html" data-tags="generate random guid unique id rfc">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">UID</div>
                                 <div class="tool-card-text"><div class="tool-name">UUID Generator</div><div class="tool-desc">RFC 4122 v4 UUIDs, bulk</div></div>
                             </a>
-                            <a class="tool-card" href="tools/hash.html" data-tags="md5 sha sha256 sha1 checksum digest fingerprint">
-                                <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">#</div>
-                                <div class="tool-card-text"><div class="tool-name">Hash Generator</div><div class="tool-desc">MD5, SHA-1, SHA-256</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/password.html" data-tags="generate random secure strong passphrase">
-                                <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">🔑</div>
-                                <div class="tool-card-text"><div class="tool-name">Password Generator</div><div class="tool-desc">Cryptographically random</div></div>
-                            </a>
                             <a class="tool-card" href="tools/lorem.html" data-tags="placeholder dummy filler text words paragraphs">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">¶</div>
                                 <div class="tool-card-text"><div class="tool-name">Lorem Ipsum</div><div class="tool-desc">Placeholder text generator</div></div>
                             </a>
-                            <a class="tool-card" href="tools/asciiart.html" data-tags="text banner figlet art font letters">
-                                <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">A</div>
-                                <div class="tool-card-text"><div class="tool-name">ASCII Art</div><div class="tool-desc">Text to ASCII art, 4 styles</div></div>
+                            <a class="tool-card" href="tools/fakedata.html" data-tags="fake data generate test names emails address phone">
+                                <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">🎲</div>
+                                <div class="tool-card-text"><div class="tool-name">Fake Data Generator</div><div class="tool-desc">Names, emails, addresses & test data</div></div>
                             </a>
                             <a class="tool-card" href="tools/qrcode.html" data-tags="qr barcode scan url wifi email sms vcard">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">⬛</div>
@@ -415,16 +458,12 @@
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">🔲</div>
                                 <div class="tool-card-text"><div class="tool-name">Favicon Generator</div><div class="tool-desc">All sizes, downloadable PNG</div></div>
                             </a>
-                            <a class="tool-card" href="tools/fakedata.html" data-tags="fake data generate test names emails address phone">
-                                <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">🎲</div>
-                                <div class="tool-card-text"><div class="tool-name">Fake Data Generator</div><div class="tool-desc">Names, emails, addresses & test data</div></div>
-                            </a>
                         </div>
                     </div>
 
                     <!-- COLOR -->
                     <div class="section" data-section="Color">
-                        <div class="section-header">Color <span class="section-count">5</span></div>
+                        <div class="section-header">Color <span class="section-count"></span></div>
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/color.html" data-tags="hex rgb hsl oklch convert picker palette">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">🎨</div>
@@ -449,53 +488,10 @@
                         </div>
                     </div>
 
-                    <!-- INSPECT -->
-                    <div class="section" data-section="Inspect">
-                        <div class="section-header">Inspect <span class="section-count">9</span></div>
-                        <div class="tool-grid">
-                            <a class="tool-card" href="tools/jwt.html" data-tags="token decode header payload claims expiry">
-                                <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">JWT</div>
-                                <div class="tool-card-text"><div class="tool-name">JWT Decoder</div><div class="tool-desc">Header, payload, expiry</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/timestamp.html" data-tags="unix epoch date time convert human">
-                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">TS</div>
-                                <div class="tool-card-text"><div class="tool-name">Timestamp</div><div class="tool-desc">Unix ↔ human-readable</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/regex.html" data-tags="pattern test match replace flags groups">
-                                <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">.*</div>
-                                <div class="tool-card-text"><div class="tool-name">Regex Tester</div><div class="tool-desc">Live match & group highlighting</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/httpstatus.html" data-tags="404 200 500 201 301 codes meaning reference">
-                                <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">HTTP</div>
-                                <div class="tool-card-text"><div class="tool-name">HTTP Status</div><div class="tool-desc">All status codes reference</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/useragent.html" data-tags="browser parse detect device os chrome firefox">
-                                <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">UA</div>
-                                <div class="tool-card-text"><div class="tool-name">User Agent Inspector</div><div class="tool-desc">Parse browser UA strings</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/keytester.html" data-tags="keyboard keycode event modifier ctrl alt">
-                                <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">⌨</div>
-                                <div class="tool-card-text"><div class="tool-name">Key Tester</div><div class="tool-desc">Key codes & modifiers</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/jsonpath.html" data-tags="json query explore tree jq path filter">
-                                <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">{?}</div>
-                                <div class="tool-card-text"><div class="tool-name">JSON Path Explorer</div><div class="tool-desc">Query & tree-explore JSON</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/urlparser.html" data-tags="url parse protocol host path query params fragment debug">
-                                <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">URL</div>
-                                <div class="tool-card-text"><div class="tool-name">URL Parser</div><div class="tool-desc">Break URLs into components & query params</div></div>
-                            </a>
-                        </div>
-                    </div>
-
                     <!-- BUILD -->
                     <div class="section" data-section="Build">
-                        <div class="section-header">Build <span class="section-count">13</span></div>
+                        <div class="section-header">Build <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/jwtencoder.html" data-tags="token encode sign secret algorithm">
-                                <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">JWT+</div>
-                                <div class="tool-card-text"><div class="tool-name">JWT Encoder</div><div class="tool-desc">Build & sign JWT tokens</div></div>
-                            </a>
                             <a class="tool-card" href="tools/headerbuilder.html" data-tags="http request headers cors auth cache">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">HDR</div>
                                 <div class="tool-card-text"><div class="tool-name">Header Builder</div><div class="tool-desc">Build & reference HTTP headers</div></div>
@@ -533,8 +529,12 @@
 
                     <!-- CONVERT -->
                     <div class="section" data-section="Convert">
-                        <div class="section-header">Convert <span class="section-count">14</span></div>
+                        <div class="section-header">Convert <span class="section-count"></span></div>
                         <div class="tool-grid">
+                            <a class="tool-card" href="tools/morse.html" data-tags="morse code encode decode audio beep signal sos convert">
+                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">·−</div>
+                                <div class="tool-card-text"><div class="tool-name">Morse Code</div><div class="tool-desc">Encode & decode with audio playback</div></div>
+                            </a>
                             <a class="tool-card" href="tools/numbase.html" data-tags="binary octal hex decimal convert base">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">0x</div>
                                 <div class="tool-card-text"><div class="tool-name">Number Base</div><div class="tool-desc">Binary, Octal, Decimal, Hex</div></div>
@@ -575,12 +575,16 @@
                                 <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">TOML</div>
                                 <div class="tool-card-text"><div class="tool-name">TOML ↔ JSON</div><div class="tool-desc">Convert between TOML and JSON</div></div>
                             </a>
+                            <a class="tool-card" href="tools/slugify.html" data-tags="slug url safe kebab convert transliterate arabic">
+                                <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">slug</div>
+                                <div class="tool-card-text"><div class="tool-name">Slug Generator</div><div class="tool-desc">URL-safe slugs with transliteration</div></div>
+                            </a>
                         </div>
                     </div>
 
                     <!-- TEXT -->
                     <div class="section" data-section="Text">
-                        <div class="section-header">Text <span class="section-count">8</span></div>
+                        <div class="section-header">Text <span class="section-count"></span></div>
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/textstats.html" data-tags="words characters reading time frequency analysis">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">Aa</div>
@@ -602,20 +606,16 @@
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">MD</div>
                                 <div class="tool-card-text"><div class="tool-name">Markdown Preview</div><div class="tool-desc">Live side-by-side render</div></div>
                             </a>
-                            <a class="tool-card" href="tools/textencrypt.html" data-tags="aes encrypt decrypt secure password cipher">
-                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">🔐</div>
-                                <div class="tool-card-text"><div class="tool-name">Text Encrypt</div><div class="tool-desc">AES-256 in-browser</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/slugify.html" data-tags="slug url safe kebab convert transliterate arabic">
-                                <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">slug</div>
-                                <div class="tool-card-text"><div class="tool-name">Slug Generator</div><div class="tool-desc">URL-safe slugs with transliteration</div></div>
+                            <a class="tool-card" href="tools/asciiart.html" data-tags="text banner figlet art font letters ascii">
+                                <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">A</div>
+                                <div class="tool-card-text"><div class="tool-name">ASCII Art</div><div class="tool-desc">Text to ASCII art, 4 styles</div></div>
                             </a>
                         </div>
                     </div>
 
                     <!-- NETWORK -->
                     <div class="section" data-section="Network">
-                        <div class="section-header">Network <span class="section-count">4</span></div>
+                        <div class="section-header">Network <span class="section-count"></span></div>
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/ipcalc.html" data-tags="ip cidr subnet network mask broadcast">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">IP</div>
@@ -638,7 +638,7 @@
 
                     <!-- PRODUCTIVITY -->
                     <div class="section" data-section="Productivity">
-                        <div class="section-header">Productivity <span class="section-count">3</span></div>
+                        <div class="section-header">Productivity <span class="section-count"></span></div>
                         <div class="tool-grid">
                             <a class="tool-card" href="tools/pomodoro.html" data-tags="timer focus work break productivity session">
                                 <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">🍅</div>
@@ -670,7 +670,6 @@
     <script src="assets/shared.js" defer></script>
     <script src="assets/sidebar.js" defer></script>
     <script>
-        // Recently viewed (RECENT_KEY defined in shared.js)
         function loadRecent() {
             try {
                 const recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
@@ -679,11 +678,11 @@
                 const list = document.getElementById('recentList');
                 section.style.display = '';
                 list.innerHTML = recent.map(r => `
-              <a href="tools/${r.page}" style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;font-size:0.78rem;color:var(--text-dim);font-family:var(--mono);transition:all 0.14s;white-space:nowrap"
-                 onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border2)'"
-                 onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">
-                ${escHtmlIdx(r.title)}
-              </a>`).join('');
+                                <a href="tools/${r.page}" style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;font-size:0.78rem;color:var(--text-dim);font-family:var(--mono);transition:all 0.14s;white-space:nowrap"
+                                   onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border2)'"
+                                   onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">
+                                    ${escHtmlIdx(r.title)}
+                                </a>`).join('');
             } catch (e) { }
         }
 
@@ -696,16 +695,13 @@
             return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        // Search
         function filterTools() {
             const q = document.getElementById('searchInput').value.toLowerCase().trim();
             const sections = document.querySelectorAll('.section');
             let anyVisible = false;
-
             sections.forEach(section => {
                 const cards = section.querySelectorAll('.tool-card');
                 let sectionHasVisible = false;
-
                 cards.forEach(card => {
                     const name = card.querySelector('.tool-name').textContent.toLowerCase();
                     const desc = card.querySelector('.tool-desc').textContent.toLowerCase();
@@ -715,15 +711,10 @@
                     card.style.display = match ? '' : 'none';
                     if (match) { sectionHasVisible = true; anyVisible = true; }
                 });
-
                 section.style.display = sectionHasVisible ? '' : 'none';
             });
-
             document.getElementById('noResults').style.display = anyVisible || !q ? 'none' : 'block';
         }
-
-        // Press / to focus search
-        document.addEventListener('DOMContentLoaded', loadRecent);
 
         // Dynamic section counts
         document.querySelectorAll('.section').forEach(section => {
@@ -737,7 +728,6 @@
         const hint = document.querySelector('.search-hint');
         if (hint) hint.innerHTML = isMac ? '<span class="kbd">⌘K</span> or <span class="kbd">/</span>' : '<span class="kbd">Ctrl+K</span> or <span class="kbd">/</span>';
 
-        // Search clear button
         function clearSearch() {
             document.getElementById('searchInput').value = '';
             document.getElementById('searchClear').classList.remove('show');
@@ -745,13 +735,11 @@
             document.getElementById('searchInput').focus();
         }
 
-        // Hook search input to show/hide clear button
         const _origInput = document.getElementById('searchInput');
         _origInput.addEventListener('input', function () {
             document.getElementById('searchClear').classList.toggle('show', this.value.length > 0);
         });
 
-        // ── Favourites ──
         const FAV_KEY = 'devbox_favs';
         function getFavs() { try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch (e) { return []; } }
         function saveFavs(arr) { try { localStorage.setItem(FAV_KEY, JSON.stringify(arr)); } catch (e) { } }
@@ -780,21 +768,19 @@
             if (!favs.length) { section.style.display = 'none'; return; }
             section.style.display = '';
             list.innerHTML = favs.map(f => `
-                  <a href="${escHtmlIdx(f.href)}" style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;font-size:0.78rem;color:var(--text-dim);font-family:var(--mono);transition:all 0.14s;white-space:nowrap"
-                     onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border2)'"
-                     onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">
-                    ★ ${escHtmlIdx(f.name)}
-                  </a>`).join('');
+                            <a href="${escHtmlIdx(f.href)}" style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;font-size:0.78rem;color:var(--text-dim);font-family:var(--mono);transition:all 0.14s;white-space:nowrap"
+                               onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border2)'"
+                               onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">
+                                ★ ${escHtmlIdx(f.name)}
+                            </a>`).join('');
         }
 
         function clearFavourites() {
             saveFavs([]);
             loadFavourites();
-            // unstar all visible buttons
             document.querySelectorAll('.fav-btn.starred').forEach(b => renderFavBtn(b, false));
         }
 
-        // Inject star buttons into every tool card
         function injectFavBtns() {
             const favs = getFavs();
             document.querySelectorAll('.tool-card').forEach(card => {
@@ -827,35 +813,19 @@
         document.addEventListener('DOMContentLoaded', () => {
             injectFavBtns();
             loadFavourites();
+            loadRecent();
         });
     </script>
     <script>
-        // Mobile sidebar open/close
         (function () {
             const btn = document.getElementById('mobileMenuBtn');
             const overlay = document.getElementById('sidebarOverlay');
             const sidebar = document.getElementById('sidebar');
-
-            function openSidebar() {
-                sidebar.classList.add('mobile-open');
-                overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-            function closeSidebar() {
-                sidebar.classList.remove('mobile-open');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-
+            function openSidebar() { sidebar.classList.add('mobile-open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+            function closeSidebar() { sidebar.classList.remove('mobile-open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
             btn.addEventListener('click', openSidebar);
             overlay.addEventListener('click', closeSidebar);
-
-            // Close on nav link tap
-            sidebar.addEventListener('click', function (e) {
-                if (e.target.closest('.nav-item')) {
-                    closeSidebar();
-                }
-            });
+            sidebar.addEventListener('click', function (e) { if (e.target.closest('.nav-item')) closeSidebar(); });
         })();
     </script>
 </body>
