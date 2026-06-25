@@ -20,173 +20,6 @@
     <meta property="og:title" content="To-Do List — DevBox">
     <meta property="og:description" content="Track, update and manage your tasks">
     <meta property="og:type" content="website">
-    <style>
-        .todo-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 10px 14px;
-            border-bottom: 1px solid var(--border);
-            transition: background 0.15s;
-        }
-
-        .todo-item:last-child {
-            border-bottom: none;
-        }
-
-        .todo-item:hover {
-            background: var(--surface2);
-        }
-
-        .todo-item.done .todo-text {
-            text-decoration: line-through;
-            color: var(--text-dim);
-        }
-
-        .todo-cb {
-            margin-top: 3px;
-            width: 16px;
-            height: 16px;
-            flex-shrink: 0;
-            accent-color: var(--green);
-            cursor: pointer;
-        }
-
-        .todo-text {
-            flex: 1;
-            font-size: 0.88rem;
-            color: var(--text);
-            line-height: 1.5;
-            word-break: break-word;
-            outline: none;
-            background: transparent;
-            border: none;
-            font-family: var(--sans);
-            resize: none;
-            padding: 0;
-            min-height: 1.4em;
-        }
-
-        .todo-text:focus {
-            color: var(--text-bright);
-        }
-
-        .todo-meta {
-            font-family: var(--mono);
-            font-size: 0.65rem;
-            color: var(--text-dim);
-            white-space: nowrap;
-            margin-top: 4px;
-            flex-shrink: 0;
-        }
-
-        .todo-actions {
-            display: flex;
-            gap: 4px;
-            flex-shrink: 0;
-            opacity: 0;
-            transition: opacity 0.15s;
-        }
-
-        .todo-item:hover .todo-actions {
-            opacity: 1;
-        }
-
-        .todo-actions button {
-            background: none;
-            border: 1px solid var(--border);
-            border-radius: var(--r-sm);
-            color: var(--text-dim);
-            font-size: 0.72rem;
-            padding: 2px 7px;
-            cursor: pointer;
-            font-family: var(--mono);
-            transition: all 0.1s;
-        }
-
-        .todo-actions button:hover {
-            border-color: var(--red);
-            color: var(--red);
-            background: var(--surface2);
-        }
-
-        .todo-actions .edit-btn:hover {
-            border-color: var(--blue);
-            color: var(--blue);
-            background: var(--surface2);
-        }
-
-        .priority-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-            margin-top: 6px;
-        }
-
-        .p-high {
-            background: var(--red);
-        }
-
-        .p-med {
-            background: var(--yellow);
-        }
-
-        .p-low {
-            background: var(--green);
-        }
-
-        .filter-btn {
-            font-size: 0.75rem;
-            padding: 4px 12px;
-        }
-
-        .filter-btn.active {
-            background: var(--surface3, var(--border2));
-            color: var(--text-bright);
-            border-color: var(--border2);
-        }
-
-        .progress-bar-wrap {
-            height: 4px;
-            background: var(--border2);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 0 14px 12px;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--green), var(--teal));
-            border-radius: 4px;
-            transition: width 0.4s;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-dim);
-            font-size: 0.82rem;
-        }
-
-        .empty-state .icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .tag-badge {
-            font-family: var(--mono);
-            font-size: 0.62rem;
-            padding: 1px 6px;
-            border-radius: 999px;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            color: var(--text-dim);
-            white-space: nowrap;
-            flex-shrink: 0;
-            margin-top: 3px;
-        }
-    </style>
 </head>
 
 <body>
@@ -449,7 +282,6 @@
                 const dotClass = priorityClass(t.priority);
 
                 return '<div class="todo-item' + (t.done ? ' done' : '') + '" id="item-' + t.id + '">'
-                    + '<input type="checkbox" class="todo-cb" aria-label="Mark as done" ' + (t.done ? 'checked' : '') + ' onchange="toggleDone(\'' + t.id + '\')">'
                     + '<div class="priority-dot ' + dotClass + '"></div>'
                     + '<div style="flex:1;min-width:0">'
                     + (isEditing
@@ -467,6 +299,7 @@
                     + (!isEditing
                         ? '<div class="todo-actions">'
                         + '<button class="edit-btn" onclick="startEdit(\'' + t.id + '\')">edit</button>'
+                        + '<button class="done-btn" onclick="toggleDone(\'' + t.id + '\')">mark as done</button>'
                         + '<button onclick="removeTodo(\'' + t.id + '\')">remove</button>'
                         + '</div>'
                         : '')
