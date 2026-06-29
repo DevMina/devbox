@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Parse, validate and convert .env files">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.env Parser — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content=".env Parser — DevBox">
+    <meta property="og:description" content="Parse, validate and convert .env files">
+    <meta property="og:type" content="website">
+    <style>
+        .env-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 0.78rem; }
+        .env-table th { text-align: left; padding: 6px 10px; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+        .env-table td { padding: 6px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        .env-table tr:last-child td { border-bottom: none; }
+        .env-table tr:hover td { background: var(--surface2); }
+        .env-key { color: var(--green); }
+        .env-val { color: var(--text); word-break: break-all; }
+        .env-err { color: var(--red); font-size: 0.72rem; }
+        .env-comment { color: var(--text-dim); font-style: italic; }
+        .warn-badge { display: inline-block; padding: 1px 6px; background: var(--yellow-dim); color: var(--yellow); border-radius: 4px; font-size: 0.62rem; }
+        .stat-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+        .stat-chip { padding: 4px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim); }
+        .stat-chip strong { color: var(--text); }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">.env</div>
+                    <div>
+                        <div class="tool-title">.env File Parser</div>
+                        <div class="tool-desc">Parse, validate, sort and convert .env files to JSON or export</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Input</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
+                            <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="envInput" placeholder="# Paste your .env content here&#10;DATABASE_URL=postgres://user:pass@localhost/db&#10;API_KEY=&quot;my-secret-key&quot;&#10;DEBUG=true" style="min-height:160px;font-family:var(--mono);font-size:0.82rem;" oninput="parseEnv()"></textarea>
+                </div>
+
+                <div class="panel-actions" style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn btn-green" onclick="parseEnv()">⇄ Parse</button>
+                    <button class="btn btn-ghost" onclick="toJson()">⬇ Export JSON</button>
+                    <button class="btn btn-ghost" onclick="toSorted()">⇅ Sort keys</button>
+                    <button class="btn btn-ghost" onclick="toRedacted()">🔒 Redact values</button>
+                    <button class="btn btn-ghost" onclick="toExample()">📋 Make .env.example</button>
+                </div>
+
+                <div id="stats" class="stat-row" style="display:none"></div>
+
+                <div id="errorList" style="margin-bottom:8px;"></div>
+
+                <div class="panel" id="tablePanel" style="display:none">
+                    <div class="panel-bar"><span class="panel-label">Parsed Variables</span></div>
+                    <div style="overflow-x:auto;">
+                        <table class="env-table">
+                            <thead><tr><th>#</th><th>Key</th><th>Value</th><th>Notes</th></tr></thead>
+                            <tbody id="envTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top:12px;" id="outputPanel" style="display:none">
+                    <div class="panel-bar">
+                        <span class="panel-label" id="outputLabel">Output</span>
+                        <button class="btn btn-ghost" onclick="copyOutput()">⎘ Copy</button>
+                    </div>
+                    <pre id="outputArea" style="font-family:var(--mono);font-size:0.78rem;white-space:pre-wrap;padding:14px;color:var(--green);min-height:60px;"></pre>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+    let parsed = [];
+
+    const SAMPLE = `# Application Settings
+NODE_ENV=development
+PORT=3000
+APP_NAME="My Cool App"
+
+# Database
+DATABASE_URL=postgres://admin:secretpassword@localhost:5432/mydb
+DB_POOL_SIZE=10
+
+# Auth
+JWT_SECRET="super-secret-jwt-key-1234"
+SESSION_EXPIRE=3600
+
+# External APIs
+STRIPE_KEY=sk_test_abcdefghijklmnop
+OPENAI_API_KEY=sk-proj-xxxxxxxxxxxx
+
+# Feature Flags
+ENABLE_ANALYTICS=true
+MAINTENANCE_MODE=false
+`;
+
+    function parseEnvText(text) {
+        const lines = text.split('\n');
+        const results = [];
+        const seen = new Set();
+        lines.forEach((rawLine, i) => {
+            const line = rawLine.trimEnd();
+            const trimmed = line.trim();
+            if (!trimmed) { results.push({ type: 'blank', line: i+1 }); return; }
+            if (trimmed.startsWith('#')) { results.push({ type: 'comment', value: trimmed, line: i+1 }); return; }
+            const match = line.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)$/);
+            if (!match) { results.push({ type: 'error', raw: line, line: i+1 }); return; }
+            let [, key, val] = match;
+            // Strip inline comments (not inside quotes)
+            const inlineComment = val.match(/^([^#"']*|"[^"]*"|'[^']*')*?(#.*)$/);
+            let note = '';
+            // Unquote
+            let quotedWith = null;
+            if (/^".*"$/.test(val)) { val = val.slice(1,-1).replace(/\\"/g,'"'); quotedWith = '"'; }
+            else if (/^'.*'$/.test(val)) { val = val.slice(1,-1); quotedWith = "'"; }
+            const warnings = [];
+            if (seen.has(key)) warnings.push('duplicate');
+            seen.add(key);
+            if (!val) warnings.push('empty');
+            if (/password|secret|key|token/i.test(key) && val) warnings.push('sensitive');
+            results.push({ type: 'var', key, val, quotedWith, warnings, line: i+1 });
+        });
+        return results;
+    }
+
+    function parseEnv() {
+        const text = document.getElementById('envInput').value;
+        parsed = parseEnvText(text);
+        renderTable();
+    }
+
+    function renderTable() {
+        const vars = parsed.filter(p => p.type === 'var');
+        const errors = parsed.filter(p => p.type === 'error');
+
+        // Stats
+        const statsEl = document.getElementById('stats');
+        statsEl.style.display = vars.length ? 'flex' : 'none';
+        statsEl.innerHTML = `
+            <div class="stat-chip"><strong>${vars.length}</strong> variables</div>
+            <div class="stat-chip"><strong>${vars.filter(v=>v.warnings.includes('sensitive')).length}</strong> sensitive</div>
+            <div class="stat-chip"><strong>${vars.filter(v=>v.warnings.includes('empty')).length}</strong> empty</div>
+            <div class="stat-chip"><strong>${errors.length}</strong> errors</div>`;
+
+        // Errors
+        const errEl = document.getElementById('errorList');
+        errEl.innerHTML = errors.map(e => `<div class="env-err">Line ${e.line}: Cannot parse → <code>${e.raw}</code></div>`).join('');
+
+        // Table
+        const tbody = document.getElementById('envTableBody');
+        let idx = 0;
+        tbody.innerHTML = parsed.filter(p=>p.type==='var').map((p) => {
+            idx++;
+            const warnHtml = p.warnings.map(w => `<span class="warn-badge">${w}</span>`).join(' ');
+            return `<tr>
+                <td style="color:var(--text-dim)">${idx}</td>
+                <td class="env-key">${p.key}</td>
+                <td class="env-val">${p.val || '<span style="color:var(--text-dim)"><em>empty</em></span>'}</td>
+                <td>${warnHtml || '<span style="color:var(--text-dim)">—</span>'}</td>
+            </tr>`;
+        }).join('');
+        document.getElementById('tablePanel').style.display = vars.length ? '' : 'none';
+        document.getElementById('outputPanel').style.display = 'none';
+    }
+
+    function showOutput(label, text) {
+        document.getElementById('outputLabel').textContent = label;
+        document.getElementById('outputArea').textContent = text;
+        document.getElementById('outputPanel').style.display = '';
+    }
+
+    function toJson() {
+        parseEnv();
+        const obj = {};
+        parsed.filter(p=>p.type==='var').forEach(p => { obj[p.key] = p.val; });
+        showOutput('JSON Output', JSON.stringify(obj, null, 2));
+    }
+
+    function toSorted() {
+        parseEnv();
+        const vars = parsed.filter(p=>p.type==='var').sort((a,b)=>a.key.localeCompare(b.key));
+        showOutput('Sorted .env', vars.map(p => {
+            const q = p.quotedWith || '';
+            return `${p.key}=${q}${p.val}${q}`;
+        }).join('\n'));
+    }
+
+    function toRedacted() {
+        parseEnv();
+        showOutput('Redacted .env', parsed.filter(p=>p.type==='var').map(p => {
+            const redact = p.warnings.includes('sensitive');
+            const q = p.quotedWith || '';
+            const val = redact ? '***REDACTED***' : p.val;
+            return `${p.key}=${q}${val}${q}`;
+        }).join('\n'));
+    }
+
+    function toExample() {
+        parseEnv();
+        showOutput('.env.example', parsed.filter(p=>p.type==='var').map(p => `${p.key}=`).join('\n'));
+    }
+
+    function copyOutput() { copy(document.getElementById('outputArea').textContent); }
+
+    function clearAll() {
+        document.getElementById('envInput').value = '';
+        parsed = [];
+        document.getElementById('envTableBody').innerHTML = '';
+        document.getElementById('errorList').innerHTML = '';
+        document.getElementById('stats').style.display = 'none';
+        document.getElementById('tablePanel').style.display = 'none';
+        document.getElementById('outputPanel').style.display = 'none';
+    }
+
+    function loadSample() { document.getElementById('envInput').value = SAMPLE; parseEnv(); }
+    </script>
+</body>
+</html>

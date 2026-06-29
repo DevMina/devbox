@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DevBox — SVG Optimizer and SVG to JSX converter">
+    <title>SVG Optimizer — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .svg-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media(max-width:700px) { .svg-layout { grid-template-columns: 1fr; } }
+        .code-editor { width: 100%; min-height: 300px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 0.78rem; padding: 12px; border-radius: var(--r); resize: vertical; line-height: 1.6; }
+        .code-editor:focus { outline: none; border-color: var(--orange, #ff9f4a); }
+        .output-area { min-height: 300px; font-family: var(--mono); font-size: 0.78rem; color: var(--orange, #ff9f4a); white-space: pre; overflow: auto; line-height: 1.6; }
+        .opts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; margin-bottom: 4px; }
+        .opts-grid label { font-family: var(--mono); font-size: 0.78rem; color: var(--text-dim); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .opts-grid input[type=checkbox] { accent-color: var(--orange, #ff9f4a); }
+        .preview-box { background: repeating-conic-gradient(var(--surface2) 0% 25%,var(--surface) 0% 50%) 0 0/16px 16px; border: 1px solid var(--border); border-radius: var(--r); display: flex; align-items: center; justify-content: center; min-height: 120px; padding: 16px; margin-bottom: 12px; }
+        .preview-box svg { max-width: 100%; max-height: 100px; }
+        .stats-row { display: flex; gap: 16px; flex-wrap: wrap; font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); margin-bottom: 10px; }
+        .stat-item .stat-val { color: var(--text); font-weight: 600; }
+        .stat-item .stat-delta { margin-left: 5px; }
+        .stat-item .stat-delta.good { color: var(--green); }
+        .mode-tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+        .mode-tab { background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-dim); font-family: var(--mono); font-size: 0.78rem; padding: 6px 14px; cursor: pointer; margin-bottom: -1px; transition: all 0.15s; }
+        .mode-tab.active { color: var(--orange, #ff9f4a); border-bottom-color: var(--orange, #ff9f4a); }
+        .drop-zone { border: 2px dashed var(--border); border-radius: var(--r); padding: 16px; text-align: center; font-family: var(--mono); font-size: 0.78rem; color: var(--text-dim); cursor: pointer; transition: all 0.15s; margin-bottom: 10px; }
+        .drop-zone:hover, .drop-zone.drag-over { border-color: var(--orange, #ff9f4a); color: var(--orange, #ff9f4a); }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:rgba(255,159,74,0.15);color:#ff9f4a">SVG</div>
+                    <div><div class="tool-title">SVG Optimizer / SVG → JSX</div><div class="tool-desc">Clean, minify, and convert SVG to React JSX</div></div>
+                </div>
+
+                <!-- Mode -->
+                <div class="mode-tabs">
+                    <button class="mode-tab active" onclick="setMode('optimize')">Optimize SVG</button>
+                    <button class="mode-tab" onclick="setMode('jsx')">SVG → JSX</button>
+                    <button class="mode-tab" onclick="setMode('b64')">SVG → Data URI</button>
+                </div>
+
+                <!-- Options -->
+                <div class="panel" style="margin-bottom:12px">
+                    <div class="panel-bar"><span class="panel-label">Options</span></div>
+                    <div class="opts-grid">
+                        <label><input type="checkbox" id="opt-comments" checked onchange="process()"> Remove comments</label>
+                        <label><input type="checkbox" id="opt-metadata" checked onchange="process()"> Remove metadata</label>
+                        <label><input type="checkbox" id="opt-ids" onchange="process()"> Remove IDs</label>
+                        <label><input type="checkbox" id="opt-dims" onchange="process()"> Remove width/height attrs</label>
+                        <label><input type="checkbox" id="opt-style-to-attr" onchange="process()"> Convert style to attrs</label>
+                        <label><input type="checkbox" id="opt-minify" checked onchange="process()"> Minify output</label>
+                    </div>
+                </div>
+
+                <div class="svg-layout">
+                    <!-- Input -->
+                    <div>
+                        <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()" ondrop="handleDrop(event)" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')">
+                            ↑ Drop .svg file here or click to upload
+                        </div>
+                        <input type="file" id="file-input" accept=".svg" style="display:none" onchange="loadFile(event)">
+                        <div class="panel" style="margin:0">
+                            <div class="panel-bar">
+                                <span class="panel-label">SVG Input</span>
+                                <div class="panel-actions">
+                                    <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
+                                    <button class="btn btn-ghost" onclick="clearInput()">Clear</button>
+                                </div>
+                            </div>
+                            <textarea class="code-editor" id="svg-input" placeholder="Paste SVG code here…" oninput="process()"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Output -->
+                    <div>
+                        <div class="preview-box" id="preview-box">
+                            <span style="font-family:var(--mono);font-size:0.75rem;color:var(--text-dim)">Preview</span>
+                        </div>
+                        <div class="stats-row" id="stats-row"></div>
+                        <div class="panel" style="margin:0">
+                            <div class="panel-bar">
+                                <span class="panel-label" id="output-label">Optimized SVG</span>
+                                <div class="panel-actions">
+                                    <button class="btn btn-ghost" onclick="copyOutput()">⎘ Copy</button>
+                                    <button class="btn btn-ghost" onclick="downloadOutput()">↓ Download</button>
+                                </div>
+                            </div>
+                            <div class="output-area" id="svg-output"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        let currentMode = 'optimize';
+
+        function setMode(m) {
+            currentMode = m;
+            document.querySelectorAll('.mode-tab').forEach((t, i) => t.classList.toggle('active', ['optimize','jsx','b64'][i] === m));
+            const labels = { optimize: 'Optimized SVG', jsx: 'JSX Component', b64: 'Data URI' };
+            document.getElementById('output-label').textContent = labels[m];
+            process();
+        }
+
+        function process() {
+            const raw = document.getElementById('svg-input').value.trim();
+            const out = document.getElementById('svg-output');
+            const preview = document.getElementById('preview-box');
+            const stats = document.getElementById('stats-row');
+            if (!raw) { out.textContent = ''; stats.innerHTML = ''; preview.innerHTML = '<span style="font-family:var(--mono);font-size:0.75rem;color:var(--text-dim)">Preview</span>'; return; }
+
+            let svg = raw;
+            // Remove XML declaration
+            svg = svg.replace(/<\?xml[^?]*\?>/g, '').trim();
+            // Remove DOCTYPE
+            svg = svg.replace(/<!DOCTYPE[^>]*>/gi, '').trim();
+
+            if (document.getElementById('opt-comments').checked)
+                svg = svg.replace(/<!--[\s\S]*?-->/g, '');
+            if (document.getElementById('opt-metadata').checked)
+                svg = svg.replace(/<metadata[\s\S]*?<\/metadata>/gi, '')
+                         .replace(/<title[\s\S]*?<\/title>/gi, '')
+                         .replace(/<desc[\s\S]*?<\/desc>/gi, '');
+            if (document.getElementById('opt-ids').checked)
+                svg = svg.replace(/\s+id="[^"]*"/g, '');
+            if (document.getElementById('opt-dims').checked)
+                svg = svg.replace(/\s+(width|height)="[^"]*"/gi, '');
+            if (document.getElementById('opt-style-to-attr').checked) {
+                svg = svg.replace(/style="([^"]*)"/g, (_, styles) => {
+                    const styleMap = { 'fill': 'fill', 'stroke': 'stroke', 'stroke-width': 'stroke-width', 'opacity': 'opacity' };
+                    let attrs = '';
+                    styles.split(';').forEach(s => {
+                        const [k, v] = s.split(':').map(x => x.trim());
+                        if (k && v && styleMap[k]) attrs += ` ${k}="${v}"`;
+                    });
+                    return attrs.trim();
+                });
+            }
+            if (document.getElementById('opt-minify').checked) {
+                svg = svg.replace(/\s*\n\s*/g, ' ').replace(/\s{2,}/g, ' ').replace(/> </g, '><').trim();
+            }
+
+            // Preview
+            try {
+                preview.innerHTML = svg;
+            } catch(e) {
+                preview.innerHTML = '<span style="color:var(--red);font-family:var(--mono);font-size:0.75rem">Invalid SVG</span>';
+            }
+
+            // Stats
+            const origBytes = new TextEncoder().encode(raw).length;
+            const outBytes = new TextEncoder().encode(svg).length;
+            const saved = Math.round((1 - outBytes / origBytes) * 100);
+            stats.innerHTML = `
+                <div class="stat-item">Original: <span class="stat-val">${fmtBytes(origBytes)}</span></div>
+                <div class="stat-item">Output: <span class="stat-val">${fmtBytes(outBytes)}</span></div>
+                <div class="stat-item">Saved: <span class="stat-val stat-delta ${saved > 0 ? 'good' : ''}">${saved > 0 ? '-' : ''}${Math.abs(saved)}%</span></div>
+            `;
+
+            if (currentMode === 'optimize') {
+                out.textContent = svg;
+            } else if (currentMode === 'jsx') {
+                out.textContent = toJSX(svg);
+            } else {
+                const b64 = btoa(unescape(encodeURIComponent(svg)));
+                out.textContent = `data:image/svg+xml;base64,${b64}`;
+            }
+        }
+
+        function toJSX(svg) {
+            // Convert SVG attributes to JSX
+            let jsx = svg
+                .replace(/class=/g, 'className=')
+                .replace(/for=/g, 'htmlFor=')
+                .replace(/clip-path=/g, 'clipPath=')
+                .replace(/fill-rule=/g, 'fillRule=')
+                .replace(/clip-rule=/g, 'clipRule=')
+                .replace(/stroke-width=/g, 'strokeWidth=')
+                .replace(/stroke-linecap=/g, 'strokeLinecap=')
+                .replace(/stroke-linejoin=/g, 'strokeLinejoin=')
+                .replace(/stroke-dasharray=/g, 'strokeDasharray=')
+                .replace(/stroke-dashoffset=/g, 'strokeDashoffset=')
+                .replace(/stroke-miterlimit=/g, 'strokeMiterlimit=')
+                .replace(/fill-opacity=/g, 'fillOpacity=')
+                .replace(/stroke-opacity=/g, 'strokeOpacity=')
+                .replace(/font-size=/g, 'fontSize=')
+                .replace(/font-family=/g, 'fontFamily=')
+                .replace(/font-weight=/g, 'fontWeight=')
+                .replace(/text-anchor=/g, 'textAnchor=')
+                .replace(/xlink:href=/g, 'href=')
+                .replace(/xmlns:xlink="[^"]*"/g, '')
+                .replace(/<([a-z]+)([^/]*?)\/>/g, '<$1$2 />')
+                .replace(/style="([^"]*)"/g, (_, s) => {
+                    const obj = {};
+                    s.split(';').forEach(p => {
+                        const [k, v] = p.split(':').map(x => x.trim());
+                        if (k && v) {
+                            const jsKey = k.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+                            obj[jsKey] = v;
+                        }
+                    });
+                    return `style={${JSON.stringify(obj)}}`;
+                });
+
+            return `import React from 'react';\n\nconst Icon = (props) => (\n  ${jsx.replace(/^<svg/, '<svg {...props}').trimStart()}\n);\n\nexport default Icon;`;
+        }
+
+        function fmtBytes(b) { return b < 1024 ? b + ' B' : (b / 1024).toFixed(1) + ' KB'; }
+
+        function loadFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => { document.getElementById('svg-input').value = ev.target.result; process(); };
+            reader.readAsText(file);
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('drop-zone').classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => { document.getElementById('svg-input').value = ev.target.result; process(); };
+            reader.readAsText(file);
+        }
+
+        function copyOutput() {
+            const txt = document.getElementById('svg-output').textContent;
+            if (!txt) return;
+            navigator.clipboard.writeText(txt).then(() => showToast('Copied!'));
+        }
+
+        function downloadOutput() {
+            const txt = document.getElementById('svg-output').textContent;
+            if (!txt) return;
+            const ext = { optimize: 'svg', jsx: 'jsx', b64: 'txt' }[currentMode];
+            const mime = { optimize: 'image/svg+xml', jsx: 'text/plain', b64: 'text/plain' }[currentMode];
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([txt], { type: mime }));
+            a.download = `output.${ext}`;
+            a.click();
+        }
+
+        function clearInput() { document.getElementById('svg-input').value = ''; process(); }
+
+        function loadSample() {
+            document.getElementById('svg-input').value = `<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated by Figma -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Heart Icon</title>
+  <desc>A simple heart shape</desc>
+  <metadata>Created with Figma</metadata>
+  <!-- Heart path -->
+  <path
+    id="heart-path"
+    d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"
+    fill="#ff4757"
+    stroke="#cc0000"
+    stroke-width="1"
+  />
+</svg>`;
+            process();
+        }
+
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+    </script>
+</body>
+</html>

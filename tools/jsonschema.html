@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DevBox — Generate JSON Schema from a JSON sample">
+    <title>JSON Schema Generator — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media(max-width:700px) { .two-col { grid-template-columns: 1fr; } }
+        .code-editor { width: 100%; min-height: 340px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 0.82rem; padding: 12px; border-radius: var(--r); resize: vertical; line-height: 1.6; }
+        .code-editor:focus { outline: none; border-color: var(--yellow); }
+        .output-area { min-height: 340px; font-family: var(--mono); font-size: 0.82rem; color: var(--yellow); white-space: pre; overflow: auto; line-height: 1.6; }
+        .error-msg { color: var(--red); font-family: var(--mono); font-size: 0.8rem; padding: 8px 0; }
+        .opts-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .opts-row label { font-family: var(--mono); font-size: 0.78rem; color: var(--text-dim); display: flex; align-items: center; gap: 5px; cursor: pointer; }
+        .opts-row input[type=checkbox] { accent-color: var(--yellow); }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">{S}</div>
+                    <div><div class="tool-title">JSON Schema Generator</div><div class="tool-desc">Infer JSON Schema (Draft 7) from a JSON sample</div></div>
+                </div>
+
+                <div class="panel" style="margin-bottom:12px">
+                    <div class="panel-bar"><span class="panel-label">Options</span></div>
+                    <div class="opts-row">
+                        <label><input type="checkbox" id="opt-required" checked onchange="generate()"> Mark all properties as required</label>
+                        <label><input type="checkbox" id="opt-examples" checked onchange="generate()"> Include examples</label>
+                        <label><input type="checkbox" id="opt-titles" onchange="generate()"> Add title from key name</label>
+                        <label><input type="checkbox" id="opt-nullable" onchange="generate()"> Allow null types</label>
+                    </div>
+                </div>
+
+                <div class="two-col">
+                    <div class="panel" style="margin:0">
+                        <div class="panel-bar">
+                            <span class="panel-label">JSON Input</span>
+                            <div class="panel-actions">
+                                <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
+                                <button class="btn btn-ghost" onclick="clearInput()">Clear</button>
+                            </div>
+                        </div>
+                        <textarea class="code-editor" id="json-input" placeholder='Paste JSON here…' oninput="generate()"></textarea>
+                        <div class="error-msg" id="error-msg"></div>
+                    </div>
+                    <div class="panel" style="margin:0">
+                        <div class="panel-bar">
+                            <span class="panel-label">JSON Schema Output</span>
+                            <div class="panel-actions">
+                                <button class="btn btn-ghost" onclick="copyOutput()">⎘ Copy</button>
+                            </div>
+                        </div>
+                        <div class="output-area" id="schema-output"></div>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        function inferSchema(val, key) {
+            const required = document.getElementById('opt-required').checked;
+            const examples = document.getElementById('opt-examples').checked;
+            const titles = document.getElementById('opt-titles').checked;
+            const nullable = document.getElementById('opt-nullable').checked;
+
+            if (val === null) return { type: 'null' };
+
+            const t = typeof val;
+            if (t === 'boolean') return { type: nullable ? ['boolean', 'null'] : 'boolean' };
+            if (t === 'number') {
+                const s = { type: nullable ? [Number.isInteger(val) ? 'integer' : 'number', 'null'] : (Number.isInteger(val) ? 'integer' : 'number') };
+                if (examples) s.examples = [val];
+                if (titles && key) s.title = toTitle(key);
+                return s;
+            }
+            if (t === 'string') {
+                const s = { type: nullable ? ['string', 'null'] : 'string' };
+                if (examples && val) s.examples = [val];
+                if (titles && key) s.title = toTitle(key);
+                // Detect formats
+                if (/^\d{4}-\d{2}-\d{2}(T[\d:.Z+-]+)?$/.test(val)) s.format = 'date-time';
+                else if (/^\d{4}-\d{2}-\d{2}$/.test(val)) s.format = 'date';
+                else if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val)) s.format = 'email';
+                else if (/^https?:\/\//.test(val)) s.format = 'uri';
+                else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val)) s.format = 'uuid';
+                return s;
+            }
+            if (Array.isArray(val)) {
+                const s = { type: 'array' };
+                if (titles && key) s.title = toTitle(key);
+                if (val.length > 0) s.items = inferSchema(val[0], null);
+                return s;
+            }
+            if (t === 'object') {
+                const s = { type: 'object' };
+                if (titles && key) s.title = toTitle(key);
+                const props = {};
+                Object.keys(val).forEach(k => { props[k] = inferSchema(val[k], k); });
+                s.properties = props;
+                if (required && Object.keys(props).length > 0) s.required = Object.keys(val);
+                return s;
+            }
+            return {};
+        }
+
+        function toTitle(k) { return k.replace(/([A-Z])/g, ' $1').replace(/[_-]/g, ' ').replace(/^\w/, c => c.toUpperCase()); }
+
+        function generate() {
+            const raw = document.getElementById('json-input').value.trim();
+            const err = document.getElementById('error-msg');
+            const out = document.getElementById('schema-output');
+            if (!raw) { out.textContent = ''; err.textContent = ''; return; }
+            try {
+                const parsed = JSON.parse(raw);
+                err.textContent = '';
+                const schema = { '$schema': 'http://json-schema.org/draft-07/schema#', ...inferSchema(parsed, null) };
+                out.textContent = JSON.stringify(schema, null, 2);
+            } catch(e) {
+                err.textContent = '⚠ ' + e.message;
+                out.textContent = '';
+            }
+        }
+
+        function copyOutput() {
+            const txt = document.getElementById('schema-output').textContent;
+            if (!txt) return;
+            navigator.clipboard.writeText(txt).then(() => showToast('Copied!'));
+        }
+
+        function clearInput() { document.getElementById('json-input').value = ''; generate(); }
+
+        function loadSample() {
+            document.getElementById('json-input').value = JSON.stringify({
+                id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                name: "Alice Johnson",
+                email: "alice@example.com",
+                age: 32,
+                isPremium: true,
+                createdAt: "2024-01-15T08:30:00Z",
+                website: "https://alice.dev",
+                tags: ["developer", "designer"],
+                address: { street: "123 Main St", city: "Cairo", zip: "11511" }
+            }, null, 2);
+            generate();
+        }
+
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+    </script>
+</body>
+</html>

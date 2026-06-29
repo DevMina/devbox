@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DevBox — Visual CSS Flexbox layout generator">
+    <title>Flexbox Generator — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .fb-layout { display: grid; grid-template-columns: 300px 1fr; gap: 16px; }
+        @media(max-width:750px) { .fb-layout { grid-template-columns: 1fr; } }
+        .ctrl-section { margin-bottom: 14px; }
+        .ctrl-section-title { font-size: 0.68rem; font-family: var(--mono); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 5px; }
+        .btn-opt { background: var(--surface2); border: 1px solid var(--border); color: var(--text-dim); font-family: var(--mono); font-size: 0.72rem; padding: 4px 10px; border-radius: 4px; cursor: pointer; transition: all var(--transition); }
+        .btn-opt:hover { border-color: var(--cyan); color: var(--cyan); }
+        .btn-opt.active { background: var(--cyan-dim); border-color: var(--cyan); color: var(--cyan); }
+        .ctrl-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .ctrl-row label { font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim); width: 70px; flex-shrink: 0; }
+        .ctrl-row input[type=range] { flex: 1; accent-color: var(--cyan); }
+        .ctrl-row .val { font-family: var(--mono); font-size: 0.72rem; color: var(--text); width: 36px; text-align: right; }
+        .preview-wrap { display: flex; flex-direction: column; gap: 12px; }
+        .preview-area {
+            background: repeating-conic-gradient(var(--surface2) 0% 25%, var(--surface) 0% 50%) 0 0/20px 20px;
+            border: 1px solid var(--border); border-radius: var(--r); min-height: 260px; padding: 16px; position: relative;
+        }
+        .flex-container { display: flex; width: 100%; min-height: 220px; gap: 8px; }
+        .flex-item {
+            background: var(--cyan-dim); border: 1.5px solid var(--cyan); border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--mono); font-size: 0.72rem; color: var(--cyan);
+            min-width: 30px; min-height: 30px; cursor: pointer; transition: all 0.15s; position: relative;
+        }
+        .flex-item.selected { border-color: var(--pink); background: var(--pink-dim); color: var(--pink); }
+        .item-controls { margin-top: 2px; }
+        .item-ctrl-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+        .item-ctrl-row label { font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim); width: 60px; flex-shrink: 0; }
+        .item-ctrl-row input[type=number] { background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 0.78rem; padding: 4px 8px; border-radius: 4px; width: 70px; }
+        .item-ctrl-row input[type=number]:focus { outline: none; border-color: var(--cyan); }
+        .add-item-btn { border: 1.5px dashed var(--border); background: none; color: var(--text-dim); border-radius: 6px; padding: 8px 14px; cursor: pointer; font-family: var(--mono); font-size: 0.78rem; transition: all 0.15s; }
+        .add-item-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+        .del-item-btn { position: absolute; top: 2px; right: 3px; background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 0.7rem; padding: 1px 3px; }
+        .del-item-btn:hover { color: var(--red); }
+        .output-code { font-family: var(--mono); font-size: 0.8rem; color: var(--cyan); white-space: pre; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">⇔</div>
+                    <div><div class="tool-title">Flexbox Generator</div><div class="tool-desc">Visual CSS flexbox layout builder with live preview</div></div>
+                </div>
+
+                <div class="fb-layout">
+                    <!-- Controls -->
+                    <div>
+                        <div class="panel">
+                            <div class="panel-bar"><span class="panel-label">Container</span></div>
+
+                            <div class="ctrl-section">
+                                <div class="ctrl-section-title">flex-direction</div>
+                                <div class="btn-group" id="grp-direction">
+                                    <button class="btn-opt active" data-val="row">row</button>
+                                    <button class="btn-opt" data-val="row-reverse">row-reverse</button>
+                                    <button class="btn-opt" data-val="column">column</button>
+                                    <button class="btn-opt" data-val="column-reverse">column-reverse</button>
+                                </div>
+                            </div>
+
+                            <div class="ctrl-section">
+                                <div class="ctrl-section-title">flex-wrap</div>
+                                <div class="btn-group" id="grp-wrap">
+                                    <button class="btn-opt active" data-val="nowrap">nowrap</button>
+                                    <button class="btn-opt" data-val="wrap">wrap</button>
+                                    <button class="btn-opt" data-val="wrap-reverse">wrap-reverse</button>
+                                </div>
+                            </div>
+
+                            <div class="ctrl-section">
+                                <div class="ctrl-section-title">justify-content</div>
+                                <div class="btn-group" id="grp-justify">
+                                    <button class="btn-opt active" data-val="flex-start">flex-start</button>
+                                    <button class="btn-opt" data-val="flex-end">flex-end</button>
+                                    <button class="btn-opt" data-val="center">center</button>
+                                    <button class="btn-opt" data-val="space-between">space-between</button>
+                                    <button class="btn-opt" data-val="space-around">space-around</button>
+                                    <button class="btn-opt" data-val="space-evenly">space-evenly</button>
+                                </div>
+                            </div>
+
+                            <div class="ctrl-section">
+                                <div class="ctrl-section-title">align-items</div>
+                                <div class="btn-group" id="grp-align-items">
+                                    <button class="btn-opt active" data-val="stretch">stretch</button>
+                                    <button class="btn-opt" data-val="flex-start">flex-start</button>
+                                    <button class="btn-opt" data-val="flex-end">flex-end</button>
+                                    <button class="btn-opt" data-val="center">center</button>
+                                    <button class="btn-opt" data-val="baseline">baseline</button>
+                                </div>
+                            </div>
+
+                            <div class="ctrl-section">
+                                <div class="ctrl-section-title">align-content</div>
+                                <div class="btn-group" id="grp-align-content">
+                                    <button class="btn-opt active" data-val="normal">normal</button>
+                                    <button class="btn-opt" data-val="flex-start">flex-start</button>
+                                    <button class="btn-opt" data-val="flex-end">flex-end</button>
+                                    <button class="btn-opt" data-val="center">center</button>
+                                    <button class="btn-opt" data-val="space-between">space-between</button>
+                                    <button class="btn-opt" data-val="space-around">space-around</button>
+                                </div>
+                            </div>
+
+                            <div class="ctrl-row">
+                                <label>gap</label>
+                                <input type="range" id="gap" min="0" max="40" value="8" oninput="render()">
+                                <span class="val" id="gap-val">8px</span>
+                            </div>
+                        </div>
+
+                        <div class="panel" style="margin-top:12px" id="item-panel">
+                            <div class="panel-bar">
+                                <span class="panel-label">Item <span id="item-idx-label">1</span></span>
+                                <span style="font-family:var(--mono);font-size:0.7rem;color:var(--text-dim)">click item to select</span>
+                            </div>
+                            <div class="item-controls">
+                                <div class="item-ctrl-row"><label>flex-grow</label><input type="number" id="item-grow" min="0" max="10" value="0" oninput="updateItem()"></div>
+                                <div class="item-ctrl-row"><label>flex-shrink</label><input type="number" id="item-shrink" min="0" max="10" value="1" oninput="updateItem()"></div>
+                                <div class="item-ctrl-row"><label>flex-basis</label><input type="number" id="item-basis" min="0" max="400" value="80" oninput="updateItem()" style="width:70px"><span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)">px</span></div>
+                                <div class="item-ctrl-row"><label>order</label><input type="number" id="item-order" min="-5" max="10" value="0" oninput="updateItem()"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview -->
+                    <div class="preview-wrap">
+                        <div class="preview-area">
+                            <div class="flex-container" id="flex-container">
+                            </div>
+                        </div>
+                        <button class="add-item-btn" onclick="addItem()">+ Add Item</button>
+                        <div class="panel" style="margin:0">
+                            <div class="panel-bar">
+                                <span class="panel-label">CSS Output</span>
+                                <div class="panel-actions">
+                                    <button class="btn btn-ghost" onclick="copyCSS()">⎘ Copy</button>
+                                    <button class="btn btn-ghost" onclick="resetAll()">Reset</button>
+                                </div>
+                            </div>
+                            <pre class="output-code" id="css-output"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        const state = {
+            direction: 'row', wrap: 'nowrap', justify: 'flex-start',
+            alignItems: 'stretch', alignContent: 'normal', gap: 8,
+            items: [
+                { grow: 0, shrink: 1, basis: 80, order: 0 },
+                { grow: 0, shrink: 1, basis: 80, order: 0 },
+                { grow: 0, shrink: 1, basis: 80, order: 0 },
+            ],
+            selectedItem: 0
+        };
+
+        const propMap = {
+            'grp-direction': 'direction', 'grp-wrap': 'wrap',
+            'grp-justify': 'justify', 'grp-align-items': 'alignItems', 'grp-align-content': 'alignContent'
+        };
+        const cssPropMap = {
+            direction: 'flex-direction', wrap: 'flex-wrap', justify: 'justify-content',
+            alignItems: 'align-items', alignContent: 'align-content'
+        };
+
+        document.querySelectorAll('.btn-group').forEach(grp => {
+            grp.querySelectorAll('.btn-opt').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    grp.querySelectorAll('.btn-opt').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state[propMap[grp.id]] = btn.dataset.val;
+                    render();
+                });
+            });
+        });
+
+        document.getElementById('gap').addEventListener('input', function() {
+            state.gap = +this.value;
+            document.getElementById('gap-val').textContent = this.value + 'px';
+            render();
+        });
+
+        function addItem() {
+            state.items.push({ grow: 0, shrink: 1, basis: 80, order: 0 });
+            state.selectedItem = state.items.length - 1;
+            render();
+        }
+
+        function delItem(i) {
+            if (state.items.length <= 1) { showToast('Need at least one item'); return; }
+            state.items.splice(i, 1);
+            state.selectedItem = Math.min(state.selectedItem, state.items.length - 1);
+            render();
+        }
+
+        function selectItem(i) {
+            state.selectedItem = i;
+            loadItemControls();
+            render();
+        }
+
+        function loadItemControls() {
+            const it = state.items[state.selectedItem];
+            document.getElementById('item-idx-label').textContent = state.selectedItem + 1;
+            document.getElementById('item-grow').value = it.grow;
+            document.getElementById('item-shrink').value = it.shrink;
+            document.getElementById('item-basis').value = it.basis;
+            document.getElementById('item-order').value = it.order;
+        }
+
+        function updateItem() {
+            const it = state.items[state.selectedItem];
+            it.grow = +document.getElementById('item-grow').value;
+            it.shrink = +document.getElementById('item-shrink').value;
+            it.basis = +document.getElementById('item-basis').value;
+            it.order = +document.getElementById('item-order').value;
+            render();
+        }
+
+        function render() {
+            const fc = document.getElementById('flex-container');
+            fc.style.flexDirection = state.direction;
+            fc.style.flexWrap = state.wrap;
+            fc.style.justifyContent = state.justify;
+            fc.style.alignItems = state.alignItems;
+            fc.style.alignContent = state.alignContent;
+            fc.style.gap = state.gap + 'px';
+
+            fc.innerHTML = state.items.map((it, i) => `
+                <div class="flex-item${i === state.selectedItem ? ' selected' : ''}"
+                    style="flex-grow:${it.grow};flex-shrink:${it.shrink};flex-basis:${it.basis}px;order:${it.order}"
+                    onclick="selectItem(${i})">
+                    ${i + 1}
+                    <button class="del-item-btn" onclick="event.stopPropagation();delItem(${i})">✕</button>
+                </div>
+            `).join('');
+
+            loadItemControls();
+            updateOutput();
+        }
+
+        function updateOutput() {
+            const containerCSS = `.container {\n  display: flex;\n  flex-direction: ${state.direction};\n  flex-wrap: ${state.wrap};\n  justify-content: ${state.justify};\n  align-items: ${state.alignItems};\n  align-content: ${state.alignContent};\n  gap: ${state.gap}px;\n}`;
+            const itemsCSS = state.items.map((it, i) => {
+                const fb = it.grow === 0 && it.shrink === 1 && it.basis === 80 ? '' :
+                    `\n  flex: ${it.grow} ${it.shrink} ${it.basis}px;`;
+                const order = it.order !== 0 ? `\n  order: ${it.order};` : '';
+                return fb || order ? `.item-${i + 1} {${fb}${order}\n}` : '';
+            }).filter(Boolean).join('\n\n');
+            document.getElementById('css-output').textContent = containerCSS + (itemsCSS ? '\n\n' + itemsCSS : '');
+        }
+
+        function copyCSS() {
+            navigator.clipboard.writeText(document.getElementById('css-output').textContent)
+                .then(() => showToast('Copied!'));
+        }
+
+        function resetAll() {
+            state.items = [
+                { grow: 0, shrink: 1, basis: 80, order: 0 },
+                { grow: 0, shrink: 1, basis: 80, order: 0 },
+                { grow: 0, shrink: 1, basis: 80, order: 0 },
+            ];
+            state.direction = 'row'; state.wrap = 'nowrap'; state.justify = 'flex-start';
+            state.alignItems = 'stretch'; state.alignContent = 'normal'; state.gap = 8;
+            state.selectedItem = 0;
+            document.querySelectorAll('.btn-group').forEach(grp => {
+                grp.querySelectorAll('.btn-opt').forEach(b => b.classList.remove('active'));
+                grp.querySelector('.btn-opt').classList.add('active');
+            });
+            document.getElementById('gap').value = 8;
+            document.getElementById('gap-val').textContent = '8px';
+            render();
+        }
+
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+
+        render();
+    </script>
+</body>
+</html>

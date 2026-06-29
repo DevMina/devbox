@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
-    <meta name="description" content="DevBox — Convert between Unix timestamps and human-readable dates">
+    <meta name="description" content="DevBox — Convert timestamps, calculate age, date difference, and business days">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timestamp Converter — DevBox</title>
+    <title>Date & Time Tools — DevBox</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -23,8 +23,8 @@
                 <div class="tool-header">
                     <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">TS</div>
                     <div>
-                        <div class="tool-title">Timestamp Converter</div>
-                        <div class="tool-desc">Convert between Unix timestamps and human-readable dates</div>
+                        <div class="tool-title">Date &amp; Time Tools</div>
+                        <div class="tool-desc">Timestamps · Age Calculator · Date Difference · Business Days</div>
                     </div>
                 </div>
 
@@ -49,6 +49,59 @@
                     </div>
                 </div>
 
+                <!-- Age Calculator -->
+                <div class="two-col" style="margin-top:0">
+                    <div class="panel">
+                        <div class="panel-bar"><span class="panel-label">🎂 Age Calculator</span></div>
+                        <div class="input-row"><label>Birth date</label><input type="date" id="age-birth" oninput="calcAge()"></div>
+                        <div class="input-row"><label>As of</label><input type="date" id="age-asof" oninput="calcAge()"></div>
+                        <div class="ts-grid" id="age-results">
+                            <div class="ts-out-row"><div class="ts-out-label">Age</div><div class="ts-out-val" id="age-years">—</div></div>
+                            <div class="ts-out-row"><div class="ts-out-label">Months</div><div class="ts-out-val" id="age-months">—</div></div>
+                            <div class="ts-out-row"><div class="ts-out-label">Days</div><div class="ts-out-val" id="age-days">—</div></div>
+                            <div class="ts-out-row"><div class="ts-out-label">Next birthday</div><div class="ts-out-val" id="age-next">—</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Date Difference -->
+                    <div class="panel">
+                        <div class="panel-bar"><span class="panel-label">📅 Date Difference</span></div>
+                        <div class="input-row"><label>Start date</label><input type="date" id="diff-start" oninput="calcDiff()"></div>
+                        <div class="input-row"><label>End date</label><input type="date" id="diff-end" oninput="calcDiff()"></div>
+                        <div class="ts-grid">
+                            <div class="ts-out-row"><div class="ts-out-label">Total days</div><div class="ts-out-val" id="diff-days" style="color:var(--yellow)">—</div></div>
+                            <div class="ts-out-row"><div class="ts-out-label">Weeks</div><div class="ts-out-val" id="diff-weeks">—</div></div>
+                            <div class="ts-out-row"><div class="ts-out-label">Months (approx)</div><div class="ts-out-val" id="diff-months">—</div></div>
+                            <div class="ts-out-row"><div class="ts-out-label">Years (approx)</div><div class="ts-out-val" id="diff-years">—</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Days Calculator -->
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">💼 Business Days Calculator</span></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:end">
+                        <div class="input-row" style="margin:0;flex-direction:column;align-items:flex-start;gap:4px">
+                            <label style="font-size:0.78rem">Start date</label>
+                            <input type="date" id="biz-start" oninput="calcBiz()" style="width:100%">
+                        </div>
+                        <div class="input-row" style="margin:0;flex-direction:column;align-items:flex-start;gap:4px">
+                            <label style="font-size:0.78rem">End date <span style="color:var(--text-dim);font-size:0.7rem">(or leave blank)</span></label>
+                            <input type="date" id="biz-end" oninput="calcBiz()" style="width:100%">
+                        </div>
+                        <div class="input-row" style="margin:0;flex-direction:column;align-items:flex-start;gap:4px">
+                            <label style="font-size:0.78rem">Add business days</label>
+                            <input type="number" id="biz-add" min="0" max="1000" placeholder="e.g. 10" oninput="calcBiz()" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.82rem;padding:8px 10px;border-radius:var(--r)">
+                        </div>
+                    </div>
+                    <div class="ts-grid" style="margin-top:12px">
+                        <div class="ts-out-row"><div class="ts-out-label">Business days between</div><div class="ts-out-val" id="biz-between" style="color:var(--yellow)">—</div></div>
+                        <div class="ts-out-row"><div class="ts-out-label">Calendar days between</div><div class="ts-out-val" id="biz-calendar">—</div></div>
+                        <div class="ts-out-row"><div class="ts-out-label">Add N biz days result</div><div class="ts-out-val" id="biz-result">—</div></div>
+                        <div class="ts-out-row"><div class="ts-out-label">Weekends excluded</div><div class="ts-out-val" id="biz-weekends">—</div></div>
+                    </div>
+                </div>
+
             </div>
             <footer class="site-footer">
                 © 2026 Mina Abdo. All rights reserved.
@@ -63,7 +116,116 @@
         function tsNow() { document.getElementById('tsUnixInput').value = Math.floor(Date.now() / 1000); tsFromUnix(); }
         function tsFromUnix() { const val = document.getElementById('tsUnixInput').value.trim(); if (!val) return; const d = new Date(parseInt(val) * 1000); if (isNaN(d.getTime())) { document.getElementById('ts-utc').textContent = 'Invalid'; return; } document.getElementById('ts-utc').textContent = d.toUTCString(); document.getElementById('ts-local').textContent = d.toLocaleString(); document.getElementById('ts-iso').textContent = d.toISOString(); const diff = Date.now() - d.getTime(), abs = Math.abs(diff), s = Math.floor(abs / 1000), m = Math.floor(s / 60), h = Math.floor(m / 60), day = Math.floor(h / 24); const ago = diff > 0; const rel = day > 0 ? day + 'd' : (h > 0 ? h + 'h' : (m > 0 ? m + 'm' : s + 's')); document.getElementById('ts-rel').textContent = rel + (ago ? ' ago' : ' from now'); }
         function tsFromDate() { const val = document.getElementById('tsDateInput').value.trim(); if (!val) return; const d = new Date(val); if (isNaN(d.getTime())) { document.getElementById('ts-unix-out').textContent = 'Invalid date'; return; } document.getElementById('ts-unix-out').textContent = Math.floor(d.getTime() / 1000); document.getElementById('ts-unix-ms-out').textContent = d.getTime(); }
-        document.addEventListener('DOMContentLoaded', tsNow);
+
+        // Age Calculator
+        function calcAge() {
+            const birthVal = document.getElementById('age-birth').value;
+            const asofVal = document.getElementById('age-asof').value;
+            if (!birthVal) return;
+            const birth = new Date(birthVal);
+            const asof = asofVal ? new Date(asofVal) : new Date();
+            if (isNaN(birth) || isNaN(asof)) return;
+
+            let years = asof.getFullYear() - birth.getFullYear();
+            let months = asof.getMonth() - birth.getMonth();
+            let days = asof.getDate() - birth.getDate();
+
+            if (days < 0) { months--; days += new Date(asof.getFullYear(), asof.getMonth(), 0).getDate(); }
+            if (months < 0) { years--; months += 12; }
+
+            const totalMonths = years * 12 + months;
+            const totalDays = Math.floor((asof - birth) / 86400000);
+
+            document.getElementById('age-years').textContent = `${years} year${years !== 1 ? 's' : ''}, ${months} month${months !== 1 ? 's' : ''}, ${days} day${days !== 1 ? 's' : ''}`;
+            document.getElementById('age-months').textContent = totalMonths.toLocaleString() + ' months total';
+            document.getElementById('age-days').textContent = totalDays.toLocaleString() + ' days total';
+
+            // Next birthday
+            const nextBday = new Date(asof.getFullYear(), birth.getMonth(), birth.getDate());
+            if (nextBday <= asof) nextBday.setFullYear(nextBday.getFullYear() + 1);
+            const daysUntil = Math.ceil((nextBday - asof) / 86400000);
+            document.getElementById('age-next').textContent = `${nextBday.toDateString()} (in ${daysUntil} day${daysUntil !== 1 ? 's' : ''})`;
+        }
+
+        // Date Difference Calculator
+        function calcDiff() {
+            const startVal = document.getElementById('diff-start').value;
+            const endVal = document.getElementById('diff-end').value;
+            if (!startVal || !endVal) return;
+            const start = new Date(startVal);
+            const end = new Date(endVal);
+            if (isNaN(start) || isNaN(end)) return;
+
+            const totalMs = Math.abs(end - start);
+            const totalDays = Math.round(totalMs / 86400000);
+            const weeks = Math.floor(totalDays / 7);
+            const remDays = totalDays % 7;
+            const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+            const years = end.getFullYear() - start.getFullYear();
+
+            document.getElementById('diff-days').textContent = totalDays.toLocaleString() + (end < start ? ' (negative)' : '');
+            document.getElementById('diff-weeks').textContent = `${weeks} week${weeks !== 1 ? 's' : ''} + ${remDays} day${remDays !== 1 ? 's' : ''}`;
+            document.getElementById('diff-months').textContent = Math.abs(months).toLocaleString() + ' months';
+            document.getElementById('diff-years').textContent = (totalMs / (365.25 * 86400000)).toFixed(2) + ' years';
+        }
+
+        // Business Days Calculator
+        function isWeekday(d) { const day = d.getDay(); return day !== 0 && day !== 6; }
+
+        function countBizDays(start, end) {
+            let count = 0;
+            const cur = new Date(start);
+            while (cur <= end) { if (isWeekday(cur)) count++; cur.setDate(cur.getDate() + 1); }
+            return count;
+        }
+
+        function addBizDays(start, n) {
+            const d = new Date(start);
+            let added = 0;
+            while (added < n) { d.setDate(d.getDate() + 1); if (isWeekday(d)) added++; }
+            return d;
+        }
+
+        function calcBiz() {
+            const startVal = document.getElementById('biz-start').value;
+            const endVal = document.getElementById('biz-end').value;
+            const addVal = document.getElementById('biz-add').value;
+            if (!startVal) return;
+            const start = new Date(startVal);
+            if (isNaN(start)) return;
+
+            if (endVal) {
+                const end = new Date(endVal);
+                if (!isNaN(end)) {
+                    const calDays = Math.round(Math.abs(end - start) / 86400000);
+                    const bizDays = countBizDays(start < end ? start : end, start < end ? end : start);
+                    const weekends = calDays - bizDays;
+                    document.getElementById('biz-between').textContent = bizDays.toLocaleString() + ' business days';
+                    document.getElementById('biz-calendar').textContent = calDays.toLocaleString() + ' calendar days';
+                    document.getElementById('biz-weekends').textContent = weekends + ' weekend day' + (weekends !== 1 ? 's' : '');
+                }
+            } else {
+                document.getElementById('biz-between').textContent = '—';
+                document.getElementById('biz-calendar').textContent = '—';
+                document.getElementById('biz-weekends').textContent = '—';
+            }
+
+            if (addVal && +addVal > 0) {
+                const result = addBizDays(start, +addVal);
+                document.getElementById('biz-result').textContent = result.toDateString() + ' (' + result.toISOString().slice(0, 10) + ')';
+            } else {
+                document.getElementById('biz-result').textContent = '—';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            tsNow();
+            // Pre-fill age calculator with today as "as of"
+            document.getElementById('age-asof').value = new Date().toISOString().slice(0, 10);
+            // Pre-fill diff and biz with today
+            document.getElementById('diff-end').value = new Date().toISOString().slice(0, 10);
+            document.getElementById('biz-start').value = new Date().toISOString().slice(0, 10);
+        });
     </script>
 </body>
 </html>

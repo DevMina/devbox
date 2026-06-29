@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DevBox — GraphQL query playground">
+    <title>GraphQL Playground — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .gql-layout { display: flex; flex-direction: column; gap: 12px; }
+        .endpoint-row { display: flex; gap: 8px; align-items: center; }
+        .endpoint-row input { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 0.82rem; padding: 8px 12px; border-radius: var(--r); }
+        .endpoint-row input:focus { outline: none; border-color: var(--pink); }
+        .panels-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media(max-width:700px) { .panels-row { grid-template-columns: 1fr; } }
+        .code-editor { width: 100%; min-height: 220px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 0.8rem; padding: 12px; border-radius: var(--r); resize: vertical; line-height: 1.6; }
+        .code-editor:focus { outline: none; border-color: var(--pink); }
+        .output-area { min-height: 220px; font-family: var(--mono); font-size: 0.8rem; white-space: pre; overflow: auto; line-height: 1.6; }
+        .output-area.ok { color: var(--green); }
+        .output-area.err { color: var(--red); }
+        .headers-table { width: 100%; border-collapse: collapse; }
+        .headers-table td { padding: 4px 6px; }
+        .headers-table input { background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 0.76rem; padding: 4px 7px; border-radius: 3px; width: 100%; }
+        .headers-table input:focus { outline: none; border-color: var(--pink); }
+        .del-row-btn { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 0.8rem; padding: 2px 5px; }
+        .del-row-btn:hover { color: var(--red); }
+        .status-bar { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+        .status-dot.ok { background: var(--green); }
+        .status-dot.err { background: var(--red); }
+        .status-dot.loading { background: var(--yellow); animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        .tab-row { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+        .tab-btn { background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-dim); font-family: var(--mono); font-size: 0.78rem; padding: 6px 12px; cursor: pointer; margin-bottom: -1px; transition: all 0.15s; }
+        .tab-btn.active { color: var(--pink); border-bottom-color: var(--pink); }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">GQL</div>
+                    <div><div class="tool-title">GraphQL Playground</div><div class="tool-desc">Send GraphQL queries and mutations to any endpoint</div></div>
+                </div>
+
+                <div class="gql-layout">
+                    <!-- Endpoint -->
+                    <div class="panel" style="margin:0">
+                        <div class="panel-bar"><span class="panel-label">Endpoint</span><div class="status-bar"><div class="status-dot" id="status-dot"></div><span id="status-text">Ready</span></div></div>
+                        <div class="endpoint-row">
+                            <input type="text" id="endpoint" placeholder="https://api.example.com/graphql" value="https://countries.trevorblades.com/">
+                            <button class="btn btn-pink" onclick="runQuery()">▶ Run</button>
+                        </div>
+                    </div>
+
+                    <div class="panels-row">
+                        <!-- Left: Query + Variables + Headers -->
+                        <div style="display:flex;flex-direction:column;gap:12px">
+                            <div class="panel" style="margin:0">
+                                <div class="panel-bar">
+                                    <span class="panel-label">Query / Mutation</span>
+                                    <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
+                                </div>
+                                <textarea class="code-editor" id="gql-query" placeholder="query { ... }">query {
+  countries {
+    code
+    name
+    capital
+    currency
+  }
+}</textarea>
+                            </div>
+
+                            <div class="panel" style="margin:0">
+                                <div class="tab-row">
+                                    <button class="tab-btn active" onclick="switchTab('vars')">Variables</button>
+                                    <button class="tab-btn" onclick="switchTab('headers')">Headers</button>
+                                </div>
+                                <div class="tab-panel active" id="tab-vars">
+                                    <textarea class="code-editor" id="gql-vars" style="min-height:100px" placeholder='{ "id": "US" }'></textarea>
+                                </div>
+                                <div class="tab-panel" id="tab-headers">
+                                    <table class="headers-table" id="headers-table"></table>
+                                    <button class="btn btn-ghost" style="margin-top:6px;font-size:0.72rem" onclick="addHeader()">+ Add Header</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Response -->
+                        <div class="panel" style="margin:0">
+                            <div class="panel-bar">
+                                <span class="panel-label">Response</span>
+                                <div class="panel-actions">
+                                    <span id="resp-meta" style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)"></span>
+                                    <button class="btn btn-ghost" onclick="copyResponse()">⎘ Copy</button>
+                                    <button class="btn btn-ghost" onclick="clearResponse()">Clear</button>
+                                </div>
+                            </div>
+                            <div class="output-area" id="gql-response">Run a query to see results here.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        let headers = [{ key: 'Content-Type', val: 'application/json' }];
+
+        function switchTab(name) {
+            document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', ['vars','headers'][i] === name));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+        }
+
+        function renderHeaders() {
+            document.getElementById('headers-table').innerHTML = headers.map((h, i) => `
+                <tr>
+                    <td><input type="text" value="${h.key}" placeholder="Header name" oninput="headers[${i}].key=this.value"></td>
+                    <td><input type="text" value="${h.val}" placeholder="Value" oninput="headers[${i}].val=this.value"></td>
+                    <td><button class="del-row-btn" onclick="delHeader(${i})">✕</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function addHeader() { headers.push({ key: '', val: '' }); renderHeaders(); }
+        function delHeader(i) { headers.splice(i, 1); renderHeaders(); }
+
+        async function runQuery() {
+            const url = document.getElementById('endpoint').value.trim();
+            const query = document.getElementById('gql-query').value.trim();
+            const varsRaw = document.getElementById('gql-vars').value.trim();
+            const dot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            const out = document.getElementById('gql-response');
+            const meta = document.getElementById('resp-meta');
+
+            if (!url || !query) { showToast('Enter endpoint and query'); return; }
+
+            dot.className = 'status-dot loading'; statusText.textContent = 'Sending…';
+            out.className = 'output-area'; out.textContent = 'Loading…';
+
+            let variables = {};
+            if (varsRaw) {
+                try { variables = JSON.parse(varsRaw); } catch(e) { showToast('Variables: invalid JSON'); return; }
+            }
+
+            const hdrs = { 'Content-Type': 'application/json' };
+            headers.filter(h => h.key).forEach(h => hdrs[h.key] = h.val);
+
+            const t0 = Date.now();
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: hdrs,
+                    body: JSON.stringify({ query, variables })
+                });
+                const ms = Date.now() - t0;
+                const data = await res.json();
+                const hasErrors = data.errors && data.errors.length;
+                dot.className = 'status-dot ' + (hasErrors ? 'err' : 'ok');
+                statusText.textContent = `${res.status} ${res.statusText} · ${ms}ms`;
+                meta.textContent = `${ms}ms`;
+                out.className = 'output-area ' + (hasErrors ? 'err' : 'ok');
+                out.textContent = JSON.stringify(data, null, 2);
+            } catch(e) {
+                dot.className = 'status-dot err';
+                statusText.textContent = 'Error';
+                out.className = 'output-area err';
+                out.textContent = `Error: ${e.message}\n\nNote: The endpoint must allow cross-origin requests (CORS).`;
+            }
+        }
+
+        function clearResponse() {
+            document.getElementById('gql-response').textContent = 'Run a query to see results here.';
+            document.getElementById('gql-response').className = 'output-area';
+            document.getElementById('resp-meta').textContent = '';
+            document.getElementById('status-dot').className = 'status-dot';
+            document.getElementById('status-text').textContent = 'Ready';
+        }
+
+        function copyResponse() {
+            const txt = document.getElementById('gql-response').textContent;
+            navigator.clipboard.writeText(txt).then(() => showToast('Copied!'));
+        }
+
+        function loadSample() {
+            document.getElementById('endpoint').value = 'https://countries.trevorblades.com/';
+            document.getElementById('gql-query').value = `query GetCountry($code: ID!) {\n  country(code: $code) {\n    name\n    native\n    capital\n    currency\n    languages {\n      name\n    }\n  }\n}`;
+            document.getElementById('gql-vars').value = `{\n  "code": "EG"\n}`;
+        }
+
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+
+        renderHeaders();
+    </script>
+</body>
+</html>

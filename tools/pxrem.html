@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Convert between px, rem, em, pt and vw/vh units">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>px ↔ rem Converter — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="px ↔ rem Converter — DevBox">
+    <meta property="og:description" content="Convert between px, rem, em, pt and viewport units for CSS">
+    <meta property="og:type" content="website">
+    <style>
+        .conv-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 14px; }
+        .conv-field { display: flex; flex-direction: column; gap: 4px; }
+        .conv-field label { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
+        .conv-field input { width: 120px; }
+        .base-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 16px; flex-wrap: wrap; }
+        .table-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin-top: 8px; }
+        .unit-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; }
+        .unit-card-unit { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
+        .unit-card-val { font-family: var(--mono); font-size: 1.1rem; color: var(--green); margin: 4px 0 6px; }
+        .unit-card-copy { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); cursor: pointer; }
+        .unit-card-copy:hover { color: var(--green); }
+        .ref-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 0.76rem; }
+        .ref-table th { text-align: left; padding: 6px 10px; font-size: 0.63rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+        .ref-table td { padding: 6px 10px; border-bottom: 1px solid var(--border); }
+        .ref-table tr:last-child td { border-bottom: none; }
+        .ref-table tr:hover td { background: var(--surface2); }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">px</div>
+                    <div>
+                        <div class="tool-title">px ↔ rem Converter</div>
+                        <div class="tool-desc">Convert between px, rem, em, pt, vw, vh and more CSS units</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Settings</span></div>
+                    <div style="padding:14px;display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;">
+                        <div class="conv-field">
+                            <label>Root font size (px)</label>
+                            <input class="input" id="rootSize" type="number" value="16" min="1" max="100" step="0.5" style="width:100px" oninput="recalcAll()">
+                        </div>
+                        <div class="conv-field">
+                            <label>Viewport width (px)</label>
+                            <input class="input" id="vpWidth" type="number" value="1440" min="1" step="1" style="width:110px" oninput="recalcAll()">
+                        </div>
+                        <div class="conv-field">
+                            <label>Viewport height (px)</label>
+                            <input class="input" id="vpHeight" type="number" value="900" min="1" step="1" style="width:110px" oninput="recalcAll()">
+                        </div>
+                        <div class="conv-field">
+                            <label>Parent font size (px)</label>
+                            <input class="input" id="parentSize" type="number" value="16" min="1" max="200" step="0.5" style="width:110px" oninput="recalcAll()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top:12px;">
+                    <div class="panel-bar"><span class="panel-label">Convert</span></div>
+                    <div style="padding:14px;">
+                        <div class="conv-row">
+                            <div class="conv-field">
+                                <label>px</label>
+                                <input class="input" id="inp-px" type="number" placeholder="16" oninput="fromPx(this.value)" style="font-size:1rem">
+                            </div>
+                            <div style="padding-bottom:10px;color:var(--text-dim);">↔</div>
+                            <div class="conv-field">
+                                <label>rem</label>
+                                <input class="input" id="inp-rem" type="number" placeholder="1" oninput="fromRem(this.value)" style="font-size:1rem">
+                            </div>
+                            <div style="padding-bottom:10px;color:var(--text-dim);">↔</div>
+                            <div class="conv-field">
+                                <label>em</label>
+                                <input class="input" id="inp-em" type="number" placeholder="1" oninput="fromEm(this.value)" style="font-size:1rem">
+                            </div>
+                            <div style="padding-bottom:10px;color:var(--text-dim);">↔</div>
+                            <div class="conv-field">
+                                <label>pt</label>
+                                <input class="input" id="inp-pt" type="number" placeholder="12" oninput="fromPt(this.value)" style="font-size:1rem">
+                            </div>
+                        </div>
+                        <div id="card-results" class="table-grid"></div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top:12px;">
+                    <div class="panel-bar"><span class="panel-label">Common Sizes Reference</span></div>
+                    <div style="overflow-x:auto;padding:8px 0;">
+                        <table class="ref-table" id="refTable"></table>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+    function root() { return parseFloat(document.getElementById('rootSize').value) || 16; }
+    function parent() { return parseFloat(document.getElementById('parentSize').value) || 16; }
+    function vpW() { return parseFloat(document.getElementById('vpWidth').value) || 1440; }
+    function vpH() { return parseFloat(document.getElementById('vpHeight').value) || 900; }
+
+    function fmt(n) { return parseFloat(n.toFixed(4)).toString(); }
+
+    function fromPx(val) {
+        const px = parseFloat(val);
+        if (isNaN(px)) return;
+        setAll(px);
+    }
+    function fromRem(val) {
+        const rem = parseFloat(val);
+        if (isNaN(rem)) return;
+        setAll(rem * root());
+    }
+    function fromEm(val) {
+        const em = parseFloat(val);
+        if (isNaN(em)) return;
+        setAll(em * parent());
+    }
+    function fromPt(val) {
+        const pt = parseFloat(val);
+        if (isNaN(pt)) return;
+        setAll(pt * (4/3)); // 1pt = 4/3px at 96dpi
+    }
+
+    function setAll(px) {
+        const r = root(), p = parent(), w = vpW(), h = vpH();
+        document.getElementById('inp-px').value = fmt(px);
+        document.getElementById('inp-rem').value = fmt(px / r);
+        document.getElementById('inp-em').value = fmt(px / p);
+        document.getElementById('inp-pt').value = fmt(px * 0.75);
+        showCards(px);
+    }
+
+    function showCards(px) {
+        const r = root(), p = parent(), w = vpW(), h = vpH();
+        const units = [
+            { unit: 'px',  val: fmt(px),            css: `${fmt(px)}px` },
+            { unit: 'rem', val: fmt(px/r),           css: `${fmt(px/r)}rem` },
+            { unit: 'em',  val: fmt(px/p),           css: `${fmt(px/p)}em` },
+            { unit: 'pt',  val: fmt(px*0.75),        css: `${fmt(px*0.75)}pt` },
+            { unit: 'vw',  val: fmt(px/w*100),       css: `${fmt(px/w*100)}vw` },
+            { unit: 'vh',  val: fmt(px/h*100),       css: `${fmt(px/h*100)}vh` },
+            { unit: '%',   val: fmt(px/p*100),       css: `${fmt(px/p*100)}%` },
+            { unit: 'cm',  val: fmt(px/37.7953),     css: `${fmt(px/37.7953)}cm` },
+        ];
+        document.getElementById('card-results').innerHTML = units.map(u => `
+            <div class="unit-card">
+                <div class="unit-card-unit">${u.unit}</div>
+                <div class="unit-card-val">${u.val}</div>
+                <div class="unit-card-copy" onclick="copy('${u.css}')">⎘ ${u.css}</div>
+            </div>`).join('');
+    }
+
+    function buildRefTable() {
+        const r = root();
+        const pxs = [1,2,4,6,8,10,12,14,16,18,20,24,28,32,36,40,48,56,64,72,80,96,112,128];
+        const table = document.getElementById('refTable');
+        table.innerHTML = `<thead><tr><th>px</th><th>rem</th><th>em (16px)</th><th>pt</th></tr></thead>
+        <tbody>${pxs.map(px=>`<tr>
+            <td>${px}px</td>
+            <td>${fmt(px/r)}rem</td>
+            <td>${fmt(px/16)}em</td>
+            <td>${fmt(px*0.75)}pt</td>
+        </tr>`).join('')}</tbody>`;
+    }
+
+    function recalcAll() {
+        const pxVal = parseFloat(document.getElementById('inp-px').value);
+        if (!isNaN(pxVal)) setAll(pxVal);
+        buildRefTable();
+    }
+
+    // Init
+    buildRefTable();
+    setAll(16);
+    </script>
+</body>
+</html>

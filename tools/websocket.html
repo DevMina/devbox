@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DevBox — WebSocket client for testing real-time connections">
+    <title>WebSocket Client — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .ws-layout { display: grid; grid-template-columns: 1fr 340px; gap: 16px; }
+        @media(max-width:800px) { .ws-layout { grid-template-columns: 1fr; } }
+        .conn-row { display: flex; gap: 8px; align-items: center; }
+        .conn-row input { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 0.82rem; padding: 8px 12px; border-radius: var(--r); }
+        .conn-row input:focus { outline: none; border-color: var(--green); }
+        .msg-log { min-height: 320px; max-height: 420px; overflow-y: auto; font-family: var(--mono); font-size: 0.78rem; line-height: 1.6; display: flex; flex-direction: column; gap: 3px; }
+        .log-entry { padding: 5px 8px; border-radius: 4px; border-left: 3px solid transparent; }
+        .log-entry.sent { border-color: var(--cyan); background: rgba(100,200,255,0.06); }
+        .log-entry.recv { border-color: var(--green); background: rgba(100,255,150,0.06); }
+        .log-entry.sys { border-color: var(--text-dim); color: var(--text-dim); font-style: italic; }
+        .log-entry.err { border-color: var(--red); background: rgba(255,80,80,0.06); color: var(--red); }
+        .log-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.7; margin-right: 6px; }
+        .log-time { font-size: 0.65rem; color: var(--text-dim); margin-right: 8px; }
+        .send-row { display: flex; gap: 8px; margin-top: 10px; }
+        .send-row textarea { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 0.8rem; padding: 8px 12px; border-radius: var(--r); resize: none; min-height: 70px; }
+        .send-row textarea:focus { outline: none; border-color: var(--green); }
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+        .status-dot.connected { background: var(--green); box-shadow: 0 0 6px var(--green); }
+        .status-dot.connecting { background: var(--yellow); animation: pulse 1s infinite; }
+        .status-dot.disconnected { background: var(--red); }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        .saved-list { display: flex; flex-direction: column; gap: 5px; }
+        .saved-item { display: flex; align-items: center; gap: 6px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 5px 8px; cursor: pointer; transition: all 0.15s; }
+        .saved-item:hover { border-color: var(--green); }
+        .saved-item-url { font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .saved-item-del { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 0.8rem; padding: 1px 4px; }
+        .saved-item-del:hover { color: var(--red); }
+        .stat-row { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); padding: 3px 0; border-bottom: 1px solid var(--border); }
+        .stat-row:last-child { border: none; }
+        .stat-val { color: var(--text); }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">WS</div>
+                    <div><div class="tool-title">WebSocket Client</div><div class="tool-desc">Test real-time WebSocket connections and messages</div></div>
+                </div>
+
+                <!-- Connect bar -->
+                <div class="panel" style="margin-bottom:12px">
+                    <div class="panel-bar">
+                        <span class="panel-label">Connection</span>
+                        <div class="status-badge"><div class="status-dot" id="status-dot"></div><span id="status-text">Disconnected</span></div>
+                    </div>
+                    <div class="conn-row">
+                        <input type="text" id="ws-url" placeholder="wss://echo.websocket.org" value="wss://echo.websocket.org">
+                        <button class="btn btn-green" id="connect-btn" onclick="toggleConnect()">Connect</button>
+                    </div>
+                </div>
+
+                <div class="ws-layout">
+                    <!-- Messages -->
+                    <div style="display:flex;flex-direction:column;gap:12px">
+                        <div class="panel" style="margin:0">
+                            <div class="panel-bar">
+                                <span class="panel-label">Message Log</span>
+                                <div class="panel-actions">
+                                    <span id="msg-count" style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)">0 messages</span>
+                                    <button class="btn btn-ghost" onclick="clearLog()">Clear</button>
+                                    <button class="btn btn-ghost" onclick="copyLog()">⎘ Copy</button>
+                                </div>
+                            </div>
+                            <div class="msg-log" id="msg-log">
+                                <div class="log-entry sys"><span class="log-label">SYS</span>Enter a WebSocket URL and click Connect.</div>
+                            </div>
+                        </div>
+
+                        <div class="panel" style="margin:0">
+                            <div class="panel-bar"><span class="panel-label">Send Message</span></div>
+                            <div class="send-row">
+                                <textarea id="msg-input" placeholder='Type a message or paste JSON…' onkeydown="handleKey(event)"></textarea>
+                                <div style="display:flex;flex-direction:column;gap:6px">
+                                    <button class="btn btn-green" onclick="sendMsg()" id="send-btn" disabled>Send</button>
+                                    <button class="btn btn-ghost" onclick="formatJson()">Format</button>
+                                </div>
+                            </div>
+                            <div style="font-family:var(--mono);font-size:0.68rem;color:var(--text-dim);margin-top:5px">Ctrl+Enter to send</div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div style="display:flex;flex-direction:column;gap:12px">
+                        <div class="panel" style="margin:0">
+                            <div class="panel-bar"><span class="panel-label">Stats</span></div>
+                            <div class="stat-row"><span>Sent</span><span class="stat-val" id="stat-sent">0</span></div>
+                            <div class="stat-row"><span>Received</span><span class="stat-val" id="stat-recv">0</span></div>
+                            <div class="stat-row"><span>Connected at</span><span class="stat-val" id="stat-time">—</span></div>
+                        </div>
+
+                        <div class="panel" style="margin:0">
+                            <div class="panel-bar">
+                                <span class="panel-label">Saved URLs</span>
+                                <button class="btn btn-ghost" style="font-size:0.72rem" onclick="saveUrl()">+ Save</button>
+                            </div>
+                            <div class="saved-list" id="saved-list"></div>
+                            <div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);margin-top:6px">Saved in browser storage</div>
+                        </div>
+
+                        <div class="panel" style="margin:0">
+                            <div class="panel-bar"><span class="panel-label">Quick Messages</span></div>
+                            <div style="display:flex;flex-direction:column;gap:5px">
+                                <button class="btn btn-ghost" style="text-align:left;font-size:0.72rem" onclick="setMsg('ping')">ping</button>
+                                <button class="btn btn-ghost" style="text-align:left;font-size:0.72rem" onclick='setMsg("{\"type\":\"ping\"}")'>{"type":"ping"}</button>
+                                <button class="btn btn-ghost" style="text-align:left;font-size:0.72rem" onclick='setMsg("{\"action\":\"subscribe\",\"channel\":\"updates\"}")'>Subscribe message</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        let ws = null;
+        let sentCount = 0, recvCount = 0;
+        let savedUrls = JSON.parse(localStorage.getItem('devbox_ws_urls') || '[]');
+
+        function toggleConnect() {
+            if (ws && ws.readyState === WebSocket.OPEN) { ws.close(); return; }
+            connect();
+        }
+
+        function connect() {
+            const url = document.getElementById('ws-url').value.trim();
+            if (!url) { showToast('Enter a WebSocket URL'); return; }
+            try {
+                ws = new WebSocket(url);
+                setStatus('connecting');
+                addLog('sys', `Connecting to ${url}…`);
+                ws.onopen = () => {
+                    setStatus('connected');
+                    document.getElementById('stat-time').textContent = new Date().toLocaleTimeString();
+                    addLog('sys', 'Connection established.');
+                    document.getElementById('send-btn').disabled = false;
+                    document.getElementById('connect-btn').textContent = 'Disconnect';
+                    document.getElementById('connect-btn').classList.replace('btn-green', 'btn-ghost');
+                };
+                ws.onmessage = (e) => {
+                    recvCount++;
+                    document.getElementById('stat-recv').textContent = recvCount;
+                    addLog('recv', e.data);
+                };
+                ws.onerror = () => { addLog('err', 'WebSocket error occurred.'); };
+                ws.onclose = (e) => {
+                    setStatus('disconnected');
+                    addLog('sys', `Connection closed. Code: ${e.code}`);
+                    document.getElementById('send-btn').disabled = true;
+                    document.getElementById('connect-btn').textContent = 'Connect';
+                    document.getElementById('connect-btn').classList.replace('btn-ghost', 'btn-green');
+                    ws = null;
+                };
+            } catch(e) {
+                addLog('err', 'Invalid URL: ' + e.message);
+            }
+        }
+
+        function setStatus(s) {
+            const dot = document.getElementById('status-dot');
+            const txt = document.getElementById('status-text');
+            dot.className = 'status-dot ' + s;
+            txt.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+        }
+
+        function sendMsg() {
+            if (!ws || ws.readyState !== WebSocket.OPEN) { showToast('Not connected'); return; }
+            const msg = document.getElementById('msg-input').value;
+            if (!msg.trim()) return;
+            ws.send(msg);
+            sentCount++;
+            document.getElementById('stat-sent').textContent = sentCount;
+            addLog('sent', msg);
+        }
+
+        function handleKey(e) { if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); sendMsg(); } }
+
+        function addLog(type, text) {
+            const log = document.getElementById('msg-log');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry ' + type;
+            const labels = { sent: '↑ SENT', recv: '↓ RECV', sys: 'SYS', err: 'ERR' };
+            const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+            entry.innerHTML = `<span class="log-time">${time}</span><span class="log-label">${labels[type]}</span>${escHtml(text)}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+            const count = log.querySelectorAll('.log-entry:not(.sys)').length;
+            document.getElementById('msg-count').textContent = count + ' message' + (count !== 1 ? 's' : '');
+        }
+
+        function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+        function clearLog() {
+            document.getElementById('msg-log').innerHTML = '<div class="log-entry sys"><span class="log-label">SYS</span>Log cleared.</div>';
+            document.getElementById('msg-count').textContent = '0 messages';
+            sentCount = recvCount = 0;
+            document.getElementById('stat-sent').textContent = 0;
+            document.getElementById('stat-recv').textContent = 0;
+        }
+
+        function copyLog() {
+            const entries = document.getElementById('msg-log').querySelectorAll('.log-entry');
+            const txt = Array.from(entries).map(e => e.textContent.trim()).join('\n');
+            navigator.clipboard.writeText(txt).then(() => showToast('Copied!'));
+        }
+
+        function formatJson() {
+            const el = document.getElementById('msg-input');
+            try { el.value = JSON.stringify(JSON.parse(el.value), null, 2); } catch(e) { showToast('Not valid JSON'); }
+        }
+
+        function setMsg(m) { document.getElementById('msg-input').value = m; }
+
+        function saveUrl() {
+            const url = document.getElementById('ws-url').value.trim();
+            if (!url || savedUrls.includes(url)) return;
+            savedUrls.unshift(url);
+            if (savedUrls.length > 10) savedUrls = savedUrls.slice(0, 10);
+            localStorage.setItem('devbox_ws_urls', JSON.stringify(savedUrls));
+            renderSaved();
+        }
+
+        function delSaved(i) { savedUrls.splice(i, 1); localStorage.setItem('devbox_ws_urls', JSON.stringify(savedUrls)); renderSaved(); }
+
+        function renderSaved() {
+            document.getElementById('saved-list').innerHTML = savedUrls.length
+                ? savedUrls.map((u, i) => `<div class="saved-item" onclick="document.getElementById('ws-url').value='${u.replace(/'/g,"\\'")}'" ><span class="saved-item-url">${u}</span><button class="saved-item-del" onclick="event.stopPropagation();delSaved(${i})">✕</button></div>`).join('')
+                : '<div style="font-family:var(--mono);font-size:0.75rem;color:var(--text-dim)">No saved URLs</div>';
+        }
+
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+
+        renderSaved();
+    </script>
+</body>
+</html>

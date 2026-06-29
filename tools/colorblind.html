@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Simulate color blindness types for accessibility testing">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Blindness Simulator — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="Color Blindness Simulator — DevBox">
+    <meta property="og:description" content="Simulate color blindness types for accessibility testing">
+    <meta property="og:type" content="website">
+    <style>
+        .cb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 16px; }
+        .cb-card { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--surface); }
+        .cb-preview { width: 100%; height: 140px; display: block; }
+        .cb-label { padding: 8px 12px; font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .cb-label strong { color: var(--text); }
+        .cb-active-label { color: var(--green); font-size: 0.65rem; }
+        .color-swatches { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .swatch-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        .swatch { width: 36px; height: 36px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; transition: transform 0.1s; flex-shrink: 0; }
+        .swatch:hover { transform: scale(1.1); }
+        .swatch.selected { outline: 2px solid var(--green); outline-offset: 2px; }
+        .input-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        #customColor { width: 48px; height: 38px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; padding: 2px; background: var(--surface); }
+        .info-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: var(--surface2); border: 1px solid var(--border); font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">👁</div>
+                    <div>
+                        <div class="tool-title">Color Blindness Simulator</div>
+                        <div class="tool-desc">Preview how colors appear with 8 types of color vision deficiency</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Input Color</span>
+                    </div>
+                    <div style="padding:14px;display:flex;flex-direction:column;gap:12px;">
+                        <div class="input-row">
+                            <input type="color" id="customColor" value="#3b82f6" oninput="onColorChange(this.value)">
+                            <input class="input" id="hexInput" value="#3b82f6" style="width:110px;font-family:var(--mono)" placeholder="#rrggbb" oninput="onHexInput(this.value)">
+                            <span class="info-badge" id="rgbLabel">RGB(59, 130, 246)</span>
+                        </div>
+                        <div>
+                            <div style="font-size:0.7rem;color:var(--text-dim);margin-bottom:6px;">Quick presets</div>
+                            <div class="swatch-row" id="swatches"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top:16px;">
+                    <div style="font-family:var(--mono);font-size:0.62rem;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-dim);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border);">Simulated Views</div>
+                    <div class="cb-grid" id="cbGrid"></div>
+                </div>
+
+                <div class="panel" style="margin-top:16px;">
+                    <div class="panel-bar"><span class="panel-label">About Color Blindness Types</span></div>
+                    <div style="padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;">
+                        <div style="font-size:0.75rem;color:var(--text-dim);line-height:1.6;"><strong style="color:var(--text)">Protanopia</strong> — No red cone cells (~1% males)</div>
+                        <div style="font-size:0.75rem;color:var(--text-dim);line-height:1.6;"><strong style="color:var(--text)">Deuteranopia</strong> — No green cone cells (~1% males)</div>
+                        <div style="font-size:0.75rem;color:var(--text-dim);line-height:1.6;"><strong style="color:var(--text)">Tritanopia</strong> — No blue cone cells (~0.01%)</div>
+                        <div style="font-size:0.75rem;color:var(--text-dim);line-height:1.6;"><strong style="color:var(--text)">Protanomaly</strong> — Reduced red sensitivity (~1% males)</div>
+                        <div style="font-size:0.75rem;color:var(--text-dim);line-height:1.6;"><strong style="color:var(--text)">Deuteranomaly</strong> — Reduced green sensitivity (~5% males)</div>
+                        <div style="font-size:0.75rem;color:var(--text-dim);line-height:1.6;"><strong style="color:var(--text)">Tritanomaly</strong> — Reduced blue sensitivity (~0.01%)</div>
+                        <div style="font-size:0.75rem;color:var(--text-dim);line-height:1.6;"><strong style="color:var(--text)">Achromatopsia</strong> — Complete color blindness (~0.003%)</div>
+                        <div style="font-size:0.75rem;color:var(--text-dim);line-height:1.6;"><strong style="color:var(--text)">Achromatomaly</strong> — Reduced color sensitivity</div>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+    const PRESETS = ['#ef4444','#f97316','#eab308','#22c55e','#3b82f6','#a855f7','#ec4899','#14b8a6','#ffffff','#000000','#64748b'];
+
+    const TYPES = [
+        { key:'normal',        label:'Normal Vision',   pct:'100% of population' },
+        { key:'protanopia',    label:'Protanopia',      pct:'~1% males' },
+        { key:'deuteranopia',  label:'Deuteranopia',    pct:'~1% males' },
+        { key:'tritanopia',    label:'Tritanopia',      pct:'~0.01%' },
+        { key:'protanomaly',   label:'Protanomaly',     pct:'~1% males' },
+        { key:'deuteranomaly', label:'Deuteranomaly',   pct:'~5% males' },
+        { key:'tritanomaly',   label:'Tritanomaly',     pct:'rare' },
+        { key:'achromatopsia', label:'Achromatopsia',   pct:'~0.003%' },
+        { key:'achromatomaly', label:'Achromatomaly',   pct:'rare' },
+    ];
+
+    // Color blindness simulation matrices
+    function hexToRgb(h) {
+        h = h.replace('#','');
+        if (h.length === 3) h = h.split('').map(c=>c+c).join('');
+        return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+    }
+
+    function rgbToHex(r,g,b) {
+        return '#'+[r,g,b].map(v=>Math.round(Math.min(255,Math.max(0,v))).toString(16).padStart(2,'0')).join('');
+    }
+
+    function simulate(r,g,b,type) {
+        // Matrices from Machado et al. 2009 + Brettel for dichromacy
+        const m = {
+            normal:        [[1,0,0],[0,1,0],[0,0,1]],
+            protanopia:    [[0.152286,1.052583,-0.204868],[0.114503,0.786281,0.099216],[-0.003882,-0.048116,1.051998]],
+            deuteranopia:  [[0.367322,0.860646,-0.227968],[0.280085,0.672501,0.047413],[-0.011820,0.042940,0.968881]],
+            tritanopia:    [[1.255528,-0.076749,-0.178779],[-0.078411,0.930809,0.147602],[0.004733,0.691367,0.303900]],
+            protanomaly:   [[0.458064,0.679578,-0.137642],[0.092785,0.846313,0.060902],[-0.007494,-0.016807,1.024301]],
+            deuteranomaly: [[0.547494,0.607765,-0.155259],[0.181692,0.781280,0.037028],[-0.010410,0.027275,0.983136]],
+            tritanomaly:   [[1.017277,-0.006113,-0.011164],[-0.006113,0.958479,0.047634],[-0.011164,0.047634,0.963530]],
+            achromatopsia: [[0.299,0.587,0.114],[0.299,0.587,0.114],[0.299,0.587,0.114]],
+            achromatomaly: [[0.618,0.320,0.062],[0.163,0.775,0.062],[0.163,0.320,0.516]],
+        };
+        const mat = m[type] || m.normal;
+        const nr = mat[0][0]*r + mat[0][1]*g + mat[0][2]*b;
+        const ng = mat[1][0]*r + mat[1][1]*g + mat[1][2]*b;
+        const nb = mat[2][0]*r + mat[2][1]*g + mat[2][2]*b;
+        return [nr, ng, nb];
+    }
+
+    let currentHex = '#3b82f6';
+
+    function buildSwatches() {
+        const el = document.getElementById('swatches');
+        el.innerHTML = PRESETS.map(c => `<div class="swatch" style="background:${c}" title="${c}" onclick="onColorChange('${c}')"></div>`).join('');
+    }
+
+    function renderGrid(hex) {
+        const [r,g,b] = hexToRgb(hex);
+        const grid = document.getElementById('cbGrid');
+        grid.innerHTML = TYPES.map(t => {
+            const [sr,sg,sb] = simulate(r,g,b,t.key);
+            const simHex = rgbToHex(sr,sg,sb);
+            const isNormal = t.key === 'normal';
+            // Draw a canvas-like palette strip using a gradient of tints
+            const stops = [simHex + '33', simHex + '88', simHex, simHex + 'cc'];
+            const gradient = `linear-gradient(135deg, ${simHex}22 0%, ${simHex} 50%, ${simHex}cc 100%)`;
+            return `<div class="cb-card">
+                <div class="cb-preview" style="background:${gradient};display:flex;align-items:center;justify-content:center;gap:8px;flex-direction:column;">
+                    <div style="display:flex;gap:6px;">
+                        ${[1,0.75,0.5,0.25].map(a=>`<div style="width:28px;height:28px;border-radius:6px;background:${simHex};opacity:${a};border:1px solid rgba(255,255,255,0.2)"></div>`).join('')}
+                    </div>
+                    <div style="font-family:var(--mono);font-size:0.8rem;color:${simHex};background:rgba(0,0,0,0.5);border-radius:4px;padding:2px 8px;">${simHex}</div>
+                </div>
+                <div class="cb-label">
+                    <strong>${t.label}</strong>
+                    <span>${t.pct}</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function onColorChange(hex) {
+        currentHex = hex;
+        document.getElementById('customColor').value = hex;
+        document.getElementById('hexInput').value = hex;
+        const [r,g,b] = hexToRgb(hex);
+        document.getElementById('rgbLabel').textContent = `RGB(${r}, ${g}, ${b})`;
+        renderGrid(hex);
+        document.querySelectorAll('.swatch').forEach(s => s.classList.toggle('selected', s.style.background === hex || s.getAttribute('title') === hex));
+    }
+
+    function onHexInput(val) {
+        val = val.trim();
+        if (!val.startsWith('#')) val = '#' + val;
+        if (/^#[0-9a-fA-F]{6}$/.test(val) || /^#[0-9a-fA-F]{3}$/.test(val)) {
+            onColorChange(val);
+        }
+    }
+
+    buildSwatches();
+    onColorChange('#3b82f6');
+    </script>
+</body>
+</html>

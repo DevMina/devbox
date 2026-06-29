@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Escape and unescape strings for JS, Python, SQL, regex and more">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String Escape — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="String Escape — DevBox">
+    <meta property="og:description" content="Escape and unescape strings for JS, Python, SQL, regex and more">
+    <meta property="og:type" content="website">
+    <style>
+        .mode-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin-top: 8px; }
+        .mode-card { border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; background: var(--surface); }
+        .mode-label { font-family: var(--mono); font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 4px; }
+        .mode-result { font-family: var(--mono); font-size: 0.78rem; color: var(--green); word-break: break-all; line-height: 1.5; margin-bottom: 6px; min-height: 36px; }
+        .mode-copy { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); cursor: pointer; }
+        .mode-copy:hover { color: var(--green); }
+        .tab-row { display: flex; gap: 4px; margin-bottom: 12px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+        .tab-btn { padding: 6px 14px; font-family: var(--mono); font-size: 0.72rem; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; color: var(--text-dim); margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; }
+        .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">\\n</div>
+                    <div>
+                        <div class="tool-title">String Escape</div>
+                        <div class="tool-desc">Escape & unescape strings for JavaScript, Python, SQL, JSON, regex and more</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Input</span>
+                        <div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
+                            <button class="btn btn-ghost" onclick="clearInput()">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="strInput" placeholder="Enter text with special characters, newlines, tabs, quotes…" style="min-height:120px;font-family:var(--mono);font-size:0.82rem;" oninput="processAll()"></textarea>
+                </div>
+
+                <div class="tab-row" style="margin-top:12px;">
+                    <button class="tab-btn active" onclick="setMode('escape',this)">Escape</button>
+                    <button class="tab-btn" onclick="setMode('unescape',this)">Unescape</button>
+                </div>
+
+                <div class="mode-grid" id="modeGrid"></div>
+
+                <div class="panel" style="margin-top:16px;">
+                    <div class="panel-bar"><span class="panel-label">Custom Replacer</span></div>
+                    <div style="padding:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                            <label style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;">Find (regex)</label>
+                            <input class="input" id="customFind" placeholder='[\n\t"]' style="font-family:var(--mono);width:180px">
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                            <label style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;">Replace with</label>
+                            <input class="input" id="customReplace" placeholder='\n → \\n' style="font-family:var(--mono);width:140px">
+                        </div>
+                        <div style="display:flex;gap:6px;padding-bottom:0;">
+                            <label style="display:flex;align-items:center;gap:4px;font-size:0.78rem;color:var(--text-dim);cursor:pointer;">
+                                <input type="checkbox" id="customFlags" checked> global
+                            </label>
+                        </div>
+                        <button class="btn btn-green" onclick="customReplace()">Replace</button>
+                    </div>
+                    <div style="padding:0 14px 14px;">
+                        <div class="mode-label">Result</div>
+                        <div class="mode-result" id="customResult" style="min-height:40px;">—</div>
+                        <div class="mode-copy" onclick="copy(document.getElementById('customResult').textContent)">⎘ Copy</div>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+    let currentMode = 'escape';
+
+    const ESCAPE_MODES = [
+        {
+            key: 'js',
+            label: 'JavaScript String',
+            escape: s => s.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'\\n').replace(/\r/g,'\\r').replace(/\t/g,'\\t').replace(/\0/g,'\\0'),
+            unescape: s => { try { return JSON.parse('"'+s+'"'); } catch(e) { return '// Invalid JS string: '+e.message; } }
+        },
+        {
+            key: 'json',
+            label: 'JSON Value',
+            escape: s => JSON.stringify(s).slice(1,-1),
+            unescape: s => { try { return JSON.parse('"'+s+'"'); } catch(e) { return '// Invalid JSON: '+e.message; } }
+        },
+        {
+            key: 'python',
+            label: 'Python String',
+            escape: s => s.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n').replace(/\r/g,'\\r').replace(/\t/g,'\\t'),
+            unescape: s => s.replace(/\\'/g,"'").replace(/\\n/g,'\n').replace(/\\r/g,'\r').replace(/\\t/g,'\t').replace(/\\\\/g,'\\')
+        },
+        {
+            key: 'sql',
+            label: 'SQL String',
+            escape: s => s.replace(/'/g,"''").replace(/\\/g,'\\\\'),
+            unescape: s => s.replace(/''/g,"'").replace(/\\\\/g,'\\')
+        },
+        {
+            key: 'regex',
+            label: 'Regex Pattern',
+            escape: s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+            unescape: s => s.replace(/\\([.*+?^${}()|[\]\\])/g,'$1')
+        },
+        {
+            key: 'csv',
+            label: 'CSV Cell',
+            escape: s => { const needs = /[",\n\r]/.test(s); return needs ? '"'+s.replace(/"/g,'""')+'"' : s; },
+            unescape: s => { if (s.startsWith('"') && s.endsWith('"')) { return s.slice(1,-1).replace(/""/g,'"'); } return s; }
+        },
+        {
+            key: 'shell',
+            label: 'Shell / Bash',
+            escape: s => "'" + s.replace(/'/g,"'\"'\"'") + "'",
+            unescape: s => s.replace(/^'|'$/g,'').replace(/'?"'?/g,"'")
+        },
+        {
+            key: 'csharp',
+            label: 'C# / C++ String',
+            escape: s => s.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'\\n').replace(/\r/g,'\\r').replace(/\t/g,'\\t').replace(/\0/g,'\\0'),
+            unescape: s => s.replace(/\\n/g,'\n').replace(/\\r/g,'\r').replace(/\\t/g,'\t').replace(/\\0/g,'\0').replace(/\\"/g,'"').replace(/\\\\/g,'\\')
+        },
+    ];
+
+    function setMode(mode, btn) {
+        currentMode = mode;
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        processAll();
+    }
+
+    function processAll() {
+        const input = document.getElementById('strInput').value;
+        const grid = document.getElementById('modeGrid');
+        grid.innerHTML = ESCAPE_MODES.map(m => {
+            let result;
+            try {
+                result = currentMode === 'escape' ? m.escape(input) : m.unescape(input);
+            } catch(e) { result = '// Error: '+e.message; }
+            return `<div class="mode-card">
+                <div class="mode-label">${m.label}</div>
+                <div class="mode-result" id="res-${m.key}">${escHtml(result)}</div>
+                <div class="mode-copy" onclick="copy(document.getElementById('res-${m.key}').textContent)">⎘ Copy</div>
+            </div>`;
+        }).join('');
+    }
+
+    function customReplace() {
+        const input = document.getElementById('strInput').value;
+        const find = document.getElementById('customFind').value;
+        const rep = document.getElementById('customReplace').value;
+        const flags = document.getElementById('customFlags').checked ? 'g' : '';
+        try {
+            const regex = new RegExp(find, flags);
+            const result = input.replace(regex, rep.replace(/\\n/g,'\n').replace(/\\t/g,'\t').replace(/\\r/g,'\r'));
+            document.getElementById('customResult').textContent = result;
+        } catch(e) {
+            document.getElementById('customResult').textContent = '// Regex error: ' + e.message;
+        }
+    }
+
+    function clearInput() {
+        document.getElementById('strInput').value = '';
+        processAll();
+    }
+
+    function loadSample() {
+        document.getElementById('strInput').value = `Hello, "World"!\nThis is a tab:\there.\nPath: C:\\Users\\admin\nSingle 'quotes' too.`;
+        processAll();
+    }
+
+    function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    processAll();
+    </script>
+</body>
+</html>

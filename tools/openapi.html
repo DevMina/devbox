@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DevBox — OpenAPI / Swagger spec viewer">
+    <title>OpenAPI Viewer — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <style>
+        .oa-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media(max-width:800px) { .oa-layout { grid-template-columns: 1fr; } }
+        .code-editor { width: 100%; min-height: 380px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 0.78rem; padding: 12px; border-radius: var(--r); resize: vertical; line-height: 1.6; }
+        .code-editor:focus { outline: none; border-color: var(--purple, #a97ff5); }
+        .api-info { margin-bottom: 16px; }
+        .api-title { font-size: 1.2rem; font-weight: 600; color: var(--text); }
+        .api-ver { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+        .api-desc { font-size: 0.85rem; color: var(--text-dim); margin-top: 6px; }
+        .server-tag { display: inline-block; font-family: var(--mono); font-size: 0.72rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: 2px 8px; margin-right: 5px; margin-top: 4px; }
+        .path-group { margin-bottom: 8px; border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+        .path-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; background: var(--surface2); transition: background 0.15s; user-select: none; }
+        .path-header:hover { background: var(--surface); }
+        .path-method { font-family: var(--mono); font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0; }
+        .method-get { background: rgba(80,200,120,0.15); color: var(--green); }
+        .method-post { background: rgba(100,150,255,0.15); color: var(--blue, #6b9fff); }
+        .method-put { background: rgba(255,180,50,0.15); color: var(--yellow); }
+        .method-patch { background: rgba(255,140,50,0.15); color: var(--orange, #ff9f4a); }
+        .method-delete { background: rgba(255,80,80,0.15); color: var(--red); }
+        .method-head, .method-options { background: rgba(150,100,255,0.15); color: var(--purple, #a97ff5); }
+        .path-url { font-family: var(--mono); font-size: 0.82rem; color: var(--text); flex: 1; }
+        .path-summary { font-size: 0.78rem; color: var(--text-dim); margin-left: auto; padding-left: 10px; }
+        .path-body { padding: 12px 14px; background: var(--surface); border-top: 1px solid var(--border); display: none; }
+        .path-body.open { display: block; }
+        .param-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        .param-table th { font-family: var(--mono); font-size: 0.68rem; color: var(--text-dim); text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--border); text-transform: uppercase; }
+        .param-table td { font-family: var(--mono); font-size: 0.78rem; padding: 5px 8px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+        .param-table tr:last-child td { border: none; }
+        .param-in { font-size: 0.68rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px; color: var(--text-dim); }
+        .param-required { color: var(--red); font-size: 0.65rem; }
+        .param-type { color: var(--cyan); }
+        .resp-row { display: flex; gap: 8px; align-items: flex-start; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+        .resp-row:last-child { border: none; }
+        .resp-code { font-family: var(--mono); font-weight: 600; width: 50px; flex-shrink: 0; }
+        .resp-code.ok { color: var(--green); } .resp-code.redir { color: var(--yellow); } .resp-code.err { color: var(--red); }
+        .section-title { font-family: var(--mono); font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin: 10px 0 5px; }
+        .tag-group { margin-bottom: 16px; }
+        .tag-label { font-size: 0.8rem; font-weight: 600; color: var(--text); margin-bottom: 6px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        .error-msg { color: var(--red); font-family: var(--mono); font-size: 0.8rem; padding: 8px; }
+        .empty-msg { color: var(--text-dim); font-family: var(--mono); font-size: 0.82rem; }
+        .chevron { transition: transform 0.2s; margin-left: auto; font-size: 0.8rem; color: var(--text-dim); }
+        .chevron.open { transform: rotate(90deg); }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:rgba(169,127,245,0.15);color:#a97ff5">API</div>
+                    <div><div class="tool-title">OpenAPI Viewer</div><div class="tool-desc">Render OpenAPI / Swagger specs (YAML or JSON)</div></div>
+                </div>
+
+                <div class="oa-layout">
+                    <div class="panel" style="margin:0">
+                        <div class="panel-bar">
+                            <span class="panel-label">Spec Input (YAML / JSON)</span>
+                            <div class="panel-actions">
+                                <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
+                                <button class="btn btn-ghost" onclick="clearSpec()">Clear</button>
+                            </div>
+                        </div>
+                        <textarea class="code-editor" id="spec-input" placeholder="Paste OpenAPI 3.x or Swagger 2.x spec here (YAML or JSON)…" oninput="parseSpec()"></textarea>
+                        <div class="error-msg" id="error-msg"></div>
+                    </div>
+
+                    <div class="panel" style="margin:0;overflow:auto">
+                        <div class="panel-bar"><span class="panel-label">Rendered Docs</span><button class="btn btn-ghost" onclick="expandAll()">Expand All</button></div>
+                        <div id="rendered">
+                            <div class="empty-msg">Paste a spec to see it rendered here.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        let expandedPaths = new Set();
+
+        function parseSpec() {
+            const raw = document.getElementById('spec-input').value.trim();
+            const err = document.getElementById('error-msg');
+            const out = document.getElementById('rendered');
+            if (!raw) { out.innerHTML = '<div class="empty-msg">Paste a spec to see it rendered here.</div>'; err.textContent = ''; return; }
+            let spec;
+            try {
+                spec = jsyaml.load(raw);
+                err.textContent = '';
+            } catch(e) {
+                err.textContent = '⚠ Parse error: ' + e.message;
+                out.innerHTML = '';
+                return;
+            }
+            out.innerHTML = renderSpec(spec);
+        }
+
+        function renderSpec(spec) {
+            let html = '';
+            const info = spec.info || {};
+            const servers = spec.servers || (spec.host ? [{ url: (spec.schemes?.[0] || 'https') + '://' + spec.host + (spec.basePath || '') }] : []);
+            html += `<div class="api-info">
+                <div class="api-title">${esc(info.title || 'Untitled API')}</div>
+                <div class="api-ver">Version ${esc(info.version || '?')}${spec.openapi ? ' · OpenAPI ' + spec.openapi : spec.swagger ? ' · Swagger ' + spec.swagger : ''}</div>
+                ${info.description ? `<div class="api-desc">${esc(info.description)}</div>` : ''}
+                ${servers.map(s => `<span class="server-tag">${esc(s.url)}</span>`).join('')}
+            </div>`;
+
+            const paths = spec.paths || {};
+            const methods = ['get','post','put','patch','delete','head','options'];
+
+            // Group by tags
+            const tagged = {};
+            const untagged = [];
+            Object.entries(paths).forEach(([path, pathObj]) => {
+                methods.forEach(m => {
+                    if (!pathObj[m]) return;
+                    const op = pathObj[m];
+                    const tags = op.tags && op.tags.length ? op.tags : ['__untagged__'];
+                    tags.forEach(tag => {
+                        if (!tagged[tag]) tagged[tag] = [];
+                        tagged[tag].push({ path, method: m, op });
+                    });
+                });
+            });
+
+            const allTags = Object.keys(tagged);
+            allTags.forEach(tag => {
+                html += `<div class="tag-group">`;
+                if (tag !== '__untagged__') html += `<div class="tag-label">${esc(tag)}</div>`;
+                tagged[tag].forEach(({ path, method, op }, idx) => {
+                    const id = `${tag}-${idx}`;
+                    html += renderEndpoint(id, path, method, op);
+                });
+                html += `</div>`;
+            });
+
+            return html;
+        }
+
+        function renderEndpoint(id, path, method, op) {
+            const isOpen = expandedPaths.has(id);
+            const params = op.parameters || [];
+            const responses = op.responses || {};
+            const reqBody = op.requestBody;
+
+            return `<div class="path-group">
+                <div class="path-header" onclick="togglePath('${id}')">
+                    <span class="path-method method-${method}">${method}</span>
+                    <span class="path-url">${esc(path)}</span>
+                    ${op.summary ? `<span class="path-summary">${esc(op.summary)}</span>` : ''}
+                    <span class="chevron${isOpen ? ' open' : ''}">▶</span>
+                </div>
+                <div class="path-body${isOpen ? ' open' : ''}" id="body-${id}">
+                    ${op.description ? `<div style="font-size:0.82rem;color:var(--text-dim);margin-bottom:10px">${esc(op.description)}</div>` : ''}
+                    ${params.length ? `
+                        <div class="section-title">Parameters</div>
+                        <table class="param-table">
+                            <tr><th>Name</th><th>In</th><th>Type</th><th>Description</th></tr>
+                            ${params.map(p => `<tr>
+                                <td>${esc(p.name)}${p.required ? ` <span class="param-required">*</span>` : ''}</td>
+                                <td><span class="param-in">${esc(p.in)}</span></td>
+                                <td><span class="param-type">${esc(getType(p.schema || p))}</span></td>
+                                <td style="color:var(--text-dim)">${esc(p.description || '')}</td>
+                            </tr>`).join('')}
+                        </table>` : ''}
+                    ${reqBody ? `
+                        <div class="section-title">Request Body${reqBody.required ? ' <span class="param-required">*</span>' : ''}</div>
+                        <div style="font-family:var(--mono);font-size:0.78rem;color:var(--text-dim)">${Object.keys(reqBody.content || {}).map(ct => `<span class="param-in">${esc(ct)}</span>`).join(' ')}</div>` : ''}
+                    ${Object.keys(responses).length ? `
+                        <div class="section-title">Responses</div>
+                        ${Object.entries(responses).map(([code, res]) => `
+                            <div class="resp-row">
+                                <span class="resp-code ${+code >= 200 && +code < 300 ? 'ok' : +code >= 300 && +code < 400 ? 'redir' : 'err'}">${esc(code)}</span>
+                                <span style="color:var(--text-dim);font-size:0.8rem">${esc(res.description || '')}</span>
+                            </div>`).join('')}` : ''}
+                </div>
+            </div>`;
+        }
+
+        function togglePath(id) {
+            if (expandedPaths.has(id)) expandedPaths.delete(id);
+            else expandedPaths.add(id);
+            const body = document.getElementById('body-' + id);
+            const chevron = body?.previousElementSibling?.querySelector('.chevron');
+            if (body) body.classList.toggle('open', expandedPaths.has(id));
+            if (chevron) chevron.classList.toggle('open', expandedPaths.has(id));
+        }
+
+        function expandAll() {
+            document.querySelectorAll('.path-body').forEach(b => b.classList.add('open'));
+            document.querySelectorAll('.chevron').forEach(c => c.classList.add('open'));
+        }
+
+        function getType(schema) {
+            if (!schema) return '—';
+            if (schema.$ref) return schema.$ref.split('/').pop();
+            if (schema.type === 'array') return `array[${getType(schema.items)}]`;
+            return schema.type || schema.format || '—';
+        }
+
+        function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+        function clearSpec() { document.getElementById('spec-input').value = ''; parseSpec(); }
+
+        function loadSample() {
+            document.getElementById('spec-input').value = `openapi: "3.0.3"
+info:
+  title: Sample Pet Store API
+  version: "1.0.0"
+  description: A sample API to demonstrate OpenAPI Viewer
+servers:
+  - url: https://api.petstore.example.com/v1
+paths:
+  /pets:
+    get:
+      summary: List all pets
+      tags: [Pets]
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of pets to return
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: A list of pets
+        "500":
+          description: Server error
+    post:
+      summary: Create a pet
+      tags: [Pets]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "201":
+          description: Pet created
+  /pets/{petId}:
+    get:
+      summary: Get a pet by ID
+      tags: [Pets]
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Pet found
+        "404":
+          description: Pet not found
+    delete:
+      summary: Delete a pet
+      tags: [Pets]
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Pet deleted
+  /users/me:
+    get:
+      summary: Get current user
+      tags: [Users]
+      responses:
+        "200":
+          description: Current user info
+        "401":
+          description: Unauthorized`;
+            parseSpec();
+        }
+
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+    </script>
+</body>
+</html>

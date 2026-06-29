@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DevBox — Visual CSS Grid layout generator">
+    <title>CSS Grid Generator — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .grid-layout { display: grid; grid-template-columns: 300px 1fr; gap: 16px; }
+        @media(max-width:750px) { .grid-layout { grid-template-columns: 1fr; } }
+        .ctrl-section { margin-bottom: 14px; }
+        .ctrl-section-title { font-size: 0.68rem; font-family: var(--mono); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+        .ctrl-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .ctrl-row label { font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim); width: 80px; flex-shrink: 0; }
+        .ctrl-row input[type=range] { flex: 1; accent-color: var(--green); }
+        .ctrl-row .val { font-family: var(--mono); font-size: 0.72rem; color: var(--text); width: 24px; text-align: right; }
+        .track-list { display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; }
+        .track-item { display: flex; align-items: center; gap: 6px; }
+        .track-item input[type=text] { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 0.78rem; padding: 4px 8px; border-radius: 4px; }
+        .track-item input[type=text]:focus { outline: none; border-color: var(--green); }
+        .track-item .track-lbl { font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim); width: 20px; text-align: right; }
+        .track-del { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 0.8rem; padding: 2px 4px; }
+        .track-del:hover { color: var(--red); }
+        .add-track-btn { background: none; border: 1px dashed var(--border); color: var(--text-dim); font-family: var(--mono); font-size: 0.72rem; padding: 4px 10px; border-radius: 4px; cursor: pointer; width: 100%; transition: all 0.15s; }
+        .add-track-btn:hover { border-color: var(--green); color: var(--green); }
+        .preview-area {
+            background: repeating-conic-gradient(var(--surface2) 0% 25%, var(--surface) 0% 50%) 0 0/20px 20px;
+            border: 1px solid var(--border); border-radius: var(--r); min-height: 280px; padding: 16px; display: flex; align-items: stretch;
+        }
+        .grid-preview { width: 100%; }
+        .grid-cell {
+            background: var(--green-dim); border: 1.5px solid var(--green); border-radius: 5px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--mono); font-size: 0.7rem; color: var(--green); min-height: 50px;
+        }
+        .output-code { font-family: var(--mono); font-size: 0.8rem; color: var(--green); white-space: pre; overflow-x: auto; }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 5px; }
+        .btn-opt { background: var(--surface2); border: 1px solid var(--border); color: var(--text-dim); font-family: var(--mono); font-size: 0.72rem; padding: 4px 10px; border-radius: 4px; cursor: pointer; transition: all var(--transition); }
+        .btn-opt:hover { border-color: var(--green); color: var(--green); }
+        .btn-opt.active { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">▦</div>
+                    <div><div class="tool-title">CSS Grid Generator</div><div class="tool-desc">Visual CSS grid layout builder with live preview</div></div>
+                </div>
+
+                <div class="grid-layout">
+                    <div>
+                        <div class="panel">
+                            <div class="panel-bar"><span class="panel-label">Columns</span><button class="btn btn-ghost" style="font-size:0.72rem" onclick="addCol()">+ Add</button></div>
+                            <div class="track-list" id="col-tracks"></div>
+                        </div>
+
+                        <div class="panel" style="margin-top:12px">
+                            <div class="panel-bar"><span class="panel-label">Rows</span><button class="btn btn-ghost" style="font-size:0.72rem" onclick="addRow()">+ Add</button></div>
+                            <div class="track-list" id="row-tracks"></div>
+                        </div>
+
+                        <div class="panel" style="margin-top:12px">
+                            <div class="panel-bar"><span class="panel-label">Settings</span></div>
+                            <div class="ctrl-row">
+                                <label>column-gap</label>
+                                <input type="range" id="col-gap" min="0" max="40" value="8" oninput="render()">
+                                <span class="val" id="col-gap-val">8px</span>
+                            </div>
+                            <div class="ctrl-row">
+                                <label>row-gap</label>
+                                <input type="range" id="row-gap" min="0" max="40" value="8" oninput="render()">
+                                <span class="val" id="row-gap-val">8px</span>
+                            </div>
+                            <div class="ctrl-section">
+                                <div class="ctrl-section-title">justify-items</div>
+                                <div class="btn-group" id="grp-justify-items">
+                                    <button class="btn-opt active" data-val="stretch">stretch</button>
+                                    <button class="btn-opt" data-val="start">start</button>
+                                    <button class="btn-opt" data-val="end">end</button>
+                                    <button class="btn-opt" data-val="center">center</button>
+                                </div>
+                            </div>
+                            <div class="ctrl-section" style="margin-top:10px">
+                                <div class="ctrl-section-title">align-items</div>
+                                <div class="btn-group" id="grp-align-items">
+                                    <button class="btn-opt active" data-val="stretch">stretch</button>
+                                    <button class="btn-opt" data-val="start">start</button>
+                                    <button class="btn-opt" data-val="end">end</button>
+                                    <button class="btn-opt" data-val="center">center</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;flex-direction:column;gap:12px">
+                        <div class="preview-area">
+                            <div class="grid-preview" id="grid-preview"></div>
+                        </div>
+                        <div class="panel" style="margin:0">
+                            <div class="panel-bar">
+                                <span class="panel-label">CSS Output</span>
+                                <div class="panel-actions">
+                                    <button class="btn btn-ghost" onclick="copyCSS()">⎘ Copy</button>
+                                    <button class="btn btn-ghost" onclick="resetAll()">Reset</button>
+                                </div>
+                            </div>
+                            <pre class="output-code" id="css-output"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        let cols = ['1fr', '1fr', '1fr'];
+        let rows = ['auto', 'auto'];
+        let justifyItems = 'stretch', alignItems = 'stretch';
+
+        function renderTrackList(containerId, tracks, type) {
+            const el = document.getElementById(containerId);
+            el.innerHTML = tracks.map((t, i) => `
+                <div class="track-item">
+                    <span class="track-lbl">${i + 1}</span>
+                    <input type="text" value="${t}" oninput="updateTrack('${type}', ${i}, this.value)" placeholder="1fr / auto / 200px">
+                    <button class="track-del" onclick="delTrack('${type}', ${i})">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function updateTrack(type, i, val) {
+            if (type === 'col') cols[i] = val;
+            else rows[i] = val;
+            render();
+        }
+
+        function delTrack(type, i) {
+            if (type === 'col') { if (cols.length <= 1) return; cols.splice(i, 1); }
+            else { if (rows.length <= 1) return; rows.splice(i, 1); }
+            render();
+        }
+
+        function addCol() { cols.push('1fr'); render(); }
+        function addRow() { rows.push('auto'); render(); }
+
+        document.querySelectorAll('.btn-group').forEach(grp => {
+            grp.querySelectorAll('.btn-opt').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    grp.querySelectorAll('.btn-opt').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    if (grp.id === 'grp-justify-items') justifyItems = btn.dataset.val;
+                    else alignItems = btn.dataset.val;
+                    render();
+                });
+            });
+        });
+
+        document.getElementById('col-gap').addEventListener('input', function() {
+            document.getElementById('col-gap-val').textContent = this.value + 'px'; render();
+        });
+        document.getElementById('row-gap').addEventListener('input', function() {
+            document.getElementById('row-gap-val').textContent = this.value + 'px'; render();
+        });
+
+        function render() {
+            renderTrackList('col-tracks', cols, 'col');
+            renderTrackList('row-tracks', rows, 'row');
+
+            const colGap = document.getElementById('col-gap').value;
+            const rowGap = document.getElementById('row-gap').value;
+            const totalCells = cols.length * rows.length;
+
+            const gp = document.getElementById('grid-preview');
+            gp.style.display = 'grid';
+            gp.style.gridTemplateColumns = cols.join(' ');
+            gp.style.gridTemplateRows = rows.join(' ');
+            gp.style.columnGap = colGap + 'px';
+            gp.style.rowGap = rowGap + 'px';
+            gp.style.justifyItems = justifyItems;
+            gp.style.alignItems = alignItems;
+
+            gp.innerHTML = Array.from({ length: totalCells }, (_, i) =>
+                `<div class="grid-cell">${i + 1}</div>`
+            ).join('');
+
+            const css = `.container {\n  display: grid;\n  grid-template-columns: ${cols.join(' ')};\n  grid-template-rows: ${rows.join(' ')};\n  column-gap: ${colGap}px;\n  row-gap: ${rowGap}px;\n  justify-items: ${justifyItems};\n  align-items: ${alignItems};\n}`;
+            document.getElementById('css-output').textContent = css;
+        }
+
+        function copyCSS() {
+            navigator.clipboard.writeText(document.getElementById('css-output').textContent)
+                .then(() => showToast('Copied!'));
+        }
+
+        function resetAll() {
+            cols = ['1fr', '1fr', '1fr']; rows = ['auto', 'auto'];
+            justifyItems = 'stretch'; alignItems = 'stretch';
+            document.getElementById('col-gap').value = 8; document.getElementById('col-gap-val').textContent = '8px';
+            document.getElementById('row-gap').value = 8; document.getElementById('row-gap-val').textContent = '8px';
+            document.querySelectorAll('.btn-group').forEach(g => {
+                g.querySelectorAll('.btn-opt').forEach(b => b.classList.remove('active'));
+                g.querySelector('.btn-opt').classList.add('active');
+            });
+            render();
+        }
+
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+
+        render();
+    </script>
+</body>
+</html>

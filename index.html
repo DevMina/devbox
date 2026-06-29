@@ -322,6 +322,10 @@
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">{}</div>
                                 <div class="tool-card-text"><div class="tool-name">JSON Formatter</div><div class="tool-desc">Pretty-print, minify & validate JSON</div></div>
                             </a>
+                            <a class="tool-card" href="tools/jsonschema.html" data-tags="json schema generate infer draft validate structure openapi">
+                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">{S}</div>
+                                <div class="tool-card-text"><div class="tool-name">JSON Schema Generator</div><div class="tool-desc">Infer JSON Schema from a sample</div></div>
+                            </a>
                             <a class="tool-card" href="tools/xml.html" data-tags="xml format beautify minify validate indent">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">XML</div>
                                 <div class="tool-card-text"><div class="tool-name">XML Formatter</div><div class="tool-desc">Beautify, minify & validate XML</div></div>
@@ -333,6 +337,11 @@
                             <a class="tool-card" href="tools/cssminify.html" data-tags="css minify beautify compress format">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">CSS</div>
                                 <div class="tool-card-text"><div class="tool-name">CSS Minifier</div><div class="tool-desc">Minify & beautify CSS</div></div>
+                            </a>
+
+                            <a class="tool-card" href="tools/envparser.html" data-tags="env environment variables parse validate dotenv config">
+                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">.env</div>
+                                <div class="tool-card-text"><div class="tool-name">.env Parser</div><div class="tool-desc">Parse, validate & convert .env files</div></div>
                             </a>
                             <a class="tool-card" href="tools/htmlbeautify.html" data-tags="html format indent beautify tidy">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">&lt;/&gt;</div>
@@ -353,9 +362,9 @@
                                 <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">.*</div>
                                 <div class="tool-card-text"><div class="tool-name">Regex Tester</div><div class="tool-desc">Live match & group highlighting</div></div>
                             </a>
-                            <a class="tool-card" href="tools/timestamp.html" data-tags="unix epoch date time convert human">
+                            <a class="tool-card" href="tools/timestamp.html" data-tags="unix epoch date time convert human age calculator difference business days">
                                 <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">TS</div>
-                                <div class="tool-card-text"><div class="tool-name">Timestamp</div><div class="tool-desc">Unix ↔ human-readable</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Date &amp; Time Tools</div><div class="tool-desc">Timestamps, Age, Diff & Business Days</div></div>
                             </a>
                             <a class="tool-card" href="tools/httpstatus.html" data-tags="404 200 500 201 301 codes meaning reference">
                                 <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">HTTP</div>
@@ -407,6 +416,10 @@
                             <a class="tool-card" href="tools/unicode.html" data-tags="unicode code point escape utf8 hex binary convert">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">U+</div>
                                 <div class="tool-card-text"><div class="tool-name">Unicode Converter</div><div class="tool-desc">Text ↔ code points, escapes, HTML entities</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/stringescape.html" data-tags="escape unescape string js python sql regex csv shell">
+                                <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">\\n</div>
+                                <div class="tool-card-text"><div class="tool-name">String Escape</div><div class="tool-desc">Escape for JS, Python, SQL, regex &amp; more</div></div>
                             </a>
                         </div>
                     </div>
@@ -485,6 +498,10 @@
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">🖼</div>
                                 <div class="tool-card-text"><div class="tool-name">Image Palette</div><div class="tool-desc">Extract colors from image</div></div>
                             </a>
+                            <a class="tool-card" href="tools/colorblind.html" data-tags="color blindness simulate accessibility wcag vision">
+                                <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">👁</div>
+                                <div class="tool-card-text"><div class="tool-name">Color Blindness Sim</div><div class="tool-desc">Preview colors across 8 vision types</div></div>
+                            </a>
                         </div>
                     </div>
 
@@ -524,6 +541,34 @@
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">curl</div>
                                 <div class="tool-card-text"><div class="tool-name">curl Builder</div><div class="tool-desc">Build curl commands visually</div></div>
                             </a>
+                            <a class="tool-card" href="tools/apitester.html" data-tags="api http request test get post put delete fetch rest">
+                                <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">API</div>
+                                <div class="tool-card-text"><div class="tool-name">API Tester</div><div class="tool-desc">Send HTTP requests &amp; inspect responses</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/flexbox.html" data-tags="css flexbox flex layout builder visual direction wrap justify align">
+                                <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">⇔</div>
+                                <div class="tool-card-text"><div class="tool-name">Flexbox Generator</div><div class="tool-desc">Visual CSS flexbox layout builder</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/cssgrid.html" data-tags="css grid layout columns rows template visual builder">
+                                <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">▦</div>
+                                <div class="tool-card-text"><div class="tool-name">CSS Grid Generator</div><div class="tool-desc">Visual CSS grid layout builder</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/svgtools.html" data-tags="svg optimize minify jsx react convert clean compress">
+                                <div class="tool-icon" style="background:rgba(255,159,74,0.15);color:#ff9f4a">SVG</div>
+                                <div class="tool-card-text"><div class="tool-name">SVG Optimizer</div><div class="tool-desc">Optimize, minify & convert SVG to JSX</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/graphql.html" data-tags="graphql query mutation playground endpoint test api">
+                                <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">GQL</div>
+                                <div class="tool-card-text"><div class="tool-name">GraphQL Playground</div><div class="tool-desc">Send queries & mutations to any endpoint</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/websocket.html" data-tags="websocket ws wss real-time test client connect message">
+                                <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">WS</div>
+                                <div class="tool-card-text"><div class="tool-name">WebSocket Client</div><div class="tool-desc">Test real-time WebSocket connections</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/openapi.html" data-tags="openapi swagger api docs spec yaml json viewer render">
+                                <div class="tool-icon" style="background:rgba(169,127,245,0.15);color:#a97ff5">API</div>
+                                <div class="tool-card-text"><div class="tool-name">OpenAPI Viewer</div><div class="tool-desc">Render OpenAPI / Swagger specs</div></div>
+                            </a>
                         </div>
                     </div>
 
@@ -546,6 +591,10 @@
                             <a class="tool-card" href="tools/aspectratio.html" data-tags="resolution width height screen ratio 16:9">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">⬛</div>
                                 <div class="tool-card-text"><div class="tool-name">Aspect Ratio</div><div class="tool-desc">Dimensions from ratio</div></div>
+                            </a>
+                            <a class="tool-card" href="tools/pxrem.html" data-tags="px rem em pt vw vh css units convert font size responsive">
+                                <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">px</div>
+                                <div class="tool-card-text"><div class="tool-name">px ↔ rem</div><div class="tool-desc">CSS unit converter — px, rem, em, pt, vw</div></div>
                             </a>
                             <a class="tool-card" href="tools/jsoncsvconvert.html" data-tags="json csv table convert transform excel">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">⇄</div>

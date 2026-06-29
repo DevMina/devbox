@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="description" content="DevBox — Test HTTP APIs directly in the browser">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Tester — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <meta property="og:title" content="API Tester — DevBox">
+    <meta property="og:description" content="Test HTTP APIs directly in the browser">
+    <meta property="og:type" content="website">
+    <style>
+        .method-select { font-family: var(--mono); font-size: 0.82rem; font-weight: 600; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; color: var(--green); cursor: pointer; outline: none; }
+        .url-bar { display: flex; gap: 8px; align-items: stretch; margin-bottom: 12px; }
+        .url-bar input { flex: 1; }
+        .tab-row { display: flex; gap: 4px; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
+        .tab-btn { padding: 6px 14px; font-family: var(--mono); font-size: 0.72rem; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; color: var(--text-dim); margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; }
+        .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+        .kv-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
+        .kv-row input { flex: 1; }
+        .kv-del { background: none; border: none; color: var(--red); cursor: pointer; font-size: 1rem; padding: 0 4px; line-height: 1; }
+        .response-meta { display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+        .resp-badge { font-family: var(--mono); font-size: 0.72rem; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface2); }
+        .resp-badge.ok { color: var(--green); border-color: var(--green); }
+        .resp-badge.err { color: var(--red); border-color: var(--red); }
+        .resp-badge.warn { color: var(--yellow); border-color: var(--yellow); }
+        #responseBody { font-family: var(--mono); font-size: 0.78rem; white-space: pre-wrap; word-break: break-all; min-height: 120px; }
+        .history-item { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; margin-bottom: 6px; display: flex; gap: 10px; align-items: center; background: var(--surface); transition: background 0.1s; font-size: 0.78rem; }
+        .history-item:hover { background: var(--surface2); }
+        .hist-method { font-family: var(--mono); font-size: 0.68rem; font-weight: 600; color: var(--green); min-width: 40px; }
+        .hist-url { color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; font-family: var(--mono); }
+        #tab-params, #tab-headers, #tab-body { display: none; }
+        #tab-params.active, #tab-headers.active, #tab-body.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">API</div>
+                    <div>
+                        <div class="tool-title">API Tester</div>
+                        <div class="tool-desc">Send HTTP requests and inspect responses — no install needed</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-bar"><span class="panel-label">Request</span>
+                        <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+                    </div>
+                    <div style="padding:14px;">
+                        <div class="url-bar">
+                            <select class="method-select" id="method">
+                                <option>GET</option><option>POST</option><option>PUT</option>
+                                <option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option>
+                            </select>
+                            <input class="input" id="url" placeholder="https://jsonplaceholder.typicode.com/posts/1" style="font-family:var(--mono);font-size:0.82rem;">
+                            <button class="btn btn-green" onclick="sendRequest()" id="sendBtn">▶ Send</button>
+                        </div>
+
+                        <div class="tab-row">
+                            <button class="tab-btn active" onclick="switchTab('params',this)">Params</button>
+                            <button class="tab-btn" onclick="switchTab('headers',this)">Headers</button>
+                            <button class="tab-btn" onclick="switchTab('body',this)">Body</button>
+                        </div>
+
+                        <div id="tab-params" class="active">
+                            <div id="params-list"></div>
+                            <button class="btn btn-ghost" style="margin-top:4px" onclick="addKV('params-list','param')">+ Add param</button>
+                        </div>
+                        <div id="tab-headers">
+                            <div id="headers-list"></div>
+                            <button class="btn btn-ghost" style="margin-top:4px" onclick="addKV('headers-list','header')">+ Add header</button>
+                        </div>
+                        <div id="tab-body">
+                            <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;">
+                                <select class="method-select" id="bodyType" style="color:var(--text)" onchange="onBodyTypeChange()">
+                                    <option value="none">None</option>
+                                    <option value="json" selected>JSON</option>
+                                    <option value="form">Form (x-www-form-urlencoded)</option>
+                                    <option value="raw">Raw text</option>
+                                </select>
+                            </div>
+                            <textarea id="bodyInput" class="input" placeholder='{"key":"value"}' style="min-height:100px;font-family:var(--mono);font-size:0.78rem;width:100%;box-sizing:border-box;resize:vertical;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top:12px;" id="responsePanel">
+                    <div class="panel-bar">
+                        <span class="panel-label">Response</span>
+                        <div class="panel-actions" id="respMeta"></div>
+                    </div>
+                    <div style="padding:14px;">
+                        <div class="tab-row" id="respTabRow" style="display:none">
+                            <button class="tab-btn active" onclick="switchRespTab('body',this)">Body</button>
+                            <button class="tab-btn" onclick="switchRespTab('respheaders',this)">Headers</button>
+                        </div>
+                        <div id="resp-body-pane">
+                            <pre id="responseBody" style="color:var(--text-dim);"><span style="color:var(--text-dim)">— Response will appear here —</span></pre>
+                        </div>
+                        <div id="resp-respheaders-pane" style="display:none">
+                            <pre id="responseHeaders" style="font-family:var(--mono);font-size:0.76rem;white-space:pre-wrap;color:var(--text-dim);min-height:60px;"></pre>
+                        </div>
+                        <div style="margin-top:8px;display:flex;gap:8px;">
+                            <button class="btn btn-ghost" id="copyRespBtn" onclick="copyResp()" style="display:none">⎘ Copy</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top:12px;">
+                    <div class="panel-bar"><span class="panel-label">History</span><button class="btn btn-ghost" onclick="clearHistory()">Clear</button></div>
+                    <div style="padding:14px;" id="historyList"><span style="font-size:0.78rem;color:var(--text-dim)">No history yet.</span></div>
+                </div>
+            </div>
+            <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
+        </main>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+    let history = JSON.parse(localStorage.getItem('devbox_api_history') || '[]');
+    let lastResponseText = '';
+    let lastResponseHeadersText = '';
+
+    function switchTab(name, btn) {
+        document.querySelectorAll('#tab-params,#tab-headers,#tab-body').forEach(t=>t.classList.remove('active'));
+        document.getElementById('tab-'+name).classList.add('active');
+        document.querySelectorAll('.tab-row:first-of-type .tab-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    function switchRespTab(name, btn) {
+        document.getElementById('resp-body-pane').style.display = name==='body' ? '' : 'none';
+        document.getElementById('resp-respheaders-pane').style.display = name==='respheaders' ? '' : 'none';
+        document.querySelectorAll('#respTabRow .tab-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    function addKV(listId, type) {
+        const list = document.getElementById(listId);
+        const row = document.createElement('div');
+        row.className = 'kv-row';
+        row.innerHTML = `<input class="input" placeholder="Key" style="font-family:var(--mono);font-size:0.78rem"><input class="input" placeholder="Value" style="font-family:var(--mono);font-size:0.78rem"><button class="kv-del" onclick="this.parentElement.remove()">✕</button>`;
+        list.appendChild(row);
+    }
+
+    function getKVs(listId) {
+        const rows = document.querySelectorAll('#'+listId+' .kv-row');
+        const obj = {};
+        rows.forEach(r => {
+            const [k,v] = r.querySelectorAll('input');
+            if (k.value.trim()) obj[k.value.trim()] = v.value;
+        });
+        return obj;
+    }
+
+    function onBodyTypeChange() {
+        const bt = document.getElementById('bodyType').value;
+        const bi = document.getElementById('bodyInput');
+        bi.style.display = bt === 'none' ? 'none' : '';
+        if (bt === 'json') bi.placeholder = '{"key":"value"}';
+        else if (bt === 'form') bi.placeholder = 'key=value&key2=value2';
+        else bi.placeholder = 'Raw body text...';
+    }
+
+    async function sendRequest() {
+        const method = document.getElementById('method').value;
+        let url = document.getElementById('url').value.trim();
+        if (!url) { showToast('Enter a URL first'); return; }
+        if (!url.startsWith('http')) url = 'https://' + url;
+
+        const params = getKVs('params-list');
+        if (Object.keys(params).length) {
+            const qs = new URLSearchParams(params).toString();
+            url += (url.includes('?') ? '&' : '?') + qs;
+        }
+
+        const headers = getKVs('headers-list');
+        const bodyType = document.getElementById('bodyType').value;
+        const bodyVal = document.getElementById('bodyInput').value.trim();
+        let body = undefined;
+        if (method !== 'GET' && method !== 'HEAD' && bodyType !== 'none') {
+            if (bodyType === 'json') { headers['Content-Type'] = 'application/json'; body = bodyVal; }
+            else if (bodyType === 'form') { headers['Content-Type'] = 'application/x-www-form-urlencoded'; body = bodyVal; }
+            else { body = bodyVal; }
+        }
+
+        const btn = document.getElementById('sendBtn');
+        btn.textContent = '⏳ Sending…';
+        btn.disabled = true;
+        document.getElementById('responseBody').textContent = '';
+        document.getElementById('respMeta').innerHTML = '';
+
+        const t0 = Date.now();
+        try {
+            const res = await fetch(url, { method, headers, body });
+            const elapsed = Date.now() - t0;
+            const text = await res.text();
+            lastResponseText = text;
+            lastResponseHeadersText = [...res.headers.entries()].map(([k,v])=>`${k}: ${v}`).join('\n');
+
+            let pretty = text;
+            try { pretty = JSON.stringify(JSON.parse(text), null, 2); } catch(e) {}
+
+            const rb = document.getElementById('responseBody');
+            rb.textContent = pretty || '(empty body)';
+            rb.style.color = res.ok ? 'var(--green)' : 'var(--red)';
+
+            document.getElementById('responseHeaders').textContent = lastResponseHeadersText;
+
+            const cls = res.ok ? 'ok' : (res.status >= 400 ? 'err' : 'warn');
+            document.getElementById('respMeta').innerHTML = `
+                <span class="resp-badge ${cls}">${res.status} ${res.statusText}</span>
+                <span class="resp-badge">${elapsed}ms</span>
+                <span class="resp-badge">${(new TextEncoder().encode(text).length / 1024).toFixed(1)} KB</span>`;
+            document.getElementById('respTabRow').style.display = '';
+            document.getElementById('copyRespBtn').style.display = '';
+
+            addToHistory(method, url, res.status);
+        } catch(e) {
+            document.getElementById('responseBody').textContent = '// Error: ' + e.message + '\n\nNote: Browser CORS policy may block some requests.';
+            document.getElementById('responseBody').style.color = 'var(--red)';
+            document.getElementById('respMeta').innerHTML = '<span class="resp-badge err">Network Error</span>';
+        }
+        btn.textContent = '▶ Send';
+        btn.disabled = false;
+    }
+
+    function copyResp() { copy(lastResponseText); }
+
+    function addToHistory(method, url, status) {
+        history.unshift({ method, url, status, ts: Date.now() });
+        if (history.length > 20) history = history.slice(0, 20);
+        localStorage.setItem('devbox_api_history', JSON.stringify(history));
+        renderHistory();
+    }
+
+    function clearHistory() { history = []; localStorage.removeItem('devbox_api_history'); renderHistory(); }
+
+    function renderHistory() {
+        const el = document.getElementById('historyList');
+        if (!history.length) { el.innerHTML = '<span style="font-size:0.78rem;color:var(--text-dim)">No history yet.</span>'; return; }
+        el.innerHTML = history.map((h,i) => `<div class="history-item" onclick="loadHistory(${i})">
+            <span class="hist-method">${h.method}</span>
+            <span class="hist-url">${h.url}</span>
+            <span class="resp-badge ${h.status < 400 ? 'ok' : 'err'}" style="font-size:0.65rem;padding:2px 6px;">${h.status}</span>
+        </div>`).join('');
+    }
+
+    function loadHistory(i) {
+        const h = history[i];
+        document.getElementById('method').value = h.method;
+        document.getElementById('url').value = h.url;
+    }
+
+    function clearAll() {
+        document.getElementById('url').value = '';
+        document.getElementById('bodyInput').value = '';
+        document.getElementById('params-list').innerHTML = '';
+        document.getElementById('headers-list').innerHTML = '';
+        document.getElementById('responseBody').innerHTML = '<span style="color:var(--text-dim)">— Response will appear here —</span>';
+        document.getElementById('respMeta').innerHTML = '';
+        document.getElementById('respTabRow').style.display = 'none';
+        document.getElementById('copyRespBtn').style.display = 'none';
+        lastResponseText = '';
+    }
+
+    renderHistory();
+    </script>
+</body>
+</html>
