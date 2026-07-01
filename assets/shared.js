@@ -425,13 +425,31 @@ function initDropZone(zoneEl, accept, onFile) {
             const inp = document.createElement('input');
             inp.type = 'file';
             if (accept.length) inp.accept = accept.join(',');
+            // Some browsers (Firefox, Safari) require a file input to be attached
+            // to the document before .click() will open the native picker — an
+            // input created and clicked without ever being inserted can fail
+            // silently there, even though Chrome tolerates it. Attach it
+            // off-screen, then remove it once the selection is handled.
+            inp.style.position = 'fixed';
+            inp.style.top = '-1000px';
+            inp.style.left = '-1000px';
+            document.body.appendChild(inp);
             inp.onchange = ev => {
                 const file = ev.target.files[0];
+                inp.remove();
                 if (!file) return;
                 const reader = new FileReader();
                 reader.onload = e2 => onFile(e2.target.result, file.name);
                 reader.readAsText(file);
             };
+            // If the user cancels the dialog, 'change' never fires, so the input
+            // would otherwise sit in the DOM forever. The window reliably regains
+            // focus when the native picker closes either way, so use that as the
+            // signal to clean up if no file ended up being selected.
+            window.addEventListener('focus', function onFocus() {
+                window.removeEventListener('focus', onFocus);
+                setTimeout(() => { if (inp.isConnected && !inp.files.length) inp.remove(); }, 300);
+            });
             inp.click();
         });
     }

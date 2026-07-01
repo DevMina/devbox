@@ -2082,20 +2082,24 @@ input[type="checkbox"] {
    SHAREABLE URL BUTTON
    ════════════════════════════════ */
 .share-btn {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-    color: var(--text-dim);
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    padding: 3px 10px;
-    cursor: pointer;
-    transition: all var(--transition);
     display: inline-flex;
     align-items: center;
     gap: 5px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--r-sm);
+    color: var(--text-dim);
+    font-family: var(--font);
+    font-size: 0.74rem;
+    font-weight: 600;
+    padding: 5px 11px;
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+    user-select: none;
 }
-.share-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.share-btn:active { transform: scale(0.97); }
+.share-btn:hover { color: var(--cyan); border-color: var(--cyan); background: var(--surface2); }
 
 /* ════════════════════════════════
    SETTINGS PANEL (Export/Import)
