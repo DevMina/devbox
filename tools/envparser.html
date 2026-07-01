@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Parse, validate and convert .env files">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>.env Parser — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <meta property="og:title" content=".env Parser — DevBox">
     <meta property="og:description" content="Parse, validate and convert .env files">
     <meta property="og:type" content="website">
@@ -49,6 +55,7 @@
                         <div class="panel-actions">
                             <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
                             <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+                            <button class="share-btn" onclick="saveToURL({q:'envInput'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
                         </div>
                     </div>
                     <textarea id="envInput" placeholder="# Paste your .env content here&#10;DATABASE_URL=postgres://user:pass@localhost/db&#10;API_KEY=&quot;my-secret-key&quot;&#10;DEBUG=true" style="min-height:160px;font-family:var(--mono);font-size:0.82rem;" oninput="parseEnv()"></textarea>
@@ -127,13 +134,26 @@ MAINTENANCE_MODE=false
             const match = line.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)$/);
             if (!match) { results.push({ type: 'error', raw: line, line: i+1 }); return; }
             let [, key, val] = match;
-            // Strip inline comments (not inside quotes)
-            const inlineComment = val.match(/^([^#"']*|"[^"]*"|'[^']*')*?(#.*)$/);
-            let note = '';
-            // Unquote
+
+            // Unquote — handle quoted values first, then strip trailing inline comments from bare values
             let quotedWith = null;
-            if (/^".*"$/.test(val)) { val = val.slice(1,-1).replace(/\\"/g,'"'); quotedWith = '"'; }
-            else if (/^'.*'$/.test(val)) { val = val.slice(1,-1); quotedWith = "'"; }
+            if (/^"/.test(val)) {
+                // Double-quoted: find closing quote, ignore anything after
+                const end = val.indexOf('"', 1);
+                if (end !== -1) { val = val.slice(1, end).replace(/\\"/g, '"'); quotedWith = '"'; }
+                else { val = val.slice(1); quotedWith = '"'; } // unclosed quote — take the rest
+            } else if (/^'/.test(val)) {
+                // Single-quoted: no escape processing
+                const end = val.indexOf("'", 1);
+                if (end !== -1) { val = val.slice(1, end); quotedWith = "'"; }
+                else { val = val.slice(1); quotedWith = "'"; }
+            } else {
+                // Bare value: strip trailing inline comment (first unescaped #)
+                const hashIdx = val.indexOf('#');
+                if (hashIdx !== -1) val = val.slice(0, hashIdx);
+                val = val.trim();
+            }
+
             const warnings = [];
             if (seen.has(key)) warnings.push('duplicate');
             seen.add(key);
@@ -231,9 +251,12 @@ MAINTENANCE_MODE=false
         document.getElementById('stats').style.display = 'none';
         document.getElementById('tablePanel').style.display = 'none';
         document.getElementById('outputPanel').style.display = 'none';
+        history.replaceState(null, '', location.pathname);
     }
 
     function loadSample() { document.getElementById('envInput').value = SAMPLE; parseEnv(); }
+    function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+    document.addEventListener('DOMContentLoaded', () => loadFromURL({ q: 'envInput' }, parseEnv));
     </script>
 </body>
 </html>

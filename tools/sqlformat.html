@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Beautify and minify SQL queries">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SQL Formatter — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <meta property="og:title" content="SQL Formatter — DevBox">
     <meta property="og:description" content="Beautify and minify SQL queries">
     <meta property="og:type" content="website">
@@ -35,9 +41,11 @@
                             <button class="btn btn-orange" onclick="sqlFormat()">⇄ Format</button>
                             <button class="btn btn-ghost" onclick="sqlMinify()">⇉ Minify</button>
                             <button class="btn btn-ghost" onclick="sqlSample()">Sample</button>
-                            <button class="btn btn-ghost" onclick="document.getElementById('sqlInput').value='';document.getElementById('sqlOutput').innerHTML=''">Clear</button>
+                            <button class="btn btn-ghost" onclick="document.getElementById('sqlInput').value='';document.getElementById('sqlOutput').innerHTML='';history.replaceState(null,'',location.pathname)">Clear</button>
+                            <button class="share-btn" onclick="saveToURL({q:'sqlInput'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
                         </div>
                     </div>
+                    <div class="drop-zone-global" id="sqlDropZone" data-clickable>↑ Drop .sql file or click to upload</div>
                     <textarea id="sqlInput" style="min-height:160px" placeholder="SELECT * FROM users WHERE active=1 ORDER BY created_at DESC;"></textarea>
                 </div>
                 <div class="panel">
@@ -173,6 +181,14 @@ HAVING order_count > 0
 ORDER BY order_count DESC
 LIMIT 50;`;
         }
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        document.addEventListener('DOMContentLoaded', () => {
+            initDropZone('#sqlDropZone', ['.sql','text/sql'], (text) => {
+                document.getElementById('sqlInput').value = text;
+                sqlFormat();
+            });
+            loadFromURL({ q: 'sqlInput' }, sqlFormat);
+        });
     </script>
 </body>
 </html>

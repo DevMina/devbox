@@ -2,13 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>curl Builder — DevBox</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <style>
         .method-tabs {
             display: flex;
@@ -192,6 +198,9 @@
                 accent-color: var(--purple)
             }
     </style>
+    <meta property="og:title" content="curl Builder — DevBox">
+    <meta property="og:description" content="Build and copy curl commands from a visual HTTP request form">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -216,8 +225,9 @@
 
                 <!-- URL -->
                 <div class="field">
-                    <label>URL</label>
+                    <label>URL <button class="share-btn" style="float:right" onclick="saveToURL({q:'urlInput',m:'methodHidden'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share URL</button></label>
                     <input id="urlInput" type="text" placeholder="https://api.example.com/endpoint" oninput="build()">
+                    <input type="hidden" id="methodHidden">
                 </div>
 
                 <!-- Query Params -->
@@ -317,6 +327,7 @@
                 if (b.textContent === m) { b.classList.add('active', m); }
             });
             document.getElementById('bodyPanel').style.display = ['GET', 'HEAD', 'OPTIONS'].includes(m) ? 'none' : '';
+            const mh = document.getElementById('methodHidden'); if (mh) mh.value = m;
             build();
         }
 
@@ -437,11 +448,17 @@
         }
 
         function copy() { const t = document.getElementById('output').textContent; if (t) navigator.clipboard.writeText(t).then(() => showToast('Copied!')); }
-        function reset() { method = 'GET'; document.getElementById('urlInput').value = ''; document.getElementById('queryRows').innerHTML = ''; document.getElementById('headerRows').innerHTML = ''; document.getElementById('bodyInput').value = ''; document.getElementById('authType').value = ''; document.getElementById('authFields').innerHTML = ''; queryCount = 0; headerCount = 0; setMethod('GET'); }
+        function reset() { method = 'GET'; document.getElementById('urlInput').value = ''; document.getElementById('queryRows').innerHTML = ''; document.getElementById('headerRows').innerHTML = ''; document.getElementById('bodyInput').value = ''; document.getElementById('authType').value = ''; document.getElementById('authFields').innerHTML = ''; queryCount = 0; headerCount = 0; setMethod('GET'); history.replaceState(null,'',location.pathname); }
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
 
         // Init
-        setMethod('GET'); build();
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(location.search);
+            const q = params.get('q'), m = params.get('m');
+            setMethod(m && ['GET','POST','PUT','PATCH','DELETE','HEAD','OPTIONS'].includes(m) ? m : 'GET');
+            if (q) document.getElementById('urlInput').value = q;
+            build();
+        });
     </script>
 </body>
 </html>

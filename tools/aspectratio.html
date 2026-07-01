@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Calculate image dimensions from aspect ratios">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aspect Ratio Calculator — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <meta property="og:title" content="Aspect Ratio Calculator — DevBox">
     <meta property="og:description" content="Calculate image dimensions from aspect ratios">
     <meta property="og:type" content="website">
@@ -30,7 +36,9 @@
 
                 <div class="two-col">
                     <div class="panel">
-                        <div class="panel-bar"><span class="panel-label">Calculate dimensions</span></div>
+                        <div class="panel-bar"><span class="panel-label">Calculate dimensions</span>
+                            <div class="panel-actions"><button class="share-btn" onclick="saveToURL({w:'arW',h:'arH',rw:'arRW',rh:'arRH'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button></div>
+                        </div>
                         <div class="input-row"><label>Width</label><input type="number" id="arW" placeholder="1920" oninput="arCalc('w')"></div>
                         <div class="input-row"><label>Height</label><input type="number" id="arH" placeholder="1080" oninput="arCalc('h')"></div>
                         <div class="input-row"><label>Ratio W</label><input type="number" id="arRW" placeholder="16" oninput="arCalc('r')"></div>
@@ -66,7 +74,12 @@
         function arCalc(changed) { const w = parseFloat(document.getElementById('arW').value), h = parseFloat(document.getElementById('arH').value), rw = parseFloat(document.getElementById('arRW').value), rh = parseFloat(document.getElementById('arRH').value); let resW = w, resH = h; if (changed === 'w' && w && rw && rh) { resH = Math.round(w / rw * rh); document.getElementById('arH').value = resH; } else if (changed === 'h' && h && rw && rh) { resW = Math.round(h / rh * rw); document.getElementById('arW').value = resW; } else if (changed === 'r' && rw && rh && w) { resH = Math.round(w / rw * rh); document.getElementById('arH').value = resH; } if (resW && resH) { const g = gcd(Math.round(resW), Math.round(resH)), ratio = `${Math.round(resW) / g}:${Math.round(resH) / g}`, dec = (resW / resH).toFixed(4); document.getElementById('arResult').innerHTML = `<div class="hash-row"><div class="hash-algo">Ratio</div><div class="hash-val" style="color:var(--cyan)">${ratio} (${dec}:1)</div></div><div class="hash-row"><div class="hash-algo">Width</div><div class="hash-val">${Math.round(resW)}px</div></div><div class="hash-row"><div class="hash-algo">Height</div><div class="hash-val">${Math.round(resH)}px</div></div><div class="hash-row"><div class="hash-algo">Megapixels</div><div class="hash-val" style="color:var(--text-dim)">${(resW * resH / 1e6).toFixed(2)} MP</div></div>`; const scale = Math.min(300 / resW, 180 / resH), vw = Math.round(resW * scale), vh = Math.round(resH * scale), vis = document.getElementById('arVisual'); vis.style.width = vw + 'px'; vis.style.height = vh + 'px'; document.getElementById('arVisualLabel').textContent = ratio; } }
         function arLoad(w, h) { document.getElementById('arW').value = w; document.getElementById('arH').value = h; const g = gcd(parseInt(w), parseInt(h)); document.getElementById('arRW').value = parseInt(w) / g; document.getElementById('arRH').value = parseInt(h) / g; arCalc('w'); }
         function initPresets() { const c = document.getElementById('arPresets'); AR_PRESETS.forEach(([l, w, h]) => { const btn = document.createElement('button'); btn.className = 'btn btn-ghost'; btn.style.fontSize = '0.72rem'; btn.textContent = `${l} (${w}×${h})`; btn.onclick = () => arLoad(w, h); c.appendChild(btn); }); }
-        document.addEventListener('DOMContentLoaded', () => { initPresets(); arLoad('1920', '1080'); });
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        document.addEventListener('DOMContentLoaded', () => {
+            initPresets();
+            const found = loadFromURL({ w: 'arW', h: 'arH', rw: 'arRW', rh: 'arRH' }, () => arCalc('w'));
+            if (!found) arLoad('1920', '1080');
+        });
     </script>
 </body>
 </html>

@@ -1,0 +1,31 @@
+{
+  "name": "DevBox",
+  "short_name": "DevBox",
+  "description": "A fast toolkit for developers",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0A0C10",
+  "theme_color": "#0A0C10",
+  "orientation": "any",
+  "categories": ["developer", "utilities", "productivity"],
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    { "name": "JSON Formatter", "url": "./tools/json.html", "description": "Format and validate JSON" },
+    { "name": "Base64 Encoder", "url": "./tools/base64.html", "description": "Encode and decode Base64" },
+    { "name": "Regex Tester", "url": "./tools/regex.html", "description": "Test regular expressions" },
+    { "name": "UUID Generator", "url": "./tools/uuid.html", "description": "Generate UUIDs" }
+  ]
+}

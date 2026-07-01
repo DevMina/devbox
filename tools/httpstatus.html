@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Quick reference for all HTTP status codes">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTTP Status Codes — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <meta property="og:title" content="HTTP Status Codes — DevBox">
     <meta property="og:description" content="Quick reference for all HTTP status codes">
     <meta property="og:type" content="website">
@@ -29,7 +35,9 @@
                 </div>
 
                 <div class="panel" style="margin-bottom:14px">
-                    <div class="panel-bar"><span class="panel-label">Search</span></div>
+                    <div class="panel-bar"><span class="panel-label">Search</span>
+                        <div class="panel-actions"><button class="share-btn" onclick="saveToURL({q:'httpSearch'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button></div>
+                    </div>
                     <div class="input-row" style="border-bottom:none">
                         <input type="text" id="httpSearch" placeholder="Search by code or description… e.g. 404, redirect" oninput="renderHttp()">
                     </div>
@@ -50,7 +58,8 @@
         const HTTP_COLORS = { info: 'var(--blue)', ok: 'var(--green)', redirect: 'var(--yellow)', client: 'var(--orange)', server: 'var(--red)' };
         const HTTP_GROUPS = { info: '1xx Informational', ok: '2xx Success', redirect: '3xx Redirection', client: '4xx Client Errors', server: '5xx Server Errors' };
         function renderHttp() { const q = document.getElementById('httpSearch').value.toLowerCase(); const filtered = q ? HTTP_CODES.filter(([code, name, desc]) => code.toString().includes(q) || name.toLowerCase().includes(q) || desc.toLowerCase().includes(q)) : HTTP_CODES; const byType = {}; filtered.forEach(c => { if (!byType[c[3]]) byType[c[3]] = []; byType[c[3]].push(c); }); let html = ''; Object.entries(HTTP_GROUPS).forEach(([type, label]) => { if (!byType[type]) return; html += `<div style="margin-bottom:14px"><div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${HTTP_COLORS[type]};padding:8px 0 6px">${label}</div><div class="panel" style="margin:0"><div class="hash-grid">`; byType[type].forEach(([code, name, desc]) => { html += `<div class="hash-row"><div style="font-family:var(--mono);font-weight:700;font-size:1rem;color:${HTTP_COLORS[type]};min-width:54px;flex-shrink:0">${code}</div><div style="flex:1;min-width:0"><div style="font-family:var(--mono);font-size:0.82rem;font-weight:600;color:var(--text-bright)">${name}</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;line-height:1.4">${desc}</div></div><button class="uuid-copy" onclick="copy('${code} ${name}')">⎘</button></div>`; }); html += '</div></div></div>'; }); document.getElementById('httpStatusList').innerHTML = html || '<div style="padding:20px;color:var(--text-dim);text-align:center">No results found.</div>'; }
-        document.addEventListener('DOMContentLoaded', renderHttp);
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        document.addEventListener('DOMContentLoaded', () => loadFromURL({ q: 'httpSearch' }, renderHttp) || renderHttp());
     </script>
 </body>
 </html>

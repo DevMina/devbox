@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Compare two texts and highlight differences">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diff Checker — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <style>
         /* ── View toggle ── */
         .view-tabs {
@@ -241,6 +247,9 @@
             font-size: 0.82rem;
         }
     </style>
+    <meta property="og:title" content="Diff Checker — DevBox">
+    <meta property="og:description" content="Compare two texts side by side and highlight every difference">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -261,8 +270,12 @@
                     <div class="panel" style="margin:0">
                         <div class="panel-bar">
                             <span class="panel-label">Original</span>
-                            <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+                            <div class="panel-actions">
+                                <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+                                <button class="share-btn" onclick="saveToURL({a:'diffA',b:'diffB'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
+                            </div>
                         </div>
+                        <div class="drop-zone-global" id="diffDropA" data-clickable>↑ Drop file (original)</div>
                         <textarea id="diffA" placeholder="Paste original text here…" oninput="runDiff()" style="min-height:200px"></textarea>
                     </div>
                     <div class="panel" style="margin:0">
@@ -270,6 +283,7 @@
                             <span class="panel-label">Modified</span>
                             <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
                         </div>
+                        <div class="drop-zone-global" id="diffDropB" data-clickable>↑ Drop file (modified)</div>
                         <textarea id="diffB" placeholder="Paste modified text here…" oninput="runDiff()" style="min-height:200px"></textarea>
                     </div>
                 </div>
@@ -335,10 +349,26 @@
         /* ══════════════════════════════════════
            Word-level inline diff for changed lines
         ══════════════════════════════════════ */
+        // Word-level diff is O(m*n) in token count. MAX_LINES above guards against
+        // too many *lines*, but a single very long line (minified CSS/JS, a huge
+        // CSV row, a long log line) can still have thousands of tokens and blow up
+        // the same way — e.g. two 6,000-token lines take ~7s and freeze the tab.
+        // Cap it and fall back to a plain line-level replacement beyond this size.
+        const MAX_WORD_DIFF_TOKENS = 1500;
         function wordDiff(aStr, bStr) {
             const tok = s => s.match(/\S+|\s+/g) || [];
             const aw = tok(aStr), bw = tok(bStr);
             const m = aw.length, n = bw.length;
+
+            if (m > MAX_WORD_DIFF_TOKENS || n > MAX_WORD_DIFF_TOKENS) {
+                // Too large to diff at word level without hanging — treat the whole
+                // line as one replaced block instead (still correct, just less granular).
+                const ops = [];
+                if (m) ops.push({ type: 'del', v: aStr });
+                if (n) ops.push({ type: 'ins', v: bStr });
+                return ops;
+            }
+
             const dp = [];
             for (let i = 0; i <= m; i++) { dp[i] = new Int32Array(n + 1); }
             for (let i = 1; i <= m; i++)
@@ -612,6 +642,19 @@
 
             const aLines = aVal.split('\n');
             const bLines = bVal.split('\n');
+
+            // Guard against the O(n*m) diff algorithm hanging the tab on very large
+            // pastes — e.g. two 10,000-line files take ~3s; beyond this it gets
+            // disproportionately worse since the cost grows quadratically.
+            const MAX_LINES = 6000;
+            if (aLines.length > MAX_LINES || bLines.length > MAX_LINES) {
+                document.getElementById('diffOutput').innerHTML =
+                    `<div class="diff-empty">Input too large to diff in-browser (${aLines.length.toLocaleString()} vs ${bLines.length.toLocaleString()} lines).<br>This tool supports up to ${MAX_LINES.toLocaleString()} lines per side to avoid freezing the page. Try comparing smaller sections.</div>`;
+                document.getElementById('diffStats').style.display = 'none';
+                lastOps = [];
+                return;
+            }
+
             const ops = lineDiff(aLines, bLines);
 
             // Stats
@@ -664,6 +707,11 @@ users.forEach(u => greet(u));
 
             runDiff();
         }
+        document.addEventListener('DOMContentLoaded', () => {
+            initDropZone('#diffDropA', [], (text) => { document.getElementById('diffA').value = text; runDiff(); });
+            initDropZone('#diffDropB', [], (text) => { document.getElementById('diffB').value = text; runDiff(); });
+            loadFromURL({ a: 'diffA', b: 'diffB' }, runDiff);
+        });
     </script>
 </body>
 </html>

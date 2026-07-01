@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Minify and beautify CSS with size savings">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSS Minifier — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <meta property="og:title" content="CSS Minifier — DevBox">
     <meta property="og:description" content="Minify and beautify CSS with size savings">
     <meta property="og:type" content="website">
@@ -35,9 +41,11 @@
                             <button class="btn btn-pink" onclick="cssMinify()">⇉ Minify</button>
                             <button class="btn btn-ghost" onclick="cssBeautify()">⇄ Beautify</button>
                             <button class="btn btn-ghost" onclick="cssSample()">Sample</button>
-                            <button class="btn btn-ghost" onclick="document.getElementById('cssInput').value='';document.getElementById('cssOutput').textContent='';document.getElementById('cssSavings').textContent=''">Clear</button>
+                            <button class="btn btn-ghost" onclick="document.getElementById('cssInput').value='';document.getElementById('cssOutput').textContent='';document.getElementById('cssSavings').textContent='';history.replaceState(null,'',location.pathname)">Clear</button>
+                            <button class="share-btn" onclick="saveToURL({q:'cssInput'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
                         </div>
                     </div>
+                    <div class="drop-zone-global" id="cssDropZone" data-clickable>↑ Drop .css file or click to upload</div>
                     <textarea id="cssInput" style="min-height:180px" placeholder=".container { display: flex; gap: 16px; padding: 24px; }"></textarea>
                 </div>
                 <div id="cssSavings" style="margin-bottom:10px;"></div>
@@ -114,6 +122,14 @@
                   margin: 0 0 8px 0;
 }`;
         }
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        document.addEventListener('DOMContentLoaded', () => {
+            initDropZone('#cssDropZone', ['.css','text/css'], (text) => {
+                document.getElementById('cssInput').value = text;
+                cssMinify();
+            });
+            loadFromURL({ q: 'cssInput' }, cssMinify);
+        });
     </script>
 </body>
 </html>

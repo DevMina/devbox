@@ -4,7 +4,7 @@
 
     function applyTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem(KEY, theme);
+        try { localStorage.setItem(KEY, theme); } catch (e) { }
         // Update any toggle buttons on the page
         document.querySelectorAll('.theme-toggle').forEach(btn => {
             const icon = btn.querySelector('.theme-toggle-icon');
@@ -25,8 +25,10 @@
     }
 
     // Apply saved theme immediately (before paint)
-    const saved = localStorage.getItem(KEY) || 'dark';
-    applyTheme(saved);
+    let saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) { }
+    const fallback = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+    applyTheme(saved || fallback);
 
     // Expose globally
     window.toggleTheme = toggleTheme;

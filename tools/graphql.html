@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="DevBox — GraphQL query playground">
     <title>GraphQL Playground — DevBox</title>
@@ -10,6 +10,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <style>
         .gql-layout { display: flex; flex-direction: column; gap: 12px; }
         .endpoint-row { display: flex; gap: 8px; align-items: center; }
@@ -40,6 +46,9 @@
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
     </style>
+    <meta property="og:title" content="GraphQL Playground — DevBox">
+    <meta property="og:description" content="Send GraphQL queries and mutations to any endpoint">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -54,7 +63,12 @@
                 <div class="gql-layout">
                     <!-- Endpoint -->
                     <div class="panel" style="margin:0">
-                        <div class="panel-bar"><span class="panel-label">Endpoint</span><div class="status-bar"><div class="status-dot" id="status-dot"></div><span id="status-text">Ready</span></div></div>
+                        <div class="panel-bar"><span class="panel-label">Endpoint</span>
+                            <div style="display:flex;align-items:center;gap:10px">
+                                <button class="share-btn" onclick="gqlShare()">⎘ Share</button>
+                                <div class="status-bar"><div class="status-dot" id="status-dot"></div><span id="status-text">Ready</span></div>
+                            </div>
+                        </div>
                         <div class="endpoint-row">
                             <input type="text" id="endpoint" placeholder="https://api.example.com/graphql" value="https://countries.trevorblades.com/">
                             <button class="btn btn-pink" onclick="runQuery()">▶ Run</button>
@@ -201,9 +215,42 @@
             document.getElementById('gql-vars').value = `{\n  "code": "EG"\n}`;
         }
 
+        window._toolShortcuts = [
+            { desc: 'Run query', keys: ['Ctrl', 'Enter'] },
+            { desc: 'Load sample', keys: ['Ctrl', 'Shift', 'L'] },
+            { desc: 'Clear response', keys: ['Ctrl', 'Shift', 'X'] },
+        ];
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
-
         renderHeaders();
+        function gqlShare() {
+            const state = {
+                endpoint: document.getElementById('endpoint').value,
+                query: document.getElementById('gql-query').value,
+                vars: document.getElementById('gql-vars').value
+            };
+            history.replaceState(null, '', '?gql=' + encodeURIComponent(JSON.stringify(state)));
+            navigator.clipboard.writeText(location.href).then(() => showToast('🔗 Link copied!'));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(location.search);
+            const g = params.get('gql');
+            if (g) {
+                try {
+                    const state = JSON.parse(g);
+                    if (state.endpoint) document.getElementById('endpoint').value = state.endpoint;
+                    if (state.query) document.getElementById('gql-query').value = state.query;
+                    if (state.vars) document.getElementById('gql-vars').value = state.vars;
+                } catch (e) { /* ignore malformed shared state */ }
+            }
+            document.addEventListener('keydown', e => {
+                if (e.ctrlKey || e.metaKey) {
+                    if (e.key === 'Enter') { e.preventDefault(); runQuery(); }
+                    if (e.shiftKey && e.key === 'L') { e.preventDefault(); loadSample(); }
+                    if (e.shiftKey && e.key === 'X') { e.preventDefault(); clearResponse(); }
+                }
+            });
+        });
     </script>
 </body>
 </html>

@@ -10,18 +10,27 @@
         gtag('config', 'G-DP87QPTMND');
     </script>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
-    <meta name="description" content="DevBox — 50 essential developer utilities. JSON, Base64, UUID, Regex, JWT, Color, SQL, CSS, Markdown and more. Works offline, no login required.">
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
+    <meta name="description" content="DevBox — 78 essential developer utilities. JSON, Base64, UUID, Regex, JWT, Color, SQL, CSS, GraphQL, WebSocket, OpenAPI and more. No login required.">
     <meta property="og:title" content="DevBox — Developer Toolbox">
-    <meta property="og:description" content="50 developer tools in one place. Works offline, no backend, no tracking.">
+    <meta property="og:description" content="78 developer tools in one place. No backend required.">
     <meta property="og:type" content="website">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevToolStack — Developer Toolbox</title>
+    <title>DevBox — Developer Toolbox</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="assets/style.css">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0A0C10">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DevBox">
     <style>
         .home-content {
             max-width: 960px;
@@ -273,13 +282,17 @@
                 <div class="home-content">
 
                     <div class="hero">
-                        <div class="hero-title">Dev<span>Box</span></div>
-                        <div class="hero-sub">Essential developer utilities — no backend, no login, no tracking. Everything runs locally in your browser.</div>
-                        <div class="hero-badges">
-                            <div class="badge"><div class="dot"></div>78 tools</div>
-                            <div class="badge"><div class="dot"></div>Works locally</div>
-                            <div class="badge"><div class="dot"></div>No data sent anywhere</div>
-                            <div class="badge"><div class="dot"></div>Zero runtime dependencies*</div>
+                        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+                            <div>
+                                <div class="hero-title">Dev<span>Box</span></div>
+                                <div class="hero-sub">Essential developer utilities — no backend, no login required.</div>
+                                <div class="hero-badges">
+                                    <div class="badge"><div class="dot"></div>70+ tools</div>
+                                    <div class="badge"><div class="dot"></div>Fast, focused, and always in your corner.</div>
+                                    <div class="badge"><div class="dot"></div>The toolbox every dev bookmarks and never deletes.</div>
+                                </div>
+                            </div>
+                            <button onclick="openSettingsPanel()" title="Settings & data" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text-dim);padding:7px 12px;cursor:pointer;font-size:0.78rem;font-family:var(--mono);white-space:nowrap;transition:all var(--transition);flex-shrink:0;margin-top:4px" onmouseover="this.style.borderColor='var(--border2)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">⚙ Settings</button>
                         </div>
                     </div>
 
@@ -314,38 +327,37 @@
                         No tools match your search.
                     </div>
 
-                    <!-- FORMAT -->
+                                        <!-- FORMAT -->
                     <div class="section" data-section="Format">
                         <div class="section-header">Format <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/json.html" data-tags="format pretty print validate minify beautify">
+<a class="tool-card" href="tools/json.html" data-tags="format pretty print validate minify beautify">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">{}</div>
                                 <div class="tool-card-text"><div class="tool-name">JSON Formatter</div><div class="tool-desc">Pretty-print, minify & validate JSON</div></div>
                             </a>
-                            <a class="tool-card" href="tools/jsonschema.html" data-tags="json schema generate infer draft validate structure openapi">
+<a class="tool-card" href="tools/jsonschema.html" data-tags="json schema generate infer draft validate structure openapi">
                                 <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">{S}</div>
                                 <div class="tool-card-text"><div class="tool-name">JSON Schema Generator</div><div class="tool-desc">Infer JSON Schema from a sample</div></div>
                             </a>
-                            <a class="tool-card" href="tools/xml.html" data-tags="xml format beautify minify validate indent">
+<a class="tool-card" href="tools/xml.html" data-tags="xml format beautify minify validate indent">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">XML</div>
                                 <div class="tool-card-text"><div class="tool-name">XML Formatter</div><div class="tool-desc">Beautify, minify & validate XML</div></div>
                             </a>
-                            <a class="tool-card" href="tools/sqlformat.html" data-tags="sql format beautify minify query indent">
+<a class="tool-card" href="tools/sqlformat.html" data-tags="sql format beautify minify query indent">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">SQL</div>
                                 <div class="tool-card-text"><div class="tool-name">SQL Formatter</div><div class="tool-desc">Beautify & minify SQL queries</div></div>
                             </a>
-                            <a class="tool-card" href="tools/cssminify.html" data-tags="css minify beautify compress format">
+<a class="tool-card" href="tools/cssminify.html" data-tags="css minify beautify compress format">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">CSS</div>
                                 <div class="tool-card-text"><div class="tool-name">CSS Minifier</div><div class="tool-desc">Minify & beautify CSS</div></div>
                             </a>
-
-                            <a class="tool-card" href="tools/envparser.html" data-tags="env environment variables parse validate dotenv config">
-                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">.env</div>
-                                <div class="tool-card-text"><div class="tool-name">.env Parser</div><div class="tool-desc">Parse, validate & convert .env files</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/htmlbeautify.html" data-tags="html format indent beautify tidy">
+<a class="tool-card" href="tools/htmlbeautify.html" data-tags="html format indent beautify tidy">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">&lt;/&gt;</div>
                                 <div class="tool-card-text"><div class="tool-name">HTML Beautifier</div><div class="tool-desc">Format & indent HTML</div></div>
+                            </a>
+<a class="tool-card" href="tools/envparser.html" data-tags="env environment variables parse validate dotenv config">
+                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">.env</div>
+                                <div class="tool-card-text"><div class="tool-name">.env Parser</div><div class="tool-desc">Parse, validate & convert .env files</div></div>
                             </a>
                         </div>
                     </div>
@@ -354,41 +366,33 @@
                     <div class="section" data-section="Inspect">
                         <div class="section-header">Inspect <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/diff.html" data-tags="compare diff text lines changes unified">
+<a class="tool-card" href="tools/diff.html" data-tags="compare diff text lines changes unified">
                                 <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">⇄</div>
                                 <div class="tool-card-text"><div class="tool-name">Diff Checker</div><div class="tool-desc">Compare two texts line by line</div></div>
                             </a>
-                            <a class="tool-card" href="tools/regex.html" data-tags="pattern test match replace flags groups">
+<a class="tool-card" href="tools/regex.html" data-tags="pattern test match replace flags groups">
                                 <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">.*</div>
                                 <div class="tool-card-text"><div class="tool-name">Regex Tester</div><div class="tool-desc">Live match & group highlighting</div></div>
                             </a>
-                            <a class="tool-card" href="tools/timestamp.html" data-tags="unix epoch date time convert human age calculator difference business days">
-                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">TS</div>
-                                <div class="tool-card-text"><div class="tool-name">Date &amp; Time Tools</div><div class="tool-desc">Timestamps, Age, Diff & Business Days</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/httpstatus.html" data-tags="404 200 500 201 301 codes meaning reference">
-                                <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">HTTP</div>
-                                <div class="tool-card-text"><div class="tool-name">HTTP Status</div><div class="tool-desc">All status codes reference</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/useragent.html" data-tags="browser parse detect device os chrome firefox">
-                                <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">UA</div>
-                                <div class="tool-card-text"><div class="tool-name">User Agent Inspector</div><div class="tool-desc">Parse browser UA strings</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/keytester.html" data-tags="keyboard keycode event modifier ctrl alt">
-                                <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">⌨</div>
-                                <div class="tool-card-text"><div class="tool-name">Key Tester</div><div class="tool-desc">Key codes & modifiers</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/jsonpath.html" data-tags="json query explore tree jq path filter">
+<a class="tool-card" href="tools/jsonpath.html" data-tags="json query explore tree jq path filter">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">{?}</div>
                                 <div class="tool-card-text"><div class="tool-name">JSON Path Explorer</div><div class="tool-desc">Query & tree-explore JSON</div></div>
                             </a>
-                            <a class="tool-card" href="tools/urlparser.html" data-tags="url parse protocol host path query params fragment debug">
+<a class="tool-card" href="tools/useragent.html" data-tags="browser parse detect device os chrome firefox">
+                                <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">UA</div>
+                                <div class="tool-card-text"><div class="tool-name">User Agent Inspector</div><div class="tool-desc">Parse browser UA strings</div></div>
+                            </a>
+<a class="tool-card" href="tools/keytester.html" data-tags="keyboard keycode event modifier ctrl alt">
+                                <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">⌨</div>
+                                <div class="tool-card-text"><div class="tool-name">Key Tester</div><div class="tool-desc">Key codes & modifiers</div></div>
+                            </a>
+<a class="tool-card" href="tools/urlparser.html" data-tags="url parse protocol host path query params fragment debug">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">URL</div>
                                 <div class="tool-card-text"><div class="tool-name">URL Parser</div><div class="tool-desc">Break URLs into components & query params</div></div>
                             </a>
-                            <a class="tool-card" href="tools/hash.html" data-tags="md5 sha sha256 sha1 checksum digest fingerprint inspect verify">
-                                <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">#</div>
-                                <div class="tool-card-text"><div class="tool-name">Hash Generator</div><div class="tool-desc">MD5, SHA-1, SHA-256</div></div>
+<a class="tool-card" href="tools/seotools.html" data-tags="robots sitemap meta seo crawl">
+                                <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">SEO</div>
+                                <div class="tool-card-text"><div class="tool-name">SEO Tools</div><div class="tool-desc">robots.txt & XML sitemap</div></div>
                             </a>
                         </div>
                     </div>
@@ -397,29 +401,33 @@
                     <div class="section" data-section="Encode">
                         <div class="section-header">Encode <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/base64.html" data-tags="encode decode text string base64">
+<a class="tool-card" href="tools/base64.html" data-tags="encode decode text string base64">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">B64</div>
                                 <div class="tool-card-text"><div class="tool-name">Base64</div><div class="tool-desc">Encode & decode text</div></div>
                             </a>
-                            <a class="tool-card" href="tools/filebase64.html" data-tags="file image pdf binary data uri convert encode">
+<a class="tool-card" href="tools/filebase64.html" data-tags="file image pdf binary data uri convert encode">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">F64</div>
                                 <div class="tool-card-text"><div class="tool-name">File → Base64</div><div class="tool-desc">Convert files to Base64 / data URI</div></div>
                             </a>
-                            <a class="tool-card" href="tools/url.html" data-tags="encode decode percent uri link escape">
+<a class="tool-card" href="tools/url.html" data-tags="encode decode percent uri link escape">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">URL</div>
                                 <div class="tool-card-text"><div class="tool-name">URL Encoder</div><div class="tool-desc">Encode & decode URLs</div></div>
                             </a>
-                            <a class="tool-card" href="tools/htmlentity.html" data-tags="escape unescape characters ampersand entities">
+<a class="tool-card" href="tools/htmlentity.html" data-tags="escape unescape characters ampersand entities">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">&lt;&gt;</div>
                                 <div class="tool-card-text"><div class="tool-name">HTML Entities</div><div class="tool-desc">Encode & decode HTML chars</div></div>
                             </a>
-                            <a class="tool-card" href="tools/unicode.html" data-tags="unicode code point escape utf8 hex binary convert">
+<a class="tool-card" href="tools/unicode.html" data-tags="unicode code point escape utf8 hex binary convert">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">U+</div>
                                 <div class="tool-card-text"><div class="tool-name">Unicode Converter</div><div class="tool-desc">Text ↔ code points, escapes, HTML entities</div></div>
                             </a>
-                            <a class="tool-card" href="tools/stringescape.html" data-tags="escape unescape string js python sql regex csv shell">
+<a class="tool-card" href="tools/stringescape.html" data-tags="escape unescape string js python sql regex csv shell">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">\\n</div>
                                 <div class="tool-card-text"><div class="tool-name">String Escape</div><div class="tool-desc">Escape for JS, Python, SQL, regex &amp; more</div></div>
+                            </a>
+<a class="tool-card" href="tools/morse.html" data-tags="morse code encode decode audio beep signal sos convert">
+                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">·−</div>
+                                <div class="tool-card-text"><div class="tool-name">Morse Code</div><div class="tool-desc">Encode & decode with audio playback</div></div>
                             </a>
                         </div>
                     </div>
@@ -428,19 +436,19 @@
                     <div class="section" data-section="Security">
                         <div class="section-header">Security <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/password.html" data-tags="generate random secure strong passphrase security">
+<a class="tool-card" href="tools/password.html" data-tags="generate random secure strong passphrase security">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">🔑</div>
                                 <div class="tool-card-text"><div class="tool-name">Password Generator</div><div class="tool-desc">Cryptographically random</div></div>
                             </a>
-                            <a class="tool-card" href="tools/textencrypt.html" data-tags="aes encrypt decrypt secure password cipher security">
+<a class="tool-card" href="tools/textencrypt.html" data-tags="aes encrypt decrypt secure password cipher security">
                                 <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">🔐</div>
                                 <div class="tool-card-text"><div class="tool-name">Text Encrypt</div><div class="tool-desc">AES-256 in-browser</div></div>
                             </a>
-                            <a class="tool-card" href="tools/jwt.html" data-tags="token decode header payload claims expiry security">
+<a class="tool-card" href="tools/jwt.html" data-tags="token decode header payload claims expiry security">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">JWT</div>
                                 <div class="tool-card-text"><div class="tool-name">JWT Decoder</div><div class="tool-desc">Header, payload, expiry</div></div>
                             </a>
-                            <a class="tool-card" href="tools/jwtencoder.html" data-tags="token encode sign secret algorithm security">
+<a class="tool-card" href="tools/jwtencoder.html" data-tags="token encode sign secret algorithm security">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">JWT+</div>
                                 <div class="tool-card-text"><div class="tool-name">JWT Encoder</div><div class="tool-desc">Build & sign JWT tokens</div></div>
                             </a>
@@ -451,25 +459,29 @@
                     <div class="section" data-section="Generate">
                         <div class="section-header">Generate <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/uuid.html" data-tags="generate random guid unique id rfc">
+<a class="tool-card" href="tools/uuid.html" data-tags="generate random guid unique id rfc">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">UID</div>
                                 <div class="tool-card-text"><div class="tool-name">UUID Generator</div><div class="tool-desc">RFC 4122 v4 UUIDs, bulk</div></div>
                             </a>
-                            <a class="tool-card" href="tools/lorem.html" data-tags="placeholder dummy filler text words paragraphs">
+<a class="tool-card" href="tools/lorem.html" data-tags="placeholder dummy filler text words paragraphs">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">¶</div>
                                 <div class="tool-card-text"><div class="tool-name">Lorem Ipsum</div><div class="tool-desc">Placeholder text generator</div></div>
                             </a>
-                            <a class="tool-card" href="tools/fakedata.html" data-tags="fake data generate test names emails address phone">
+<a class="tool-card" href="tools/fakedata.html" data-tags="fake data generate test names emails address phone">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">🎲</div>
                                 <div class="tool-card-text"><div class="tool-name">Fake Data Generator</div><div class="tool-desc">Names, emails, addresses & test data</div></div>
                             </a>
-                            <a class="tool-card" href="tools/qrcode.html" data-tags="qr barcode scan url wifi email sms vcard">
+<a class="tool-card" href="tools/qrcode.html" data-tags="qr barcode scan url wifi email sms vcard">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">⬛</div>
                                 <div class="tool-card-text"><div class="tool-name">QR Code Generator</div><div class="tool-desc">URL, WiFi, email, phone, SMS</div></div>
                             </a>
-                            <a class="tool-card" href="tools/favicon.html" data-tags="icon png image size browser tab">
+<a class="tool-card" href="tools/favicon.html" data-tags="icon png image size browser tab">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">🔲</div>
                                 <div class="tool-card-text"><div class="tool-name">Favicon Generator</div><div class="tool-desc">All sizes, downloadable PNG</div></div>
+                            </a>
+<a class="tool-card" href="tools/hash.html" data-tags="md5 sha sha256 sha1 checksum digest fingerprint inspect verify">
+                                <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">#</div>
+                                <div class="tool-card-text"><div class="tool-name">Hash Generator</div><div class="tool-desc">MD5, SHA-1, SHA-256</div></div>
                             </a>
                         </div>
                     </div>
@@ -478,29 +490,91 @@
                     <div class="section" data-section="Color">
                         <div class="section-header">Color <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/color.html" data-tags="hex rgb hsl oklch convert picker palette">
+<a class="tool-card" href="tools/color.html" data-tags="hex rgb hsl oklch convert picker palette">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">🎨</div>
                                 <div class="tool-card-text"><div class="tool-name">Color Converter</div><div class="tool-desc">HEX ↔ RGB ↔ HSL</div></div>
                             </a>
-                            <a class="tool-card" href="tools/contrast.html" data-tags="wcag accessibility aa aaa ratio readable">
+<a class="tool-card" href="tools/contrast.html" data-tags="wcag accessibility aa aaa ratio readable">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">AA</div>
                                 <div class="tool-card-text"><div class="tool-name">Contrast Checker</div><div class="tool-desc">WCAG AA/AAA ratios</div></div>
                             </a>
-                            <a class="tool-card" href="tools/colorpalette.html" data-tags="scheme complementary triadic analogous shades">
+<a class="tool-card" href="tools/colorpalette.html" data-tags="scheme complementary triadic analogous shades">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">◑</div>
                                 <div class="tool-card-text"><div class="tool-name">Color Palette</div><div class="tool-desc">Complementary, triadic…</div></div>
                             </a>
-                            <a class="tool-card" href="tools/gradient.html" data-tags="css linear radial background conic">
-                                <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">▣</div>
-                                <div class="tool-card-text"><div class="tool-name">CSS Gradient</div><div class="tool-desc">Linear, radial, conic builder</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/imagepalette.html" data-tags="image colors extract dominant swatch upload">
+<a class="tool-card" href="tools/imagepalette.html" data-tags="image colors extract dominant swatch upload">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">🖼</div>
                                 <div class="tool-card-text"><div class="tool-name">Image Palette</div><div class="tool-desc">Extract colors from image</div></div>
                             </a>
-                            <a class="tool-card" href="tools/colorblind.html" data-tags="color blindness simulate accessibility wcag vision">
+<a class="tool-card" href="tools/colorblind.html" data-tags="color blindness simulate accessibility wcag vision">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">👁</div>
                                 <div class="tool-card-text"><div class="tool-name">Color Blindness Sim</div><div class="tool-desc">Preview colors across 8 vision types</div></div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- CSS BUILDERS -->
+                    <div class="section" data-section="CSS Builders">
+                        <div class="section-header">CSS Builders <span class="section-count"></span></div>
+                        <div class="tool-grid">
+<a class="tool-card" href="tools/gradient.html" data-tags="css linear radial background conic">
+                                <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">▣</div>
+                                <div class="tool-card-text"><div class="tool-name">CSS Gradient</div><div class="tool-desc">Linear, radial, conic builder</div></div>
+                            </a>
+<a class="tool-card" href="tools/boxshadow.html" data-tags="css box shadow builder visual layers inset">
+                                <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">□</div>
+                                <div class="tool-card-text"><div class="tool-name">Box Shadow Builder</div><div class="tool-desc">Visual CSS box-shadow editor</div></div>
+                            </a>
+<a class="tool-card" href="tools/flexbox.html" data-tags="css flexbox flex layout builder visual direction wrap justify align">
+                                <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">⇔</div>
+                                <div class="tool-card-text"><div class="tool-name">Flexbox Generator</div><div class="tool-desc">Visual CSS flexbox layout builder</div></div>
+                            </a>
+<a class="tool-card" href="tools/cssgrid.html" data-tags="css grid layout columns rows template visual builder">
+                                <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">▦</div>
+                                <div class="tool-card-text"><div class="tool-name">CSS Grid Generator</div><div class="tool-desc">Visual CSS grid layout builder</div></div>
+                            </a>
+<a class="tool-card" href="tools/breakpoints.html" data-tags="responsive mobile tablet desktop preview viewport">
+                                <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">📐</div>
+                                <div class="tool-card-text"><div class="tool-name">Breakpoint Tester</div><div class="tool-desc">Responsive preview panel</div></div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- API & NETWORK -->
+                    <div class="section" data-section="API & Network">
+                        <div class="section-header">API & Network <span class="section-count"></span></div>
+                        <div class="tool-grid">
+<a class="tool-card" href="tools/curlbuilder.html" data-tags="curl http request builder headers auth body api">
+                                <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">curl</div>
+                                <div class="tool-card-text"><div class="tool-name">curl Builder</div><div class="tool-desc">Build curl commands visually</div></div>
+                            </a>
+<a class="tool-card" href="tools/apitester.html" data-tags="api http request test get post put delete fetch rest">
+                                <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">API</div>
+                                <div class="tool-card-text"><div class="tool-name">API Tester</div><div class="tool-desc">Send HTTP requests &amp; inspect responses</div></div>
+                            </a>
+<a class="tool-card" href="tools/graphql.html" data-tags="graphql query mutation playground endpoint test api">
+                                <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">GQL</div>
+                                <div class="tool-card-text"><div class="tool-name">GraphQL Playground</div><div class="tool-desc">Send queries & mutations to any endpoint</div></div>
+                            </a>
+<a class="tool-card" href="tools/websocket.html" data-tags="websocket ws wss real-time test client connect message">
+                                <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">WS</div>
+                                <div class="tool-card-text"><div class="tool-name">WebSocket Client</div><div class="tool-desc">Test real-time WebSocket connections</div></div>
+                            </a>
+<a class="tool-card" href="tools/openapi.html" data-tags="openapi swagger api docs spec yaml json viewer render">
+                                <div class="tool-icon" style="background:rgba(169,127,245,0.15);color:#a97ff5">API</div>
+                                <div class="tool-card-text"><div class="tool-name">OpenAPI Viewer</div><div class="tool-desc">Render OpenAPI / Swagger specs</div></div>
+                            </a>
+<a class="tool-card" href="tools/nettools.html" data-tags="dns lookup ip ping network whois">
+                                <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">🌐</div>
+                                <div class="tool-card-text"><div class="tool-name">Network Tools</div><div class="tool-desc">DNS lookup, IP info, commands</div></div>
+                            </a>
+<a class="tool-card" href="tools/ipcalc.html" data-tags="ip cidr subnet network mask broadcast">
+                                <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">IP</div>
+                                <div class="tool-card-text"><div class="tool-name">IP Calculator</div><div class="tool-desc">CIDR subnet breakdown</div></div>
+                            </a>
+<a class="tool-card" href="tools/httpstatus.html" data-tags="404 200 500 201 301 codes meaning reference">
+                                <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">HTTP</div>
+                                <div class="tool-card-text"><div class="tool-name">HTTP Status</div><div class="tool-desc">All status codes reference</div></div>
                             </a>
                         </div>
                     </div>
@@ -509,65 +583,25 @@
                     <div class="section" data-section="Build">
                         <div class="section-header">Build <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/headerbuilder.html" data-tags="http request headers cors auth cache">
+<a class="tool-card" href="tools/headerbuilder.html" data-tags="http request headers cors auth cache">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">HDR</div>
                                 <div class="tool-card-text"><div class="tool-name">Header Builder</div><div class="tool-desc">Build & reference HTTP headers</div></div>
                             </a>
-                            <a class="tool-card" href="tools/tablebuilder.html" data-tags="markdown html csv table create grid">
+<a class="tool-card" href="tools/tablebuilder.html" data-tags="markdown html csv table create grid">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">▦</div>
                                 <div class="tool-card-text"><div class="tool-name">Table Builder</div><div class="tool-desc">Markdown, HTML, CSV tables</div></div>
                             </a>
-                            <a class="tool-card" href="tools/snippets.html" data-tags="code save copy manage snippets clipboard">
-                                <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">{}</div>
-                                <div class="tool-card-text"><div class="tool-name">Snippet Manager</div><div class="tool-desc">Save & copy code snippets</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/breakpoints.html" data-tags="responsive mobile tablet desktop preview viewport">
-                                <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">📐</div>
-                                <div class="tool-card-text"><div class="tool-name">Breakpoint Tester</div><div class="tool-desc">Responsive preview panel</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/metatags.html" data-tags="meta seo og twitter card open graph social preview">
+<a class="tool-card" href="tools/metatags.html" data-tags="meta seo og twitter card open graph social preview">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">&lt;m&gt;</div>
                                 <div class="tool-card-text"><div class="tool-name">Meta Tag Generator</div><div class="tool-desc">Generate SEO, Open Graph & Twitter Card tags</div></div>
                             </a>
-                            <a class="tool-card" href="tools/boxshadow.html" data-tags="css box shadow builder visual layers inset">
-                                <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">□</div>
-                                <div class="tool-card-text"><div class="tool-name">Box Shadow Builder</div><div class="tool-desc">Visual CSS box-shadow editor</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/gitignore.html" data-tags="gitignore git ignore node python react vue docker">
+<a class="tool-card" href="tools/gitignore.html" data-tags="gitignore git ignore node python react vue docker">
                                 <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">.gi</div>
                                 <div class="tool-card-text"><div class="tool-name">.gitignore Generator</div><div class="tool-desc">Generate .gitignore for any language</div></div>
                             </a>
-                            <a class="tool-card" href="tools/curlbuilder.html" data-tags="curl http request builder headers auth body api">
-                                <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">curl</div>
-                                <div class="tool-card-text"><div class="tool-name">curl Builder</div><div class="tool-desc">Build curl commands visually</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/apitester.html" data-tags="api http request test get post put delete fetch rest">
-                                <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">API</div>
-                                <div class="tool-card-text"><div class="tool-name">API Tester</div><div class="tool-desc">Send HTTP requests &amp; inspect responses</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/flexbox.html" data-tags="css flexbox flex layout builder visual direction wrap justify align">
-                                <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">⇔</div>
-                                <div class="tool-card-text"><div class="tool-name">Flexbox Generator</div><div class="tool-desc">Visual CSS flexbox layout builder</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/cssgrid.html" data-tags="css grid layout columns rows template visual builder">
-                                <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">▦</div>
-                                <div class="tool-card-text"><div class="tool-name">CSS Grid Generator</div><div class="tool-desc">Visual CSS grid layout builder</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/svgtools.html" data-tags="svg optimize minify jsx react convert clean compress">
+<a class="tool-card" href="tools/svgtools.html" data-tags="svg optimize minify jsx react convert clean compress">
                                 <div class="tool-icon" style="background:rgba(255,159,74,0.15);color:#ff9f4a">SVG</div>
                                 <div class="tool-card-text"><div class="tool-name">SVG Optimizer</div><div class="tool-desc">Optimize, minify & convert SVG to JSX</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/graphql.html" data-tags="graphql query mutation playground endpoint test api">
-                                <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">GQL</div>
-                                <div class="tool-card-text"><div class="tool-name">GraphQL Playground</div><div class="tool-desc">Send queries & mutations to any endpoint</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/websocket.html" data-tags="websocket ws wss real-time test client connect message">
-                                <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">WS</div>
-                                <div class="tool-card-text"><div class="tool-name">WebSocket Client</div><div class="tool-desc">Test real-time WebSocket connections</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/openapi.html" data-tags="openapi swagger api docs spec yaml json viewer render">
-                                <div class="tool-icon" style="background:rgba(169,127,245,0.15);color:#a97ff5">API</div>
-                                <div class="tool-card-text"><div class="tool-name">OpenAPI Viewer</div><div class="tool-desc">Render OpenAPI / Swagger specs</div></div>
                             </a>
                         </div>
                     </div>
@@ -576,57 +610,57 @@
                     <div class="section" data-section="Convert">
                         <div class="section-header">Convert <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/morse.html" data-tags="morse code encode decode audio beep signal sos convert">
-                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">·−</div>
-                                <div class="tool-card-text"><div class="tool-name">Morse Code</div><div class="tool-desc">Encode & decode with audio playback</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/numbase.html" data-tags="binary octal hex decimal convert base">
+<a class="tool-card" href="tools/numbase.html" data-tags="binary octal hex decimal convert base">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">0x</div>
                                 <div class="tool-card-text"><div class="tool-name">Number Base</div><div class="tool-desc">Binary, Octal, Decimal, Hex</div></div>
                             </a>
-                            <a class="tool-card" href="tools/byteconvert.html" data-tags="kb mb gb tb si iec storage size">
+<a class="tool-card" href="tools/byteconvert.html" data-tags="kb mb gb tb si iec storage size">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">B</div>
                                 <div class="tool-card-text"><div class="tool-name">Byte Converter</div><div class="tool-desc">KB, MB, GB — SI & IEC</div></div>
                             </a>
-                            <a class="tool-card" href="tools/aspectratio.html" data-tags="resolution width height screen ratio 16:9">
+<a class="tool-card" href="tools/aspectratio.html" data-tags="resolution width height screen ratio 16:9">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">⬛</div>
                                 <div class="tool-card-text"><div class="tool-name">Aspect Ratio</div><div class="tool-desc">Dimensions from ratio</div></div>
                             </a>
-                            <a class="tool-card" href="tools/pxrem.html" data-tags="px rem em pt vw vh css units convert font size responsive">
+<a class="tool-card" href="tools/pxrem.html" data-tags="px rem em pt vw vh css units convert font size responsive">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">px</div>
                                 <div class="tool-card-text"><div class="tool-name">px ↔ rem</div><div class="tool-desc">CSS unit converter — px, rem, em, pt, vw</div></div>
                             </a>
-                            <a class="tool-card" href="tools/jsoncsvconvert.html" data-tags="json csv table convert transform excel">
+<a class="tool-card" href="tools/jsoncsvconvert.html" data-tags="json csv table convert transform excel">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">⇄</div>
                                 <div class="tool-card-text"><div class="tool-name">JSON ↔ CSV</div><div class="tool-desc">Convert between formats</div></div>
                             </a>
-                            <a class="tool-card" href="tools/numberfmt.html" data-tags="currency scientific ordinal format locale">
+<a class="tool-card" href="tools/numberfmt.html" data-tags="currency scientific ordinal format locale">
                                 <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">123</div>
                                 <div class="tool-card-text"><div class="tool-name">Number Format</div><div class="tool-desc">Currency, scientific, ordinal</div></div>
                             </a>
-                            <a class="tool-card" href="tools/matheval.html" data-tags="calculator expression evaluate compute formula">
+<a class="tool-card" href="tools/matheval.html" data-tags="calculator expression evaluate compute formula">
                                 <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">∑</div>
                                 <div class="tool-card-text"><div class="tool-name">Math Evaluator</div><div class="tool-desc">Expressions, functions, constants</div></div>
                             </a>
-                            <a class="tool-card" href="tools/yaml.html" data-tags="yaml json convert format docker kubernetes config">
+<a class="tool-card" href="tools/yaml.html" data-tags="yaml json convert format docker kubernetes config">
                                 <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">YML</div>
                                 <div class="tool-card-text"><div class="tool-name">YAML ↔ JSON</div><div class="tool-desc">Convert between YAML and JSON</div></div>
                             </a>
-                            <a class="tool-card" href="tools/xmljson.html" data-tags="xml json convert transform api legacy">
+<a class="tool-card" href="tools/xmljson.html" data-tags="xml json convert transform api legacy">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">X↔J</div>
                                 <div class="tool-card-text"><div class="tool-name">XML ↔ JSON</div><div class="tool-desc">Convert between XML and JSON</div></div>
                             </a>
-                            <a class="tool-card" href="tools/unitconvert.html" data-tags="unit convert length weight temperature speed area volume data">
+<a class="tool-card" href="tools/unitconvert.html" data-tags="unit convert length weight temperature speed area volume data">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">⇄</div>
                                 <div class="tool-card-text"><div class="tool-name">Unit Converter</div><div class="tool-desc">Length, weight, temp, speed, area, volume</div></div>
                             </a>
-                            <a class="tool-card" href="tools/toml.html" data-tags="toml json convert rust python config">
+<a class="tool-card" href="tools/toml.html" data-tags="toml json convert rust python config">
                                 <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">TOML</div>
                                 <div class="tool-card-text"><div class="tool-name">TOML ↔ JSON</div><div class="tool-desc">Convert between TOML and JSON</div></div>
                             </a>
-                            <a class="tool-card" href="tools/slugify.html" data-tags="slug url safe kebab convert transliterate arabic">
-                                <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">slug</div>
-                                <div class="tool-card-text"><div class="tool-name">Slug Generator</div><div class="tool-desc">URL-safe slugs with transliteration</div></div>
+<a class="tool-card" href="tools/timestamp.html" data-tags="unix epoch date time convert human age calculator difference business days">
+                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">TS</div>
+                                <div class="tool-card-text"><div class="tool-name">Date &amp; Time Tools</div><div class="tool-desc">Timestamps, Age, Diff & Business Days</div></div>
+                            </a>
+<a class="tool-card" href="tools/cron.html" data-tags="cron schedule job time expression next run">
+                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">⏱</div>
+                                <div class="tool-card-text"><div class="tool-name">Cron Parser</div><div class="tool-desc">Human-readable + next runs</div></div>
                             </a>
                         </div>
                     </div>
@@ -635,52 +669,33 @@
                     <div class="section" data-section="Text">
                         <div class="section-header">Text <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/textstats.html" data-tags="words characters reading time frequency analysis">
+<a class="tool-card" href="tools/textstats.html" data-tags="words characters reading time frequency analysis">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">Aa</div>
                                 <div class="tool-card-text"><div class="tool-name">Text Stats</div><div class="tool-desc">Words, reading time, frequency</div></div>
                             </a>
-                            <a class="tool-card" href="tools/charcounter.html" data-tags="twitter sms limit count characters tweet">
+<a class="tool-card" href="tools/charcounter.html" data-tags="twitter sms limit count characters tweet">
                                 <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">Σ</div>
                                 <div class="tool-card-text"><div class="tool-name">Char Counter</div><div class="tool-desc">Twitter, SMS, SEO limits</div></div>
                             </a>
-                            <a class="tool-card" href="tools/caseconvert.html" data-tags="snake camel pascal kebab title upper lower">
+<a class="tool-card" href="tools/caseconvert.html" data-tags="snake camel pascal kebab title upper lower">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">Aa</div>
                                 <div class="tool-card-text"><div class="tool-name">Case Converter</div><div class="tool-desc">14 formats — snake, camel…</div></div>
                             </a>
-                            <a class="tool-card" href="tools/linesorter.html" data-tags="sort deduplicate shuffle reverse trim lines">
+<a class="tool-card" href="tools/linesorter.html" data-tags="sort deduplicate shuffle reverse trim lines">
                                 <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">≡</div>
                                 <div class="tool-card-text"><div class="tool-name">Line Sorter</div><div class="tool-desc">Sort, dedup, shuffle lines</div></div>
                             </a>
-                            <a class="tool-card" href="tools/markdown.html" data-tags="preview render md preview live write">
+<a class="tool-card" href="tools/markdown.html" data-tags="preview render md preview live write">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">MD</div>
                                 <div class="tool-card-text"><div class="tool-name">Markdown Preview</div><div class="tool-desc">Live side-by-side render</div></div>
                             </a>
-                            <a class="tool-card" href="tools/asciiart.html" data-tags="text banner figlet art font letters ascii">
+<a class="tool-card" href="tools/asciiart.html" data-tags="text banner figlet art font letters ascii">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">A</div>
                                 <div class="tool-card-text"><div class="tool-name">ASCII Art</div><div class="tool-desc">Text to ASCII art, 4 styles</div></div>
                             </a>
-                        </div>
-                    </div>
-
-                    <!-- NETWORK -->
-                    <div class="section" data-section="Network">
-                        <div class="section-header">Network <span class="section-count"></span></div>
-                        <div class="tool-grid">
-                            <a class="tool-card" href="tools/ipcalc.html" data-tags="ip cidr subnet network mask broadcast">
-                                <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">IP</div>
-                                <div class="tool-card-text"><div class="tool-name">IP Calculator</div><div class="tool-desc">CIDR subnet breakdown</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/cron.html" data-tags="cron schedule job time expression next run">
-                                <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">⏱</div>
-                                <div class="tool-card-text"><div class="tool-name">Cron Parser</div><div class="tool-desc">Human-readable + next runs</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/nettools.html" data-tags="dns lookup ip ping network whois">
-                                <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">🌐</div>
-                                <div class="tool-card-text"><div class="tool-name">Network Tools</div><div class="tool-desc">DNS lookup, IP info, commands</div></div>
-                            </a>
-                            <a class="tool-card" href="tools/seotools.html" data-tags="robots sitemap meta seo crawl">
-                                <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">SEO</div>
-                                <div class="tool-card-text"><div class="tool-name">SEO Tools</div><div class="tool-desc">robots.txt & XML sitemap</div></div>
+<a class="tool-card" href="tools/slugify.html" data-tags="slug url safe kebab convert transliterate arabic">
+                                <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">slug</div>
+                                <div class="tool-card-text"><div class="tool-name">Slug Generator</div><div class="tool-desc">URL-safe slugs with transliteration</div></div>
                             </a>
                         </div>
                     </div>
@@ -689,17 +704,21 @@
                     <div class="section" data-section="Productivity">
                         <div class="section-header">Productivity <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/pomodoro.html" data-tags="timer focus work break productivity session">
+<a class="tool-card" href="tools/pomodoro.html" data-tags="timer focus work break productivity session">
                                 <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">🍅</div>
                                 <div class="tool-card-text"><div class="tool-name">Pomodoro Timer</div><div class="tool-desc">Focus sessions & breaks</div></div>
                             </a>
-                            <a class="tool-card" href="tools/countdown.html" data-tags="timer date event deadline countdown">
+<a class="tool-card" href="tools/countdown.html" data-tags="timer date event deadline countdown">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">⏳</div>
                                 <div class="tool-card-text"><div class="tool-name">Countdown Timer</div><div class="tool-desc">Count down to any date</div></div>
                             </a>
-                            <a class="tool-card" href="tools/todo.html" data-tags="todo list tasks productivity organize">
+<a class="tool-card" href="tools/todo.html" data-tags="todo list tasks productivity organize">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">✓</div>
                                 <div class="tool-card-text"><div class="tool-name">Todo List</div><div class="tool-desc">Manage tasks & stay organized</div></div>
+                            </a>
+<a class="tool-card" href="tools/snippets.html" data-tags="code save copy manage snippets clipboard">
+                                <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">{}</div>
+                                <div class="tool-card-text"><div class="tool-name">Snippet Manager</div><div class="tool-desc">Save & copy code snippets</div></div>
                             </a>
                         </div>
                     </div>
@@ -789,19 +808,9 @@
             document.getElementById('searchClear').classList.toggle('show', this.value.length > 0);
         });
 
-        const FAV_KEY = 'devbox_favs';
-        function getFavs() { try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch (e) { return []; } }
-        function saveFavs(arr) { try { localStorage.setItem(FAV_KEY, JSON.stringify(arr)); } catch (e) { } }
-
-        function toggleFav(e, href, name) {
+        function toggleFav(e, file, name) {
             e.preventDefault(); e.stopPropagation();
-            let favs = getFavs();
-            const exists = favs.find(f => f.href === href);
-            if (exists) favs = favs.filter(f => f.href !== href);
-            else favs.unshift({ href, name });
-            saveFavs(favs);
-            renderFavBtn(e.target, !exists);
-            loadFavourites();
+            toggleFavorite(file, name); // shared.js — dispatches 'devbox:favorites-changed'
         }
 
         function renderFavBtn(btn, starred) {
@@ -811,13 +820,13 @@
         }
 
         function loadFavourites() {
-            const favs = getFavs();
+            const favs = getFavorites();
             const section = document.getElementById('favSection');
             const list = document.getElementById('favList');
             if (!favs.length) { section.style.display = 'none'; return; }
-            section.style.display = '';
+            section.style.display = 'block';
             list.innerHTML = favs.map(f => `
-                            <a href="${escHtmlIdx(f.href)}" style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;font-size:0.78rem;color:var(--text-dim);font-family:var(--mono);transition:all 0.14s;white-space:nowrap"
+                            <a href="tools/${escHtmlIdx(f.file)}" style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;font-size:0.78rem;color:var(--text-dim);font-family:var(--mono);transition:all 0.14s;white-space:nowrap"
                                onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border2)'"
                                onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">
                                 ★ ${escHtmlIdx(f.name)}
@@ -825,26 +834,30 @@
         }
 
         function clearFavourites() {
-            saveFavs([]);
-            loadFavourites();
-            document.querySelectorAll('.fav-btn.starred').forEach(b => renderFavBtn(b, false));
+            clearFavorites(); // shared.js — dispatches 'devbox:favorites-changed'
         }
 
         function injectFavBtns() {
-            const favs = getFavs();
             document.querySelectorAll('.tool-card').forEach(card => {
-                const href = card.getAttribute('href');
+                const file = card.getAttribute('href').split('/').pop();
                 const name = card.querySelector('.tool-name')?.textContent || '';
-                const starred = favs.some(f => f.href === href);
-                const btn = document.createElement('button');
-                btn.className = 'fav-btn' + (starred ? ' starred' : '');
-                btn.textContent = starred ? '★' : '☆';
-                btn.title = starred ? 'Remove from favourites' : 'Add to favourites';
-                btn.setAttribute('aria-label', 'Toggle favourite');
-                btn.addEventListener('click', e => toggleFav(e, href, name));
-                card.appendChild(btn);
+                const starred = isFavorite(file);
+                let btn = card.querySelector('.fav-btn');
+                if (!btn) {
+                    btn = document.createElement('button');
+                    btn.className = 'fav-btn';
+                    btn.setAttribute('aria-label', 'Toggle favourite');
+                    btn.addEventListener('click', e => toggleFav(e, file, name));
+                    card.appendChild(btn);
+                }
+                renderFavBtn(btn, starred);
             });
         }
+
+        document.addEventListener('devbox:favorites-changed', () => {
+            injectFavBtns();
+            loadFavourites();
+        });
 
         document.addEventListener('keydown', e => {
             if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {

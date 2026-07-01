@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Generate robots.txt and XML sitemaps">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SEO Tools — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <meta property="og:title" content="SEO Tools — DevBox">
     <meta property="og:description" content="Generate robots.txt and XML sitemaps">
     <meta property="og:type" content="website">
@@ -29,7 +35,10 @@
                 </div>
 
                 <div class="panel" style="margin-bottom:14px">
-                    <div class="panel-bar"><span class="panel-label">robots.txt Generator</span><div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('robotsOut').textContent)">⎘ Copy</button></div></div>
+                    <div class="panel-bar"><span class="panel-label">robots.txt Generator</span><div class="panel-actions">
+                        <button class="btn btn-ghost" onclick="copy(document.getElementById('robotsOut').textContent)">⎘ Copy</button>
+                        <button class="share-btn" onclick="saveToURL({u:'robotsSite',d:'robotsDisallow',g:'robotsGooglebot',s:'robotsSitemap'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
+                    </div></div>
                     <div class="input-row"><label>Site URL</label><input type="text" id="robotsSite" placeholder="https://example.com" oninput="genRobots()"></div>
                     <div style="padding:10px 14px;border-bottom:1px solid var(--border)">
                         <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:8px;font-family:var(--mono)">Disallow paths (one per line)</div>
@@ -118,7 +127,11 @@ Sitemap: ${site}/sitemap.xml
             out += '</urlset>';
             document.getElementById('sitemapOut').textContent = out;
         }
-        document.addEventListener('DOMContentLoaded', () => { genRobots(); genSitemap(); });
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!loadFromURL({ u: 'robotsSite', d: 'robotsDisallow', g: 'robotsGooglebot', s: 'robotsSitemap' }, genRobots)) genRobots();
+            genSitemap();
+        });
     </script>
 </body>
 </html>

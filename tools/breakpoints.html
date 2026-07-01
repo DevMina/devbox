@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Test HTML at common responsive breakpoints">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Breakpoint Tester — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <meta property="og:title" content="Breakpoint Tester — DevBox">
     <meta property="og:description" content="Test HTML at common responsive breakpoints">
     <meta property="og:type" content="website">
@@ -34,6 +40,7 @@
                         <div class="panel-actions">
                             <button class="btn btn-cyan" onclick="loadPreview()">▶ Preview</button>
                             <button class="btn btn-ghost" onclick="htmlSample()">Sample HTML</button>
+                            <button class="share-btn" onclick="saveToURL({q:'bpUrl'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share URL</button>
                         </div>
                     </div>
                     <div class="input-row"><label>URL</label><input type="text" id="bpUrl" placeholder="https://example.com" style="font-family:var(--mono)"></div>
@@ -100,7 +107,11 @@
             });
         }
         function htmlSample() { document.getElementById('bpUrl').value = ''; document.getElementById('bpHtml').value = '<style>*{box-sizing:border-box}body{font-family:sans-serif;margin:0;padding:0}header{background:#6c5ce7;color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center}nav a{color:#fff;margin-left:16px;text-decoration:none}.hero{padding:48px 24px;text-align:center;background:#f8f9fa}h1{font-size:2.5rem;margin:0 0 16px}p{color:#666;max-width:500px;margin:0 auto}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;padding:24px}.card{background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:20px}@media(max-width:600px){h1{font-size:1.6rem}nav a{display:none}}</style><header><strong>MyApp</strong><nav><a href="#">Home</a><a href="#">About</a><a href="#">Contact</a></nav></header><div class="hero"><h1>Welcome to MyApp</h1><p>A responsive layout demo. Resize the breakpoints above to see how the layout adapts.</p></div><div class="grid"><div class="card"><h3>Feature 1</h3><p>Description of the first feature goes here.</p></div><div class="card"><h3>Feature 2</h3><p>Description of the second feature goes here.</p></div><div class="card"><h3>Feature 3</h3><p>Description of the third feature goes here.</p></div></div>'; }
-        document.addEventListener('DOMContentLoaded', initBP);
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        document.addEventListener('DOMContentLoaded', () => {
+            initBP();
+            loadFromURL({ q: 'bpUrl' }, loadPreview);
+        });
     </script>
 </body>
 </html>

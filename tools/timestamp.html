@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Convert timestamps, calculate age, date difference, and business days">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Date & Time Tools — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <meta property="og:title" content="Timestamp Converter — DevBox">
     <meta property="og:description" content="Convert between Unix timestamps and human-readable dates">
     <meta property="og:type" content="website">
@@ -30,7 +36,12 @@
 
                 <div class="two-col">
                     <div class="panel">
-                        <div class="panel-bar"><span class="panel-label">Unix → Date</span><button class="btn btn-ghost" onclick="tsNow()">Now</button></div>
+                        <div class="panel-bar"><span class="panel-label">Unix → Date</span>
+                            <div class="panel-actions">
+                                <button class="btn btn-ghost" onclick="tsNow()">Now</button>
+                                <button class="share-btn" onclick="saveToURL({ts:'tsUnixInput'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
+                            </div>
+                        </div>
                         <div class="input-row"><label>Seconds</label><input type="text" id="tsUnixInput" placeholder="1700000000" oninput="tsFromUnix()"></div>
                         <div class="ts-grid">
                             <div class="ts-out-row"><div class="ts-out-label">UTC</div><div class="ts-out-val" id="ts-utc">—</div></div>
@@ -173,13 +184,29 @@
         function isWeekday(d) { const day = d.getDay(); return day !== 0 && day !== 6; }
 
         function countBizDays(start, end) {
-            let count = 0;
-            const cur = new Date(start);
-            while (cur <= end) { if (isWeekday(cur)) count++; cur.setDate(cur.getDate() + 1); }
-            return count;
+            // Closed-form calculation — avoids iterating day-by-day which can hang
+            // the tab on large ranges (e.g. a malformed/shared date 0001-9999 spans
+            // millions of days and would otherwise block the main thread for ~1s+).
+            const oneDay = 86400000;
+            const startUTC = Date.UTC(start.getFullYear(), start.getMonth(), start.getDate());
+            const endUTC = Date.UTC(end.getFullYear(), end.getMonth(), end.getDate());
+            const totalDays = Math.round((endUTC - startUTC) / oneDay) + 1;
+            if (totalDays <= 0) return 0;
+            const startDow = start.getDay(); // 0=Sun..6=Sat
+            const fullWeeks = Math.floor(totalDays / 7);
+            let bizDays = fullWeeks * 5;
+            const remainder = totalDays % 7;
+            for (let i = 0; i < remainder; i++) {
+                const dow = (startDow + i) % 7;
+                if (dow !== 0 && dow !== 6) bizDays++;
+            }
+            return bizDays;
         }
 
         function addBizDays(start, n) {
+            // Cap to a sane maximum — a user-typed value has no HTML max attribute,
+            // so an extreme number here could otherwise spin the loop for a long time.
+            n = Math.min(Math.max(0, Math.round(n)), 100000);
             const d = new Date(start);
             let added = 0;
             while (added < n) { d.setDate(d.getDate() + 1); if (isWeekday(d)) added++; }
@@ -218,13 +245,20 @@
             }
         }
 
+        window._toolShortcuts = [
+            { desc: 'Set timestamp to now', keys: ['Ctrl', 'Shift', 'N'] },
+        ];
+
         document.addEventListener('DOMContentLoaded', () => {
-            tsNow();
+            if (!loadFromURL({ ts: 'tsUnixInput' }, tsFromUnix)) tsNow();
             // Pre-fill age calculator with today as "as of"
             document.getElementById('age-asof').value = new Date().toISOString().slice(0, 10);
             // Pre-fill diff and biz with today
             document.getElementById('diff-end').value = new Date().toISOString().slice(0, 10);
             document.getElementById('biz-start').value = new Date().toISOString().slice(0, 10);
+            document.addEventListener('keydown', e => {
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'N') { e.preventDefault(); tsNow(); }
+            });
         });
     </script>
 </body>

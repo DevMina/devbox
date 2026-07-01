@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="DevBox — Visual CSS Grid layout generator">
     <title>CSS Grid Generator — DevBox</title>
@@ -10,6 +10,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <style>
         .grid-layout { display: grid; grid-template-columns: 300px 1fr; gap: 16px; }
         @media(max-width:750px) { .grid-layout { grid-template-columns: 1fr; } }
@@ -44,6 +50,9 @@
         .btn-opt:hover { border-color: var(--green); color: var(--green); }
         .btn-opt.active { background: var(--green-dim); border-color: var(--green); color: var(--green); }
     </style>
+    <meta property="og:title" content="CSS Grid Generator — DevBox">
+    <meta property="og:description" content="Visual CSS grid layout builder with live preview">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -68,7 +77,9 @@
                         </div>
 
                         <div class="panel" style="margin-top:12px">
-                            <div class="panel-bar"><span class="panel-label">Settings</span></div>
+                            <div class="panel-bar"><span class="panel-label">Settings</span>
+                                <button class="share-btn" onclick="cssGridShare()">⎘ Share</button>
+                            </div>
                             <div class="ctrl-row">
                                 <label>column-gap</label>
                                 <input type="range" id="col-gap" min="0" max="40" value="8" oninput="render()">
@@ -216,6 +227,56 @@
         }
 
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+
+        window._toolShortcuts = [
+            { desc: 'Add column', keys: ['Ctrl', '.'] },
+            { desc: 'Add row', keys: ['Ctrl', ','] },
+            { desc: 'Copy CSS', keys: ['Ctrl', 'Shift', 'C'] },
+            { desc: 'Reset grid', keys: ['Ctrl', 'Shift', 'X'] },
+        ];
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey || e.metaKey) {
+                if (e.key === '.') { e.preventDefault(); addCol(); }
+                if (e.key === ',') { e.preventDefault(); addRow(); }
+                if (e.shiftKey && e.key === 'C') { e.preventDefault(); copyCSS(); }
+                if (e.shiftKey && e.key === 'X') { e.preventDefault(); resetAll(); }
+            }
+        });
+
+        function cssGridShare() {
+            const params = new URLSearchParams();
+            params.set('cols', cols.join('|'));
+            params.set('rows', rows.join('|'));
+            params.set('cg', document.getElementById('col-gap').value);
+            params.set('rg', document.getElementById('row-gap').value);
+            params.set('ji', justifyItems);
+            params.set('ai', alignItems);
+            history.replaceState(null, '', '?' + params.toString());
+            navigator.clipboard.writeText(location.href).then(() => showToast('🔗 Link copied!'));
+        }
+
+        function syncBtnGroupActive() {
+            document.querySelectorAll('.btn-group').forEach(grp => {
+                const target = grp.id === 'grp-justify-items' ? justifyItems : alignItems;
+                grp.querySelectorAll('.btn-opt').forEach(b => b.classList.toggle('active', b.dataset.val === target));
+            });
+        }
+
+        (function restoreFromURL() {
+            const params = new URLSearchParams(location.search);
+            const c = params.get('cols'), r = params.get('rows');
+            if (c) cols = c.split('|');
+            if (r) rows = r.split('|');
+            if (params.get('cg')) document.getElementById('col-gap').value = params.get('cg');
+            if (params.get('rg')) document.getElementById('row-gap').value = params.get('rg');
+            if (params.get('ji')) justifyItems = params.get('ji');
+            if (params.get('ai')) alignItems = params.get('ai');
+            if (c || r) {
+                document.getElementById('col-gap-val').textContent = document.getElementById('col-gap').value + 'px';
+                document.getElementById('row-gap-val').textContent = document.getElementById('row-gap').value + 'px';
+                syncBtnGroupActive();
+            }
+        })();
 
         render();
     </script>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Test regular expressions with live match highlighting">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Regex Tester — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <meta property="og:title" content="Regex Tester — DevBox">
     <meta property="og:description" content="Test regular expressions with live match highlighting">
     <meta property="og:type" content="website">
@@ -52,17 +58,18 @@
                             <label class="check-row" style="margin:0"><input type="checkbox" id="regexGlobal" checked onchange="regexTest()"> g</label>
                             <label class="check-row" style="margin:0"><input type="checkbox" id="regexInsens" onchange="regexTest()"> i</label>
                             <label class="check-row" style="margin:0"><input type="checkbox" id="regexMulti" onchange="regexTest()"> m</label>
+                            <button class="share-btn" onclick="saveToURL({p:'regexPattern',t:'regexInput',g:'regexGlobal',i:'regexInsens',m:'regexMulti'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
                         </div>
                     </div>
                     <div class="input-row" style="border-bottom:none;">
                         <span style="font-family:var(--mono);font-size:1rem;color:var(--text-dim)">/</span>
-                        <input type="text" id="regexPattern" placeholder="(\w+)@(\w+\.\w+)" oninput="regexTest()" style="flex:1">
+                        <input type="text" id="regexPattern" placeholder="(\w+)@(\w+\.\w+)" oninput="debouncedRegexTest()" style="flex:1">
                         <span style="font-family:var(--mono);font-size:1rem;color:var(--text-dim)">/</span>
                     </div>
                 </div>
                 <div class="panel">
                     <div class="panel-bar"><span class="panel-label">Test string</span><span id="matchCount" style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)"></span></div>
-                    <textarea id="regexInput" placeholder="user@example.com, hello@world.org" oninput="regexTest()" style="min-height:100px;"></textarea>
+                    <textarea id="regexInput" placeholder="user@example.com, hello@world.org" oninput="debouncedRegexTest()" style="min-height:100px;"></textarea>
                 </div>
                 <div class="panel">
                     <div class="panel-bar"><span class="panel-label">Highlighted matches</span></div>
@@ -95,6 +102,123 @@
             regexTest();
         }
 
+        // ════════════════════════════════════════════════
+        // Worker-based matching — a pathological pattern (e.g. nested
+        // quantifiers like (a+)+$) can backtrack exponentially. The JS regex
+        // engine has no built-in timeout and can't be interrupted from the
+        // thread it's running on, so the only reliable way to recover is to
+        // run matching in a Worker and forcibly terminate it if it doesn't
+        // respond in time. That keeps the page itself responsive even when
+        // a single match attempt would otherwise hang forever.
+        // ════════════════════════════════════════════════
+        const REGEX_TIMEOUT_MS = 700;
+        const REGEX_WORKER_SRC = `
+            self.onmessage = function (e) {
+                const { id, pat, str, flags } = e.data;
+                try {
+                    const rx = new RegExp(pat, flags);
+                    const matches = [];
+                    const CAP = 20000; // sanity cap so huge match counts don't blow up the message payload
+                    let m;
+                    while ((m = rx.exec(str)) !== null) {
+                        matches.push({ index: m.index, value: m[0], groups: m.slice(1) });
+                        if (m[0].length === 0) rx.lastIndex++; // prevent infinite loop on zero-width match
+                        if (matches.length >= CAP) break;
+                    }
+                    self.postMessage({ id, ok: true, matches, capped: matches.length >= CAP });
+                } catch (err) {
+                    self.postMessage({ id, ok: false, error: String((err && err.message) || err) });
+                }
+            };
+        `;
+
+        let _regexWorker = null;
+        let _regexWorkerURL = null;
+        let _regexReqId = 0;
+        let _regexTimeoutTimer = null;
+        let _regexPending = { str: '', g: true };
+
+        function getRegexWorker() {
+            if (_regexWorker) return _regexWorker;
+            const blob = new Blob([REGEX_WORKER_SRC], { type: 'application/javascript' });
+            _regexWorkerURL = URL.createObjectURL(blob);
+            _regexWorker = new Worker(_regexWorkerURL);
+            _regexWorker.onmessage = onRegexWorkerMessage;
+            return _regexWorker;
+        }
+
+        function killRegexWorker() {
+            if (_regexWorker) { _regexWorker.terminate(); _regexWorker = null; }
+            if (_regexWorkerURL) { URL.revokeObjectURL(_regexWorkerURL); _regexWorkerURL = null; }
+        }
+
+        function onRegexWorkerMessage(e) {
+            if (e.data.id !== _regexReqId) return; // stale reply from an earlier keystroke — ignore
+            clearTimeout(_regexTimeoutTimer);
+            const st = document.getElementById('regexStatus');
+            if (!e.data.ok) {
+                st.innerHTML = '<span class="status-badge badge-err">Invalid regex</span>';
+                document.getElementById('regexOutput').innerHTML = escHtml(_regexPending.str);
+                document.getElementById('matchCount').textContent = '';
+                document.getElementById('regexGroupPanel').style.display = 'none';
+                return;
+            }
+            st.innerHTML = '<span class="status-badge badge-ok">✓</span>';
+            renderRegexResults(e.data.matches, e.data.capped);
+        }
+
+        function runRegexInWorker(pat, str, flags, g) {
+            const id = ++_regexReqId;
+            _regexPending = { str, g };
+            document.getElementById('regexStatus').innerHTML = '<span class="status-badge">…</span>';
+            const worker = getRegexWorker();
+            clearTimeout(_regexTimeoutTimer);
+            _regexTimeoutTimer = setTimeout(() => {
+                if (id !== _regexReqId) return;
+                killRegexWorker(); // forcibly stop the runaway match — this works even mid-backtrack
+                document.getElementById('regexStatus').innerHTML =
+                    '<span class="status-badge badge-err" title="This pattern is taking too long — likely catastrophic backtracking from nested quantifiers like (a+)+. Try simplifying it.">⚠ Too slow — simplify pattern</span>';
+                document.getElementById('matchCount').textContent = '';
+                document.getElementById('regexGroupPanel').style.display = 'none';
+            }, REGEX_TIMEOUT_MS);
+            worker.postMessage({ id, pat, str, flags });
+        }
+
+        function renderRegexResults(matches, capped) {
+            const { str, g } = _regexPending;
+            const cnt = document.getElementById('matchCount');
+            const out = document.getElementById('regexOutput');
+            const gp = document.getElementById('regexGroupPanel');
+
+            cnt.textContent = matches.length
+                ? matches.length + (capped ? '+' : '') + ' match' + (matches.length !== 1 ? 'es' : '')
+                : 'No matches';
+
+            // Highlighting only shows every match when the "g" flag is on, matching prior behavior
+            const shown = g ? matches : matches.slice(0, 1);
+            let result = '', last = 0;
+            shown.forEach(match => {
+                result += escHtml(str.slice(last, match.index));
+                result += `<span class="regex-match">${escHtml(match.value)}</span>`;
+                last = match.index + match.value.length;
+            });
+            result += escHtml(str.slice(last));
+            out.innerHTML = result;
+
+            const hasGroups = matches.some(match => match.groups.length > 0);
+            if (hasGroups) {
+                gp.style.display = '';
+                document.getElementById('regexGroups').textContent = matches
+                    .map((match, idx) =>
+                        `Match ${idx + 1}: ` +
+                        match.groups.map((grp, j) => `Group ${j + 1}: "${grp === undefined ? '' : grp}"`).join(', ')
+                    )
+                    .join('\n');
+            } else {
+                gp.style.display = 'none';
+            }
+        }
+
         function regexTest() {
             const pat = document.getElementById('regexPattern').value;
             const str = document.getElementById('regexInput').value;
@@ -106,6 +230,9 @@
             const st = document.getElementById('regexStatus');
             const gp = document.getElementById('regexGroupPanel');
 
+            clearTimeout(_regexTimeoutTimer);
+            _regexReqId++; // invalidate any in-flight request so a late reply can't overwrite newer results
+
             if (!pat) {
                 out.innerHTML = escHtml(str);
                 cnt.textContent = '';
@@ -114,10 +241,12 @@
                 return;
             }
 
-            let rx;
+            // Cheap syntax check on the main thread — constructing a RegExp doesn't
+            // execute it, so this can never hang, unlike actually running the match.
+            let flags;
             try {
-                rx = new RegExp(pat, (g ? 'g' : '') + (i ? 'i' : '') + (m ? 'm' : ''));
-                st.innerHTML = '<span class="status-badge badge-ok">✓</span>';
+                new RegExp(pat, (g ? 'g' : '') + (i ? 'i' : '') + (m ? 'm' : ''));
+                flags = 'g' + (i ? 'i' : '') + (m ? 'm' : '');
             } catch (e) {
                 st.innerHTML = '<span class="status-badge badge-err">Invalid regex</span>';
                 out.innerHTML = escHtml(str);
@@ -126,38 +255,7 @@
                 return;
             }
 
-            const flags = 'g' + (i ? 'i' : '') + (m ? 'm' : '');
-            const matches = [...str.matchAll(new RegExp(pat, flags))];
-
-            cnt.textContent = matches.length
-                ? matches.length + ' match' + (matches.length !== 1 ? 'es' : '')
-                : 'No matches';
-
-            let result = '', last = 0;
-            const hRx = new RegExp(pat, flags);
-            let match;
-            while ((match = hRx.exec(str)) !== null) {
-                result += escHtml(str.slice(last, match.index));
-                result += `<span class="regex-match">${escHtml(match[0])}</span>`;
-                last = hRx.lastIndex;
-                if (!g) break;
-                if (match[0].length === 0) hRx.lastIndex++; // prevent infinite loop on zero-width match
-            }
-            result += escHtml(str.slice(last));
-            out.innerHTML = result;
-
-            const hasGroups = matches.some(match => match.length > 1);
-            if (hasGroups) {
-                gp.style.display = '';
-                document.getElementById('regexGroups').textContent = matches
-                    .map((match, idx) =>
-                        `Match ${idx + 1}: ` +
-                        match.slice(1).map((grp, j) => `Group ${j + 1}: "${grp}"`).join(', ')
-                    )
-                    .join('\n');
-            } else {
-                gp.style.display = 'none';
-            }
+            runRegexInWorker(pat, str, flags, g);
 
             // Deactivate sample buttons if user manually edited the pattern
             const activeBtn = document.querySelector('.btn-sample-active');
@@ -166,6 +264,32 @@
                 activeBtn.classList.add('btn-ghost');
             }
         }
+
+        // Lazily wrapped: shared.js (which defines debounce()) loads with `defer`,
+        // so it hasn't run yet at the point this script block is parsed. Building
+        // the debounced function on first call (i.e. on first real keystroke,
+        // well after the page is interactive) avoids a load-order race.
+        let _debouncedRegexTestFn = null;
+        function debouncedRegexTest() {
+            if (!_debouncedRegexTestFn) _debouncedRegexTestFn = debounce(regexTest, 150);
+            _debouncedRegexTestFn();
+        }
+        window._toolShortcuts = [
+            { desc: 'Focus pattern input', keys: ['Ctrl', 'P'] },
+            { desc: 'Copy matches', keys: ['Ctrl', 'Shift', 'C'] },
+            { desc: 'Share URL', keys: ['Ctrl', 'Shift', 'S'] },
+        ];
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromURL({ p: 'regexPattern', t: 'regexInput', g: 'regexGlobal', i: 'regexInsens', m: 'regexMulti' }, regexTest);
+            document.addEventListener('keydown', e => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'p') { e.preventDefault(); document.getElementById('regexPattern').focus(); }
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'S') {
+                    e.preventDefault();
+                    saveToURL({p:'regexPattern',t:'regexInput',g:'regexGlobal',i:'regexInsens',m:'regexMulti'});
+                    navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'));
+                }
+            });
+        });
     </script>
 </body>
 </html>

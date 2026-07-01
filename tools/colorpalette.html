@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Generate complementary, triadic, and analogous color palettes">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Color Palette Generator — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <meta property="og:title" content="Color Palette Generator — DevBox">
     <meta property="og:description" content="Generate complementary, triadic, and analogous color palettes">
     <meta property="og:type" content="website">
@@ -29,7 +35,9 @@
                 </div>
 
                 <div class="panel">
-                    <div class="panel-bar"><span class="panel-label">Base color</span></div>
+                    <div class="panel-bar"><span class="panel-label">Base color</span>
+                        <div class="panel-actions"><button class="share-btn" onclick="paletteShare()">⎘ Share</button></div>
+                    </div>
                     <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border)">
                         <input type="color" id="paletteBase" value="#B07EFF" oninput="genPalette()" style="width:48px;height:48px;border:none;background:none;cursor:pointer;padding:0;border-radius:8px;overflow:hidden">
                         <input type="text" id="paletteHexIn" value="#B07EFF" oninput="paletteFromHex()" style="flex:1;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.9rem;color:var(--text);outline:none">
@@ -64,7 +72,23 @@
             const base = document.getElementById('paletteBase').value; document.getElementById('paletteHexIn').value = base; const [h, s, l] = hexToHsl(base); let colors = []; if (paletteMode === 'complementary') colors = [hslToHex(h, s, l), hslToHex(h, s, Math.min(l + 15, 90)), hslToHex(h + 180, s, l), hslToHex(h + 180, s, Math.min(l + 15, 90)), hslToHex(h + 180, Math.max(s - 20, 10), l)]; else if (paletteMode === 'analogous') colors = [hslToHex(h - 60, s, l), hslToHex(h - 30, s, l), hslToHex(h, s, l), hslToHex(h + 30, s, l), hslToHex(h + 60, s, l)]; else if (paletteMode === 'triadic') colors = [hslToHex(h, s, l), hslToHex(h, s, Math.min(l + 20, 90)), hslToHex(h + 120, s, l), hslToHex(h + 120, s, Math.min(l + 20, 90)), hslToHex(h + 240, s, l)]; else if (paletteMode === 'tetradic') colors = [hslToHex(h, s, l), hslToHex(h + 90, s, l), hslToHex(h + 180, s, l), hslToHex(h + 270, s, l), hslToHex(h, Math.max(s - 30, 10), l)]; else if (paletteMode === 'mono') colors = [hslToHex(h, s, 20), hslToHex(h, s, 35), hslToHex(h, s, 50), hslToHex(h, s, 65), hslToHex(h, s, 80)]; else if (paletteMode === 'split') colors = [hslToHex(h, s, l), hslToHex(h + 150, s, l), hslToHex(h + 210, s, l), hslToHex(h + 150, s, Math.min(l + 20, 90)), hslToHex(h + 210, s, Math.min(l + 20, 90))];
             const out = document.getElementById('paletteOutput'); out.innerHTML = colors.map(c => `<div style="flex:1;background:${c};min-height:100px;cursor:pointer;transition:flex 0.2s;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px" title="${c.toUpperCase()}" onclick="copy('${c.toUpperCase()}')" onmouseover="this.style.flex='1.6'" onmouseout="this.style.flex='1'"></div>`).join(''); document.getElementById('paletteValues').innerHTML = colors.map(c => `<div class="hash-row"><div style="width:20px;height:20px;border-radius:4px;background:${c};flex-shrink:0;border:1px solid var(--border)"></div><div class="hash-val" style="color:var(--pink)">${c.toUpperCase()}</div><div style="font-size:0.72rem;color:var(--text-dim);min-width:120px">${hexToHsl(c).join('° ')}</div><button class="uuid-copy" onclick="copy('${c.toUpperCase()}')">⎘</button></div>`).join('');
         }
-        document.addEventListener('DOMContentLoaded', genPalette);
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+
+        function paletteShare() {
+            const params = new URLSearchParams();
+            params.set('c', document.getElementById('paletteHexIn').value);
+            params.set('mode', paletteMode);
+            history.replaceState(null, '', '?' + params.toString());
+            navigator.clipboard.writeText(location.href).then(() => showToast('🔗 Link copied!'));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(location.search);
+            const c = params.get('c'), m = params.get('mode');
+            if (c) { document.getElementById('paletteHexIn').value = c; }
+            if (m) paletteMode = m;
+            if (c) paletteFromHex(); else genPalette();
+        });
     </script>
 </body>
 </html>

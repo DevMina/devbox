@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Parse cron expressions into plain English">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cron Parser — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <meta property="og:title" content="Cron Parser — DevBox">
     <meta property="og:description" content="Parse cron expressions into plain English">
     <meta property="og:type" content="website">
@@ -40,6 +46,7 @@
                     </div>
                     <div class="input-row" style="border-bottom:none;">
                         <input type="text" id="cronInput" placeholder="*/5 * * * *" oninput="parseCron()" style="font-size:1.1rem;font-family:var(--mono)">
+                        <button class="share-btn" onclick="saveToURL({q:'cronInput'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
                     </div>
                 </div>
                 <div class="panel"><div class="panel-bar"><span class="panel-label">Meaning</span></div><div id="cronMeaning" class="output-area" style="color:var(--yellow);font-size:0.9rem;min-height:60px;"></div></div>
@@ -64,7 +71,13 @@
             meaning.textContent = `Runs at ${ff(min, 'minute')} of ${ff(hr, 'hour')}, on ${ff(dom, 'day')} of ${ff(mon, 'month', MONTHS)}, on ${ff(dow, 'weekday', DAYS)}.`;
             try { const runs = []; const now = new Date(); now.setSeconds(0, 0); let d = new Date(now); d.setMinutes(d.getMinutes() + 1); let att = 0; while (runs.length < 5 && att < 100000) { att++; const mf = (val, cur) => { if (val === '*') return true; if (val.startsWith('*/')) return cur % parseInt(val.slice(2)) === 0; if (val.includes('-')) { const [a, b] = val.split('-').map(Number); return cur >= a && cur <= b; } if (val.includes(',')) return val.split(',').map(Number).includes(cur); return parseInt(val) === cur; }; if (mf(mon, d.getMonth() + 1) && mf(dom, d.getDate()) && mf(dow, d.getDay()) && mf(hr, d.getHours()) && mf(min, d.getMinutes())) runs.push(new Date(d)); d.setMinutes(d.getMinutes() + 1); } next.textContent = runs.length ? runs.map((r, i) => `${i + 1}. ${r.toLocaleString()}`).join('\n') : 'Could not compute next runs.'; } catch (e) { next.textContent = ''; }
         }
-        document.addEventListener('DOMContentLoaded', () => cronSample('*/5 * * * *'));
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(location.search);
+            const q = params.get('q');
+            if (q !== null) { document.getElementById('cronInput').value = q; parseCron(); }
+            else cronSample('*/5 * * * *');
+        });
     </script>
 </body>
 </html>

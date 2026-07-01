@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="DevBox — WebSocket client for testing real-time connections">
     <title>WebSocket Client — DevBox</title>
@@ -10,6 +10,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <style>
         .ws-layout { display: grid; grid-template-columns: 1fr 340px; gap: 16px; }
         @media(max-width:800px) { .ws-layout { grid-template-columns: 1fr; } }
@@ -43,6 +49,9 @@
         .stat-row:last-child { border: none; }
         .stat-val { color: var(--text); }
     </style>
+    <meta property="og:title" content="WebSocket Client — DevBox">
+    <meta property="og:description" content="Test real-time WebSocket connections and send messages">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -58,6 +67,9 @@
                 <div class="panel" style="margin-bottom:12px">
                     <div class="panel-bar">
                         <span class="panel-label">Connection</span>
+                        <div class="panel-actions">
+                            <button class="share-btn" onclick="saveToURL({url:'ws-url'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
+                        </div>
                         <div class="status-badge"><div class="status-dot" id="status-dot"></div><span id="status-text">Disconnected</span></div>
                     </div>
                     <div class="conn-row">
@@ -134,7 +146,8 @@
     <script>
         let ws = null;
         let sentCount = 0, recvCount = 0;
-        let savedUrls = JSON.parse(localStorage.getItem('devbox_ws_urls') || '[]');
+        let savedUrls = [];
+        try { savedUrls = JSON.parse(localStorage.getItem('devbox_ws_urls') || '[]'); } catch (e) { savedUrls = []; }
 
         function toggleConnect() {
             if (ws && ws.readyState === WebSocket.OPEN) { ws.close(); return; }
@@ -235,11 +248,11 @@
             if (!url || savedUrls.includes(url)) return;
             savedUrls.unshift(url);
             if (savedUrls.length > 10) savedUrls = savedUrls.slice(0, 10);
-            localStorage.setItem('devbox_ws_urls', JSON.stringify(savedUrls));
+            try { localStorage.setItem('devbox_ws_urls', JSON.stringify(savedUrls)); } catch (e) {}
             renderSaved();
         }
 
-        function delSaved(i) { savedUrls.splice(i, 1); localStorage.setItem('devbox_ws_urls', JSON.stringify(savedUrls)); renderSaved(); }
+        function delSaved(i) { savedUrls.splice(i, 1); try { localStorage.setItem('devbox_ws_urls', JSON.stringify(savedUrls)); } catch (e) {} renderSaved(); }
 
         function renderSaved() {
             document.getElementById('saved-list').innerHTML = savedUrls.length
@@ -247,9 +260,23 @@
                 : '<div style="font-family:var(--mono);font-size:0.75rem;color:var(--text-dim)">No saved URLs</div>';
         }
 
+        window._toolShortcuts = [
+            { desc: 'Connect / Disconnect', keys: ['Ctrl', 'Enter'] },
+            { desc: 'Send message', keys: ['Ctrl', 'Enter', '(in msg box)'] },
+            { desc: 'Clear log', keys: ['Ctrl', 'Shift', 'X'] },
+            { desc: 'Save URL', keys: ['Ctrl', 'Shift', 'S'] },
+        ];
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
-
         renderSaved();
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromURL({ url: 'ws-url' });
+            document.addEventListener('keydown', e => {
+                if (e.ctrlKey || e.metaKey) {
+                    if (e.shiftKey && e.key === 'X') { e.preventDefault(); clearLog(); }
+                    if (e.shiftKey && e.key === 'S') { e.preventDefault(); saveUrl(); }
+                }
+            });
+        });
     </script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="DevBox — SVG Optimizer and SVG to JSX converter">
     <title>SVG Optimizer — DevBox</title>
@@ -10,6 +10,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <style>
         .svg-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         @media(max-width:700px) { .svg-layout { grid-template-columns: 1fr; } }
@@ -31,6 +37,9 @@
         .drop-zone { border: 2px dashed var(--border); border-radius: var(--r); padding: 16px; text-align: center; font-family: var(--mono); font-size: 0.78rem; color: var(--text-dim); cursor: pointer; transition: all 0.15s; margin-bottom: 10px; }
         .drop-zone:hover, .drop-zone.drag-over { border-color: var(--orange, #ff9f4a); color: var(--orange, #ff9f4a); }
     </style>
+    <meta property="og:title" content="SVG Optimizer — DevBox">
+    <meta property="og:description" content="Optimize, minify and convert SVG to React JSX or data URI">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -75,6 +84,7 @@
                                 <div class="panel-actions">
                                     <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
                                     <button class="btn btn-ghost" onclick="clearInput()">Clear</button>
+                                    <button class="share-btn" onclick="saveToURL({q:'svg-input'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
                                 </div>
                             </div>
                             <textarea class="code-editor" id="svg-input" placeholder="Paste SVG code here…" oninput="process()"></textarea>
@@ -257,7 +267,7 @@
             a.click();
         }
 
-        function clearInput() { document.getElementById('svg-input').value = ''; process(); }
+        function clearInput() { document.getElementById('svg-input').value = ''; process(); history.replaceState(null,'',location.pathname); }
 
         function loadSample() {
             document.getElementById('svg-input').value = `<?xml version="1.0" encoding="UTF-8"?>
@@ -280,6 +290,22 @@
         }
 
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+
+        window._toolShortcuts = [
+            { desc: 'Copy output', keys: ['Ctrl', 'Shift', 'C'] },
+            { desc: 'Download output', keys: ['Ctrl', 'Shift', 'D'] },
+            { desc: 'Clear input', keys: ['Ctrl', 'Shift', 'X'] },
+            { desc: 'Switch mode (Optimize/JSX/URI)', keys: ['Ctrl', 'Tab'] },
+        ];
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey || e.metaKey) {
+                if (e.shiftKey && e.key === 'C') { e.preventDefault(); copyOutput(); }
+                if (e.shiftKey && e.key === 'D') { e.preventDefault(); downloadOutput(); }
+                if (e.shiftKey && e.key === 'X') { e.preventDefault(); clearInput(); }
+                if (e.key === 'Tab') { e.preventDefault(); const modes = ['optimize','jsx','b64']; setMode(modes[(modes.indexOf(currentMode) + 1) % modes.length]); }
+            }
+        });
+        document.addEventListener('DOMContentLoaded', () => loadFromURL({ q: 'svg-input' }, process));
     </script>
 </body>
 </html>

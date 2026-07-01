@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Calculate subnet info from IP and CIDR notation">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IP Calculator — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <meta property="og:title" content="IP Calculator — DevBox">
     <meta property="og:description" content="Calculate subnet info from IP and CIDR notation">
     <meta property="og:type" content="website">
@@ -39,6 +45,7 @@
                     </div>
                     <div class="input-row" style="border-bottom:none">
                         <input type="text" id="ipInput" placeholder="192.168.1.100/24" oninput="calcIP()" style="font-family:var(--mono);font-size:1rem">
+                        <button class="share-btn" onclick="saveToURL({q:'ipInput'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
                     </div>
                 </div>
                 <div class="panel"><div class="panel-bar"><span class="panel-label">Subnet details</span></div><div class="hash-grid" id="ipResults"></div></div>
@@ -63,6 +70,8 @@
 Mask: ${toBin(maskN)}
 Net:  ${toBin(netN)}`; const f = parts[0]; let ipClass = '', pvt = ''; if (f < 128) ipClass = 'A (0–127)'; else if (f < 192) ipClass = 'B (128–191)'; else if (f < 224) ipClass = 'C (192–223)'; else if (f < 240) ipClass = 'D — Multicast'; else ipClass = 'E — Reserved'; if ((parts[0] === 10) || (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) || (parts[0] === 192 && parts[1] === 168)) pvt = 'Private'; else if (parts[0] === 127) pvt = 'Loopback'; else if (parts[0] === 169 && parts[1] === 254) pvt = 'Link-local'; else pvt = 'Public'; cls.innerHTML = `<span style="color:var(--blue)">Class:</span> <strong style="color:var(--text)">${ipClass}</strong><br><span style="color:var(--blue)">Type:</span> <strong style="color:${pvt === 'Public' ? 'var(--green)' : 'var(--yellow)'}">${pvt}</strong><br><span style="color:var(--blue)">Prefix:</span> <strong style="color:var(--text)">/${prefix}</strong>`;
         }
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        document.addEventListener('DOMContentLoaded', () => loadFromURL({ q: 'ipInput' }, calcIP));
     </script>
 </body>
 </html>

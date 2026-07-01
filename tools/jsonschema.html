@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="DevBox — Generate JSON Schema from a JSON sample">
     <title>JSON Schema Generator — DevBox</title>
@@ -10,6 +10,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <style>
         .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         @media(max-width:700px) { .two-col { grid-template-columns: 1fr; } }
@@ -21,6 +27,9 @@
         .opts-row label { font-family: var(--mono); font-size: 0.78rem; color: var(--text-dim); display: flex; align-items: center; gap: 5px; cursor: pointer; }
         .opts-row input[type=checkbox] { accent-color: var(--yellow); }
     </style>
+    <meta property="og:title" content="JSON Schema Generator — DevBox">
+    <meta property="og:description" content="Infer JSON Schema (Draft 7) from a JSON sample automatically">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="app">
@@ -49,8 +58,10 @@
                             <div class="panel-actions">
                                 <button class="btn btn-ghost" onclick="loadSample()">Sample</button>
                                 <button class="btn btn-ghost" onclick="clearInput()">Clear</button>
+                                <button class="share-btn" onclick="saveToURL({q:'json-input'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
                             </div>
                         </div>
+                        <div class="drop-zone-global" id="schemaDropZone" data-clickable>↑ Drop .json file or click to upload</div>
                         <textarea class="code-editor" id="json-input" placeholder='Paste JSON here…' oninput="generate()"></textarea>
                         <div class="error-msg" id="error-msg"></div>
                     </div>
@@ -160,6 +171,27 @@
         }
 
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+
+        window._toolShortcuts = [
+            { desc: 'Load sample JSON', keys: ['Ctrl', 'Shift', 'L'] },
+            { desc: 'Copy schema output', keys: ['Ctrl', 'Shift', 'C'] },
+            { desc: 'Clear input', keys: ['Ctrl', 'Shift', 'X'] },
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initDropZone('#schemaDropZone', ['.json','application/json'], (text) => {
+                document.getElementById('json-input').value = text;
+                generate();
+            });
+            loadFromURL({ q: 'json-input' }, generate);
+            document.addEventListener('keydown', e => {
+                if (e.ctrlKey || e.metaKey) {
+                    if (e.shiftKey && e.key === 'L') { e.preventDefault(); loadSample(); }
+                    if (e.shiftKey && e.key === 'C') { e.preventDefault(); copyOutput(); }
+                    if (e.shiftKey && e.key === 'X') { e.preventDefault(); clearInput(); }
+                }
+            });
+        });
     </script>
 </body>
 </html>

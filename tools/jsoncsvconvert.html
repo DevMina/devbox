@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Convert between JSON arrays and CSV format">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON ↔ CSV — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <meta property="og:title" content="JSON ↔ CSV — DevBox">
     <meta property="og:description" content="Convert between JSON arrays and CSV format">
     <meta property="og:type" content="website">
@@ -35,9 +41,11 @@
                             <button class="btn btn-green" onclick="jsonToCsv()">JSON → CSV</button>
                             <button class="btn btn-ghost" onclick="csvToJson()">CSV → JSON</button>
                             <button class="btn btn-ghost" onclick="jcSample()">Sample</button>
-                            <button class="btn btn-ghost" onclick="document.getElementById('jcInput').value='';document.getElementById('jcOutput').textContent=''">Clear</button>
+                            <button class="btn btn-ghost" onclick="document.getElementById('jcInput').value='';document.getElementById('jcOutput').textContent='';history.replaceState(null,'',location.pathname)">Clear</button>
+                            <button class="share-btn" onclick="saveToURL({q:'jcInput'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
                         </div>
                     </div>
+                    <div class="drop-zone-global" id="jcDropZone" data-clickable>↑ Drop .csv or .json file or click to upload</div>
                     <textarea id="jcInput" style="min-height:180px" placeholder='[{"name":"Alice","age":30},{"name":"Bob","age":25}]'></textarea>
                 </div>
                 <div class="panel">
@@ -64,6 +72,15 @@
         }
         function csvToJson() { try { const lines = document.getElementById('jcInput').value.trim().split('\n'); if (lines.length < 2) { document.getElementById('jcOutput').textContent = 'Error: Need header row + data rows'; return; } const pCsv = line => { const r = []; let cur = '', inQ = false; for (let c of line) { if (c === '"') inQ = !inQ; else if (c === ',' && !inQ) { r.push(cur.trim()); cur = ''; } else cur += c; } r.push(cur.trim()); return r; }; const headers = pCsv(lines[0]); const data = lines.slice(1).filter(l => l.trim()).map(line => { const vals = pCsv(line); const obj = {}; headers.forEach((h, i) => { const v = vals[i] || ''; obj[h] = isNaN(v) || v === '' ? v : Number(v); }); return obj; }); document.getElementById('jcOutput').textContent = JSON.stringify(data, null, 2); } catch (e) { document.getElementById('jcOutput').textContent = 'Error: ' + e.message; } }
         function jcSample() { document.getElementById('jcInput').value = '[{"name":"Alice","age":30,"city":"New York"},{"name":"Bob","age":25,"city":"London"},{"name":"Carol","age":35,"city":"Tokyo"}]'; }
+        document.addEventListener('DOMContentLoaded', () => {
+            initDropZone('#jcDropZone', ['.csv','.json','text/csv','application/json'], (text, name) => {
+                document.getElementById('jcInput').value = text;
+                if (name.endsWith('.csv')) csvToJson();
+                else if (name.endsWith('.json')) jsonToCsv();
+                showToast('Loaded: ' + name);
+            });
+            loadFromURL({ q: 'jcInput' }, jsonToCsv);
+        });
     </script>
 </body>
 </html>

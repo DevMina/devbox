@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme', t = localStorage.getItem(k) || 'dark'; document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); localStorage.setItem(k, th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Convert colors between HEX, RGB, and HSL">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Color Converter — DevBox</title>
@@ -11,6 +11,12 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
     <meta property="og:title" content="Color Converter — DevBox">
     <meta property="og:description" content="Convert colors between HEX, RGB, and HSL">
     <meta property="og:type" content="website">
@@ -29,7 +35,9 @@
                 </div>
 
                 <div class="panel">
-                    <div class="panel-bar"><span class="panel-label">Pick or enter a color</span></div>
+                    <div class="panel-bar"><span class="panel-label">Pick or enter a color</span>
+                        <div class="panel-actions"><button class="share-btn" onclick="saveToURL({c:'colorHexInput'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button></div>
+                    </div>
                     <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border);">
                         <input type="color" id="colorPicker" value="#B07EFF" oninput="colorFromPicker()" style="width:48px;height:48px;border:none;background:none;cursor:pointer;padding:0;border-radius:8px;overflow:hidden;">
                         <input type="text" id="colorHexInput" value="#B07EFF" placeholder="#B07EFF or rgb(…) or hsl(…)" oninput="colorFromText()" style="flex:1;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.9rem;color:var(--text);outline:none;">
@@ -67,7 +75,13 @@
             const [r, g, b] = hexToRgb(hex); const [h, s, l] = rgbToHsl(r, g, b); const lum = luminance(r, g, b), cW = ((1 + 0.05) / (lum + 0.05)).toFixed(2), cB = ((lum + 0.05) / (0 + 0.05)).toFixed(2); document.getElementById('colorSwatch').style.background = hex; document.getElementById('c-hex').textContent = hex.toUpperCase(); document.getElementById('c-rgb').textContent = `rgb(${r}, ${g}, ${b})`; document.getElementById('c-hsl').textContent = `hsl(${h}, ${s}%, ${l}%)`; document.getElementById('c-lum').textContent = lum.toFixed(4); document.getElementById('c-contrast').textContent = `vs white: ${cW}:1 | vs black: ${cB}:1`;
             const sw = document.getElementById('colorSwatches'); sw.innerHTML = ''; for (let i = 10; i <= 90; i += 10) { const mix = (a, b, t) => Math.round(a * (1 - t) + b * t); const isLight = i > 50; const tr = isLight ? mix(r, 255, (i - 50) / 50) : mix(0, r, i / 50); const tg = isLight ? mix(g, 255, (i - 50) / 50) : mix(0, g, i / 50); const tb = isLight ? mix(b, 255, (i - 50) / 50) : mix(0, b, i / 50); const th = '#' + [tr, tg, tb].map(v => Math.max(0, Math.min(255, v)).toString(16).padStart(2, '0')).join(''); const div = document.createElement('div'); div.title = th.toUpperCase(); div.style.cssText = `width:40px;height:40px;border-radius:6px;background:${th};cursor:pointer;border:1px solid var(--border);flex-shrink:0;`; div.onclick = () => { document.getElementById('colorPicker').value = th; document.getElementById('colorHexInput').value = th; applyColor(th); }; sw.appendChild(div); }
         }
-        document.addEventListener('DOMContentLoaded', () => applyColor('#B07EFF'));
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(location.search);
+            const c = params.get('c');
+            if (c) { document.getElementById('colorHexInput').value = c; colorFromText(); }
+            else applyColor('#B07EFF');
+        });
     </script>
 </body>
 </html>
