@@ -557,12 +557,16 @@ function closeSettingsPanel() {
 let _pwaInstallEvent = null;
 
 function initPWA() {
-    // Register service worker
+    // Service worker retired — see sw.js for why it's kept as a kill switch
+    // rather than deleted outright. New visitors no longer register one.
     if ('serviceWorker' in navigator) {
-        const swPath = location.pathname.includes('/tools/')
-            ? '../sw.js' : './sw.js';
-        navigator.serviceWorker.register(swPath, { scope: location.pathname.includes('/tools/') ? '../' : './' })
-            .catch(() => {}); // Fail silently if not served over HTTPS
+        navigator.serviceWorker.getRegistrations().then(regs => {
+            regs.forEach(reg => {
+                // If an old worker is somehow already controlling this page,
+                // point it at the retirement script so it cleans itself up.
+                reg.update().catch(() => {});
+            });
+        }).catch(() => {});
     }
 
     // Listen for install prompt
