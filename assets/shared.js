@@ -557,16 +557,14 @@ function closeSettingsPanel() {
 let _pwaInstallEvent = null;
 
 function initPWA() {
-    // Service worker retired — see sw.js for why it's kept as a kill switch
-    // rather than deleted outright. New visitors no longer register one.
+    // Register the service worker. It's network-first for HTML (so edits
+    // always show up on reload) and only cache-first for static assets --
+    // see sw.js for details. A registered SW with a fetch handler is also
+    // what makes the install prompt below eligible to fire at all.
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(regs => {
-            regs.forEach(reg => {
-                // If an old worker is somehow already controlling this page,
-                // point it at the retirement script so it cleans itself up.
-                reg.update().catch(() => {});
-            });
-        }).catch(() => {});
+        const swPath = location.pathname.includes('/tools/') ? '../sw.js' : './sw.js';
+        navigator.serviceWorker.register(swPath, { scope: location.pathname.includes('/tools/') ? '../' : './' })
+            .catch(() => {}); // Fail silently if not served over HTTPS
     }
 
     // Listen for install prompt

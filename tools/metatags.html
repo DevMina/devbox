@@ -319,7 +319,7 @@
             document.getElementById('ogDesc').textContent = desc || 'Page description…';
             document.getElementById('ogSite').textContent = (site || (url ? new URL(url.startsWith('http') ? url : 'https://' + url).hostname : 'EXAMPLE.COM')).toUpperCase();
             const ogImg = document.getElementById('ogImgWrap');
-            if (img) { ogImg.innerHTML = `<img src="${esc(img)}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.textContent='🖼 Image failed to load'">`; }
+            if (img) { ogImg.innerHTML = `<img src="${esc(img)}" alt="Social share preview" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.textContent='🖼 Image failed to load'">`; }
             else { ogImg.innerHTML = '🖼 No image set'; }
 
             // Build output
