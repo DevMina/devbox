@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changelog — DevBox</title>
+    <meta name="description" content="DevBox — Recent updates, new tools, and fixes">
+    <link rel="alternate" type="application/rss+xml" title="DevBox Changelog" href="changelog.xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0A0C10">
+    <meta property="og:title" content="Changelog — DevBox">
+    <meta property="og:description" content="Recent updates, new tools, and fixes">
+    <meta property="og:type" content="website">
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content" style="min-width:0;max-width:760px">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">✓</div>
+                    <div>
+                        <div class="tool-title">Changelog</div>
+                        <div class="tool-desc">What's new in DevBox — <a href="changelog.xml" style="color:var(--text-dim)">RSS feed</a></div>
+                    </div>
+                </div>
+
+                <div id="changelogList"></div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved. &nbsp;·&nbsp; <a href="contact.html" style="color:var(--text-dim);text-decoration:none">Contact</a>
+            </footer>
+        </main><!-- /content-wrap -->
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="assets/shared.js" defer></script>
+    <script src="assets/sidebar.js" defer></script>
+    <script>
+        // Keep this in sync with changelog.xml — both are generated from the
+        // same list of entries so the page and the RSS feed never drift apart.
+        const CHANGELOG = [
+            {
+                date: "2026-07-05",
+                title: "Cheatsheets, embeddable tools, and an automated test suite",
+                items: [
+                    "Added a Cheatsheets section: Regex, Git, Bash & Linux, and Docker quick references, searchable and cross-linked with related tools.",
+                    "Added an Embed Generator — any tool or cheatsheet can now be dropped into another site or wiki via a copy-paste &lt;iframe&gt; snippet.",
+                    "Added structured data (JSON-LD) to every tool and cheatsheet page for richer search engine results.",
+                    "Added an automated regression test suite covering every real bug class this project has hit, wired into CI so it runs on every push."
+                ]
+            },
+            {
+                date: "2026-07-04",
+                title: "SEO foundations",
+                items: [
+                    "Added a sitemap.xml covering every page and a robots.txt pointing to it.",
+                    "Verified the site behaves correctly when deployed under a subpath (e.g. a GitHub Pages project site) rather than a domain root."
+                ]
+            },
+            {
+                date: "2026-07-02",
+                title: "PWA support restored, safely",
+                items: [
+                    "Brought back service-worker-backed installability (\"Add to Home Screen\") without reintroducing stale cached pages — HTML is now always fetched fresh when online, with the cache used only as an offline fallback."
+                ]
+            },
+            {
+                date: "2026-07-01",
+                title: "Cross-browser fixes",
+                items: [
+                    "Fixed click-to-upload silently failing in some browsers (the hidden file input wasn't being attached to the page before being triggered).",
+                    "Fixed the share button's style to match the rest of the site's buttons.",
+                    "Removed an unnecessary service worker that was causing edited pages to keep showing stale content."
+                ]
+            },
+            {
+                date: "2026-06-30",
+                title: "Stability pass",
+                items: [
+                    "Fixed the Regex Tester freezing the tab on catastrophic-backtracking patterns.",
+                    "Fixed the Diff Checker hanging on very long single lines (e.g. minified code).",
+                    "Fixed pages breaking entirely when localStorage is blocked (private browsing, strict cookie policies).",
+                    "Reorganized the tool sidebar into clearer categories."
+                ]
+            }
+        ];
+
+        function renderChangelog() {
+            const el = document.getElementById('changelogList');
+            el.innerHTML = CHANGELOG.map(entry => `
+                <div class="panel" style="margin-bottom:16px">
+                    <div style="padding:16px 18px 4px">
+                        <div style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em">${entry.date}</div>
+                        <div style="font-size:1rem;font-weight:700;color:var(--text-bright);margin-top:4px">${entry.title}</div>
+                    </div>
+                    <ul style="margin:0;padding:10px 18px 16px 34px;font-size:0.85rem;color:var(--text-dim);line-height:1.7">
+                        ${entry.items.map(i => `<li>${i}</li>`).join('')}
+                    </ul>
+                </div>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', renderChangelog);
+    </script>
+</body>
+</html>

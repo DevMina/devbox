@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://devmina.github.io/devbox/sitemap.xml

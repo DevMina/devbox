@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>DevBox Changelog</title>
+    <link>https://devmina.github.io/devbox/changelog.html</link>
+    <description>Recent updates, new tools, and fixes on DevBox</description>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 05 Jul 2026 12:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Cheatsheets, embeddable tools, and an automated test suite</title>
+      <link>https://devmina.github.io/devbox/changelog.html</link>
+      <guid isPermaLink="false">devbox-changelog-2026-07-05</guid>
+      <pubDate>Sun, 05 Jul 2026 12:00:00 +0000</pubDate>
+      <description><![CDATA[<ul><li>Added a Cheatsheets section: Regex, Git, Bash &amp; Linux, and Docker quick references, searchable and cross-linked with related tools.</li><li>Added an Embed Generator -- any tool or cheatsheet can now be dropped into another site or wiki via a copy-paste &lt;iframe&gt; snippet.</li><li>Added structured data (JSON-LD) to every tool and cheatsheet page for richer search engine results.</li><li>Added an automated regression test suite covering every real bug class this project has hit, wired into CI so it runs on every push.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>SEO foundations</title>
+      <link>https://devmina.github.io/devbox/changelog.html</link>
+      <guid isPermaLink="false">devbox-changelog-2026-07-04</guid>
+      <pubDate>Sat, 04 Jul 2026 12:00:00 +0000</pubDate>
+      <description><![CDATA[<ul><li>Added a sitemap.xml covering every page and a robots.txt pointing to it.</li><li>Verified the site behaves correctly when deployed under a subpath (e.g. a GitHub Pages project site) rather than a domain root.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>PWA support restored, safely</title>
+      <link>https://devmina.github.io/devbox/changelog.html</link>
+      <guid isPermaLink="false">devbox-changelog-2026-07-02</guid>
+      <pubDate>Thu, 02 Jul 2026 12:00:00 +0000</pubDate>
+      <description><![CDATA[<ul><li>Brought back service-worker-backed installability ("Add to Home Screen") without reintroducing stale cached pages -- HTML is now always fetched fresh when online, with the cache used only as an offline fallback.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>Cross-browser fixes</title>
+      <link>https://devmina.github.io/devbox/changelog.html</link>
+      <guid isPermaLink="false">devbox-changelog-2026-07-01</guid>
+      <pubDate>Wed, 01 Jul 2026 12:00:00 +0000</pubDate>
+      <description><![CDATA[<ul><li>Fixed click-to-upload silently failing in some browsers (the hidden file input wasn't being attached to the page before being triggered).</li><li>Fixed the share button's style to match the rest of the site's buttons.</li><li>Removed an unnecessary service worker that was causing edited pages to keep showing stale content.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>Stability pass</title>
+      <link>https://devmina.github.io/devbox/changelog.html</link>
+      <guid isPermaLink="false">devbox-changelog-2026-06-30</guid>
+      <pubDate>Tue, 30 Jun 2026 12:00:00 +0000</pubDate>
+      <description><![CDATA[<ul><li>Fixed the Regex Tester freezing the tab on catastrophic-backtracking patterns.</li><li>Fixed the Diff Checker hanging on very long single lines (e.g. minified code).</li><li>Fixed pages breaking entirely when localStorage is blocked (private browsing, strict cookie policies).</li><li>Reorganized the tool sidebar into clearer categories.</li></ul>]]></description>
+    </item>
+  </channel>
+</rss>

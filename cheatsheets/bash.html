@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
+    <meta name="description" content="DevBox — Quick reference for common shell commands">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bash & Linux Cheatsheet — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
+    <meta property="og:title" content="Bash & Linux Cheatsheet — DevBox">
+    <meta property="og:description" content="Quick reference for common shell commands">
+    <meta property="og:type" content="website">
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Bash & Linux Cheatsheet",
+    "description": "Quick reference for common shell commands",
+    "url": "https://devmina.github.io/devbox/cheatsheets/bash.html",
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "DevBox",
+        "url": "https://devmina.github.io/devbox/"
+    }
+}
+    </script>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">>_</div>
+                    <div>
+                        <div class="tool-title">Bash & Linux Cheatsheet</div>
+                        <div class="tool-desc">Quick reference for common shell commands</div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-bottom:14px">
+                    <div class="panel-bar"><span class="panel-label">Search</span>
+                        <div class="panel-actions"><button class="share-btn" onclick="saveToURL({q:'csSearch'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button></div>
+                    </div>
+                    <div class="input-row" style="border-bottom:none">
+                        <input type="text" id="csSearch" placeholder="Search commands… e.g. permissions, grep, tar" oninput="renderCS()">
+                    </div>
+                </div>
+                
+                <div id="csList"></div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </main><!-- /content-wrap -->
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        const CS_ENTRIES = [["ls -la", "List all files, including hidden, with details", "Files & Navigation"], ["cd <dir>", "Change directory", "Files & Navigation"], ["pwd", "Print working directory", "Files & Navigation"], ["cp <src> <dest>", "Copy a file", "Files & Navigation"], ["cp -r <src> <dest>", "Copy a directory recursively", "Files & Navigation"], ["mv <src> <dest>", "Move or rename a file", "Files & Navigation"], ["rm <file>", "Delete a file", "Files & Navigation"], ["rm -rf <dir>", "Force-delete a directory recursively", "Files & Navigation"], ["mkdir -p <dir>", "Create a directory (and parents if needed)", "Files & Navigation"], ["touch <file>", "Create an empty file / update timestamp", "Files & Navigation"], ["find . -name \"*.js\"", "Find files matching a pattern", "Search"], ["grep -r \"text\" .", "Search recursively for text in files", "Search"], ["grep -ri \"text\" .", "Case-insensitive recursive search", "Search"], ["locate <file>", "Find a file by name using the system index", "Search"], ["which <cmd>", "Show the path of a command", "Search"], ["chmod +x <file>", "Make a file executable", "Permissions"], ["chmod 755 <file>", "Set rwxr-xr-x permissions", "Permissions"], ["chown user:group <file>", "Change file owner and group", "Permissions"], ["sudo <cmd>", "Run a command as superuser", "Permissions"], ["ps aux", "List all running processes", "Processes"], ["kill <pid>", "Terminate a process by ID", "Processes"], ["kill -9 <pid>", "Force-kill a process", "Processes"], ["top", "Live view of running processes", "Processes"], ["jobs", "List background jobs in this shell", "Processes"], ["bg / fg", "Resume a job in background / foreground", "Processes"], ["curl <url>", "Fetch a URL", "Networking"], ["curl -O <url>", "Download a file, keep its filename", "Networking"], ["wget <url>", "Download a file", "Networking"], ["ssh user@host", "Connect to a remote machine", "Networking"], ["scp <file> user@host:<path>", "Copy a file over SSH", "Networking"], ["ping <host>", "Test connectivity to a host", "Networking"], ["cat <file>", "Print a file's contents", "Text Processing"], ["head -n 20 <file>", "Print the first 20 lines", "Text Processing"], ["tail -f <file>", "Follow a file's new output live", "Text Processing"], ["sort <file>", "Sort lines alphabetically", "Text Processing"], ["uniq", "Remove adjacent duplicate lines", "Text Processing"], ["wc -l <file>", "Count lines in a file", "Text Processing"], ["awk '{print $1}'", "Print the first column of each line", "Text Processing"], ["sed 's/foo/bar/g'", "Replace all occurrences of foo with bar", "Text Processing"], ["df -h", "Show disk space usage, human-readable", "System"], ["du -sh <dir>", "Show a directory's total size", "System"], ["tar -xzvf <file>.tar.gz", "Extract a gzipped tarball", "System"], ["tar -czvf <file>.tar.gz <dir>", "Create a gzipped tarball", "System"], ["history", "Show command history", "System"], ["alias ll='ls -la'", "Create a shortcut command", "System"]];
+        const CS_COLORS = {"Files & Navigation": "var(--green)", "Search": "var(--cyan)", "Permissions": "var(--red)", "Processes": "var(--purple)", "Networking": "var(--blue)", "Text Processing": "var(--yellow)", "System": "var(--orange)"};
+        function renderCS() {
+            const q = document.getElementById('csSearch').value.toLowerCase();
+            const filtered = q ? CS_ENTRIES.filter(([cmd, desc, group]) => cmd.toLowerCase().includes(q) || desc.toLowerCase().includes(q) || group.toLowerCase().includes(q)) : CS_ENTRIES;
+            const byGroup = {};
+            filtered.forEach(e => { if (!byGroup[e[2]]) byGroup[e[2]] = []; byGroup[e[2]].push(e); });
+            let html = '';
+            Object.keys(byGroup).forEach(group => {
+                const color = CS_COLORS[group] || 'var(--text-dim)';
+                html += `<div style="margin-bottom:14px"><div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${color};padding:8px 0 6px">${group}</div><div class="panel" style="margin:0"><div class="hash-grid">`;
+                byGroup[group].forEach(([cmd, desc]) => {
+                    html += `<div class="hash-row"><div style="font-family:var(--mono);font-weight:600;font-size:0.85rem;color:var(--text-bright);min-width:170px;flex-shrink:0;word-break:break-word">${cmd.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div><div style="flex:1;min-width:0;font-size:0.78rem;color:var(--text-dim);line-height:1.4">${desc}</div><button class="uuid-copy" onclick="copy('${cmd.replace(/`/g, '\\`').replace(/'/g,"\\'")}')">⎘</button></div>`;
+                });
+                html += '</div></div></div>';
+            });
+            document.getElementById('csList').innerHTML = html || '<div style="padding:20px;color:var(--text-dim);text-align:center">No results found.</div>';
+        }
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        document.addEventListener('DOMContentLoaded', () => loadFromURL({q:'csSearch'}, renderCS) || renderCS());
+    </script>
+</body>
+</html>

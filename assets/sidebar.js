@@ -1,114 +1,131 @@
 // ── DevBox Sidebar Navigation ──
-// Detects if we're at root (index.html) or inside /tools/ and sets paths accordingly
+// Detects if we're at root (index.html), inside /tools/, or inside /cheatsheets/
+// and sets relative paths accordingly.
+
+const SIDEBAR_ITEMS = [
+    { section: 'Format' },
+    { href: 'json.html', label: 'JSON Formatter', dot: '--green' },
+    { href: 'jsonschema.html', label: 'JSON Schema Generator', dot: '--yellow' },
+    { href: 'xml.html', label: 'XML Formatter', dot: '--orange' },
+    { href: 'sqlformat.html', label: 'SQL Formatter', dot: '--orange' },
+    { href: 'cssminify.html', label: 'CSS Minifier', dot: '--pink' },
+    { href: 'htmlbeautify.html', label: 'HTML Beautifier', dot: '--orange' },
+    { href: 'envparser.html', label: '.env Parser', dot: '--yellow' },
+
+    { section: 'Inspect' },
+    { href: 'diff.html', label: 'Diff Checker', dot: '--teal' },
+    { href: 'regex.html', label: 'Regex Tester', dot: '--red' },
+    { href: 'jsonpath.html', label: 'JSON Path', dot: '--green' },
+    { href: 'useragent.html', label: 'User Agent', dot: '--teal' },
+    { href: 'keytester.html', label: 'Key Tester', dot: '--blue' },
+    { href: 'urlparser.html', label: 'URL Parser', dot: '--cyan' },
+    { href: 'seotools.html', label: 'SEO Tools', dot: '--green' },
+
+    { section: 'Encode' },
+    { href: 'base64.html', label: 'Base64', dot: '--blue' },
+    { href: 'filebase64.html', label: 'File → Base64', dot: '--blue' },
+    { href: 'url.html', label: 'URL Encoder', dot: '--cyan' },
+    { href: 'htmlentity.html', label: 'HTML Entities', dot: '--green' },
+    { href: 'unicode.html', label: 'Unicode Converter', dot: '--purple' },
+    { href: 'stringescape.html', label: 'String Escape', dot: '--purple' },
+    { href: 'morse.html', label: 'Morse Code', dot: '--yellow' },
+
+    { section: 'Security' },
+    { href: 'password.html', label: 'Password', dot: '--pink' },
+    { href: 'textencrypt.html', label: 'Text Encrypt', dot: '--yellow' },
+    { href: 'jwt.html', label: 'JWT Decoder', dot: '--purple' },
+    { href: 'jwtencoder.html', label: 'JWT Encoder', dot: '--purple' },
+
+    { section: 'Generate' },
+    { href: 'uuid.html', label: 'UUID', dot: '--orange' },
+    { href: 'lorem.html', label: 'Lorem Ipsum', dot: '--cyan' },
+    { href: 'fakedata.html', label: 'Fake Data Generator', dot: '--orange' },
+    { href: 'qrcode.html', label: 'QR Code', dot: '--green' },
+    { href: 'favicon.html', label: 'Favicon', dot: '--cyan' },
+    { href: 'hash.html', label: 'Hash Generator', dot: '--cyan' },
+
+    { section: 'Color' },
+    { href: 'color.html', label: 'Color Converter', dot: '--pink' },
+    { href: 'contrast.html', label: 'Contrast Checker', dot: '--green' },
+    { href: 'colorpalette.html', label: 'Color Palette', dot: '--pink' },
+    { href: 'imagepalette.html', label: 'Image Palette', dot: '--orange' },
+    { href: 'colorblind.html', label: 'Color Blindness Sim', dot: '--pink' },
+
+    { section: 'CSS Builders' },
+    { href: 'gradient.html', label: 'CSS Gradient', dot: '--pink' },
+    { href: 'boxshadow.html', label: 'Box Shadow Builder', dot: '--pink' },
+    { href: 'flexbox.html', label: 'Flexbox Generator', dot: '--cyan' },
+    { href: 'cssgrid.html', label: 'CSS Grid Generator', dot: '--green' },
+    { href: 'breakpoints.html', label: 'Breakpoint Tester', dot: '--cyan' },
+
+    { section: 'API & Network' },
+    { href: 'curlbuilder.html', label: 'curl Builder', dot: '--cyan' },
+    { href: 'apitester.html', label: 'API Tester', dot: '--teal' },
+    { href: 'graphql.html', label: 'GraphQL Playground', dot: '--pink' },
+    { href: 'websocket.html', label: 'WebSocket Client', dot: '--green' },
+    { href: 'openapi.html', label: 'OpenAPI Viewer', dot: '--purple' },
+    { href: 'nettools.html', label: 'Network Tools', dot: '--blue' },
+    { href: 'ipcalc.html', label: 'IP Calculator', dot: '--blue' },
+    { href: 'httpstatus.html', label: 'HTTP Status', dot: '--red' },
+
+    { section: 'Build' },
+    { href: 'headerbuilder.html', label: 'Header Builder', dot: '--purple' },
+    { href: 'tablebuilder.html', label: 'Table Builder', dot: '--orange' },
+    { href: 'metatags.html', label: 'Meta Tag Generator', dot: '--purple' },
+    { href: 'gitignore.html', label: '.gitignore Generator', dot: '--teal' },
+    { href: 'svgtools.html', label: 'SVG Optimizer', dot: '--orange' },
+    { href: 'embed.html', label: 'Embed Generator', dot: '--teal' },
+
+    { section: 'Convert' },
+    { href: 'numbase.html', label: 'Number Base', dot: '--orange' },
+    { href: 'byteconvert.html', label: 'Byte Converter', dot: '--purple' },
+    { href: 'aspectratio.html', label: 'Aspect Ratio', dot: '--cyan' },
+    { href: 'pxrem.html', label: 'px ↔ rem', dot: '--cyan' },
+    { href: 'jsoncsvconvert.html', label: 'JSON ↔ CSV', dot: '--green' },
+    { href: 'numberfmt.html', label: 'Number Format', dot: '--red' },
+    { href: 'matheval.html', label: 'Math Evaluator', dot: '--yellow' },
+    { href: 'yaml.html', label: 'YAML ↔ JSON', dot: '--yellow' },
+    { href: 'xmljson.html', label: 'XML ↔ JSON', dot: '--orange' },
+    { href: 'unitconvert.html', label: 'Unit Converter', dot: '--cyan' },
+    { href: 'toml.html', label: 'TOML ↔ JSON', dot: '--red' },
+    { href: 'timestamp.html', label: 'Date & Time Tools', dot: '--yellow' },
+    { href: 'cron.html', label: 'Cron Parser', dot: '--yellow' },
+
+    { section: 'Text' },
+    { href: 'textstats.html', label: 'Text Stats', dot: '--blue' },
+    { href: 'charcounter.html', label: 'Char Counter', dot: '--teal' },
+    { href: 'caseconvert.html', label: 'Case Converter', dot: '--green' },
+    { href: 'linesorter.html', label: 'Line Sorter', dot: '--yellow' },
+    { href: 'markdown.html', label: 'Markdown Preview', dot: '--blue' },
+    { href: 'asciiart.html', label: 'ASCII Art', dot: '--purple' },
+    { href: 'slugify.html', label: 'Slug Generator', dot: '--green' },
+
+    { section: 'Productivity' },
+    { href: 'pomodoro.html', label: 'Pomodoro Timer', dot: '--red' },
+    { href: 'countdown.html', label: 'Countdown', dot: '--pink' },
+    { href: 'todo.html', label: 'Todo List', dot: '--blue' },
+    { href: 'snippets.html', label: 'Snippet Manager', dot: '--teal' },
+
+    { section: 'Cheatsheets' },
+    { href: 'regex-cheatsheet.html', label: 'Regex Cheatsheet', dot: '--blue', cs: true },
+    { href: 'git.html', label: 'Git Cheatsheet', dot: '--orange', cs: true },
+    { href: 'bash.html', label: 'Bash & Linux Cheatsheet', dot: '--green', cs: true },
+    { href: 'docker.html', label: 'Docker Cheatsheet', dot: '--cyan', cs: true },
+];
 
 function buildSidebar() {
-    const isRoot = !window.location.pathname.includes('/tools/');
-    const base = isRoot ? 'tools/' : '';
+    const path = window.location.pathname;
+    const isInTools = path.includes('/tools/');
+    const isInCheatsheets = path.includes('/cheatsheets/');
+    const isRoot = !isInTools && !isInCheatsheets;
+
+    // Base path to reach TOOL pages from wherever we currently are
+    const base = isRoot ? 'tools/' : (isInTools ? '' : '../tools/');
+    // Base path to reach CHEATSHEET pages from wherever we currently are
+    const csBase = isRoot ? 'cheatsheets/' : (isInCheatsheets ? '' : '../cheatsheets/');
     const home = isRoot ? 'index.html' : '../index.html';
 
-    const ITEMS = [
-        { section: 'Format' },
-        { href: 'json.html', label: 'JSON Formatter', dot: '--green' },
-        { href: 'jsonschema.html', label: 'JSON Schema Generator', dot: '--yellow' },
-        { href: 'xml.html', label: 'XML Formatter', dot: '--orange' },
-        { href: 'sqlformat.html', label: 'SQL Formatter', dot: '--orange' },
-        { href: 'cssminify.html', label: 'CSS Minifier', dot: '--pink' },
-        { href: 'htmlbeautify.html', label: 'HTML Beautifier', dot: '--orange' },
-        { href: 'envparser.html', label: '.env Parser', dot: '--yellow' },
-
-        { section: 'Inspect' },
-        { href: 'diff.html', label: 'Diff Checker', dot: '--teal' },
-        { href: 'regex.html', label: 'Regex Tester', dot: '--red' },
-        { href: 'jsonpath.html', label: 'JSON Path', dot: '--green' },
-        { href: 'useragent.html', label: 'User Agent', dot: '--teal' },
-        { href: 'keytester.html', label: 'Key Tester', dot: '--blue' },
-        { href: 'urlparser.html', label: 'URL Parser', dot: '--cyan' },
-        { href: 'seotools.html', label: 'SEO Tools', dot: '--green' },
-
-        { section: 'Encode' },
-        { href: 'base64.html', label: 'Base64', dot: '--blue' },
-        { href: 'filebase64.html', label: 'File → Base64', dot: '--blue' },
-        { href: 'url.html', label: 'URL Encoder', dot: '--cyan' },
-        { href: 'htmlentity.html', label: 'HTML Entities', dot: '--green' },
-        { href: 'unicode.html', label: 'Unicode Converter', dot: '--purple' },
-        { href: 'stringescape.html', label: 'String Escape', dot: '--purple' },
-        { href: 'morse.html', label: 'Morse Code', dot: '--yellow' },
-
-        { section: 'Security' },
-        { href: 'password.html', label: 'Password', dot: '--pink' },
-        { href: 'textencrypt.html', label: 'Text Encrypt', dot: '--yellow' },
-        { href: 'jwt.html', label: 'JWT Decoder', dot: '--purple' },
-        { href: 'jwtencoder.html', label: 'JWT Encoder', dot: '--purple' },
-
-        { section: 'Generate' },
-        { href: 'uuid.html', label: 'UUID', dot: '--orange' },
-        { href: 'lorem.html', label: 'Lorem Ipsum', dot: '--cyan' },
-        { href: 'fakedata.html', label: 'Fake Data Generator', dot: '--orange' },
-        { href: 'qrcode.html', label: 'QR Code', dot: '--green' },
-        { href: 'favicon.html', label: 'Favicon', dot: '--cyan' },
-        { href: 'hash.html', label: 'Hash Generator', dot: '--cyan' },
-
-        { section: 'Color' },
-        { href: 'color.html', label: 'Color Converter', dot: '--pink' },
-        { href: 'contrast.html', label: 'Contrast Checker', dot: '--green' },
-        { href: 'colorpalette.html', label: 'Color Palette', dot: '--pink' },
-        { href: 'imagepalette.html', label: 'Image Palette', dot: '--orange' },
-        { href: 'colorblind.html', label: 'Color Blindness Sim', dot: '--pink' },
-
-        { section: 'CSS Builders' },
-        { href: 'gradient.html', label: 'CSS Gradient', dot: '--pink' },
-        { href: 'boxshadow.html', label: 'Box Shadow Builder', dot: '--pink' },
-        { href: 'flexbox.html', label: 'Flexbox Generator', dot: '--cyan' },
-        { href: 'cssgrid.html', label: 'CSS Grid Generator', dot: '--green' },
-        { href: 'breakpoints.html', label: 'Breakpoint Tester', dot: '--cyan' },
-
-        { section: 'API & Network' },
-        { href: 'curlbuilder.html', label: 'curl Builder', dot: '--cyan' },
-        { href: 'apitester.html', label: 'API Tester', dot: '--teal' },
-        { href: 'graphql.html', label: 'GraphQL Playground', dot: '--pink' },
-        { href: 'websocket.html', label: 'WebSocket Client', dot: '--green' },
-        { href: 'openapi.html', label: 'OpenAPI Viewer', dot: '--purple' },
-        { href: 'nettools.html', label: 'Network Tools', dot: '--blue' },
-        { href: 'ipcalc.html', label: 'IP Calculator', dot: '--blue' },
-        { href: 'httpstatus.html', label: 'HTTP Status', dot: '--red' },
-
-        { section: 'Build' },
-        { href: 'headerbuilder.html', label: 'Header Builder', dot: '--purple' },
-        { href: 'tablebuilder.html', label: 'Table Builder', dot: '--orange' },
-        { href: 'metatags.html', label: 'Meta Tag Generator', dot: '--purple' },
-        { href: 'gitignore.html', label: '.gitignore Generator', dot: '--teal' },
-        { href: 'svgtools.html', label: 'SVG Optimizer', dot: '--orange' },
-
-        { section: 'Convert' },
-        { href: 'numbase.html', label: 'Number Base', dot: '--orange' },
-        { href: 'byteconvert.html', label: 'Byte Converter', dot: '--purple' },
-        { href: 'aspectratio.html', label: 'Aspect Ratio', dot: '--cyan' },
-        { href: 'pxrem.html', label: 'px ↔ rem', dot: '--cyan' },
-        { href: 'jsoncsvconvert.html', label: 'JSON ↔ CSV', dot: '--green' },
-        { href: 'numberfmt.html', label: 'Number Format', dot: '--red' },
-        { href: 'matheval.html', label: 'Math Evaluator', dot: '--yellow' },
-        { href: 'yaml.html', label: 'YAML ↔ JSON', dot: '--yellow' },
-        { href: 'xmljson.html', label: 'XML ↔ JSON', dot: '--orange' },
-        { href: 'unitconvert.html', label: 'Unit Converter', dot: '--cyan' },
-        { href: 'toml.html', label: 'TOML ↔ JSON', dot: '--red' },
-        { href: 'timestamp.html', label: 'Date & Time Tools', dot: '--yellow' },
-        { href: 'cron.html', label: 'Cron Parser', dot: '--yellow' },
-
-        { section: 'Text' },
-        { href: 'textstats.html', label: 'Text Stats', dot: '--blue' },
-        { href: 'charcounter.html', label: 'Char Counter', dot: '--teal' },
-        { href: 'caseconvert.html', label: 'Case Converter', dot: '--green' },
-        { href: 'linesorter.html', label: 'Line Sorter', dot: '--yellow' },
-        { href: 'markdown.html', label: 'Markdown Preview', dot: '--blue' },
-        { href: 'asciiart.html', label: 'ASCII Art', dot: '--purple' },
-        { href: 'slugify.html', label: 'Slug Generator', dot: '--green' },
-
-        { section: 'Productivity' },
-        { href: 'pomodoro.html', label: 'Pomodoro Timer', dot: '--red' },
-        { href: 'countdown.html', label: 'Countdown', dot: '--pink' },
-        { href: 'todo.html', label: 'Todo List', dot: '--blue' },
-        { href: 'snippets.html', label: 'Snippet Manager', dot: '--teal' },
-    ];
+    const ITEMS = SIDEBAR_ITEMS;
 
     const currentFile = window.location.pathname.split('/').pop() || 'index.html';
     const chevronSVG = `<svg class="sb-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg>`;
@@ -116,16 +133,29 @@ function buildSidebar() {
     const favBtn = (file, label, starred) => `<button class="sb-fav-btn${starred ? ' starred' : ''}" title="${starred ? 'Remove from favourites' : 'Add to favourites'}" aria-label="Toggle favourite" onclick="toggleSidebarFavorite(event,'${file}','${label.replace(/'/g, "\\'")}')">${starred ? '★' : '☆'}</button>`;
 
     const contactHref = home.replace('index.html', '') + 'contact.html';
+    const changelogHref = home.replace('index.html', '') + 'changelog.html';
+    const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
+    const kbdHint = isMac ? '⌘ K' : 'Ctrl K';
+
     let html = `
     <a class="sidebar-logo" href="${home}">
       <div class="logo-mark">{}</div>
       <div class="logo-text">Dev<span>Box</span></div>
     </a>
+    <button class="sb-search-trigger" onclick="window.openCommandPalette && window.openCommandPalette()">
+      <span class="cmd-palette-icon">🔍</span>
+      <span>Search tools…</span>
+      <span class="cmd-palette-hint">${kbdHint}</span>
+    </button>
     <div class="sb-top-actions">
       <button class="theme-toggle" onclick="window.toggleTheme()">
         <span class="theme-toggle-icon">☀️</span>
         <span class="theme-toggle-label">Light mode</span>
       </button>
+      <a class="sidebar-contact-link" href="${changelogHref}">
+        <span class="theme-toggle-icon">✓</span>
+        <span>Changelog</span>
+      </a>
       <a class="sidebar-contact-link" href="${contactHref}">
         <span class="theme-toggle-icon">✉️</span>
         <span>Contact</span>
@@ -157,9 +187,10 @@ function buildSidebar() {
             const item = byFile[f.file];
             const label = item ? item.label : f.name;
             const dot = item ? item.dot : '--text-dim';
+            const itemBase = item && item.cs ? csBase : base;
             const isActive = currentFile === f.file;
             html += `
-          <a class="nav-item${isActive ? ' active' : ''}" href="${base + f.file}" title="${label}">
+          <a class="nav-item${isActive ? ' active' : ''}" href="${itemBase + f.file}" title="${label}">
             <div class="nav-dot" style="background:var(${dot})"></div>
             <span>${label}</span>
             ${favBtn(f.file, label, true)}
@@ -190,7 +221,7 @@ function buildSidebar() {
         <div class="sb-group-body${isCollapsed ? ' collapsed' : ''}">`;
 
         bodyItems.forEach(item => {
-            const fullHref = base + item.href;
+            const fullHref = (item.cs ? csBase : base) + item.href;
             const isActive = currentFile === item.href;
             html += `
           <a class="nav-item${isActive ? ' active' : ''}" href="${fullHref}" title="${item.label}">
@@ -314,3 +345,157 @@ function renderSidebar() {
 
 document.addEventListener('DOMContentLoaded', renderSidebar);
 document.addEventListener('devbox:favorites-changed', renderSidebar);
+
+// ════════════════════════════════════════════════
+// Command palette — a global fuzzy-search launcher for jumping to any tool
+// or cheatsheet from anywhere on the site via Cmd/Ctrl+K, instead of only
+// being able to search from the homepage.
+// ════════════════════════════════════════════════
+
+function getPaletteEntries() {
+    const path = window.location.pathname;
+    const isInTools = path.includes('/tools/');
+    const isInCheatsheets = path.includes('/cheatsheets/');
+    const isRoot = !isInTools && !isInCheatsheets;
+    const toolsBase = isRoot ? 'tools/' : (isInTools ? '' : '../tools/');
+    const csBase = isRoot ? 'cheatsheets/' : (isInCheatsheets ? '' : '../cheatsheets/');
+    const home = isRoot ? 'index.html' : '../index.html';
+    const rootBase = isRoot ? '' : '../';
+
+    const entries = [
+        { label: 'Home', section: '', href: home, dot: '--text-dim', icon: '⌂' },
+        { label: 'Changelog', section: '', href: rootBase + 'changelog.html', dot: '--text-dim', icon: '✓' },
+        { label: 'Contact', section: '', href: rootBase + 'contact.html', dot: '--text-dim', icon: '✉' },
+    ];
+
+    let currentSection = '';
+    SIDEBAR_ITEMS.forEach(item => {
+        if (item.section) { currentSection = item.section; return; }
+        entries.push({
+            label: item.label,
+            section: currentSection,
+            href: (item.cs ? csBase : toolsBase) + item.href,
+            dot: item.dot,
+            icon: null,
+        });
+    });
+    return entries;
+}
+
+let _paletteEntries = null;
+let _paletteSelected = 0;
+let _paletteFiltered = [];
+
+function buildCommandPaletteDOM() {
+    if (document.getElementById('cmdPaletteBackdrop')) return;
+
+    const backdrop = document.createElement('div');
+    backdrop.className = 'cmd-palette-backdrop';
+    backdrop.id = 'cmdPaletteBackdrop';
+    backdrop.innerHTML = `
+        <div class="cmd-palette" role="dialog" aria-modal="true" aria-label="Search tools">
+            <div class="cmd-palette-input-row">
+                <span class="cmd-palette-icon">🔍</span>
+                <input type="text" id="cmdPaletteInput" placeholder="Jump to a tool or cheatsheet…" autocomplete="off" spellcheck="false">
+                <span class="cmd-palette-hint">Esc</span>
+            </div>
+            <div class="cmd-palette-results" id="cmdPaletteResults"></div>
+        </div>`;
+    document.body.appendChild(backdrop);
+
+    const input = document.getElementById('cmdPaletteInput');
+
+    backdrop.addEventListener('mousedown', e => {
+        if (e.target === backdrop) closeCommandPalette();
+    });
+
+    input.addEventListener('input', () => {
+        renderPaletteResults(input.value);
+    });
+
+    input.addEventListener('keydown', e => {
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            movePaletteSelection(1);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            movePaletteSelection(-1);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            const chosen = _paletteFiltered[_paletteSelected];
+            if (chosen) window.location.href = chosen.href;
+        }
+        // Escape is handled centrally in shared.js's initKeyboard, which checks
+        // isCommandPaletteOpen() -- kept in one place rather than duplicated.
+    });
+}
+
+function renderPaletteResults(query) {
+    const q = query.trim().toLowerCase();
+    _paletteFiltered = !q
+        ? _paletteEntries
+        : _paletteEntries.filter(e =>
+            e.label.toLowerCase().includes(q) || e.section.toLowerCase().includes(q));
+    _paletteSelected = 0;
+
+    const results = document.getElementById('cmdPaletteResults');
+    if (!_paletteFiltered.length) {
+        results.innerHTML = `<div class="cmd-palette-empty">No matches for "${query.replace(/</g, '&lt;')}"</div>`;
+        return;
+    }
+
+    results.innerHTML = _paletteFiltered.slice(0, 50).map((e, i) => `
+        <a class="cmd-palette-item${i === 0 ? ' selected' : ''}" href="${e.href}" data-idx="${i}">
+            ${e.icon ? `<span class="cmd-palette-item-icon">${e.icon}</span>` : `<div class="nav-dot" style="background:var(${e.dot})"></div>`}
+            <span class="cmd-palette-item-label">${e.label}</span>
+            ${e.section ? `<span class="cmd-palette-item-section">${e.section}</span>` : ''}
+        </a>
+    `).join('');
+
+    results.querySelectorAll('.cmd-palette-item').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            _paletteSelected = parseInt(el.dataset.idx, 10);
+            updatePaletteSelection();
+        });
+    });
+}
+
+function movePaletteSelection(delta) {
+    if (!_paletteFiltered.length) return;
+    _paletteSelected = (_paletteSelected + delta + _paletteFiltered.length) % _paletteFiltered.length;
+    updatePaletteSelection();
+}
+
+function updatePaletteSelection() {
+    const results = document.getElementById('cmdPaletteResults');
+    results.querySelectorAll('.cmd-palette-item').forEach((el, i) => {
+        el.classList.toggle('selected', i === _paletteSelected);
+    });
+    const selectedEl = results.querySelector('.cmd-palette-item.selected');
+    if (selectedEl) selectedEl.scrollIntoView({ block: 'nearest' });
+}
+
+function isCommandPaletteOpen() {
+    return document.getElementById('cmdPaletteBackdrop')?.classList.contains('open') || false;
+}
+
+function openCommandPalette() {
+    buildCommandPaletteDOM();
+    _paletteEntries = getPaletteEntries();
+    const backdrop = document.getElementById('cmdPaletteBackdrop');
+    const input = document.getElementById('cmdPaletteInput');
+    input.value = '';
+    renderPaletteResults('');
+    backdrop.classList.add('open');
+    // Focus after the element is actually visible, or some browsers won't focus it
+    requestAnimationFrame(() => input.focus());
+}
+
+function closeCommandPalette() {
+    const backdrop = document.getElementById('cmdPaletteBackdrop');
+    if (backdrop) backdrop.classList.remove('open');
+}
+
+window.openCommandPalette = openCommandPalette;
+window.closeCommandPalette = closeCommandPalette;
+window.isCommandPaletteOpen = isCommandPaletteOpen;

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
+    <meta name="description" content="DevBox — Embed any DevBox tool in your own site or wiki">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embed Generator — DevBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="../assets/icon-192.png">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0A0C10">
+    <meta property="og:title" content="Embed Generator — DevBox">
+    <meta property="og:description" content="Embed any DevBox tool in your own site or wiki">
+    <meta property="og:type" content="website">
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Embed Generator",
+    "description": "Embed any DevBox tool in your own site or wiki",
+    "url": "https://devmina.github.io/devbox/tools/embed.html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any (runs in any modern web browser)",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    },
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "DevBox",
+        "url": "https://devmina.github.io/devbox/"
+    }
+}
+    </script>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content" style="min-width:0">
+                <div class="tool-header">
+                    <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">&lt;/&gt;</div>
+                    <div>
+                        <div class="tool-title">Embed Generator</div>
+                        <div class="tool-desc">Embed any DevBox tool in your own site, blog, or wiki</div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-bottom:14px">
+                    <div class="panel-bar"><span class="panel-label">Choose a tool</span></div>
+                    <div class="input-row" style="border-bottom:none">
+                        <select id="embedTool" style="flex:1" onchange="renderEmbed()"></select>
+                    </div>
+                    <div class="input-row">
+                        <span style="font-size:0.8rem;color:var(--text-dim)">Height (px)</span>
+                        <input type="number" id="embedHeightVal" value="600" min="300" max="1200" step="50" style="width:90px" oninput="renderEmbed()">
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-bottom:14px">
+                    <div class="panel-bar"><span class="panel-label">Embed code</span>
+                        <div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('embedCode').textContent)">⎘ Copy</button></div>
+                    </div>
+                    <pre id="embedCode" style="margin:0;padding:14px 16px;font-family:var(--mono);font-size:0.78rem;color:var(--text-bright);white-space:pre-wrap;word-break:break-all"></pre>
+                </div>
+
+                <div class="panel" style="margin-bottom:14px">
+                    <div class="panel-bar"><span class="panel-label">Live preview</span></div>
+                    <div style="padding:14px 16px">
+                        <iframe id="embedPreview" style="width:100%;border:1px solid var(--border);border-radius:8px;display:block" title="Embed preview"></iframe>
+                    </div>
+                </div>
+
+                <div class="panel" style="padding:14px 16px;font-size:0.8rem;color:var(--text-dim);line-height:1.6">
+                    Embedded tools show a small "Powered by DevBox" badge linking back to the full page — your visitors get the tool inline, and get a way back to the rest of DevBox if they want it. All tool logic still runs entirely in the visitor's browser inside the iframe; nothing changes about how the tool itself works.
+                </div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved.
+            </footer>
+
+        </main><!-- /content-wrap -->
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="../assets/shared.js" defer></script>
+    <script src="../assets/sidebar.js" defer></script>
+    <script>
+        function populateEmbedTools() {
+            const sel = document.getElementById('embedTool');
+            const items = (typeof SIDEBAR_ITEMS !== 'undefined' ? SIDEBAR_ITEMS : []).filter(i => i.href);
+            sel.innerHTML = items.map(i => `<option value="${i.href}" data-cs="${i.cs ? '1' : '0'}">${i.label}</option>`).join('');
+            // Default to a broadly useful, self-contained tool
+            const defaultIdx = items.findIndex(i => i.href === 'json.html');
+            if (defaultIdx >= 0) sel.selectedIndex = defaultIdx;
+        }
+
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+
+        function renderEmbed() {
+            const sel = document.getElementById('embedTool');
+            const opt = sel.selectedOptions[0];
+            if (!opt) return;
+            const isCs = opt.dataset.cs === '1';
+            const folder = isCs ? 'cheatsheets' : 'tools';
+            const height = Math.max(200, parseInt(document.getElementById('embedHeightVal').value, 10) || 600);
+
+            const origin = location.origin + location.pathname.replace(/\/tools\/embed\.html$/, '');
+            const src = `${origin}/${folder}/${opt.value}?embed=1`;
+
+            const snippet = `<iframe src="${src}" width="100%" height="${height}" style="border:1px solid #2a3550;border-radius:8px" loading="lazy" title="${opt.textContent} — DevBox"></iframe>`;
+            document.getElementById('embedCode').textContent = snippet;
+
+            const preview = document.getElementById('embedPreview');
+            preview.src = src;
+            preview.style.height = height + 'px';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            populateEmbedTools();
+            renderEmbed();
+        });
+    </script>
+</body>
+</html>

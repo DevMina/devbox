@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DevBox — Convert between TOML and JSON formats instantly">
     <title>TOML ↔ JSON — DevBox</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -60,6 +61,27 @@
     <meta property="og:title" content="TOML ↔ JSON — DevBox">
     <meta property="og:description" content="Convert between TOML and JSON formats instantly">
     <meta property="og:type" content="website">
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "TOML \u2194 JSON",
+    "description": "Convert between TOML and JSON formats instantly",
+    "url": "https://devmina.github.io/devbox/tools/toml.html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any (runs in any modern web browser)",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    },
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "DevBox",
+        "url": "https://devmina.github.io/devbox/"
+    }
+}
+    </script>
 </head>
 <body>
     <div class="app">

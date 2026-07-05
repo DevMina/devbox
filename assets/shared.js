@@ -171,10 +171,16 @@ function initKeyboard() {
             e.preventDefault();
             document.querySelector('.sidebar-toggle')?.click();
         }
-        // Ctrl/Cmd + K → focus search (on homepage)
+        // Ctrl/Cmd + K → open the command palette (works from any page, not just the homepage)
         if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-            const search = document.getElementById('searchInput');
-            if (search) { e.preventDefault(); search.focus(); search.select(); }
+            e.preventDefault();
+            if (typeof window.openCommandPalette === 'function') {
+                window.openCommandPalette();
+            } else {
+                // Fallback for the unlikely case sidebar.js hasn't loaded yet
+                const search = document.getElementById('searchInput');
+                if (search) { search.focus(); search.select(); }
+            }
         }
         // / → focus search (homepage only, when not in input)
         if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
@@ -183,6 +189,11 @@ function initKeyboard() {
         }
         // Escape → close overlays / blur inputs / clear search
         if (e.key === 'Escape') {
+            // Close command palette
+            if (typeof window.isCommandPaletteOpen === 'function' && window.isCommandPaletteOpen()) {
+                window.closeCommandPalette();
+                return;
+            }
             // Close shortcuts overlay
             const shortcutsOpen = document.getElementById('shortcutsBackdrop')?.classList.contains('open');
             if (shortcutsOpen) { closeShortcutsOverlay(); return; }
@@ -634,8 +645,31 @@ function initBackToTop() {
     });
 }
 
+// ── Embed mode ──
+// When a tool page is loaded inside an <iframe> via a snippet from the Embed
+// Generator (tools/embed.html), the URL carries ?embed=1. This hides the
+// sidebar/footer and adds a small "Powered by DevBox" badge linking back to
+// the full page — the embedding site gets a clean widget, DevBox gets a
+// visible attribution/discovery link wherever it's embedded.
+function initEmbedMode() {
+    const params = new URLSearchParams(location.search);
+    if (params.get('embed') !== '1') return;
+
+    document.documentElement.classList.add('embed-mode');
+
+    const canonical = location.href.replace(/[?&]embed=1/, '').replace(/\?$/, '');
+    const badge = document.createElement('a');
+    badge.className = 'embed-badge';
+    badge.href = canonical;
+    badge.target = '_blank';
+    badge.rel = 'noopener noreferrer';
+    badge.innerHTML = '⚡ Powered by <strong>DevBox</strong>';
+    document.body.appendChild(badge);
+}
+
 // ── Init everything on DOM ready ──
 document.addEventListener('DOMContentLoaded', () => {
+    initEmbedMode();
     initSidebar();
     initMobileSidebar();
     injectBreadcrumb();
