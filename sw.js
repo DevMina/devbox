@@ -17,7 +17,7 @@
 // IMPORTANT: bump CACHE if you ever change what's precached below, or want to
 // force-invalidate cached assets for returning visitors -- the activate
 // handler deletes any cache not matching the current name.
-const CACHE = 'devbox-v4';
+const CACHE = 'devbox-v5';
 
 const PRECACHE = [
     './assets/style.css',
@@ -48,8 +48,8 @@ self.addEventListener('fetch', e => {
 
     // HTML documents -- network-first
     const isHTML = e.request.mode === 'navigate' ||
-                   url.pathname.endsWith('.html') ||
-                   url.pathname.endsWith('/');
+        url.pathname.endsWith('.html') ||
+        url.pathname.endsWith('/');
     if (isHTML) {
         e.respondWith(
             fetch(e.request).then(res => {
