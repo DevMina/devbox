@@ -1,5 +1,30 @@
 // ── DevBox Shared Utilities ──
 
+// ── Browser extension bridge ──
+// The DevBox browser extension runs cross-origin (it's injecting a new tab
+// navigation, not running inside the page), so it can't write to this site's
+// sessionStorage before the page loads the way an in-site "Send to" link
+// can. Instead it passes data via a URL parameter, which this bridges into
+// the exact same handoff format tool chaining already uses -- one prefill
+// mechanism, not two to maintain. Runs immediately (this script is `defer`,
+// so it always executes before DOMContentLoaded) so it's in place before any
+// page's own receiveHandoff() call runs.
+(function bridgeExtensionPrefill() {
+    try {
+        const params = new URLSearchParams(location.search);
+        const encoded = params.get('ext_prefill');
+        if (!encoded) return;
+        const value = decodeURIComponent(atob(encoded));
+        sessionStorage.setItem('devbox_handoff', JSON.stringify({
+            value, from: 'DevBox Extension', ts: Date.now(),
+        }));
+        // Strip the param so it doesn't linger in the URL bar or get shared via copy-link
+        params.delete('ext_prefill');
+        const clean = location.pathname + (params.toString() ? '?' + params.toString() : '');
+        history.replaceState(null, '', clean);
+    } catch (e) { /* malformed param or storage unavailable -- ignore, page loads normally */ }
+})();
+
 // ── Safe localStorage helpers (storage can throw — disabled cookies/storage,
 // strict private-browsing modes, enterprise policies — so every call site
 // should degrade gracefully instead of breaking the whole page) ──
@@ -114,6 +139,71 @@ function trackPageView() {
         recent = recent.slice(0, 8);
         localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
     } catch (e) { }
+}
+
+// ── Tool chaining ("Send to →") ──
+// Lets a tool's output become another tool's input with one click, via a
+// short-lived sessionStorage handoff (cleared on read, and ignored if stale,
+// so it never leaks into an unrelated future visit to the destination page).
+const HANDOFF_KEY = 'devbox_handoff';
+
+function sendToTool(value, destFile, destLabel) {
+    if (!value || !value.trim()) {
+        if (typeof showToast === 'function') showToast('Nothing to send yet');
+        return;
+    }
+    try {
+        sessionStorage.setItem(HANDOFF_KEY, JSON.stringify({
+            value,
+            from: document.querySelector('.tool-title')?.textContent || '',
+            ts: Date.now(),
+        }));
+    } catch (e) { /* sessionStorage unavailable -- just navigate without the handoff */ }
+    window.location.href = destFile;
+}
+
+function receiveHandoff(inputId, onFill) {
+    let raw;
+    try { raw = sessionStorage.getItem(HANDOFF_KEY); } catch (e) { return; }
+    if (!raw) return;
+    try { sessionStorage.removeItem(HANDOFF_KEY); } catch (e) { }
+    let data;
+    try { data = JSON.parse(raw); } catch (e) { return; }
+    if (!data || !data.value) return;
+    if (Date.now() - (data.ts || 0) > 5 * 60 * 1000) return; // ignore stale handoffs
+
+    const el = document.getElementById(inputId);
+    if (!el) return;
+    el.value = data.value;
+    if (typeof onFill === 'function') onFill();
+    if (typeof showToast === 'function') {
+        showToast(data.from ? `↩ Received from ${data.from}` : '↩ Input received');
+    }
+}
+
+// getValue is a function (not a plain string) so the button always sends the
+// CURRENT output at click time, not whatever it was when last rendered.
+function renderSendTo(containerId, getValue, destinations) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = '';
+    const value = getValue();
+    if (!value || !value.trim()) return;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'send-to-wrap';
+    const label = document.createElement('span');
+    label.className = 'send-to-label';
+    label.textContent = 'Send to';
+    wrap.appendChild(label);
+    destinations.forEach(d => {
+        const btn = document.createElement('button');
+        btn.className = 'send-to-btn';
+        btn.textContent = d.label + ' →';
+        btn.onclick = () => sendToTool(getValue(), d.href, d.label);
+        wrap.appendChild(btn);
+    });
+    el.appendChild(wrap);
 }
 
 // ── Sidebar active state + collapse ──

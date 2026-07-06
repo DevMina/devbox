@@ -10,11 +10,12 @@
         gtag('config', 'G-DP87QPTMND');
     </script>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) { } var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) { } updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — 78 essential developer utilities. JSON, Base64, UUID, Regex, JWT, Color, SQL, CSS, GraphQL, WebSocket, OpenAPI and more. No login required.">
     <meta property="og:title" content="DevBox — Developer Toolbox">
     <meta property="og:description" content="78 developer tools in one place. No backend required.">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-default.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevBox — Developer Toolbox</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -268,7 +269,6 @@
             }
         }
     </style>
-    <meta name="google-site-verification" content="t3U_EfvJyQ5oNPBG4hbcHnqTmdcr3AN-lv5eyI-KKG4" />
 </head>
 <body>
     <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open navigation">

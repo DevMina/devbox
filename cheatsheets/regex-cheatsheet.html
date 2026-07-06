@@ -20,6 +20,7 @@
     <meta property="og:title" content="Regex Cheatsheet — DevBox">
     <meta property="og:description" content="Quick reference for regular expression syntax">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-cheatsheets.png">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -50,7 +51,11 @@
 
                 <div class="panel" style="margin-bottom:14px">
                     <div class="panel-bar"><span class="panel-label">Search</span>
-                        <div class="panel-actions"><button class="share-btn" onclick="saveToURL({q:'csSearch'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button></div>
+                        <div class="panel-actions cheatsheet-toolbar">
+                            <button class="btn btn-ghost" onclick="downloadCheatsheetMarkdown()">⬇ Markdown</button>
+                            <button class="btn btn-ghost" onclick="window.print()">🖨 Print</button>
+                            <button class="share-btn" onclick="saveToURL({q:'csSearch'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
+                        </div>
                     </div>
                     <div class="input-row" style="border-bottom:none">
                         <input type="text" id="csSearch" placeholder="Search syntax… e.g. lookahead, quantifier, anchor" oninput="renderCS()">
@@ -74,6 +79,27 @@
     <script>
         const CS_ENTRIES = [["^", "Start of string (or line, with /m flag)", "Anchors"], ["$", "End of string (or line, with /m flag)", "Anchors"], ["\\b", "Word boundary", "Anchors"], ["\\B", "Not a word boundary", "Anchors"], [".", "Any character except newline", "Character Classes"], ["\\d", "Digit (0-9)", "Character Classes"], ["\\D", "Not a digit", "Character Classes"], ["\\w", "Word character (a-z, A-Z, 0-9, _)", "Character Classes"], ["\\W", "Not a word character", "Character Classes"], ["\\s", "Whitespace (space, tab, newline)", "Character Classes"], ["\\S", "Not whitespace", "Character Classes"], ["[abc]", "Any of a, b, or c", "Character Classes"], ["[^abc]", "Not a, b, or c", "Character Classes"], ["[a-z]", "Any lowercase letter a through z", "Character Classes"], ["*", "0 or more of the preceding token", "Quantifiers"], ["+", "1 or more of the preceding token", "Quantifiers"], ["?", "0 or 1 of the preceding token (optional)", "Quantifiers"], ["{n}", "Exactly n times", "Quantifiers"], ["{n,}", "n or more times", "Quantifiers"], ["{n,m}", "Between n and m times", "Quantifiers"], ["*?  +?  ??", "Lazy (non-greedy) versions of the above", "Quantifiers"], ["(...)", "Capturing group", "Groups"], ["(?:...)", "Non-capturing group", "Groups"], ["(?<name>...)", "Named capturing group", "Groups"], ["|", "Alternation (OR)", "Groups"], ["\\1", "Backreference to capture group 1", "Groups"], ["(?=...)", "Positive lookahead", "Lookarounds"], ["(?!...)", "Negative lookahead", "Lookarounds"], ["(?<=...)", "Positive lookbehind", "Lookarounds"], ["(?<!...)", "Negative lookbehind", "Lookarounds"], ["g", "Global \u2014 find all matches, not just the first", "Flags"], ["i", "Case-insensitive matching", "Flags"], ["m", "Multiline \u2014 ^ and $ match line boundaries", "Flags"], ["s", "Dotall \u2014 . also matches newline", "Flags"], ["u", "Unicode mode", "Flags"], ["\\n \\t \\r", "Newline, tab, carriage return", "Escapes"], ["\\.", "Literal dot (escape special characters with \\\\)", "Escapes"]];
         const CS_COLORS = {"Anchors": "var(--blue)", "Character Classes": "var(--green)", "Quantifiers": "var(--yellow)", "Groups": "var(--purple)", "Lookarounds": "var(--orange)", "Flags": "var(--cyan)", "Escapes": "var(--red)"};
+        
+        function downloadCheatsheetMarkdown() {
+            const byGroup = {};
+            CS_ENTRIES.forEach(([cmd, desc, group]) => { (byGroup[group] = byGroup[group] || []).push([cmd, desc]); });
+            let md = `# ${document.querySelector('.tool-title').textContent}\n\n`;
+            Object.keys(byGroup).forEach(group => {
+                md += `## ${group}\n\n`;
+                byGroup[group].forEach(([cmd, desc]) => {
+                    md += `- \`${cmd}\` — ${desc.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')}\n`;
+                });
+                md += '\n';
+            });
+            const blob = new Blob([md], { type: 'text/markdown' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = document.querySelector('.tool-title').textContent.toLowerCase().replace(/\s+/g, '-') + '.md';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            showToast('✓ Downloaded');
+        }
+
         function renderCS() {
             const q = document.getElementById('csSearch').value.toLowerCase();
             const filtered = q ? CS_ENTRIES.filter(([cmd, desc, group]) => cmd.toLowerCase().includes(q) || desc.toLowerCase().includes(q) || group.toLowerCase().includes(q)) : CS_ENTRIES;

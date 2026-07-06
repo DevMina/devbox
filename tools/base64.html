@@ -20,6 +20,7 @@
     <meta property="og:title" content="Base64 Encoder/Decoder — DevBox">
     <meta property="og:description" content="Encode and decode Base64 text">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-encode.png">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -77,6 +78,7 @@
                         </div>
                     </div>
                     <div id="b64Output" class="output-area" style="color:var(--blue)"></div>
+                    <div id="sendToRow"></div>
                 </div>
 
             </div>
@@ -91,10 +93,30 @@
     <script src="../assets/sidebar.js" defer></script>
     <script>
         function b64Encode() { try { document.getElementById('b64Output').textContent = btoa(unescape(encodeURIComponent(document.getElementById('b64Input').value))); } catch (e) { document.getElementById('b64Output').textContent = 'Error: ' + e.message; } }
-        function b64Decode() { try { document.getElementById('b64Output').textContent = decodeURIComponent(escape(atob(document.getElementById('b64Input').value.trim()))); } catch (e) { document.getElementById('b64Output').textContent = 'Error: invalid Base64'; } }
+        function b64Decode() {
+            const outEl = document.getElementById('b64Output');
+            const sendToRow = document.getElementById('sendToRow');
+            try {
+                const decoded = decodeURIComponent(escape(atob(document.getElementById('b64Input').value.trim())));
+                outEl.textContent = decoded;
+                // Only offer to chain into JSON Formatter if the decoded text
+                // actually looks like JSON -- no point showing it otherwise.
+                let looksLikeJson = false;
+                try { JSON.parse(decoded); looksLikeJson = true; } catch (e) { }
+                if (looksLikeJson && sendToRow) {
+                    renderSendTo('sendToRow', () => outEl.textContent, [{ href: 'json.html', label: 'JSON Formatter' }]);
+                } else if (sendToRow) {
+                    sendToRow.innerHTML = '';
+                }
+            } catch (e) {
+                outEl.textContent = 'Error: invalid Base64';
+                if (sendToRow) sendToRow.innerHTML = '';
+            }
+        }
         function b64Swap() { const o = document.getElementById('b64Output').textContent; document.getElementById('b64Input').value = o; document.getElementById('b64Output').textContent = ''; }
         function b64Clear() { document.getElementById('b64Input').value = ''; document.getElementById('b64Output').textContent = ''; history.replaceState(null,'',location.pathname); }
         document.addEventListener('DOMContentLoaded', () => {
+            receiveHandoff('b64Input', b64Decode);
             initDropZone('#b64DropZone', [], (text) => { document.getElementById('b64Input').value = text; });
             loadFromURL({ q: 'b64Input' });
         });

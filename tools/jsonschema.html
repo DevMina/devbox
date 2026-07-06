@@ -30,6 +30,7 @@
     <meta property="og:title" content="JSON Schema Generator — DevBox">
     <meta property="og:description" content="Infer JSON Schema (Draft 7) from a JSON sample automatically">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-format.png">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -200,6 +201,7 @@
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
+            receiveHandoff('json-input', generate);
             initDropZone('#schemaDropZone', ['.json','application/json'], (text) => {
                 document.getElementById('json-input').value = text;
                 generate();

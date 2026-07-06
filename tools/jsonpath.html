@@ -20,6 +20,7 @@
     <meta property="og:title" content="JSON Path Explorer — DevBox">
     <meta property="og:description" content="Query and explore JSON with dot-notation paths">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-inspect.png">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -172,6 +173,7 @@
 
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
         document.addEventListener('DOMContentLoaded', () => {
+            receiveHandoff('jpInput', jpExplore);
             initDropZone('#jpDropZone', ['.json','application/json'], (text) => {
                 document.getElementById('jpInput').value = text;
                 jpExplore();

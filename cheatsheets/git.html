@@ -20,6 +20,7 @@
     <meta property="og:title" content="Git Cheatsheet — DevBox">
     <meta property="og:description" content="Quick reference for common Git commands">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-cheatsheets.png">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -50,7 +51,11 @@
 
                 <div class="panel" style="margin-bottom:14px">
                     <div class="panel-bar"><span class="panel-label">Search</span>
-                        <div class="panel-actions"><button class="share-btn" onclick="saveToURL({q:'csSearch'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button></div>
+                        <div class="panel-actions cheatsheet-toolbar">
+                            <button class="btn btn-ghost" onclick="downloadCheatsheetMarkdown()">⬇ Markdown</button>
+                            <button class="btn btn-ghost" onclick="window.print()">🖨 Print</button>
+                            <button class="share-btn" onclick="saveToURL({q:'csSearch'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
+                        </div>
                     </div>
                     <div class="input-row" style="border-bottom:none">
                         <input type="text" id="csSearch" placeholder="Search commands… e.g. rebase, stash, undo" oninput="renderCS()">
@@ -71,6 +76,27 @@
     <script>
         const CS_ENTRIES = [["git init", "Initialize a new repository", "Setup"], ["git clone <url>", "Clone a repository", "Setup"], ["git config --global user.name \"name\"", "Set your commit name", "Setup"], ["git config --global user.email \"email\"", "Set your commit email", "Setup"], ["git status", "Show changed/staged files", "Basics"], ["git add <file>", "Stage a file", "Basics"], ["git add .", "Stage all changes", "Basics"], ["git commit -m \"msg\"", "Commit staged changes", "Basics"], ["git commit --amend", "Edit the last commit", "Basics"], ["git log", "Show commit history", "Basics"], ["git log --oneline --graph", "Compact visual commit history", "Basics"], ["git diff", "Show unstaged changes", "Basics"], ["git diff --staged", "Show staged changes", "Basics"], ["git branch", "List branches", "Branching"], ["git branch <name>", "Create a new branch", "Branching"], ["git checkout <branch>", "Switch to a branch", "Branching"], ["git checkout -b <branch>", "Create and switch to a new branch", "Branching"], ["git switch <branch>", "Switch branches (modern alternative)", "Branching"], ["git merge <branch>", "Merge a branch into the current one", "Branching"], ["git rebase <branch>", "Reapply commits on top of another branch", "Branching"], ["git branch -d <branch>", "Delete a branch (safe)", "Branching"], ["git branch -D <branch>", "Force-delete a branch", "Branching"], ["git reset --soft HEAD~1", "Undo last commit, keep changes staged", "Undoing Changes"], ["git reset --mixed HEAD~1", "Undo last commit, unstage changes", "Undoing Changes"], ["git reset --hard HEAD~1", "Undo last commit, discard changes entirely", "Undoing Changes"], ["git revert <commit>", "Create a new commit that undoes another", "Undoing Changes"], ["git checkout -- <file>", "Discard local changes to a file", "Undoing Changes"], ["git restore <file>", "Discard local changes (modern alternative)", "Undoing Changes"], ["git clean -fd", "Remove untracked files and directories", "Undoing Changes"], ["git remote add origin <url>", "Link a remote repository", "Remote"], ["git push", "Push commits to the remote", "Remote"], ["git push -u origin <branch>", "Push and set upstream tracking", "Remote"], ["git pull", "Fetch and merge from the remote", "Remote"], ["git fetch", "Download remote changes without merging", "Remote"], ["git push --force-with-lease", "Force push safely (checks for others' work)", "Remote"], ["git stash", "Temporarily shelve changes", "Stashing"], ["git stash pop", "Reapply the most recent stash", "Stashing"], ["git stash list", "List all stashes", "Stashing"], ["git stash drop", "Delete the most recent stash", "Stashing"], ["git tag <name>", "Tag the current commit", "Inspecting"], ["git show <commit>", "Show details of a commit", "Inspecting"], ["git blame <file>", "Show who last changed each line", "Inspecting"], ["git cherry-pick <commit>", "Apply a specific commit onto the current branch", "Inspecting"]];
         const CS_COLORS = {"Setup": "var(--cyan)", "Basics": "var(--green)", "Branching": "var(--purple)", "Undoing Changes": "var(--red)", "Remote": "var(--blue)", "Stashing": "var(--yellow)", "Inspecting": "var(--orange)"};
+        
+        function downloadCheatsheetMarkdown() {
+            const byGroup = {};
+            CS_ENTRIES.forEach(([cmd, desc, group]) => { (byGroup[group] = byGroup[group] || []).push([cmd, desc]); });
+            let md = `# ${document.querySelector('.tool-title').textContent}\n\n`;
+            Object.keys(byGroup).forEach(group => {
+                md += `## ${group}\n\n`;
+                byGroup[group].forEach(([cmd, desc]) => {
+                    md += `- \`${cmd}\` — ${desc.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')}\n`;
+                });
+                md += '\n';
+            });
+            const blob = new Blob([md], { type: 'text/markdown' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = document.querySelector('.tool-title').textContent.toLowerCase().replace(/\s+/g, '-') + '.md';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            showToast('✓ Downloaded');
+        }
+
         function renderCS() {
             const q = document.getElementById('csSearch').value.toLowerCase();
             const filtered = q ? CS_ENTRIES.filter(([cmd, desc, group]) => cmd.toLowerCase().includes(q) || desc.toLowerCase().includes(q) || group.toLowerCase().includes(q)) : CS_ENTRIES;

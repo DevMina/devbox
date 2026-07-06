@@ -20,6 +20,7 @@
     <meta property="og:title" content="Docker Cheatsheet — DevBox">
     <meta property="og:description" content="Quick reference for common Docker & Compose commands">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-cheatsheets.png">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -50,7 +51,11 @@
 
                 <div class="panel" style="margin-bottom:14px">
                     <div class="panel-bar"><span class="panel-label">Search</span>
-                        <div class="panel-actions"><button class="share-btn" onclick="saveToURL({q:'csSearch'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button></div>
+                        <div class="panel-actions cheatsheet-toolbar">
+                            <button class="btn btn-ghost" onclick="downloadCheatsheetMarkdown()">⬇ Markdown</button>
+                            <button class="btn btn-ghost" onclick="window.print()">🖨 Print</button>
+                            <button class="share-btn" onclick="saveToURL({q:'csSearch'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
+                        </div>
                     </div>
                     <div class="input-row" style="border-bottom:none">
                         <input type="text" id="csSearch" placeholder="Search commands… e.g. volume, compose, prune" oninput="renderCS()">
@@ -71,6 +76,27 @@
     <script>
         const CS_ENTRIES = [["docker build -t <name> .", "Build an image from a Dockerfile", "Images"], ["docker images", "List local images", "Images"], ["docker pull <image>", "Download an image from a registry", "Images"], ["docker push <image>", "Upload an image to a registry", "Images"], ["docker rmi <image>", "Remove an image", "Images"], ["docker tag <src> <target>", "Tag an image", "Images"], ["docker run <image>", "Create and start a container", "Containers"], ["docker run -d <image>", "Run a container in the background", "Containers"], ["docker run -p 8080:80 <image>", "Map host port 8080 to container port 80", "Containers"], ["docker run -it <image> bash", "Run interactively with a shell", "Containers"], ["docker run -v host:container <image>", "Mount a volume", "Containers"], ["docker ps", "List running containers", "Containers"], ["docker ps -a", "List all containers, including stopped", "Containers"], ["docker start / stop <id>", "Start or stop a container", "Containers"], ["docker restart <id>", "Restart a container", "Containers"], ["docker rm <id>", "Remove a stopped container", "Containers"], ["docker exec -it <id> bash", "Open a shell inside a running container", "Containers"], ["docker logs -f <id>", "Follow a container's logs live", "Containers"], ["docker inspect <id>", "Show detailed container/image info", "Containers"], ["docker-compose up", "Start services defined in docker-compose.yml", "Compose"], ["docker-compose up -d", "Start services in the background", "Compose"], ["docker-compose down", "Stop and remove services", "Compose"], ["docker-compose logs -f", "Follow logs for all services", "Compose"], ["docker-compose build", "Build/rebuild service images", "Compose"], ["docker-compose ps", "List running Compose services", "Compose"], ["docker network ls", "List networks", "Networking"], ["docker network create <name>", "Create a custom network", "Networking"], ["docker network connect <net> <id>", "Attach a container to a network", "Networking"], ["docker volume ls", "List volumes", "Volumes"], ["docker volume create <name>", "Create a named volume", "Volumes"], ["docker volume rm <name>", "Remove a volume", "Volumes"], ["docker system prune", "Remove unused containers, networks, images", "Cleanup"], ["docker system prune -a", "Also remove unused images (aggressive)", "Cleanup"], ["docker container prune", "Remove all stopped containers", "Cleanup"], ["docker image prune", "Remove dangling images", "Cleanup"]];
         const CS_COLORS = {"Images": "var(--blue)", "Containers": "var(--green)", "Compose": "var(--purple)", "Networking": "var(--cyan)", "Volumes": "var(--yellow)", "Cleanup": "var(--red)"};
+        
+        function downloadCheatsheetMarkdown() {
+            const byGroup = {};
+            CS_ENTRIES.forEach(([cmd, desc, group]) => { (byGroup[group] = byGroup[group] || []).push([cmd, desc]); });
+            let md = `# ${document.querySelector('.tool-title').textContent}\n\n`;
+            Object.keys(byGroup).forEach(group => {
+                md += `## ${group}\n\n`;
+                byGroup[group].forEach(([cmd, desc]) => {
+                    md += `- \`${cmd}\` — ${desc.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')}\n`;
+                });
+                md += '\n';
+            });
+            const blob = new Blob([md], { type: 'text/markdown' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = document.querySelector('.tool-title').textContent.toLowerCase().replace(/\s+/g, '-') + '.md';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            showToast('✓ Downloaded');
+        }
+
         function renderCS() {
             const q = document.getElementById('csSearch').value.toLowerCase();
             const filtered = q ? CS_ENTRIES.filter(([cmd, desc, group]) => cmd.toLowerCase().includes(q) || desc.toLowerCase().includes(q) || group.toLowerCase().includes(q)) : CS_ENTRIES;

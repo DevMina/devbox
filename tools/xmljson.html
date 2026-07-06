@@ -61,6 +61,7 @@
     <meta property="og:title" content="XML ↔ JSON — DevBox">
     <meta property="og:description" content="Convert between XML and JSON formats with formatting options">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-convert.png">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -117,6 +118,7 @@
                         </div>
                     </div>
                     <div id="output" class="output-area"></div>
+                    <div id="sendToRow"></div>
                 </div>
             </div>
             <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
@@ -193,7 +195,8 @@
         function run() {
             const src = document.getElementById('input').value.trim();
             const out = document.getElementById('output');
-            if (!src) { out.textContent = ''; out.classList.remove('err'); return; }
+            const sendToRow = document.getElementById('sendToRow');
+            if (!src) { out.textContent = ''; out.classList.remove('err'); if (sendToRow) sendToRow.innerHTML = ''; return; }
             try {
                 if (mode === 'xj') {
                     const doc = new DOMParser().parseFromString(src, 'application/xml');
@@ -210,7 +213,15 @@
                     out.textContent = '<?xml version="1.0" encoding="UTF-8"?>\n' + objToXml(rootKey, obj[rootKey], 0);
                 }
                 out.classList.remove('err');
-            } catch (e) { out.textContent = '✖ ' + e.message; out.classList.add('err'); }
+                if (mode === 'xj' && sendToRow) {
+                    renderSendTo('sendToRow', () => document.getElementById('output').textContent, [
+                        { href: 'json.html', label: 'JSON Formatter' },
+                        { href: 'yaml.html', label: 'YAML' },
+                    ]);
+                } else if (sendToRow) {
+                    sendToRow.innerHTML = '';
+                }
+            } catch (e) { out.textContent = '✖ ' + e.message; out.classList.add('err'); if (sendToRow) sendToRow.innerHTML = ''; }
         }
         function copy() { const t = document.getElementById('output').textContent; if (t && !t.startsWith('✖')) navigator.clipboard.writeText(t).then(() => showToast('Copied!')); }
         function swap() { const o = document.getElementById('output').textContent; if (o && !o.startsWith('✖')) { document.getElementById('input').value = o; setMode(mode === 'xj' ? 'jx' : 'xj'); } }
@@ -230,6 +241,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            receiveHandoff('input', () => { if (mode === 'xj') setMode('jx'); run(); });
             initDropZone('#xmlDropZone', ['.xml','.json','application/json','text/xml'], (text, name) => {
                 document.getElementById('input').value = text;
                 if (name.endsWith('.json') && mode === 'xj') setMode('jx');

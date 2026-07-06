@@ -20,6 +20,7 @@
     <meta property="og:title" content="URL Encoder/Decoder — DevBox">
     <meta property="og:description" content="Encode and decode URL components">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-encode.png">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -76,6 +77,7 @@
                         </div>
                     </div>
                     <div id="urlOutput" class="output-area" style="color:var(--cyan)"></div>
+                    <div id="sendToRow"></div>
                 </div>
 
             </div>
@@ -90,11 +92,31 @@
     <script src="../assets/sidebar.js" defer></script>
     <script>
         function urlEncode() { document.getElementById('urlOutput').textContent = encodeURIComponent(document.getElementById('urlInput').value); }
-        function urlDecode() { try { document.getElementById('urlOutput').textContent = decodeURIComponent(document.getElementById('urlInput').value); } catch (e) { document.getElementById('urlOutput').textContent = 'Error: malformed URI'; } }
+        function urlDecode() {
+            const outEl = document.getElementById('urlOutput');
+            const sendToRow = document.getElementById('sendToRow');
+            try {
+                const decoded = decodeURIComponent(document.getElementById('urlInput').value);
+                outEl.textContent = decoded;
+                let looksLikeJson = false;
+                try { JSON.parse(decoded); looksLikeJson = true; } catch (e) { }
+                if (looksLikeJson && sendToRow) {
+                    renderSendTo('sendToRow', () => outEl.textContent, [{ href: 'json.html', label: 'JSON Formatter' }]);
+                } else if (sendToRow) {
+                    sendToRow.innerHTML = '';
+                }
+            } catch (e) {
+                outEl.textContent = 'Error: malformed URI';
+                if (sendToRow) sendToRow.innerHTML = '';
+            }
+        }
         function urlSwap() { const o = document.getElementById('urlOutput').textContent; document.getElementById('urlInput').value = o; document.getElementById('urlOutput').textContent = ''; }
         function urlClear() { document.getElementById('urlInput').value = ''; document.getElementById('urlOutput').textContent = ''; history.replaceState(null,'',location.pathname); }
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
-        document.addEventListener('DOMContentLoaded', () => loadFromURL({ q: 'urlInput' }, urlEncode));
+        document.addEventListener('DOMContentLoaded', () => {
+            receiveHandoff('urlInput', urlDecode);
+            loadFromURL({ q: 'urlInput' }, urlEncode);
+        });
     </script>
 </body>
 </html>

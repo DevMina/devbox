@@ -20,6 +20,7 @@
     <meta property="og:title" content="JSON Formatter — DevBox">
     <meta property="og:description" content="Format, validate, and minify JSON data">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-format.png">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -76,6 +77,7 @@
                 <div class="panel">
                     <div class="panel-bar"><span class="panel-label">Output</span></div>
                     <div id="jsonOutput" class="output-area" style="color:var(--green)"></div>
+                    <div id="sendToRow"></div>
                 </div>
 
             </div>
@@ -96,9 +98,19 @@
             { desc: 'Clear', keys: ['Ctrl', 'Shift', 'X'] },
         ];
         function jsonLive() { const r = document.getElementById('jsonInput').value.trim(), s = document.getElementById('jsonStatus'); if (!r) { s.innerHTML = ''; return; } try { JSON.parse(r); s.innerHTML = '<span class="status-badge badge-ok">✓ Valid JSON</span>'; } catch (e) { s.innerHTML = '<span class="status-badge badge-err">✗ ' + e.message.split('\n')[0] + '</span>'; } }
-        function jsonFormat() { try { const p = JSON.parse(document.getElementById('jsonInput').value); const o = document.getElementById('jsonOutput'); o.textContent = JSON.stringify(p, null, 2); o.style.color = 'var(--green)'; } catch (e) { const o = document.getElementById('jsonOutput'); o.textContent = '// Error: ' + e.message; o.style.color = 'var(--red)'; } }
-        function jsonMinify() { try { const p = JSON.parse(document.getElementById('jsonInput').value); const o = document.getElementById('jsonOutput'); o.textContent = JSON.stringify(p); o.style.color = 'var(--green)'; } catch (e) { const o = document.getElementById('jsonOutput'); o.textContent = '// Error: ' + e.message; o.style.color = 'var(--red)'; } }
+        function jsonFormat() { try { const p = JSON.parse(document.getElementById('jsonInput').value); const o = document.getElementById('jsonOutput'); o.textContent = JSON.stringify(p, null, 2); o.style.color = 'var(--green)'; renderJsonSendTo(); } catch (e) { const o = document.getElementById('jsonOutput'); o.textContent = '// Error: ' + e.message; o.style.color = 'var(--red)'; document.getElementById('sendToRow').innerHTML = ''; } }
+        function jsonMinify() { try { const p = JSON.parse(document.getElementById('jsonInput').value); const o = document.getElementById('jsonOutput'); o.textContent = JSON.stringify(p); o.style.color = 'var(--green)'; renderJsonSendTo(); } catch (e) { const o = document.getElementById('jsonOutput'); o.textContent = '// Error: ' + e.message; o.style.color = 'var(--red)'; document.getElementById('sendToRow').innerHTML = ''; } }
         function jsonCopyOut() { copy(document.getElementById('jsonOutput').textContent); }
+        function renderJsonSendTo() {
+            renderSendTo('sendToRow', () => document.getElementById('jsonOutput').textContent, [
+                { href: 'jsonschema.html', label: 'JSON Schema' },
+                { href: 'jsonpath.html', label: 'JSON Path' },
+                { href: 'jsoncsvconvert.html', label: 'JSON → CSV' },
+                { href: 'yaml.html', label: 'YAML' },
+                { href: 'xmljson.html', label: 'XML' },
+            ]);
+        }
+        document.addEventListener('DOMContentLoaded', () => receiveHandoff('jsonInput', jsonFormat));
         function jsonClear() { document.getElementById('jsonInput').value = ''; document.getElementById('jsonOutput').textContent = ''; document.getElementById('jsonStatus').innerHTML = ''; history.replaceState(null,'',location.pathname); }
         function jsonSample() { document.getElementById('jsonInput').value = JSON.stringify({ name: "John Doe", age: 30, email: "john@example.com", roles: ["admin", "editor"], address: { city: "New York", zip: "10001" }, active: true }, null, 0); jsonLive(); }
         function jsonShare() { saveToURL({ q: 'jsonInput' }); navigator.clipboard.writeText(location.href).then(() => showToast('🔗 Link copied!')); }
