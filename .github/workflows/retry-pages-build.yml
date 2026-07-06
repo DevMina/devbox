@@ -1,0 +1,50 @@
+name: Retry failed Pages build
+
+# GitHub Pages ("Deploy from a branch") fires a page_build event after every
+# build attempt. If it errored, this requests a fresh build via the official
+# API -- with backoff and a hard cap, so a genuinely broken build doesn't
+# retry forever and burn Actions minutes silently.
+
+on:
+  page_build
+
+permissions:
+  contents: read
+  pages: write
+
+jobs:
+  retry-on-failure:
+    if: github.event.build.status == 'errored'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log the failure
+        run: |
+          echo "Pages build errored: ${{ github.event.build.error.message }}"
+
+      - name: Check recent build history and retry if under the limit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPO="${{ github.repository }}"
+
+          # Look at the last 5 builds; count how many *consecutive* ones
+          # (most recent first) errored in a row.
+          RECENT=$(gh api "repos/$REPO/pages/builds" --jq '.[0:5] | map(.status) | join(",")')
+          echo "Recent build statuses (newest first): $RECENT"
+
+          ERRORED_STREAK=$(echo "$RECENT" | awk -F',' '{c=0; for(i=1;i<=NF;i++){if($i=="errored"){c++}else{exit}} print c}')
+          echo "Consecutive recent failures: $ERRORED_STREAK"
+
+          MAX_RETRIES=5
+          if [ "$ERRORED_STREAK" -ge "$MAX_RETRIES" ]; then
+            echo "$MAX_RETRIES consecutive failures -- stopping. This looks like a real build error, not a transient one. Check: https://github.com/$REPO/settings/pages"
+            exit 1
+          fi
+
+          # Simple backoff: 0s, 30s, 60s, 90s, 120s
+          DELAY=$((ERRORED_STREAK * 30))
+          echo "Waiting ${DELAY}s, then requesting retry #$((ERRORED_STREAK + 1))..."
+          sleep "$DELAY"
+
+          gh api -X POST "repos/$REPO/pages/builds"
+          echo "Retry requested."

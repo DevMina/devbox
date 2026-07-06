@@ -1,0 +1,41 @@
+name: Regression suite
+
+# Runs the Playwright-based regression suite (tests/regression_suite.py)
+# against a local static server on every push and pull request to master.
+# Purely additive -- doesn't touch or replace the GitHub Pages deploy
+# mechanism (Settings -> Pages, "Deploy from a branch").
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  regression-suite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Playwright
+        run: |
+          pip install playwright --break-system-packages
+          playwright install --with-deps chromium
+
+      - name: Start local server
+        run: python3 -m http.server 8000 &
+
+      - name: Wait for server
+        run: |
+          for i in $(seq 1 10); do
+            curl -sf http://localhost:8000/index.html > /dev/null && break
+            sleep 1
+          done
+
+      - name: Run regression suite
+        run: python3 tests/regression_suite.py http://localhost:8000

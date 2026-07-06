@@ -5,7 +5,21 @@
     <link>https://devmina.github.io/devbox/changelog.html</link>
     <description>Recent updates, new tools, and fixes on DevBox</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 05 Jul 2026 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 06 Jul 2026 12:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Extension distribution, and a caching bug fixed for good</title>
+      <link>https://devmina.github.io/devbox/changelog.html</link>
+      <guid isPermaLink="false">devbox-changelog-2026-07-06-2</guid>
+      <pubDate>Mon, 06 Jul 2026 18:00:00 +0000</pubDate>
+      <description><![CDATA[<ul><li>Added a new Extension page with a direct download link and step-by-step install instructions, linked from the sidebar and homepage.</li><li>Fixed a service worker bug where updated CSS/JS wouldn't reach returning visitors after a deploy -- the cache version is now bumped automatically on every push via CI, so nobody needs to clear their cache again.</li><li>Fixed a sidebar layout bug where the Changelog/Extension/Contact shortcut links would clip or overlap once a new one was added.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>Cheatsheet downloads, social previews, tool chaining, and a browser extension</title>
+      <link>https://devmina.github.io/devbox/changelog.html</link>
+      <guid isPermaLink="false">devbox-changelog-2026-07-06-1</guid>
+      <pubDate>Mon, 06 Jul 2026 12:00:00 +0000</pubDate>
+      <description><![CDATA[<ul><li>Added Print and Markdown download buttons to all 4 cheatsheets, with print styles that stay readable regardless of your current theme.</li><li>Generated a branded preview image for each of the 14 tool categories and wired the correct one into every tool page, so shared links now show a proper preview instead of a generic one.</li><li>Added tool chaining ("Send to &#8594;") so a tool's output can become another tool's input in one click -- wired across the JSON/data-format family (JSON Formatter, JSON Schema, JSON Path, JSON&#8596;CSV, YAML, XML) and the encoding family (Base64, URL, JWT into JSON Formatter).</li><li>Added a browser extension (Chrome, Edge, Brave) with a toolbar popup for quick access to 10 common tools, plus right-click actions on any selected text -- Format as JSON, Base64 Decode, URL Decode, Decode JWT, and Hash -- that open the matching tool with your selection already filled in.</li></ul>]]></description>
+    </item>
     <item>
       <title>Cheatsheets, embeddable tools, and an automated test suite</title>
       <link>https://devmina.github.io/devbox/changelog.html</link>

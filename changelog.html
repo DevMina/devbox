@@ -51,6 +51,25 @@
         // same list of entries so the page and the RSS feed never drift apart.
         const CHANGELOG = [
             {
+                date: "2026-07-06",
+                title: "Extension distribution, and a caching bug fixed for good",
+                items: [
+                    "Added a new Extension page with a direct download link and step-by-step install instructions, linked from the sidebar and homepage.",
+                    "Fixed a service worker bug where updated CSS/JS wouldn't reach returning visitors after a deploy — the cache version is now bumped automatically on every push via CI, so nobody needs to clear their cache again.",
+                    "Fixed a sidebar layout bug where the Changelog/Extension/Contact shortcut links would clip or overlap once a new one was added."
+                ]
+            },
+            {
+                date: "2026-07-06",
+                title: "Cheatsheet downloads, social previews, tool chaining, and a browser extension",
+                items: [
+                    "Added Print and Markdown download buttons to all 4 cheatsheets, with print styles that stay readable regardless of your current theme.",
+                    "Generated a branded preview image for each of the 14 tool categories and wired the correct one into every tool page, so shared links now show a proper preview instead of a generic one.",
+                    "Added tool chaining (\"Send to →\") so a tool's output can become another tool's input in one click — wired across the JSON/data-format family (JSON Formatter, JSON Schema, JSON Path, JSON↔CSV, YAML, XML) and the encoding family (Base64, URL, JWT into JSON Formatter).",
+                    "Added a browser extension (Chrome, Edge, Brave) with a toolbar popup for quick access to 10 common tools, plus right-click actions on any selected text — Format as JSON, Base64 Decode, URL Decode, Decode JWT, and Hash — that open the matching tool with your selection already filled in."
+                ]
+            },
+            {
                 date: "2026-07-05",
                 title: "Cheatsheets, embeddable tools, and an automated test suite",
                 items: [
