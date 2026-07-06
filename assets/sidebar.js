@@ -134,6 +134,7 @@ function buildSidebar() {
 
     const contactHref = home.replace('index.html', '') + 'contact.html';
     const changelogHref = home.replace('index.html', '') + 'changelog.html';
+    const extensionHref = home.replace('index.html', '') + 'extension.html';
     const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
     const kbdHint = isMac ? '⌘ K' : 'Ctrl K';
 
@@ -155,6 +156,10 @@ function buildSidebar() {
       <a class="sidebar-contact-link" href="${changelogHref}">
         <span class="theme-toggle-icon">✓</span>
         <span>Changelog</span>
+      </a>
+      <a class="sidebar-contact-link" href="${extensionHref}">
+        <span class="theme-toggle-icon">🧩</span>
+        <span>Extension</span>
       </a>
       <a class="sidebar-contact-link" href="${contactHref}">
         <span class="theme-toggle-icon">✉️</span>
@@ -365,6 +370,7 @@ function getPaletteEntries() {
     const entries = [
         { label: 'Home', section: '', href: home, dot: '--text-dim', icon: '⌂' },
         { label: 'Changelog', section: '', href: rootBase + 'changelog.html', dot: '--text-dim', icon: '✓' },
+        { label: 'Browser Extension', section: '', href: rootBase + 'extension.html', dot: '--text-dim', icon: '🧩' },
         { label: 'Contact', section: '', href: rootBase + 'contact.html', dot: '--text-dim', icon: '✉' },
     ];
 
