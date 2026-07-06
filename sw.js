@@ -17,7 +17,7 @@
 // IMPORTANT: bump CACHE if you ever change what's precached below, or want to
 // force-invalidate cached assets for returning visitors -- the activate
 // handler deletes any cache not matching the current name.
-const CACHE = 'devbox-0721417';
+const CACHE = 'devbox-948f76a';
 
 const PRECACHE = [
     './assets/style.css',
