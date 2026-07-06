@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = 'dark'; try { t = localStorage.getItem(k) || 'dark'; } catch (e) {} document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser Extension — DevBox</title>
+    <meta name="description" content="Install the DevBox browser extension for quick access to 78 developer tools, plus right-click actions on any selected text.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-default.png">
+    <style>
+        .ext-wrap {
+            max-width: 720px;
+        }
+
+        .ext-hero-title {
+            font-family: var(--mono);
+            font-size: clamp(1.8rem, 4vw, 2.4rem);
+            font-weight: 600;
+            color: var(--text-bright);
+            letter-spacing: -0.03em;
+            margin-bottom: 10px;
+        }
+
+        .ext-hero-sub {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+            max-width: 540px;
+            margin-bottom: 24px;
+        }
+
+        .ext-download-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 20px 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            margin-bottom: 28px;
+        }
+
+        .ext-download-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+            .ext-download-meta strong {
+                color: var(--text-bright);
+                font-size: 0.92rem;
+            }
+
+            .ext-download-meta span {
+                font-family: var(--mono);
+                font-size: 0.72rem;
+                color: var(--text-dim);
+            }
+
+        .ext-download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 22px;
+            background: var(--green);
+            color: #0A0C10;
+            border: none;
+            border-radius: var(--r-sm);
+            font-family: var(--font);
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all var(--transition);
+        }
+
+            .ext-download-btn:hover {
+                background: #4dffb0;
+                transform: translateY(-1px);
+            }
+
+        .ext-section-title {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-dim);
+            margin: 28px 0 14px;
+        }
+
+        .ext-steps {
+            list-style: none;
+            counter-reset: step;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 8px;
+        }
+
+            .ext-steps li {
+                counter-increment: step;
+                display: flex;
+                gap: 14px;
+                align-items: flex-start;
+                padding: 14px 16px;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--r);
+            }
+
+            .ext-steps li::before {
+                content: counter(step);
+                flex-shrink: 0;
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+                background: var(--green-dim);
+                color: var(--green);
+                font-family: var(--mono);
+                font-size: 0.72rem;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .ext-steps li div {
+                font-size: 0.85rem;
+                color: var(--text);
+                line-height: 1.5;
+            }
+
+                .ext-steps li div code {
+                    font-family: var(--mono);
+                    font-size: 0.78rem;
+                    background: var(--surface2);
+                    border: 1px solid var(--border);
+                    border-radius: 4px;
+                    padding: 1px 6px;
+                    color: var(--blue);
+                }
+
+        .ext-feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .ext-feature-card {
+            padding: 14px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+        }
+
+            .ext-feature-card strong {
+                display: block;
+                font-size: 0.82rem;
+                color: var(--text-bright);
+                margin-bottom: 4px;
+            }
+
+            .ext-feature-card span {
+                font-size: 0.78rem;
+                color: var(--text-dim);
+                line-height: 1.5;
+            }
+
+        .ext-note {
+            margin-top: 24px;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            background: var(--surface);
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="ext-wrap">
+
+                    <div class="ext-hero-title">Browser <span style="color:var(--green)">Extension</span></div>
+                    <div class="ext-hero-sub">Quick access to all 78 DevBox tools from your toolbar, plus right-click actions that send selected text on any page straight to the right tool — already filled in.</div>
+
+                    <div class="ext-download-card">
+                        <div class="ext-download-meta">
+                            <strong>DevBox — Developer Tools</strong>
+                            <span>v1.0.0 · Manifest V3 · Chrome, Edge, Brave &amp; other Chromium browsers</span>
+                        </div>
+                        <a class="ext-download-btn" href="downloads/devbox-extension.zip" download onclick="typeof showToast === 'function' && showToast('⬇ Downloading extension…')">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Download .zip
+                        </a>
+                    </div>
+
+                    <div class="ext-section-title">How to install</div>
+                    <ol class="ext-steps">
+                        <li><div>Download the <code>.zip</code> above, then unzip it — you should end up with a <code>devbox-extension</code> folder on your computer.</div></li>
+                        <li><div>Open <code>chrome://extensions</code> in Chrome (or <code>edge://extensions</code> for Edge, <code>brave://extensions</code> for Brave).</div></li>
+                        <li><div>Turn on <strong>Developer mode</strong> using the toggle in the top-right corner.</div></li>
+                        <li><div>Click <strong>Load unpacked</strong> and select the unzipped <code>devbox-extension</code> folder (not the .zip itself).</div></li>
+                        <li><div>The DevBox icon appears in your toolbar — click the puzzle-piece icon and pin it for one-click access.</div></li>
+                    </ol>
+
+                    <div class="ext-section-title">What it does</div>
+                    <div class="ext-feature-grid">
+                        <div class="ext-feature-card">
+                            <strong>⚡ Toolbar popup</strong>
+                            <span>Jump straight to 10 commonly-used tools — JSON, Regex, UUID, Password, Base64, JWT, Diff, Date/Time, Hash, and Color — without opening a tab first.</span>
+                        </div>
+                        <div class="ext-feature-card">
+                            <strong>🖱️ Right-click on selected text</strong>
+                            <span>Select any text on any page, right-click → DevBox, and choose Format as JSON, Base64 Decode, URL Decode, Decode JWT, or Hash — it opens the tool with your text already filled in.</span>
+                        </div>
+                    </div>
+
+                    <div class="ext-note">
+                        🔒 The extension sends no data anywhere. Selected text is passed directly into a new tab opened to <code>devmina.github.io/devbox</code> — nothing is transmitted to any server the extension controls.
+                    </div>
+
+                </div>
+            </div>
+
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved. &nbsp;·&nbsp;
+                <a href="index.html" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s"
+                   onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">Back to tools</a>
+            </footer>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <script src="assets/theme.js"></script>
+    <script src="assets/shared.js" defer></script>
+    <script src="assets/sidebar.js" defer></script>
+</body>
+</html>
