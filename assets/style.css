@@ -1605,7 +1605,7 @@ input[type="checkbox"] {
     gap: 4px;
     overflow: hidden;
     transition: opacity var(--transition), max-height var(--transition-slow);
-    max-height: 136px;
+    max-height: 145px;
 }
 
 .sidebar.collapsed .sb-top-actions {
