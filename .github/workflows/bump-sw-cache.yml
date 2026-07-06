@@ -1,0 +1,40 @@
+name: Bump service worker cache
+
+# Runs on every push to main. Rewrites the CACHE constant in sw.js to the
+# current commit's short SHA and commits that change back, so returning
+# visitors' service workers always invalidate stale precached assets
+# (style.css, shared.js, sidebar.js) after a deploy -- no manual bumping,
+# no cache-clearing needed.
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  bump-cache:
+    # Skip runs triggered by this workflow's own commit, to avoid an
+    # infinite push -> workflow -> push loop.
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bump CACHE version in sw.js
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          sed -i "s/const CACHE = '[^']*';/const CACHE = 'devbox-${SHORT_SHA}';/" sw.js
+          echo "New cache name: devbox-${SHORT_SHA}"
+
+      - name: Commit and push if sw.js changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet sw.js; then
+            git add sw.js
+            git commit -m "chore: bump service worker cache to $(git rev-parse --short HEAD) [skip ci]"
+            git push
+          else
+            echo "sw.js unchanged, nothing to commit"
+          fi
