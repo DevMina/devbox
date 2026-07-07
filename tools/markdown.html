@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) { } var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) { } updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Preview Markdown with live side-by-side rendering">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markdown Preview — DevBox</title>
@@ -22,25 +23,25 @@
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-text.png">
     <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
-            "name": "Markdown Preview",
-            "description": "Preview Markdown with live side-by-side rendering",
-            "url": "https://devmina.github.io/devbox/tools/markdown.html",
-            "applicationCategory": "DeveloperApplication",
-            "operatingSystem": "Any (runs in any modern web browser)",
-            "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "USD"
-            },
-            "isPartOf": {
-                "@type": "WebSite",
-                "name": "DevBox",
-                "url": "https://devmina.github.io/devbox/"
-            }
-        }
+{
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Markdown Preview",
+    "description": "Preview Markdown with live side-by-side rendering",
+    "url": "https://devmina.github.io/devbox/tools/markdown.html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any (runs in any modern web browser)",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    },
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "DevBox",
+        "url": "https://devmina.github.io/devbox/"
+    }
+}
     </script>
 </head>
 <body>
@@ -58,13 +59,11 @@
 
                 <div class="two-col" style="align-items:start">
                     <div class="panel" style="margin:0">
-                        <div class="panel-bar">
-                            <span class="panel-label">Markdown</span><div class="panel-actions">
-                                <button class="btn btn-ghost" onclick="mdSample()">Sample</button>
-                                <button class="btn btn-ghost" onclick="document.getElementById('mdInput').value='';renderMd();history.replaceState(null,'',location.pathname)">Clear</button>
-                                <button class="share-btn" onclick="saveToURL({q:'mdInput'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
-                            </div>
-                        </div>
+                        <div class="panel-bar"><span class="panel-label">Markdown</span><div class="panel-actions">
+                            <button class="btn btn-ghost" onclick="mdSample()">Sample</button>
+                            <button class="btn btn-ghost" onclick="document.getElementById('mdInput').value='';renderMd();history.replaceState(null,'',location.pathname)">Clear</button>
+                            <button class="share-btn" onclick="saveToURL({q:'mdInput'});navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
+                        </div></div>
                         <div class="drop-zone-global" id="mdDropZone" data-clickable>↑ Drop .md file or click to upload</div>
                         <textarea id="mdInput" oninput="renderMd()" style="min-height:500px;font-size:0.83rem;" placeholder="# Hello World"></textarea>
                     </div>
@@ -110,7 +109,7 @@
         function mdSample() { document.getElementById('mdInput').value = `# Markdown Preview\n\nType on the left, see **live** results here.\n\n## Features\n\n- **Bold**, *italic*, ~~strikethrough~~\n- \`inline code\`\n- [Links](https://example.com)\n\n## Code\n\n\`\`\`javascript\nconst greet = name => \`Hello, \${name}!\`;\n\`\`\`\n\n> Blockquote — great for callouts.\n\n---\n\nMade with ❤️ in DevBox.`; renderMd(); }
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
         document.addEventListener('DOMContentLoaded', () => {
-            initDropZone('#mdDropZone', ['.md', '.markdown', 'text/markdown'], (text) => {
+            initDropZone('#mdDropZone', ['.md','.markdown','text/markdown'], (text) => {
                 document.getElementById('mdInput').value = text;
                 renderMd();
             });
