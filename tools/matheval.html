@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) { } var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) { } updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="description" content="DevBox — Evaluate math expressions with functions and constants">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Evaluator — DevBox</title>
@@ -22,25 +22,25 @@
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-convert.png">
     <script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Math Evaluator",
-    "description": "Evaluate math expressions with functions and constants",
-    "url": "https://devmina.github.io/devbox/tools/matheval.html",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "Any (runs in any modern web browser)",
-    "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-    },
-    "isPartOf": {
-        "@type": "WebSite",
-        "name": "DevBox",
-        "url": "https://devmina.github.io/devbox/"
-    }
-}
+        {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "Math Evaluator",
+            "description": "Evaluate math expressions with functions and constants",
+            "url": "https://devmina.github.io/devbox/tools/matheval.html",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Any (runs in any modern web browser)",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            },
+            "isPartOf": {
+                "@type": "WebSite",
+                "name": "DevBox",
+                "url": "https://devmina.github.io/devbox/"
+            }
+        }
     </script>
 </head>
 <body>
@@ -97,6 +97,120 @@
         const CONSTS = { PI: Math.PI, E: Math.E, PHI: (1 + Math.sqrt(5)) / 2, TAU: 2 * Math.PI, LN2: Math.LN2, LN10: Math.LN10, SQRT2: Math.SQRT2 };
         const QUICK_FNS = ['sqrt(x)', 'pow(x,y)', 'abs(x)', 'round(x)', 'floor(x)', 'ceil(x)', 'sin(x)', 'cos(x)', 'tan(x)', 'asin(x)', 'acos(x)', 'atan(x)', 'log(x)', 'log2(x)', 'log10(x)', 'min(a,b)', 'max(a,b)', 'random()', 'factorial(n)', 'gcd(a,b)'];
 
+        // A restricted recursive-descent parser/evaluator -- deliberately NOT
+        // `new Function`/`eval`, which would execute arbitrary JavaScript
+        // (not just math) typed into this field. Since this input is also
+        // fillable via the shareable ?q= URL (auto-evaluated on load, see the
+        // bottom of this script), that would mean a crafted link could run
+        // arbitrary code the instant someone opened it, with zero clicks.
+        // This parser only ever recognizes numbers, + - * / % ^, parentheses,
+        // commas, and identifiers that resolve against the whitelisted `ctx`
+        // object below -- there is no code path that reaches JS execution of
+        // anything the user didn't type as a literal number or a whitelisted
+        // function name.
+        function safeMathEval(expr, ctx) {
+            let i = 0;
+            const s = expr;
+            function err(msg) { throw new Error(msg); }
+            function peek() { return s[i]; }
+            function skipWs() { while (i < s.length && /\s/.test(s[i])) i++; }
+
+            function parseExpression() { return parseAddSub(); }
+
+            function parseAddSub() {
+                let left = parseMulDiv();
+                for (; ;) {
+                    skipWs();
+                    const c = peek();
+                    if (c === '+' || c === '-') { i++; const right = parseMulDiv(); left = c === '+' ? left + right : left - right; }
+                    else break;
+                }
+                return left;
+            }
+
+            function parseMulDiv() {
+                let left = parseUnary();
+                for (; ;) {
+                    skipWs();
+                    const c = peek();
+                    if (c === '*' || c === '/' || c === '%') { i++; const right = parseUnary(); left = c === '*' ? left * right : c === '/' ? left / right : left % right; }
+                    else break;
+                }
+                return left;
+            }
+
+            function parseUnary() {
+                skipWs();
+                const c = peek();
+                if (c === '-') { i++; return -parseUnary(); }
+                if (c === '+') { i++; return parseUnary(); }
+                return parsePow();
+            }
+
+            function parsePow() {
+                let base = parsePrimary();
+                skipWs();
+                if (peek() === '^') { i++; const exp = parseUnary(); return Math.pow(base, exp); }
+                return base;
+            }
+
+            function parsePrimary() {
+                skipWs();
+                const c = peek();
+                if (c === '(') { i++; const v = parseExpression(); skipWs(); if (peek() !== ')') err('Expected )'); i++; return v; }
+                if (c === undefined) err('Unexpected end of expression');
+                if (/[0-9.]/.test(c)) return parseNumber();
+                if (/[A-Za-z_]/.test(c)) return parseIdentifier();
+                err(`Unexpected character '${c}'`);
+            }
+
+            function parseNumber() {
+                skipWs();
+                const start = i;
+                while (i < s.length && /[0-9.]/.test(s[i])) i++;
+                if (s[i] === 'e' || s[i] === 'E') {
+                    let j = i + 1;
+                    if (s[j] === '+' || s[j] === '-') j++;
+                    if (/[0-9]/.test(s[j])) { i = j; while (i < s.length && /[0-9]/.test(s[i])) i++; }
+                }
+                const numStr = s.slice(start, i);
+                const n = parseFloat(numStr);
+                if (isNaN(n)) err(`Invalid number '${numStr}'`);
+                return n;
+            }
+
+            function parseIdentifier() {
+                skipWs();
+                const start = i;
+                while (i < s.length && /[A-Za-z0-9_]/.test(s[i])) i++;
+                const name = s.slice(start, i);
+                skipWs();
+                if (peek() === '(') {
+                    i++;
+                    const args = [];
+                    skipWs();
+                    if (peek() !== ')') {
+                        args.push(parseExpression()); skipWs();
+                        while (peek() === ',') { i++; args.push(parseExpression()); skipWs(); }
+                    }
+                    skipWs();
+                    if (peek() !== ')') err('Expected )');
+                    i++;
+                    if (!(name in ctx) || typeof ctx[name] !== 'function') err(`${name} is not a function`);
+                    return ctx[name](...args);
+                }
+                if (!(name in ctx)) err(`${name} is not defined`);
+                if (typeof ctx[name] === 'function') err(`${name} requires arguments`);
+                return ctx[name];
+            }
+
+            skipWs();
+            const result = parseExpression();
+            skipWs();
+            if (i < s.length) err(`Unexpected character '${s[i]}' at position ${i}`);
+            return result;
+        }
+
         function mathEval() {
             const raw = document.getElementById('mathInput').value.trim();
             if (!raw) return;
@@ -118,8 +232,7 @@
                     radians: d => d * Math.PI / 180,
                     clamp: (v, lo, hi) => Math.max(lo, Math.min(hi, v)),
                 };
-                const fn = new Function(...Object.keys(ctx), 'return (' + raw + ')');
-                result = fn(...Object.values(ctx));
+                result = safeMathEval(raw, ctx);
                 if (typeof result === 'number' && !isNaN(result)) {
                     // show in multiple formats
                     const formatted = {
@@ -162,7 +275,7 @@
             if (hist.children.length > 20) hist.removeChild(hist.lastChild);
         }
 
-        function mathClear() { document.getElementById('mathHistory').innerHTML = ''; document.getElementById('mathInput').value = ''; history.length = 0; window.history.replaceState(null,'',location.pathname); }
+        function mathClear() { document.getElementById('mathHistory').innerHTML = ''; document.getElementById('mathInput').value = ''; history.length = 0; window.history.replaceState(null, '', location.pathname); }
 
         function initRef() {
             document.getElementById('mathRef').innerHTML = QUICK_FNS.map(f => `<button class="btn btn-ghost" style="font-size:0.72rem;font-family:var(--mono);text-align:left;justify-content:start" onclick="document.getElementById('mathInput').value='${f}';document.getElementById('mathInput').focus()">${f}</button>`).join('');
