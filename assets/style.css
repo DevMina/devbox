@@ -1397,6 +1397,22 @@ input[type="checkbox"] {
         display: none !important;
     }
 
+    /* The on-screen layout is a fixed-height (100vh), internally-scrolling
+       app shell (.app / .content / .content-wrap all use overflow so the
+       sidebar can stay fixed while the page content scrolls). Printing
+       without resetting this only captures whatever fit in that fixed-height
+       pane on screen -- everything below gets silently cut off instead of
+       flowing onto additional printed pages. */
+    .app {
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    .content, .content-wrap {
+        overflow: visible !important;
+        height: auto !important;
+    }
+
     .content {
         padding: 0;
     }

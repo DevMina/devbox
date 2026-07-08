@@ -38,6 +38,9 @@ jobs:
       - name: SEO metadata completeness check (og:image, JSON-LD)
         run: python3 tests/check_seo.py
 
+      - name: Sitemap completeness check
+        run: python3 tests/check_sitemap.py
+
       - name: Install Playwright
         run: |
           pip install playwright --break-system-packages

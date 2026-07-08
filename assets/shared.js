@@ -663,8 +663,14 @@ function initPWA() {
     // see sw.js for details. A registered SW with a fetch handler is also
     // what makes the install prompt below eligible to fire at all.
     if ('serviceWorker' in navigator) {
-        const swPath = location.pathname.includes('/tools/') ? '../sw.js' : './sw.js';
-        navigator.serviceWorker.register(swPath, { scope: location.pathname.includes('/tools/') ? '../' : './' })
+        // Both /tools/ and /cheatsheets/ are one level deep from the site
+        // root, so both need '../sw.js'. This used to only check for
+        // /tools/, which meant every cheatsheet page silently tried (and
+        // failed, 404) to register a nonexistent /cheatsheets/sw.js --
+        // invisible because the .catch(() => {}) below swallows it.
+        const isNested = location.pathname.includes('/tools/') || location.pathname.includes('/cheatsheets/');
+        const swPath = isNested ? '../sw.js' : './sw.js';
+        navigator.serviceWorker.register(swPath, { scope: isNested ? '../' : './' })
             .catch(() => {}); // Fail silently if not served over HTTPS
     }
 
