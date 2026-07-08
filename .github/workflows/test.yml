@@ -32,10 +32,19 @@ jobs:
       - name: Internal link check
         run: python3 tests/check_links.py
 
+      - name: Sidebar/navigation completeness check
+        run: python3 tests/check_nav.py
+
+      - name: SEO metadata completeness check (og:image, JSON-LD)
+        run: python3 tests/check_seo.py
+
       - name: Install Playwright
         run: |
           pip install playwright --break-system-packages
           playwright install --with-deps chromium
+
+      - name: Install axe-core
+        run: npm install axe-core
 
       - name: Start local server
         run: python3 -m http.server 8000 &
@@ -46,6 +55,16 @@ jobs:
             curl -sf http://localhost:8000/index.html > /dev/null && break
             sleep 1
           done
+
+      - name: Accessibility check (axe-core)
+        # Non-blocking for now: a real backlog of ~122 pre-existing issues
+        # (mostly missing form labels on individual tools) was found when
+        # this was added on 2026-07-07. One shared CSS bug affecting every
+        # page was found and fixed as part of adding this check, but the
+        # rest are genuine per-tool issues, not a single fix. Flip
+        # continue-on-error to false once that backlog is cleared.
+        continue-on-error: true
+        run: python3 tests/check_accessibility.py
 
       - name: Run regression suite
         run: python3 tests/regression_suite.py http://localhost:8000
