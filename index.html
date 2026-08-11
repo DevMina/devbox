@@ -65,22 +65,24 @@
 
         .hero-badges {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-top: 14px;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 5px 12px;
+            padding: 4px 10px;
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 999px;
             font-family: var(--mono);
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             color: var(--text-dim);
+            white-space: nowrap;
         }
 
             .badge .dot {
@@ -90,26 +92,6 @@
                 background: var(--green);
                 flex-shrink: 0;
             }
-
-        /* Taglines run longer than a stat like "70+ tools" and wrap onto
-           multiple lines on narrow screens -- a full pill radius pinches into
-           an odd capsule once that happens, so these get a normal rounded
-           rectangle instead, with the dot pinned to the first line. */
-        .badge-line {
-            border-radius: var(--r);
-            align-items: flex-start;
-            line-height: 1.5;
-        }
-
-            .badge-line .dot {
-                margin-top: 6px;
-            }
-
-        @media (max-width: 480px) {
-            .badge-line {
-                flex: 1 1 100%;
-            }
-        }
 
         .search-wrap {
             margin-bottom: 28px;
@@ -506,12 +488,11 @@
                                 <div class="hero-sub">78 developer tools that run entirely in your browser — fast, private, and free.</div>
                                 <div class="hero-badges">
                                     <div class="badge"><div class="dot"></div>78 tools</div>
-                                    <div class="badge" style="color:var(--green);border-color:rgba(61,255,160,0.2);background:rgba(61,255,160,0.06)"><span style="font-size:0.75rem">🔒</span> 100% client-side · nothing uploaded</div>
-                                    <div class="badge badge-line"><div class="dot"></div>No login · no backend · no tracking of your data</div>
+                                    <div class="badge" style="color:var(--green);border-color:rgba(61,255,160,0.2);background:rgba(61,255,160,0.06)">🔒 Client-side only</div>
+                                    <div class="badge">No login · no backend</div>
                                 </div>
                             </div>
                             <div style="display:flex;gap:8px;flex-shrink:0;margin-top:4px">
-                                <a href="extension.html" title="Browser extension" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text-dim);padding:7px 12px;cursor:pointer;font-size:0.78rem;font-family:var(--mono);white-space:nowrap;transition:all var(--transition);text-decoration:none;display:inline-flex;align-items:center" onmouseover="this.style.borderColor='var(--border2)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">🧩 Extension</a>
                                 <button onclick="openSettingsPanel()" title="Settings & data" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text-dim);padding:7px 12px;cursor:pointer;font-size:0.78rem;font-family:var(--mono);white-space:nowrap;transition:all var(--transition)" onmouseover="this.style.borderColor='var(--border2)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">⚙ Settings</button>
                             </div>
                         </div>
