@@ -89,6 +89,7 @@
                         <div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('lsOutput').textContent)">⎘ Copy</button></div>
                     </div>
                     <div id="lsOutput" class="output-area" style="color:var(--yellow);white-space:pre-wrap;min-height:120px"></div>
+                    <div id="lsSendToRow"></div>
                 </div>
             </div>
             <footer class="site-footer">
@@ -156,7 +157,18 @@
                 lsStats();
             });
             loadFromURL({ q: 'lsInput' }, lsStats);
+            persistInput('lsInput', 'devbox_persist_linesorter', lsStats);
+            receiveHandoff('lsInput', lsStats);
         });
+        function lsSendTo() {
+            renderSendTo('lsSendToRow', () => document.getElementById('lsOutput').textContent, [
+                { href: 'diff.html', label: 'Diff Checker' },
+                { href: 'textstats.html', label: 'Text Stats' },
+                { href: 'stringescape.html', label: 'String Escape' },
+            ]);
+        }
+        const _origLsDo = lsDo;
+        lsDo = function(op) { _origLsDo(op); lsSendTo(); };
     </script>
 </body>
 </html>

@@ -102,6 +102,7 @@
                     <div class="panel-bar"><span class="panel-label">Capture groups</span></div>
                     <div id="regexGroups" class="output-area" style="color:var(--yellow);font-size:0.8rem;"></div>
                 </div>
+                <div id="regexSendToRow"></div>
 
             </div>
             <footer class="site-footer">
@@ -240,6 +241,7 @@
             } else {
                 gp.style.display = 'none';
             }
+            if (typeof renderRegexSendTo === 'function') renderRegexSendTo();
         }
 
         function regexTest() {
@@ -304,6 +306,9 @@
         ];
         document.addEventListener('DOMContentLoaded', () => {
             loadFromURL({ p: 'regexPattern', t: 'regexInput', g: 'regexGlobal', i: 'regexInsens', m: 'regexMulti' }, regexTest);
+            persistInput('regexInput', 'devbox_persist_regex', regexTest);
+            persistInput('regexPattern', 'devbox_persist_regex_pat', regexTest);
+            receiveHandoff('regexInput', regexTest);
             document.addEventListener('keydown', e => {
                 if ((e.ctrlKey || e.metaKey) && e.key === 'p') { e.preventDefault(); document.getElementById('regexPattern').focus(); }
                 if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'S') {
@@ -313,6 +318,18 @@
                 }
             });
         });
+        // Call after each test run to update Send To
+        function renderRegexSendTo() {
+            const matches = document.querySelectorAll('#regexOutput mark');
+            if (!matches.length) { document.getElementById('regexSendToRow').innerHTML = ''; return; }
+            const matchTexts = Array.from(matches).map(m => m.textContent).join('\n');
+            renderSendTo('regexSendToRow', () => matchTexts, [
+                { href: 'json.html', label: 'JSON Formatter' },
+                { href: 'diff.html', label: 'Diff Checker' },
+                { href: 'linesorter.html', label: 'Line Sorter' },
+                { href: 'charcounter.html', label: 'Char Counter' },
+            ]);
+        }
     </script>
 </body>
 </html>

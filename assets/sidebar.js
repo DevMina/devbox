@@ -358,26 +358,47 @@ document.addEventListener('devbox:favorites-changed', renderSidebar);
 // ════════════════════════════════════════════════
 
 function getPaletteEntries() {
-    const path = window.location.pathname;
-    const isInTools = path.includes('/tools/');
-    const isInCheatsheets = path.includes('/cheatsheets/');
+    const pth = window.location.pathname;
+    const isInTools = pth.includes('/tools/');
+    const isInCheatsheets = pth.includes('/cheatsheets/');
     const isRoot = !isInTools && !isInCheatsheets;
     const toolsBase = isRoot ? 'tools/' : (isInTools ? '' : '../tools/');
     const csBase = isRoot ? 'cheatsheets/' : (isInCheatsheets ? '' : '../cheatsheets/');
     const home = isRoot ? 'index.html' : '../index.html';
     const rootBase = isRoot ? '' : '../';
 
-    const entries = [
-        { label: 'Home', section: '', href: home, dot: '--text-dim', icon: '⌂' },
-        { label: 'Changelog', section: '', href: rootBase + 'changelog.html', dot: '--text-dim', icon: '✓' },
-        { label: 'Browser Extension', section: '', href: rootBase + 'extension.html', dot: '--text-dim', icon: '🧩' },
-        { label: 'Contact', section: '', href: rootBase + 'contact.html', dot: '--text-dim', icon: '✉' },
+    // Actions (no href — executed via action callback)
+    const actions = [
+        {
+            label: 'Toggle Dark / Light Mode', section: 'Actions', icon: '☀️', dot: '--text-dim',
+            action: () => { if (typeof window.toggleTheme === 'function') window.toggleTheme(); }
+        },
+        {
+            label: 'Clear Recent History', section: 'Actions', icon: '🕐', dot: '--text-dim',
+            action: () => { lsRemove('devbox_recent'); if (typeof showToast === 'function') showToast('Recent history cleared'); }
+        },
+        {
+            label: 'Clear All Favorites', section: 'Actions', icon: '★', dot: '--text-dim',
+            action: () => { if (typeof clearFavorites === 'function') clearFavorites(); if (typeof showToast === 'function') showToast('Favorites cleared'); }
+        },
+        {
+            label: 'Open Settings & Data', section: 'Actions', icon: '⚙', dot: '--text-dim',
+            action: () => { if (typeof openSettingsPanel === 'function') openSettingsPanel(); }
+        },
     ];
 
+    const pages = [
+        { label: 'Home', section: 'Pages', href: home, dot: '--text-dim', icon: '⌂' },
+        { label: 'Changelog', section: 'Pages', href: rootBase + 'changelog.html', dot: '--text-dim', icon: '✓' },
+        { label: 'Browser Extension', section: 'Pages', href: rootBase + 'extension.html', dot: '--text-dim', icon: '🧩' },
+        { label: 'Contact', section: 'Pages', href: rootBase + 'contact.html', dot: '--text-dim', icon: '✉' },
+    ];
+
+    const toolEntries = [];
     let currentSection = '';
     SIDEBAR_ITEMS.forEach(item => {
         if (item.section) { currentSection = item.section; return; }
-        entries.push({
+        toolEntries.push({
             label: item.label,
             section: currentSection,
             href: (item.cs ? csBase : toolsBase) + item.href,
@@ -385,7 +406,7 @@ function getPaletteEntries() {
             icon: null,
         });
     });
-    return entries;
+    return [...actions, ...pages, ...toolEntries];
 }
 
 let _paletteEntries = null;
@@ -429,7 +450,10 @@ function buildCommandPaletteDOM() {
         } else if (e.key === 'Enter') {
             e.preventDefault();
             const chosen = _paletteFiltered[_paletteSelected];
-            if (chosen) window.location.href = chosen.href;
+            if (!chosen) return;
+            closeCommandPalette();
+            if (typeof chosen.action === 'function') chosen.action();
+            else if (chosen.href) window.location.href = chosen.href;
         }
         // Escape is handled centrally in shared.js's initKeyboard, which checks
         // isCommandPaletteOpen() -- kept in one place rather than duplicated.
@@ -450,19 +474,43 @@ function renderPaletteResults(query) {
         return;
     }
 
-    results.innerHTML = _paletteFiltered.slice(0, 50).map((e, i) => `
-        <a class="cmd-palette-item${i === 0 ? ' selected' : ''}" href="${e.href}" data-idx="${i}">
+    // Render with section dividers
+    let html = '';
+    let lastSection = null;
+    let itemIdx = 0;
+    const sliced = _paletteFiltered.slice(0, 50);
+    sliced.forEach((e) => {
+        if (e.section !== lastSection) {
+            html += `<div class="cmd-palette-section-label">${e.section || 'Tools'}</div>`;
+            lastSection = e.section;
+        }
+        const isAction = typeof e.action === 'function';
+        const tag = isAction ? 'button' : 'a';
+        const hrefAttr = isAction ? '' : `href="${e.href}"`;
+        html += `<${tag} class="cmd-palette-item${itemIdx === 0 ? ' selected' : ''}" ${hrefAttr} data-idx="${itemIdx}" data-action-idx="${isAction ? _paletteEntries.indexOf(e) : ''}">
             ${e.icon ? `<span class="cmd-palette-item-icon">${e.icon}</span>` : `<div class="nav-dot" style="background:var(${e.dot})"></div>`}
             <span class="cmd-palette-item-label">${e.label}</span>
-            ${e.section ? `<span class="cmd-palette-item-section">${e.section}</span>` : ''}
-        </a>
-    `).join('');
+            ${e.section && !isAction ? `<span class="cmd-palette-item-section">${e.section}</span>` : ''}
+        </${tag}>`;
+        itemIdx++;
+    });
+    results.innerHTML = html;
 
     results.querySelectorAll('.cmd-palette-item').forEach(el => {
         el.addEventListener('mouseenter', () => {
             _paletteSelected = parseInt(el.dataset.idx, 10);
             updatePaletteSelection();
         });
+        // Handle action buttons
+        if (el.tagName === 'BUTTON') {
+            el.addEventListener('click', () => {
+                const entry = _paletteFiltered[parseInt(el.dataset.idx, 10)];
+                if (entry && typeof entry.action === 'function') {
+                    closeCommandPalette();
+                    entry.action();
+                }
+            });
+        }
     });
 }
 

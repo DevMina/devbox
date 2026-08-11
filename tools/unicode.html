@@ -280,6 +280,7 @@
                         </div>
                         <div class="stats-bar" id="statsBar" style="display:none"></div>
                         <div id="unicodeOutput" class="output-area"></div>
+                        <div id="unicodeSendToRow"></div>
                     </div>
                 </div>
 
@@ -641,7 +642,22 @@
             if (cp < 32) return 'CONTROL CHARACTER';
             return `U+${toHex(cp, 4)}`;
         }
-        document.addEventListener('DOMContentLoaded', () => loadFromURL({ q: 'unicodeInput', fmt: 'encFmt' }, runConvert));
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromURL({ q: 'unicodeInput', fmt: 'encFmt' }, runConvert);
+            persistInput('unicodeInput', 'devbox_persist_unicode', runConvert);
+            receiveHandoff('unicodeInput', runConvert);
+            const _orig = runConvert;
+            runConvert = function() { _orig(); unicodeSendTo(); };
+        });
+        function unicodeSendTo() {
+            const out = document.getElementById('unicodeOutput');
+            if (!out || !out.textContent.trim()) { document.getElementById('unicodeSendToRow').innerHTML = ''; return; }
+            renderSendTo('unicodeSendToRow', () => out.textContent, [
+                { href: 'diff.html', label: 'Diff Checker' },
+                { href: 'stringescape.html', label: 'String Escape' },
+                { href: 'textstats.html', label: 'Text Stats' },
+            ]);
+        }
     </script>
 </body>
 </html>

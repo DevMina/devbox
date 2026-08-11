@@ -65,6 +65,7 @@
                     <textarea id="caseInput" oninput="caseConvert()" placeholder="hello world example text" style="min-height:100px"></textarea>
                 </div>
                 <div class="hash-grid" id="caseOutputs" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px"></div>
+                <div id="caseConvSendToRow"></div>
             </div>
             <footer class="site-footer">
                 © 2026 Mina Abdo. All rights reserved.
@@ -81,7 +82,23 @@
             document.getElementById('caseOutputs').innerHTML = cases.map(([label, val]) => `<div class="hash-row"><div class="hash-algo" style="min-width:130px;font-size:0.68rem">${label}</div><div class="hash-val" style="color:var(--green)">${escHtml(val)}</div><button class="uuid-copy" onclick="copy(${JSON.stringify(val)})">⎘</button></div>`).join('');
         }
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
-        document.addEventListener('DOMContentLoaded', () => loadFromURL({ q: 'caseInput' }, caseConvert));
+        function caseConvSendTo() {
+            const outputs = document.getElementById('caseOutputs');
+            if (!outputs || !outputs.textContent.trim()) { document.getElementById('caseConvSendToRow').innerHTML = ''; return; }
+            const first = outputs.querySelector('.hash-value');
+            renderSendTo('caseConvSendToRow', () => first ? first.textContent : outputs.textContent, [
+                { href: 'diff.html', label: 'Diff Checker' },
+                { href: 'textstats.html', label: 'Text Stats' },
+                { href: 'linesorter.html', label: 'Line Sorter' },
+            ]);
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromURL({ q: 'caseInput' }, caseConvert);
+            persistInput('caseInput', 'devbox_persist_case', caseConvert);
+            receiveHandoff('caseInput', caseConvert);
+            const _origCaseConvert = caseConvert;
+            caseConvert = function() { _origCaseConvert(); caseConvSendTo(); };
+        });
     </script>
 </body>
 </html>

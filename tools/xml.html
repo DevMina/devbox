@@ -188,11 +188,11 @@
                         </div>
                     </div>
                     <div id="xmlOutput" class="output-area"></div>
+                    <div id="xmlSendToRow"></div>
                 </div>
 
             </div>
             <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
-    </div>
     </div>
     <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
@@ -417,13 +417,28 @@
             clearBanners();
             history.replaceState(null, '', location.pathname);
         }
+        function xmlSendTo() {
+            const out = document.getElementById('xmlOutput');
+            if (!out || !out.textContent.trim()) { document.getElementById('xmlSendToRow').innerHTML = ''; return; }
+            renderSendTo('xmlSendToRow', () => out.textContent, [
+                { href: 'xmljson.html', label: 'XML → JSON' },
+                { href: 'diff.html', label: 'Diff Checker' },
+                { href: 'stringescape.html', label: 'String Escape' },
+            ]);
+        }
         document.addEventListener('DOMContentLoaded', () => {
             initDropZone('#xmlFileDropZone', ['.xml','text/xml','application/xml'], (text) => {
                 document.getElementById('xmlInput').value = text;
                 xmlBeautify();
             });
             loadFromURL({ q: 'xmlInput' }, xmlBeautify);
+            persistInput('xmlInput', 'devbox_persist_xml', xmlBeautify);
+            receiveHandoff('xmlInput', xmlBeautify);
         });
+        const _origXmlBeautify = xmlBeautify;
+        xmlBeautify = function() { _origXmlBeautify(); xmlSendTo(); };
+        const _origXmlMinify = xmlMinify;
+        xmlMinify = function() { _origXmlMinify(); xmlSendTo(); };
 
         function xmlSample() {
             document.getElementById('xmlInput').value =

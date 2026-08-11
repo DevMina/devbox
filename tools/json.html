@@ -111,8 +111,11 @@
                 { href: 'xmljson.html', label: 'XML' },
             ]);
         }
-        document.addEventListener('DOMContentLoaded', () => receiveHandoff('jsonInput', jsonFormat));
-        function jsonClear() { document.getElementById('jsonInput').value = ''; document.getElementById('jsonOutput').textContent = ''; document.getElementById('jsonStatus').innerHTML = ''; history.replaceState(null,'',location.pathname); }
+        document.addEventListener('DOMContentLoaded', () => {
+            receiveHandoff('jsonInput', jsonFormat);
+            persistInput('jsonInput', 'devbox_persist_json', jsonLive);
+        });
+        function jsonClear() { document.getElementById('jsonInput').value = ''; document.getElementById('jsonOutput').textContent = ''; document.getElementById('jsonStatus').innerHTML = ''; lsRemove('devbox_persist_json'); history.replaceState(null,'',location.pathname); }
         function jsonSample() { document.getElementById('jsonInput').value = JSON.stringify({ name: "John Doe", age: 30, email: "john@example.com", roles: ["admin", "editor"], address: { city: "New York", zip: "10001" }, active: true }, null, 0); jsonLive(); }
         function jsonShare() { saveToURL({ q: 'jsonInput' }); navigator.clipboard.writeText(location.href).then(() => showToast('🔗 Link copied!')); }
         document.addEventListener('DOMContentLoaded', () => {

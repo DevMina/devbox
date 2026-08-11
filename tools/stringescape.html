@@ -225,6 +225,8 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         if (!loadFromURL({ q: 'strInput' }, processAll)) processAll();
+        persistInput('strInput', 'devbox_persist_stringesc', processAll);
+        receiveHandoff('strInput', processAll);
     });
     </script>
 </body>

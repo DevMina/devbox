@@ -176,6 +176,7 @@
                         </div>
                     </div>
                     <div id="output" class="output-area"></div>
+                    <div id="morseSendToRow"></div>
                     <div class="play-bar">
                         <button class="btn btn-yellow" id="playBtn" onclick="playMorse()">▶ Play Audio</button>
                         <button class="btn btn-ghost" id="stopBtn" onclick="stopMorse()" style="display:none">■ Stop</button>
@@ -319,12 +320,23 @@
             navigator.clipboard.writeText(location.href).then(() => showToast('🔗 Link copied!'));
         }
 
+        function morseSendTo() {
+            renderSendTo('morseSendToRow', () => document.getElementById('output').textContent, [
+                { href: 'diff.html', label: 'Diff Checker' },
+                { href: 'textstats.html', label: 'Text Stats' },
+            ]);
+        }
+        const _origMorseRun = run;
+        run = function() { _origMorseRun(); morseSendTo(); };
+
         document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(location.search);
             const q = params.get('q');
             const m = params.get('mode');
             if (m === 'dec') setMode('dec');
             if (q !== null) { document.getElementById('input').value = q; run(); }
+            persistInput('input', 'devbox_persist_morse', run);
+            receiveHandoff('input', run);
         });
     </script>
 </body>

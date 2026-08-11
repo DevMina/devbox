@@ -1,7 +1,7 @@
 {
   "name": "DevBox",
   "short_name": "DevBox",
-  "description": "A fast toolkit for developers",
+  "description": "78 developer tools that run entirely in your browser — fast, private, and free. No login, no backend, nothing uploaded.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0A0C10",

@@ -328,6 +328,7 @@
                 <div class="panel" style="padding:0;overflow:hidden">
                     <div id="diffOutput"><div class="diff-empty">Enter text in both panels to see the diff.</div></div>
                 </div>
+                <div id="diffSendToRow"></div>
 
             </div>
             <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
@@ -730,11 +731,26 @@ users.forEach(u => greet(u));
 
             runDiff();
         }
+        function diffSendTo() {
+            const out = document.getElementById('diffOutput');
+            if (!out || out.querySelector('.diff-empty')) { document.getElementById('diffSendToRow').innerHTML = ''; return; }
+            const plainText = out.innerText || '';
+            renderSendTo('diffSendToRow', () => plainText, [
+                { href: 'json.html', label: 'JSON Formatter' },
+                { href: 'linesorter.html', label: 'Line Sorter' },
+                { href: 'textstats.html', label: 'Text Stats' },
+            ]);
+        }
         document.addEventListener('DOMContentLoaded', () => {
             initDropZone('#diffDropA', [], (text) => { document.getElementById('diffA').value = text; runDiff(); });
             initDropZone('#diffDropB', [], (text) => { document.getElementById('diffB').value = text; runDiff(); });
             loadFromURL({ a: 'diffA', b: 'diffB' }, runDiff);
+            persistInput('diffA', 'devbox_persist_diffa', runDiff);
+            persistInput('diffB', 'devbox_persist_diffb', runDiff);
         });
+        // Patch runDiff to call diffSendTo after rendering
+        const _origRunDiff = runDiff;
+        runDiff = function() { _origRunDiff(); if (typeof diffSendTo === 'function') diffSendTo(); };
     </script>
 </body>
 </html>

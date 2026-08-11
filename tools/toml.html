@@ -119,6 +119,7 @@
                         </div>
                     </div>
                     <div id="output" class="output-area"></div>
+                    <div id="tomlSendToRow"></div>
                 </div>
             </div>
             <footer class="site-footer">© 2026 Mina Abdo. All rights reserved.</footer>
@@ -232,6 +233,18 @@
             navigator.clipboard.writeText(location.href).then(() => showToast('🔗 Link copied!'));
         }
 
+        function tomlSendTo() {
+            const out = document.getElementById('output');
+            if (!out || !out.textContent.trim() || out.textContent.startsWith('✖')) { document.getElementById('tomlSendToRow').innerHTML = ''; return; }
+            renderSendTo('tomlSendToRow', () => out.textContent, [
+                { href: 'json.html', label: 'JSON Formatter' },
+                { href: 'diff.html', label: 'Diff Checker' },
+                { href: 'yaml.html', label: 'YAML ↔ JSON' },
+            ]);
+        }
+        const _origTomlRun = run;
+        run = function() { _origTomlRun(); tomlSendTo(); };
+
         document.addEventListener('DOMContentLoaded', () => {
             initDropZone('#tomlDropZone', ['.toml','.json','application/json'], (text, name) => {
                 document.getElementById('input').value = text;
@@ -243,6 +256,8 @@
             const m = params.get('mode');
             if (m && ['tj','jt'].includes(m)) setMode(m);
             if (q !== null) { document.getElementById('input').value = q; run(); }
+            persistInput('input', 'devbox_persist_toml', run);
+            receiveHandoff('input', run);
         });
     </script>
 </body>

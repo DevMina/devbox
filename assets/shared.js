@@ -84,6 +84,69 @@ function debounce(fn, ms = 200) {
     return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
 }
 
+// ── Input persistence ──
+// Saves a textarea/input value to localStorage and restores it on next visit.
+// Tools call: persistInput('myTextareaId', 'devbox_persist_toolname')
+// Returns the restored value (or '' if none), so the tool can react to it.
+// Keys for tools that handle sensitive data — never persisted to localStorage
+const PERSIST_BLOCKED_KEYS = new Set([
+    'devbox_persist_jwt', 'devbox_persist_jwtenc',
+    'devbox_persist_textencrypt', 'devbox_persist_env',
+    'devbox_persist_apikey',
+]);
+
+function persistInput(elementId, storageKey, onRestore) {
+    // Safety: never persist sensitive tool inputs
+    if (PERSIST_BLOCKED_KEYS.has(storageKey)) return '';
+    const el = document.getElementById(elementId);
+    if (!el) return '';
+    // Restore saved value (but defer to shareURL/handoff if present)
+    const params = new URLSearchParams(location.search);
+    const hasURLData = params.toString().length > 0;
+    const hasHandoff = (() => { try { return !!sessionStorage.getItem('devbox_handoff'); } catch(e) { return false; } })();
+    if (!hasURLData && !hasHandoff) {
+        const saved = lsGet(storageKey, '');
+        if (saved) {
+            el.value = saved;
+            if (typeof onRestore === 'function') onRestore();
+        }
+    }
+    // Save on input (debounced 800ms, max 100KB to avoid filling storage quota)
+    const MAX_PERSIST_BYTES = 100 * 1024;
+    const save = debounce(() => {
+        const val = el.value;
+        if (val && val.trim() && val.length <= MAX_PERSIST_BYTES) lsSet(storageKey, val);
+        else if (!val || !val.trim()) lsRemove(storageKey);
+        // silently skip if over size limit
+    }, 800);
+    el.addEventListener('input', save);
+    return el.value;
+}
+
+// ── Most Used tracking ──
+// Each tool page calls trackToolUse() on load; shared.js does it automatically
+// via trackPageView() for tool pages. The homepage reads the counts to build
+// the Most Used row.
+const USAGE_KEY = 'devbox_usage';
+function trackToolUse() {
+    const page = location.pathname.split('/').pop();
+    if (!page || page === 'index.html' || !page.endsWith('.html')) return;
+    try {
+        const counts = JSON.parse(lsGet(USAGE_KEY, '{}'));
+        counts[page] = (counts[page] || 0) + 1;
+        lsSet(USAGE_KEY, JSON.stringify(counts));
+    } catch (e) { }
+}
+function getMostUsed(limit = 8) {
+    try {
+        const counts = JSON.parse(lsGet(USAGE_KEY, '{}'));
+        return Object.entries(counts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, limit)
+            .map(([file, count]) => ({ file, count }));
+    } catch (e) { return []; }
+}
+
 // ── Format file size ──
 function fmtBytes(bytes) {
     if (bytes === 0) return '0 B';
@@ -139,6 +202,7 @@ function trackPageView() {
         recent = recent.slice(0, 8);
         localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
     } catch (e) { }
+    trackToolUse();
 }
 
 // ── Tool chaining ("Send to →") ──
@@ -563,6 +627,7 @@ function initDropZone(zoneEl, accept, onFile) {
 const SETTINGS_KEYS = [
     'devbox_recent',
     'devbox_favorites',
+    'devbox_usage',
     'devbox_sidebar_collapsed',
     'devbox_theme',
     'devbox_ws_urls',
@@ -609,6 +674,7 @@ function openSettingsPanel() {
 
         const favs = JSON.parse(lsGet('devbox_favorites', '[]')).length;
         const recents = JSON.parse(lsGet('devbox_recent', '[]')).length;
+        const usageCounts = Object.keys(JSON.parse(lsGet('devbox_usage', '{}'))).length;
 
         backdrop.innerHTML = `
             <div class="settings-modal" role="dialog" aria-modal="true" aria-label="Settings">
@@ -624,6 +690,10 @@ function openSettingsPanel() {
                 <div class="settings-row">
                     <div><div class="settings-label">Recent history</div><div class="settings-sub">${recents} item${recents !== 1 ? 's' : ''}</div></div>
                     <button class="btn btn-ghost" style="font-size:0.72rem" onclick="if(confirm('Clear recent history?')){lsRemove('devbox_recent');closeSettingsPanel();showToast('History cleared');}">Clear</button>
+                </div>
+                <div class="settings-row">
+                    <div><div class="settings-label">Most Used</div><div class="settings-sub">${usageCounts} tool${usageCounts !== 1 ? 's' : ''} tracked</div></div>
+                    <button class="btn btn-ghost" style="font-size:0.72rem" onclick="if(confirm('Clear usage data?')){lsRemove('devbox_usage');closeSettingsPanel();showToast('Usage data cleared');}">Clear</button>
                 </div>
                 <div class="settings-row">
                     <div><div class="settings-label">Export settings</div><div class="settings-sub">Favorites, recents, preferences</div></div>

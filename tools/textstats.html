@@ -93,7 +93,11 @@
             document.getElementById('tsxt-more').innerHTML = `<span style="color:var(--text-dim)">Chars (no spaces):</span> <span style="color:var(--text)">${charsNoSpace}</span><br><span style="color:var(--text-dim)">Lines:</span> <span style="color:var(--text)">${lines}</span><br><span style="color:var(--text-dim)">Paragraphs:</span> <span style="color:var(--text)">${txt.split(/\n\s*\n/).filter(p => p.trim()).length}</span><br><span style="color:var(--text-dim)">Avg word length:</span> <span style="color:var(--text)">${words ? (charsNoSpace / words).toFixed(1) : '—'}</span><br><span style="color:var(--text-dim)">Longest word:</span> <span style="color:var(--orange)">${(txt.match(/\b[a-zA-Z]+\b/g) || ['']).sort((a, b) => b.length - a.length)[0] || '—'}</span><br><span style="color:var(--text-dim)">Unique words:</span> <span style="color:var(--text)">${Object.keys(wordMap).length}</span>`;
         }
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
-        document.addEventListener('DOMContentLoaded', () => loadFromURL({ q: 'tsxtInput' }, updateTextStats));
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromURL({ q: 'tsxtInput' }, updateTextStats);
+            persistInput('tsxtInput', 'devbox_persist_textstats', updateTextStats);
+            receiveHandoff('tsxtInput', updateTextStats);
+        });
     </script>
 </body>
 </html>

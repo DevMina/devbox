@@ -52,6 +52,22 @@
         // same list of entries so the page and the RSS feed never drift apart.
         const CHANGELOG = [
             {
+                date: "2026-08-11",
+                title: "Privacy messaging, category filters, command palette actions, input persistence, Send To expansion, and Most Used",
+                items: [
+                    "Strengthened the hero with an explicit privacy value proposition: '78 developer tools that run entirely in your browser — fast, private, and free.' Added a green 🔒 client-side badge to the hero and to tool cards for JWT Decoder, JWT Encoder, Text Encrypt, .env Parser, and API Tester.",
+                    "Added privacy banners inside the JWT Decoder, JWT Encoder, Text Encrypt, .env Parser, and API Tester tool pages — each worded specifically to the risk (e.g. 'Your API keys stay in your browser — requests go directly from your browser to the target server').",
+                    "Added category filter tabs (Format, Inspect, Encode, Security, Generate, Color, CSS, API, Convert, Text, Productivity, Cheatsheets) above the search bar for faster navigation without typing.",
+                    "Added a collapsible What's New strip showing the 5 most recently added tools, with a Full changelog link.",
+                    "Added an extension promo strip at the bottom of the homepage.",
+                    "Upgraded the ⌘K command palette with an Actions group at the top: Toggle Dark/Light Mode, Clear Recent History, Clear All Favorites, Open Settings & Data. Results now render with labeled section dividers (Actions → Pages → Format → Inspect …).",
+                    "Added input persistence to 19 tools — last input is saved to localStorage and restored on next visit, but only when there's no URL share param or handoff active. Covered: JSON Formatter, Regex Tester (pattern + test string), SQL Formatter, Diff Checker (both sides), HTML Beautifier, CSS Minifier, Base64, Markdown Preview, Case Converter, Line Sorter, Text Stats, Hash Generator, Morse Code, XML Formatter, TOML↔JSON, String Escape, HTML Entities, Unicode Converter. Sensitive tools (JWT, .env, Text Encrypt, API keys) are explicitly excluded from persistence. A 100KB per-key size guard prevents filling the storage quota.",
+                    "Expanded Send To tool chaining to 11 previously missing tools: Regex Tester, SQL Formatter, Diff Checker, HTML Beautifier, CSS Minifier, Markdown Preview, Case Converter, Line Sorter, XML Formatter, TOML↔JSON, HTML Entities, Unicode Converter.",
+                    "Added a 🔥 Most Used section to the homepage — tracks visit counts silently, appears once you've used tools, and has its own Clear button. Integrated into Settings panel and Reset All Data.",
+                    "Enriched search aliases (data-tags) across 10 tools: added 'regexp/regular expression/lookahead' for Regex, 'bearer/hs256' for JWT, 'atob/btoa/binary' for Base64, 'postman/insomnia/patch' for API Tester, 'nanoid/ulid' for UUID, 'sha512/hmac/crypto' for Hash, 'iso8601/utc/timezone/now' for Date & Time, 'colour/hwb/lch' for Color Converter."
+                ]
+            },
+            {
                 date: "2026-07-06",
                 title: "Extension distribution, and a caching bug fixed for good",
                 items: [

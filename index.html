@@ -12,7 +12,7 @@
     </script>
     <meta charset="UTF-8">
     <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) { } var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) { } updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
-    <meta name="description" content="DevBox — 78 essential developer utilities. JSON, Base64, UUID, Regex, JWT, Color, SQL, CSS, GraphQL, WebSocket, OpenAPI and more. No login required.">
+    <meta name="description" content="DevBox — 78 developer tools that run entirely in your browser. Fast, private, and free. No login, no backend, nothing uploaded. JSON, JWT, Base64, Regex, Color, SQL, CSS and more.">
     <meta property="og:title" content="DevBox — Developer Toolbox">
     <meta property="og:description" content="78 developer tools in one place. No backend required.">
     <meta property="og:type" content="website">
@@ -289,6 +289,202 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ── Category Filter Tabs ── */
+        .filter-tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .filter-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+
+        .filter-tab:hover {
+            border-color: var(--border2);
+            color: var(--text);
+        }
+
+        .filter-tab.active {
+            background: var(--green-dim);
+            border-color: rgba(61,255,160,0.35);
+            color: var(--green);
+        }
+
+        /* ── Privacy badges on sensitive tool cards ── */
+        .tool-card .privacy-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-family: var(--mono);
+            font-size: 0.55rem;
+            color: var(--green);
+            background: rgba(61,255,160,0.08);
+            border: 1px solid rgba(61,255,160,0.18);
+            border-radius: 4px;
+            padding: 1px 5px;
+            margin-top: 4px;
+            width: fit-content;
+            line-height: 1.5;
+        }
+
+        /* ── What's New section ── */
+        .whats-new-section {
+            margin-bottom: 28px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            overflow: hidden;
+        }
+
+        .whats-new-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            font-family: var(--mono);
+            font-size: 0.62rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-dim);
+            cursor: pointer;
+            user-select: none;
+            transition: background var(--transition);
+        }
+
+        .whats-new-header:hover {
+            background: var(--surface2);
+        }
+
+        .whats-new-header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .whats-new-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 6px var(--green);
+            flex-shrink: 0;
+        }
+
+        .whats-new-toggle {
+            font-size: 0.7rem;
+            transition: transform var(--transition);
+        }
+
+        .whats-new-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .whats-new-list {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            flex-wrap: wrap;
+        }
+
+        .whats-new-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 12px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            font-family: var(--mono);
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+
+        .whats-new-item:hover {
+            color: var(--text);
+            border-color: var(--border2);
+        }
+
+        .whats-new-item .new-tag {
+            font-size: 0.55rem;
+            font-weight: 600;
+            background: var(--green-dim);
+            color: var(--green);
+            border: 1px solid rgba(61,255,160,0.25);
+            border-radius: 3px;
+            padding: 1px 5px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* ── Extension promo strip ── */
+        .extension-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            margin-bottom: 28px;
+        }
+
+        .extension-strip-text {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        .extension-strip-text strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .extension-strip-link {
+            flex-shrink: 0;
+            padding: 6px 14px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+
+        .extension-strip-link:hover {
+            border-color: var(--border2);
+            color: var(--text);
+        }
+
+        @media (max-width: 520px) {
+            .extension-strip {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
     </style>
 </head>
 <body>
@@ -307,11 +503,11 @@
                         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
                             <div>
                                 <div class="hero-title">Dev<span>Box</span></div>
-                                <div class="hero-sub">Essential developer utilities — no backend, no login required.</div>
+                                <div class="hero-sub">78 developer tools that run entirely in your browser — fast, private, and free.</div>
                                 <div class="hero-badges">
-                                    <div class="badge"><div class="dot"></div>70+ tools</div>
-                                    <div class="badge badge-line"><div class="dot"></div>The toolbox every dev bookmarks and never deletes.</div>
-                                    <div class="badge badge-line"><div class="dot"></div>Fast, focused, and always in your corner.</div>
+                                    <div class="badge"><div class="dot"></div>78 tools</div>
+                                    <div class="badge" style="color:var(--green);border-color:rgba(61,255,160,0.2);background:rgba(61,255,160,0.06)"><span style="font-size:0.75rem">🔒</span> 100% client-side · nothing uploaded</div>
+                                    <div class="badge badge-line"><div class="dot"></div>No login · no backend · no tracking of your data</div>
                                 </div>
                             </div>
                             <div style="display:flex;gap:8px;flex-shrink:0;margin-top:4px">
@@ -337,6 +533,51 @@
                         <div id="recentList" style="display:flex;gap:6px;flex-wrap:wrap"></div>
                     </div>
 
+                    <!-- MOST USED -->
+                    <div id="mostUsedSection" style="display:none;margin-bottom:20px">
+                        <div style="font-family:var(--mono);font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-dim);margin-bottom:8px;display:flex;align-items:center;gap:8px">
+                            🔥 Most Used
+                            <button onclick="clearMostUsed()" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:0.62rem;font-family:var(--mono);opacity:0.6;transition:opacity 0.15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">clear</button>
+                        </div>
+                        <div id="mostUsedList" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+                    </div>
+
+                    <!-- WHAT'S NEW -->
+                    <div class="whats-new-section" id="whatsNewSection">
+                        <div class="whats-new-header" onclick="toggleWhatsNew()" id="whatsNewHeader">
+                            <div class="whats-new-header-left">
+                                <div class="whats-new-dot"></div>
+                                What's New
+                            </div>
+                            <span class="whats-new-toggle open" id="whatsNewToggle">▾</span>
+                        </div>
+                        <div class="whats-new-list" id="whatsNewList">
+                            <a class="whats-new-item" href="tools/cron.html"><span class="new-tag">New</span>Cron Parser</a>
+                            <a class="whats-new-item" href="tools/toml.html"><span class="new-tag">New</span>TOML ↔ JSON</a>
+                            <a class="whats-new-item" href="tools/colorblind.html"><span class="new-tag">New</span>Color Blindness Sim</a>
+                            <a class="whats-new-item" href="tools/svgtools.html"><span class="new-tag">New</span>SVG Optimizer</a>
+                            <a class="whats-new-item" href="tools/cssgrid.html"><span class="new-tag">New</span>CSS Grid Generator</a>
+                            <a class="whats-new-item" href="changelog.html" style="color:var(--text-dim);opacity:0.6">Full changelog →</a>
+                        </div>
+                    </div>
+
+                    <!-- CATEGORY FILTERS -->
+                    <div class="filter-tabs" id="filterTabs">
+                        <button class="filter-tab active" data-filter="all" onclick="setFilter(this,'all')">All</button>
+                        <button class="filter-tab" data-filter="Format" onclick="setFilter(this,'Format')">Format</button>
+                        <button class="filter-tab" data-filter="Inspect" onclick="setFilter(this,'Inspect')">Inspect</button>
+                        <button class="filter-tab" data-filter="Encode" onclick="setFilter(this,'Encode')">Encode</button>
+                        <button class="filter-tab" data-filter="Security" onclick="setFilter(this,'Security')">🔒 Security</button>
+                        <button class="filter-tab" data-filter="Generate" onclick="setFilter(this,'Generate')">Generate</button>
+                        <button class="filter-tab" data-filter="Color" onclick="setFilter(this,'Color')">Color</button>
+                        <button class="filter-tab" data-filter="CSS Builders" onclick="setFilter(this,'CSS Builders')">CSS</button>
+                        <button class="filter-tab" data-filter="API & Network" onclick="setFilter(this,'API & Network')">API</button>
+                        <button class="filter-tab" data-filter="Convert" onclick="setFilter(this,'Convert')">Convert</button>
+                        <button class="filter-tab" data-filter="Text" onclick="setFilter(this,'Text')">Text</button>
+                        <button class="filter-tab" data-filter="Productivity" onclick="setFilter(this,'Productivity')">Productivity</button>
+                        <button class="filter-tab" data-filter="Cheatsheets" onclick="setFilter(this,'Cheatsheets')">Cheatsheets</button>
+                    </div>
+
                     <div class="search-wrap">
                         <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#6B7A99" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8" />
@@ -356,7 +597,7 @@
                     <div class="section" data-section="Format">
                         <div class="section-header">Format <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/json.html" data-tags="format pretty print validate minify beautify">
+                            <a class="tool-card" href="tools/json.html" data-tags="format pretty print validate minify beautify lint tidy compact object array parse">
                                 <div class="tool-icon" style="background:var(--green-dim);color:var(--green)">{}</div>
                                 <div class="tool-card-text"><div class="tool-name">JSON Formatter</div><div class="tool-desc">Pretty-print, minify & validate JSON</div></div>
                             </a>
@@ -382,7 +623,7 @@
                             </a>
                             <a class="tool-card" href="tools/envparser.html" data-tags="env environment variables parse validate dotenv config">
                                 <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">.env</div>
-                                <div class="tool-card-text"><div class="tool-name">.env Parser</div><div class="tool-desc">Parse, validate & convert .env files</div></div>
+                                <div class="tool-card-text"><div class="tool-name">.env Parser</div><div class="tool-desc">Parse, validate & convert .env files</div><div class="privacy-badge">🔒 nothing uploaded</div></div>
                             </a>
                         </div>
                     </div>
@@ -395,7 +636,7 @@
                                 <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">⇄</div>
                                 <div class="tool-card-text"><div class="tool-name">Diff Checker</div><div class="tool-desc">Compare two texts line by line</div></div>
                             </a>
-                            <a class="tool-card" href="tools/regex.html" data-tags="pattern test match replace flags groups">
+                            <a class="tool-card" href="tools/regex.html" data-tags="pattern test match replace flags groups regexp regular expression lookahead capture">
                                 <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">.*</div>
                                 <div class="tool-card-text"><div class="tool-name">Regex Tester</div><div class="tool-desc">Live match & group highlighting</div></div>
                             </a>
@@ -426,7 +667,7 @@
                     <div class="section" data-section="Encode">
                         <div class="section-header">Encode <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/base64.html" data-tags="encode decode text string base64">
+                            <a class="tool-card" href="tools/base64.html" data-tags="encode decode text string base64 b64 atob btoa convert binary">
                                 <div class="tool-icon" style="background:var(--blue-dim);color:var(--blue)">B64</div>
                                 <div class="tool-card-text"><div class="tool-name">Base64</div><div class="tool-desc">Encode & decode text</div></div>
                             </a>
@@ -461,21 +702,21 @@
                     <div class="section" data-section="Security">
                         <div class="section-header">Security <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/password.html" data-tags="generate random secure strong passphrase security">
+                            <a class="tool-card" href="tools/password.html" data-tags="generate random secure strong passphrase security pwd secret key entropy">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">🔑</div>
                                 <div class="tool-card-text"><div class="tool-name">Password Generator</div><div class="tool-desc">Cryptographically random</div></div>
                             </a>
                             <a class="tool-card" href="tools/textencrypt.html" data-tags="aes encrypt decrypt secure password cipher security">
                                 <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">🔐</div>
-                                <div class="tool-card-text"><div class="tool-name">Text Encrypt</div><div class="tool-desc">AES-256 in-browser</div></div>
+                                <div class="tool-card-text"><div class="tool-name">Text Encrypt</div><div class="tool-desc">AES-256 in-browser</div><div class="privacy-badge">🔒 runs locally</div></div>
                             </a>
-                            <a class="tool-card" href="tools/jwt.html" data-tags="token decode header payload claims expiry security">
+                            <a class="tool-card" href="tools/jwt.html" data-tags="token decode header payload claims expiry security bearer authorization auth inspect">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">JWT</div>
-                                <div class="tool-card-text"><div class="tool-name">JWT Decoder</div><div class="tool-desc">Header, payload, expiry</div></div>
+                                <div class="tool-card-text"><div class="tool-name">JWT Decoder</div><div class="tool-desc">Header, payload, expiry</div><div class="privacy-badge">🔒 nothing uploaded</div></div>
                             </a>
-                            <a class="tool-card" href="tools/jwtencoder.html" data-tags="token encode sign secret algorithm security">
+                            <a class="tool-card" href="tools/jwtencoder.html" data-tags="token encode sign secret algorithm security bearer hs256 rs256 create generate">
                                 <div class="tool-icon" style="background:var(--purple-dim);color:var(--purple)">JWT+</div>
-                                <div class="tool-card-text"><div class="tool-name">JWT Encoder</div><div class="tool-desc">Build & sign JWT tokens</div></div>
+                                <div class="tool-card-text"><div class="tool-name">JWT Encoder</div><div class="tool-desc">Build & sign JWT tokens</div><div class="privacy-badge">🔒 nothing uploaded</div></div>
                             </a>
                         </div>
                     </div>
@@ -484,7 +725,7 @@
                     <div class="section" data-section="Generate">
                         <div class="section-header">Generate <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/uuid.html" data-tags="generate random guid unique id rfc">
+                            <a class="tool-card" href="tools/uuid.html" data-tags="generate random guid unique id rfc v4 v7 nanoid ulid identifier">
                                 <div class="tool-icon" style="background:var(--orange-dim);color:var(--orange)">UID</div>
                                 <div class="tool-card-text"><div class="tool-name">UUID Generator</div><div class="tool-desc">RFC 4122 v4 UUIDs, bulk</div></div>
                             </a>
@@ -504,7 +745,7 @@
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">🔲</div>
                                 <div class="tool-card-text"><div class="tool-name">Favicon Generator</div><div class="tool-desc">All sizes, downloadable PNG</div></div>
                             </a>
-                            <a class="tool-card" href="tools/hash.html" data-tags="md5 sha sha256 sha1 checksum digest fingerprint inspect verify">
+                            <a class="tool-card" href="tools/hash.html" data-tags="md5 sha sha256 sha1 sha512 checksum digest fingerprint inspect verify crypto hmac">
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">#</div>
                                 <div class="tool-card-text"><div class="tool-name">Hash Generator</div><div class="tool-desc">MD5, SHA-1, SHA-256</div></div>
                             </a>
@@ -515,7 +756,7 @@
                     <div class="section" data-section="Color">
                         <div class="section-header">Color <span class="section-count"></span></div>
                         <div class="tool-grid">
-                            <a class="tool-card" href="tools/color.html" data-tags="hex rgb hsl oklch convert picker palette">
+                            <a class="tool-card" href="tools/color.html" data-tags="hex rgb hsl oklch convert picker palette colour hwb lch cmyk css variable">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">🎨</div>
                                 <div class="tool-card-text"><div class="tool-name">Color Converter</div><div class="tool-desc">HEX ↔ RGB ↔ HSL</div></div>
                             </a>
@@ -573,9 +814,9 @@
                                 <div class="tool-icon" style="background:var(--cyan-dim);color:var(--cyan)">curl</div>
                                 <div class="tool-card-text"><div class="tool-name">curl Builder</div><div class="tool-desc">Build curl commands visually</div></div>
                             </a>
-                            <a class="tool-card" href="tools/apitester.html" data-tags="api http request test get post put delete fetch rest">
+                            <a class="tool-card" href="tools/apitester.html" data-tags="api http request test get post put delete fetch rest patch curl postman insomnia headers body">
                                 <div class="tool-icon" style="background:var(--teal-dim);color:var(--teal)">API</div>
-                                <div class="tool-card-text"><div class="tool-name">API Tester</div><div class="tool-desc">Send HTTP requests &amp; inspect responses</div></div>
+                                <div class="tool-card-text"><div class="tool-name">API Tester</div><div class="tool-desc">Send HTTP requests &amp; inspect responses</div><div class="privacy-badge">🔒 keys stay in browser</div></div>
                             </a>
                             <a class="tool-card" href="tools/graphql.html" data-tags="graphql query mutation playground endpoint test api">
                                 <div class="tool-icon" style="background:var(--pink-dim);color:var(--pink)">GQL</div>
@@ -683,7 +924,7 @@
                                 <div class="tool-icon" style="background:var(--red-dim);color:var(--red)">TOML</div>
                                 <div class="tool-card-text"><div class="tool-name">TOML ↔ JSON</div><div class="tool-desc">Convert between TOML and JSON</div></div>
                             </a>
-                            <a class="tool-card" href="tools/timestamp.html" data-tags="unix epoch date time convert human age calculator difference business days">
+                            <a class="tool-card" href="tools/timestamp.html" data-tags="unix epoch date time convert human age calculator difference business days iso8601 utc timezone now timestamp">
                                 <div class="tool-icon" style="background:var(--yellow-dim);color:var(--yellow)">TS</div>
                                 <div class="tool-card-text"><div class="tool-name">Date &amp; Time Tools</div><div class="tool-desc">Timestamps, Age, Diff & Business Days</div></div>
                             </a>
@@ -775,6 +1016,15 @@
                         </div>
                     </div>
 
+                    <!-- EXTENSION PROMO STRIP -->
+                    <div class="extension-strip">
+                        <div class="extension-strip-text">
+                            <strong>🧩 DevBox wherever you code</strong><br>
+                            Install the browser extension and access your favorite tools without leaving your current tab. Right-click to encode, decode, or format anything.
+                        </div>
+                        <a href="extension.html" class="extension-strip-link">Get Extension →</a>
+                    </div>
+
                 </div><!-- /home-content -->
             </div><!-- /content -->
 
@@ -811,29 +1061,101 @@
             document.getElementById('recentSection').style.display = 'none';
         }
 
+        // ── Most Used ──
+        function loadMostUsed() {
+            try {
+                const mostUsed = getMostUsed(8);
+                if (!mostUsed.length) return;
+                // Look up names from the DOM tool cards
+                const cardMap = {};
+                document.querySelectorAll('.tool-card').forEach(card => {
+                    const href = card.getAttribute('href') || '';
+                    const file = href.split('/').pop();
+                    const name = card.querySelector('.tool-name')?.textContent || file;
+                    if (file) cardMap[file] = name;
+                });
+                const section = document.getElementById('mostUsedSection');
+                const list = document.getElementById('mostUsedList');
+                const rendered = mostUsed
+                    .map(({ file, count }) => {
+                        const name = cardMap[file];
+                        if (!name) return ''; // skip unknown files
+                        const isCheatsheet = !cardMap[file] || file.includes('-cheatsheet') || file === 'git.html' || file === 'bash.html' || file === 'docker.html';
+                        const href = isCheatsheet ? `cheatsheets/${file}` : `tools/${file}`;
+                        return `<a href="${escHtmlIdx(href)}" title="${count} visit${count !== 1 ? 's' : ''}" style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;font-size:0.78rem;color:var(--text-dim);font-family:var(--mono);transition:all 0.14s;white-space:nowrap"
+                               onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border2)'"
+                               onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">${escHtmlIdx(name)}</a>`;
+                    })
+                    .filter(Boolean)
+                    .join('');
+                if (!rendered) return;
+                list.innerHTML = rendered;
+                section.style.display = '';
+            } catch (e) { }
+        }
+
+        function clearMostUsed() {
+            lsRemove(USAGE_KEY);
+            document.getElementById('mostUsedSection').style.display = 'none';
+        }
+
         function escHtmlIdx(s) {
             return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
+        // ── What's New toggle ──
+        let _whatsNewOpen = true;
+        function toggleWhatsNew() {
+            _whatsNewOpen = !_whatsNewOpen;
+            document.getElementById('whatsNewList').style.display = _whatsNewOpen ? '' : 'none';
+            document.getElementById('whatsNewToggle').classList.toggle('open', _whatsNewOpen);
+        }
+
+        // ── Category Filter ──
+        let _activeFilter = 'all';
+        function setFilter(btn, filter) {
+            _activeFilter = filter;
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            // Clear search when switching category
+            if (filter !== 'all') {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('searchClear').classList.remove('show');
+            }
+            filterTools();
+        }
+
         function filterTools() {
             const q = document.getElementById('searchInput').value.toLowerCase().trim();
+            // If user typed in search, reset category filter to "all"
+            if (q && _activeFilter !== 'all') {
+                _activeFilter = 'all';
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                const allTab = document.querySelector('.filter-tab[data-filter="all"]');
+                if (allTab) allTab.classList.add('active');
+            }
             const sections = document.querySelectorAll('.section');
             let anyVisible = false;
             sections.forEach(section => {
+                const sectionName = section.dataset.section || '';
+                // Category filter: hide sections that don't match
+                if (_activeFilter !== 'all' && sectionName !== _activeFilter) {
+                    section.style.display = 'none';
+                    return;
+                }
                 const cards = section.querySelectorAll('.tool-card');
                 let sectionHasVisible = false;
                 cards.forEach(card => {
                     const name = card.querySelector('.tool-name').textContent.toLowerCase();
                     const desc = card.querySelector('.tool-desc').textContent.toLowerCase();
-                    const sectionName = (section.dataset.section || '').toLowerCase();
                     const tags = (card.dataset.tags || '').toLowerCase();
-                    const match = !q || name.includes(q) || desc.includes(q) || sectionName.includes(q) || tags.includes(q);
+                    const match = !q || name.includes(q) || desc.includes(q) || sectionName.toLowerCase().includes(q) || tags.includes(q);
                     card.style.display = match ? '' : 'none';
                     if (match) { sectionHasVisible = true; anyVisible = true; }
                 });
                 section.style.display = sectionHasVisible ? '' : 'none';
             });
-            document.getElementById('noResults').style.display = anyVisible || !q ? 'none' : 'block';
+            document.getElementById('noResults').style.display = anyVisible || (!q && _activeFilter === 'all') ? 'none' : 'block';
         }
 
         // Dynamic section counts
@@ -928,6 +1250,7 @@
             injectFavBtns();
             loadFavourites();
             loadRecent();
+            loadMostUsed();
         });
     </script>
     <script>

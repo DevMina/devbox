@@ -73,6 +73,7 @@
                 <div class="panel">
                     <div class="panel-bar"><span class="panel-label">Output</span><div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('htmlEntOutput').textContent)">⎘ Copy</button></div></div>
                     <div id="htmlEntOutput" class="output-area" style="color:var(--green)"></div>
+                    <div id="htmlEntSendToRow"></div>
                 </div>
             </div>
             <footer class="site-footer">
@@ -90,7 +91,20 @@
         function htmlSwap() { const o = document.getElementById('htmlEntOutput').textContent; document.getElementById('htmlEntInput').value = o; document.getElementById('htmlEntOutput').textContent = ''; }
         function htmlClear() { document.getElementById('htmlEntInput').value = ''; document.getElementById('htmlEntOutput').textContent = ''; history.replaceState(null,'',location.pathname); }
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
-        document.addEventListener('DOMContentLoaded', () => loadFromURL({ q: 'htmlEntInput' }, htmlEncode));
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromURL({ q: 'htmlEntInput' }, htmlEncode);
+            persistInput('htmlEntInput', 'devbox_persist_htmlent', htmlEncode);
+            receiveHandoff('htmlEntInput', htmlEncode);
+            const _orig = htmlEncode;
+            htmlEncode = function() { _orig(); htmlEntSendTo(); };
+        });
+        function htmlEntSendTo() {
+            renderSendTo('htmlEntSendToRow', () => document.getElementById('htmlEntOutput').textContent, [
+                { href: 'diff.html', label: 'Diff Checker' },
+                { href: 'stringescape.html', label: 'String Escape' },
+                { href: 'htmlbeautify.html', label: 'HTML Beautifier' },
+            ]);
+        }
     </script>
 </body>
 </html>

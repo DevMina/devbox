@@ -74,6 +74,7 @@
                 <div class="panel">
                     <div class="panel-bar"><span class="panel-label">Output</span><div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('htmlBOutput').textContent)">⎘ Copy</button></div></div>
                     <div id="htmlBOutput" class="output-area" style="color:var(--orange);white-space:pre;min-height:160px;overflow-x:auto;font-size:0.82rem"></div>
+                    <div id="htmlBSendToRow"></div>
                 </div>
             </div>
             <footer class="site-footer">
@@ -161,13 +162,26 @@
         function htmlMinifyTool() { let html = document.getElementById('htmlBInput').value; html = html.replace(/<!--[\s\S]*?-->/g, '').replace(/\s+/g, ' ').replace(/> </g, '><').trim(); document.getElementById('htmlBOutput').textContent = html; }
         function htmlBSample() { document.getElementById('htmlBInput').value = '<html><head><title>Sample</title><meta charset="UTF-8"><link rel="stylesheet" href="style.css"></head><body><header><nav><ul><li><a href="/">Home</a></li><li><a href="/about">About</a></li></ul></nav></header><main><section><h1>Welcome</h1><p>This is a sample page.</p></section></main><footer><p>&copy; 2024</p></footer></body></html>'; }
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        function htmlBSendTo() {
+            renderSendTo('htmlBSendToRow', () => document.getElementById('htmlBOutput').textContent, [
+                { href: 'diff.html', label: 'Diff Checker' },
+                { href: 'xmljson.html', label: 'XML → JSON' },
+                { href: 'cssminify.html', label: 'CSS Minify' },
+            ]);
+        }
         document.addEventListener('DOMContentLoaded', () => {
             initDropZone('#htmlDropZone', ['.html','.htm','text/html'], (text) => {
                 document.getElementById('htmlBInput').value = text;
                 htmlBeautify();
             });
             loadFromURL({ q: 'htmlBInput' }, htmlBeautify);
+            persistInput('htmlBInput', 'devbox_persist_htmlb', htmlBeautify);
+            receiveHandoff('htmlBInput', htmlBeautify);
         });
+        const _origHtmlBeautify = htmlBeautify;
+        htmlBeautify = function() { _origHtmlBeautify(); htmlBSendTo(); };
+        const _origHtmlMinify = htmlMinifyTool;
+        htmlMinifyTool = function() { _origHtmlMinify(); htmlBSendTo(); };
     </script>
 </body>
 </html>

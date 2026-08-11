@@ -115,11 +115,12 @@
             }
         }
         function b64Swap() { const o = document.getElementById('b64Output').textContent; document.getElementById('b64Input').value = o; document.getElementById('b64Output').textContent = ''; }
-        function b64Clear() { document.getElementById('b64Input').value = ''; document.getElementById('b64Output').textContent = ''; history.replaceState(null,'',location.pathname); }
+        function b64Clear() { document.getElementById('b64Input').value = ''; document.getElementById('b64Output').textContent = ''; lsRemove('devbox_persist_b64'); history.replaceState(null,'',location.pathname); }
         document.addEventListener('DOMContentLoaded', () => {
             receiveHandoff('b64Input', b64Decode);
             initDropZone('#b64DropZone', [], (text) => { document.getElementById('b64Input').value = text; });
             loadFromURL({ q: 'b64Input' });
+            persistInput('b64Input', 'devbox_persist_b64');
         });
     </script>
 </body>

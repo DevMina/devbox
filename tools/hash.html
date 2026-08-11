@@ -90,7 +90,11 @@
     <script>
         function hashLive() { const t = document.getElementById('hashInput').value; if (!t) { ['h-md5', 'h-sha1', 'h-sha256'].forEach(id => document.getElementById(id).textContent = '—'); return; } document.getElementById('h-md5').textContent = CryptoJS.MD5(t).toString(); document.getElementById('h-sha1').textContent = CryptoJS.SHA1(t).toString(); document.getElementById('h-sha256').textContent = CryptoJS.SHA256(t).toString(); }
         function hashClear() { document.getElementById('hashInput').value = ''; hashLive(); history.replaceState(null,'',location.pathname); }
-        document.addEventListener('DOMContentLoaded', () => loadFromURL({ q: 'hashInput' }, hashLive));
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromURL({ q: 'hashInput' }, hashLive);
+            persistInput('hashInput', 'devbox_persist_hash', hashLive);
+            receiveHandoff('hashInput', hashLive);
+        });
     </script>
 </body>
 </html>

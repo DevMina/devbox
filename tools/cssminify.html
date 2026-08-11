@@ -75,6 +75,7 @@
                 <div class="panel">
                     <div class="panel-bar"><span class="panel-label">Output</span><div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('cssOutput').textContent)">⎘ Copy</button></div></div>
                     <div id="cssOutput" class="output-area" style="color:var(--pink);white-space:pre-wrap;min-height:140px;"></div>
+                    <div id="cssSendToRow"></div>
                 </div>
             </div>
             <footer class="site-footer">
@@ -146,13 +147,26 @@
 }`;
         }
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        function cssSendTo() {
+            renderSendTo('cssSendToRow', () => document.getElementById('cssOutput').textContent, [
+                { href: 'diff.html', label: 'Diff Checker' },
+                { href: 'htmlbeautify.html', label: 'HTML Beautifier' },
+                { href: 'stringescape.html', label: 'String Escape' },
+            ]);
+        }
         document.addEventListener('DOMContentLoaded', () => {
             initDropZone('#cssDropZone', ['.css','text/css'], (text) => {
                 document.getElementById('cssInput').value = text;
                 cssMinify();
             });
             loadFromURL({ q: 'cssInput' }, cssMinify);
+            persistInput('cssInput', 'devbox_persist_css', cssMinify);
+            receiveHandoff('cssInput', cssMinify);
         });
+        const _origCssMinify = cssMinify;
+        cssMinify = function() { _origCssMinify(); cssSendTo(); };
+        const _origCssBeautify = cssBeautify;
+        cssBeautify = function() { _origCssBeautify(); cssSendTo(); };
     </script>
 </body>
 </html>

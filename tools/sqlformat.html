@@ -76,6 +76,7 @@
                     <pre id="sqlOutput"
                          class="output-area"
                          style="min-height:160px;white-space:pre-wrap;line-height:1.8;margin:0;"></pre>
+                    <div id="sqlSendToRow"></div>
                 </div>
             </div>
             <footer class="site-footer">
@@ -205,13 +206,26 @@ ORDER BY order_count DESC
 LIMIT 50;`;
         }
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+        function sqlSendTo() {
+            renderSendTo('sqlSendToRow', () => document.getElementById('sqlOutput').innerText, [
+                { href: 'diff.html', label: 'Diff Checker' },
+                { href: 'stringescape.html', label: 'String Escape' },
+            ]);
+        }
         document.addEventListener('DOMContentLoaded', () => {
             initDropZone('#sqlDropZone', ['.sql','text/sql'], (text) => {
                 document.getElementById('sqlInput').value = text;
                 sqlFormat();
             });
             loadFromURL({ q: 'sqlInput' }, sqlFormat);
+            persistInput('sqlInput', 'devbox_persist_sql', sqlFormat);
+            receiveHandoff('sqlInput', sqlFormat);
         });
+        // Patch sqlFormat and sqlMinify to call sqlSendTo after rendering
+        const _origSqlFormat = sqlFormat;
+        sqlFormat = function() { _origSqlFormat(); sqlSendTo(); };
+        const _origSqlMinify = sqlMinify;
+        sqlMinify = function() { _origSqlMinify(); sqlSendTo(); };
     </script>
 </body>
 </html>

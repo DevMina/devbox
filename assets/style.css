@@ -308,6 +308,17 @@ body {
     padding: 6px;
 }
 
+.cmd-palette-section-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    padding: 8px 10px 4px;
+    opacity: 0.7;
+}
+
 .cmd-palette-item {
     display: flex;
     align-items: center;
@@ -318,6 +329,11 @@ body {
     color: var(--text);
     font-size: 0.84rem;
     cursor: pointer;
+    width: 100%;
+    background: none;
+    border: none;
+    font-family: var(--font);
+    text-align: left;
 }
 
     .cmd-palette-item.selected {
