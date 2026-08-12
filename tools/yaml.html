@@ -201,6 +201,7 @@
             const m = params.get('mode');
             if (m && ['yj','jy','fmt'].includes(m)) setMode(m);
             if (q !== null) { document.getElementById('input').value = q; run(); }
+            persistInput('input', 'devbox_persist_yaml', run);
         });
     </script>
 </body>

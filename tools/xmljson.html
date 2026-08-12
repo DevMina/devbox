@@ -253,6 +253,7 @@
             const m = params.get('mode');
             if (m && ['xj','jx'].includes(m)) setMode(m);
             if (q !== null) { document.getElementById('input').value = q; run(); }
+            persistInput('input', 'devbox_persist_xmljson', run);
         });
     </script>
 </body>

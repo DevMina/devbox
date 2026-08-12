@@ -208,6 +208,7 @@
                 generate();
             });
             loadFromURL({ q: 'json-input' }, generate);
+            persistInput('json-input', 'devbox_persist_jsonschema', generate);
             document.addEventListener('keydown', e => {
                 if (e.ctrlKey || e.metaKey) {
                     if (e.shiftKey && e.key === 'L') { e.preventDefault(); loadSample(); }

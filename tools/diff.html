@@ -747,6 +747,9 @@ users.forEach(u => greet(u));
             loadFromURL({ a: 'diffA', b: 'diffB' }, runDiff);
             persistInput('diffA', 'devbox_persist_diffa', runDiff);
             persistInput('diffB', 'devbox_persist_diffb', runDiff);
+            // Receive handoff into the "Modified" side so pasting from another tool
+            // shows a diff against whatever is already in the "Original" side.
+            receiveHandoff('diffB', runDiff);
         });
         // Patch runDiff to call diffSendTo after rendering
         const _origRunDiff = runDiff;
