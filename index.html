@@ -12,11 +12,12 @@
     </script>
     <meta charset="UTF-8">
     <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) { } var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) { } updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
-    <meta name="description" content="DevBox — 78 developer tools that run entirely in your browser. Fast, private, and free. No login, no backend, nothing uploaded. JSON, JWT, Base64, Regex, Color, SQL, CSS and more.">
+    <meta name="description" content="79 developer tools that run in your browser — free, private, no login. JSON, JWT, Regex, Base64, SQL, CSS, Color, API tools and more.">
     <meta property="og:title" content="DevBox — Developer Toolbox">
-    <meta property="og:description" content="78 developer tools in one place. No backend required.">
+    <meta property="og:description" content="79 developer tools in one place. No backend required.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-default.png">
+    <link rel="canonical" href="https://devmina.github.io/devbox/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevBox — Developer Toolbox</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -418,6 +419,98 @@
             text-transform: uppercase;
         }
 
+        /* ── Toolkits section ── */
+        .toolkits-section {
+            margin-bottom: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            overflow: hidden;
+        }
+        .toolkits-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            font-family: var(--mono);
+            font-size: 0.62rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-dim);
+            cursor: pointer;
+            user-select: none;
+            transition: background var(--transition);
+        }
+        .toolkits-header:hover { background: var(--surface2); }
+        .toolkits-body {
+            padding: 14px;
+        }
+        .toolkit-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        @media (max-width: 680px) {
+            .toolkit-grid { grid-template-columns: 1fr; }
+        }
+        .toolkit-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+            padding: 12px 14px;
+            transition: border-color var(--transition);
+        }
+        .toolkit-card:hover { border-color: var(--border2); }
+        .toolkit-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .toolkit-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .toolkit-name {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .toolkit-tagline {
+            font-family: var(--mono);
+            font-size: 0.62rem;
+            color: var(--text-dim);
+            margin-left: auto;
+            white-space: nowrap;
+        }
+        .toolkit-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .toolkit-chip {
+            display: inline-block;
+            padding: 3px 9px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: border-color var(--transition), color var(--transition);
+            white-space: nowrap;
+        }
+        .toolkit-chip:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
         /* ── Extension promo strip ── */
         .extension-strip {
             display: flex;
@@ -476,7 +569,7 @@
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="app">
-        <aside class="sidebar" id="sidebar"></aside>
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation"></aside>
         <main class="content-wrap">
             <div class="content">
                 <div class="home-content">
@@ -485,9 +578,9 @@
                         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
                             <div>
                                 <div class="hero-title">Dev<span>Box</span></div>
-                                <div class="hero-sub">78 developer tools that run entirely in your browser — fast, private, and free.</div>
+                                <div class="hero-sub">79 developer tools that run entirely in your browser — fast, private, and free.</div>
                                 <div class="hero-badges">
-                                    <div class="badge"><div class="dot"></div>78 tools</div>
+                                    <div class="badge"><div class="dot"></div>79 tools</div>
                                     <div class="badge" style="color:var(--green);border-color:rgba(61,255,160,0.2);background:rgba(61,255,160,0.06)">🔒 Client-side only</div>
                                     <div class="badge">No login · no backend</div>
                                 </div>
@@ -517,15 +610,17 @@
                     <!-- MOST USED -->
                     <div id="mostUsedSection" style="display:none;margin-bottom:20px">
                         <div style="font-family:var(--mono);font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-dim);margin-bottom:8px;display:flex;align-items:center;gap:8px">
-                            🔥 Most Used
-                            <button onclick="clearMostUsed()" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:0.62rem;font-family:var(--mono);opacity:0.6;transition:opacity 0.15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">clear</button>
+                            <span id="mostUsedLabel">🔥 Most Used</span>
+                            <button id="mostUsedClearBtn" onclick="clearMostUsed()" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:0.62rem;font-family:var(--mono);opacity:0.6;transition:opacity 0.15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">clear</button>
                         </div>
                         <div id="mostUsedList" style="display:flex;gap:6px;flex-wrap:wrap"></div>
                     </div>
 
                     <!-- WHAT'S NEW -->
                     <div class="whats-new-section" id="whatsNewSection">
-                        <div class="whats-new-header" onclick="toggleWhatsNew()" id="whatsNewHeader">
+                        <div class="whats-new-header" onclick="toggleWhatsNew()" id="whatsNewHeader"
+                             role="button" aria-expanded="true" aria-controls="whatsNewList" tabindex="0"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleWhatsNew();}">
                             <div class="whats-new-header-left">
                                 <div class="whats-new-dot"></div>
                                 What's New
@@ -542,21 +637,107 @@
                         </div>
                     </div>
 
+                    <!-- TOOLKITS -->
+                    <div class="toolkits-section" id="toolkitsSection">
+                        <div class="toolkits-header" onclick="toggleToolkits()" id="toolkitsHeader"
+                             role="button" aria-expanded="true" aria-controls="toolkitsBody" tabindex="0"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleToolkits();}">
+                            <div class="whats-new-header-left">
+                                <span style="font-size:0.8rem;line-height:1">🧰</span>
+                                Toolkits
+                            </div>
+                            <span class="whats-new-toggle open" id="toolkitsToggle">▾</span>
+                        </div>
+                        <div class="toolkits-body" id="toolkitsBody">
+                            <div class="toolkit-grid">
+
+                                <div class="toolkit-card">
+                                    <div class="toolkit-card-header">
+                                        <span class="toolkit-dot" style="background:var(--green)"></span>
+                                        <span class="toolkit-name">JSON Suite</span>
+                                        <span class="toolkit-tagline">Format · Query · Convert</span>
+                                    </div>
+                                    <div class="toolkit-chips">
+                                        <a href="tools/json.html" class="toolkit-chip">JSON Formatter</a>
+                                        <a href="tools/jsonpath.html" class="toolkit-chip">JSON Path</a>
+                                        <a href="tools/jsonschema.html" class="toolkit-chip">Schema Generator</a>
+                                        <a href="tools/jsoncsvconvert.html" class="toolkit-chip">JSON ↔ CSV</a>
+                                        <a href="tools/yaml.html" class="toolkit-chip">YAML ↔ JSON</a>
+                                        <a href="tools/xmljson.html" class="toolkit-chip">XML ↔ JSON</a>
+                                        <a href="tools/toml.html" class="toolkit-chip">TOML ↔ JSON</a>
+                                    </div>
+                                </div>
+
+                                <div class="toolkit-card">
+                                    <div class="toolkit-card-header">
+                                        <span class="toolkit-dot" style="background:var(--pink)"></span>
+                                        <span class="toolkit-name">CSS Suite</span>
+                                        <span class="toolkit-tagline">Build · Generate · Test</span>
+                                    </div>
+                                    <div class="toolkit-chips">
+                                        <a href="tools/gradient.html" class="toolkit-chip">Gradient</a>
+                                        <a href="tools/boxshadow.html" class="toolkit-chip">Box Shadow</a>
+                                        <a href="tools/flexbox.html" class="toolkit-chip">Flexbox</a>
+                                        <a href="tools/cssgrid.html" class="toolkit-chip">CSS Grid</a>
+                                        <a href="tools/breakpoints.html" class="toolkit-chip">Breakpoints</a>
+                                        <a href="tools/pxrem.html" class="toolkit-chip">px ↔ rem</a>
+                                        <a href="tools/cssminify.html" class="toolkit-chip">CSS Minifier</a>
+                                    </div>
+                                </div>
+
+                                <div class="toolkit-card">
+                                    <div class="toolkit-card-header">
+                                        <span class="toolkit-dot" style="background:var(--teal)"></span>
+                                        <span class="toolkit-name">API Suite</span>
+                                        <span class="toolkit-tagline">Test · Build · Inspect</span>
+                                    </div>
+                                    <div class="toolkit-chips">
+                                        <a href="tools/apitester.html" class="toolkit-chip">API Tester</a>
+                                        <a href="tools/curlbuilder.html" class="toolkit-chip">curl Builder</a>
+                                        <a href="tools/graphql.html" class="toolkit-chip">GraphQL</a>
+                                        <a href="tools/websocket.html" class="toolkit-chip">WebSocket</a>
+                                        <a href="tools/openapi.html" class="toolkit-chip">OpenAPI Viewer</a>
+                                        <a href="tools/httpstatus.html" class="toolkit-chip">HTTP Status</a>
+                                        <a href="tools/headerbuilder.html" class="toolkit-chip">Header Builder</a>
+                                    </div>
+                                </div>
+
+                                <div class="toolkit-card">
+                                    <div class="toolkit-card-header">
+                                        <span class="toolkit-dot" style="background:var(--purple)"></span>
+                                        <span class="toolkit-name">Security Suite</span>
+                                        <span class="toolkit-tagline">Auth · Encrypt · Hash</span>
+                                    </div>
+                                    <div class="toolkit-chips">
+                                        <a href="tools/jwt.html" class="toolkit-chip">JWT Decoder</a>
+                                        <a href="tools/jwtencoder.html" class="toolkit-chip">JWT Encoder</a>
+                                        <a href="tools/password.html" class="toolkit-chip">Password Generator</a>
+                                        <a href="tools/textencrypt.html" class="toolkit-chip">Text Encrypt</a>
+                                        <a href="tools/hash.html" class="toolkit-chip">Hash Generator</a>
+                                        <a href="tools/base64.html" class="toolkit-chip">Base64</a>
+                                    </div>
+                                </div>
+
+                            </div><!-- /toolkit-grid -->
+                        </div><!-- /toolkits-body -->
+                    </div><!-- /toolkits-section -->
+
                     <!-- CATEGORY FILTERS -->
-                    <div class="filter-tabs" id="filterTabs">
-                        <button class="filter-tab active" data-filter="all" onclick="setFilter(this,'all')">All</button>
-                        <button class="filter-tab" data-filter="Format" onclick="setFilter(this,'Format')">Format</button>
-                        <button class="filter-tab" data-filter="Inspect" onclick="setFilter(this,'Inspect')">Inspect</button>
-                        <button class="filter-tab" data-filter="Encode" onclick="setFilter(this,'Encode')">Encode</button>
-                        <button class="filter-tab" data-filter="Security" onclick="setFilter(this,'Security')">🔒 Security</button>
-                        <button class="filter-tab" data-filter="Generate" onclick="setFilter(this,'Generate')">Generate</button>
-                        <button class="filter-tab" data-filter="Color" onclick="setFilter(this,'Color')">Color</button>
-                        <button class="filter-tab" data-filter="CSS Builders" onclick="setFilter(this,'CSS Builders')">CSS</button>
-                        <button class="filter-tab" data-filter="API & Network" onclick="setFilter(this,'API & Network')">API</button>
-                        <button class="filter-tab" data-filter="Convert" onclick="setFilter(this,'Convert')">Convert</button>
-                        <button class="filter-tab" data-filter="Text" onclick="setFilter(this,'Text')">Text</button>
-                        <button class="filter-tab" data-filter="Productivity" onclick="setFilter(this,'Productivity')">Productivity</button>
-                        <button class="filter-tab" data-filter="Cheatsheets" onclick="setFilter(this,'Cheatsheets')">Cheatsheets</button>
+                    <div class="filter-tabs" id="filterTabs" role="group" aria-label="Filter tools by category">
+                        <button class="filter-tab active" data-filter="all" onclick="setFilter(this,'all')" aria-pressed="true">All</button>
+                        <button class="filter-tab" data-filter="Format" onclick="setFilter(this,'Format')" aria-pressed="false">Format</button>
+                        <button class="filter-tab" data-filter="Inspect" onclick="setFilter(this,'Inspect')" aria-pressed="false">Inspect</button>
+                        <button class="filter-tab" data-filter="Encode" onclick="setFilter(this,'Encode')" aria-pressed="false">Encode</button>
+                        <button class="filter-tab" data-filter="Security" onclick="setFilter(this,'Security')" aria-pressed="false">🔒 Security</button>
+                        <button class="filter-tab" data-filter="Generate" onclick="setFilter(this,'Generate')" aria-pressed="false">Generate</button>
+                        <button class="filter-tab" data-filter="Color" onclick="setFilter(this,'Color')" aria-pressed="false">Color</button>
+                        <button class="filter-tab" data-filter="CSS Builders" onclick="setFilter(this,'CSS Builders')" aria-pressed="false">CSS</button>
+                        <button class="filter-tab" data-filter="API & Network" onclick="setFilter(this,'API & Network')" aria-pressed="false">API</button>
+                        <button class="filter-tab" data-filter="Convert" onclick="setFilter(this,'Convert')" aria-pressed="false">Convert</button>
+                        <button class="filter-tab" data-filter="Build" onclick="setFilter(this,'Build')" aria-pressed="false">Build</button>
+                        <button class="filter-tab" data-filter="Text" onclick="setFilter(this,'Text')" aria-pressed="false">Text</button>
+                        <button class="filter-tab" data-filter="Productivity" onclick="setFilter(this,'Productivity')" aria-pressed="false">Productivity</button>
+                        <button class="filter-tab" data-filter="Cheatsheets" onclick="setFilter(this,'Cheatsheets')" aria-pressed="false">Cheatsheets</button>
                     </div>
 
                     <div class="search-wrap">
@@ -564,12 +745,12 @@
                             <circle cx="11" cy="11" r="8" />
                             <path d="m21 21-4.35-4.35" />
                         </svg>
-                        <input class="search-input" type="text" id="searchInput" style="padding-left:40px" placeholder="Search tools… e.g. JSON, password, regex, color" oninput="filterTools()">
-                        <button class="search-clear" id="searchClear" onclick="clearSearch()" title="Clear search">✕</button>
+                        <input class="search-input" type="text" id="searchInput" aria-label="Search tools" autocomplete="off" style="padding-left:40px" placeholder="Search tools… e.g. JSON, password, regex, color" oninput="filterTools()">
+                        <button class="search-clear" id="searchClear" onclick="clearSearch()" title="Clear search" aria-label="Clear search">✕</button>
                         <span class="search-hint"><span class="kbd">⌘K</span> or <span class="kbd">/</span></span>
                     </div>
 
-                    <div id="noResults" class="no-results">
+                    <div id="noResults" class="no-results" role="status" aria-live="polite" aria-atomic="true">
                         <div style="font-size:1.8rem;margin-bottom:8px">🔍</div>
                         No tools match your search.
                     </div>
@@ -1010,7 +1191,10 @@
             </div><!-- /content -->
 
             <footer class="site-footer">
-                © 2026 Mina Abdo. All rights reserved. &nbsp;·&nbsp; <a href="contact.html" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">Contact</a>
+                © 2026 Mina Abdo. All rights reserved. &nbsp;·&nbsp;
+                <a href="about.html" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">About</a> &nbsp;·&nbsp;
+                <a href="contact.html" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">Contact</a> &nbsp;·&nbsp;
+                <a href="https://github.com/devmina/devbox" target="_blank" rel="noopener noreferrer" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">GitHub ↗</a>
             </footer>
 
         </main><!-- /content-wrap -->
@@ -1025,15 +1209,18 @@
             try {
                 const recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
                 if (!recent.length) return;
+                const CS_FILES = new Set(['bash.html','docker.html','git.html','regex-cheatsheet.html']);
                 const section = document.getElementById('recentSection');
                 const list = document.getElementById('recentList');
                 section.style.display = '';
-                list.innerHTML = recent.map(r => `
-                                    <a href="tools/${r.page}" style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;font-size:0.78rem;color:var(--text-dim);font-family:var(--mono);transition:all 0.14s;white-space:nowrap"
-                                       onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border2)'"
-                                       onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">
-                                        ${escHtmlIdx(r.title)}
-                                    </a>`).join('');
+                list.innerHTML = recent.map(r => {
+                    const href = CS_FILES.has(r.page) ? `cheatsheets/${r.page}` : `tools/${r.page}`;
+                    return `<a href="${href}" style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;font-size:0.78rem;color:var(--text-dim);font-family:var(--mono);transition:all 0.14s;white-space:nowrap"
+                               onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border2)'"
+                               onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">
+                                ${escHtmlIdx(r.title)}
+                            </a>`;
+                }).join('');
             } catch (e) { }
         }
 
@@ -1042,11 +1229,26 @@
             document.getElementById('recentSection').style.display = 'none';
         }
 
+        // ── Curated Popular (shown to first-time visitors before usage data exists) ──
+        const CURATED_POPULAR = [
+            { file: 'json.html',       name: 'JSON Formatter',   href: 'tools/json.html' },
+            { file: 'jwt.html',        name: 'JWT Decoder',      href: 'tools/jwt.html' },
+            { file: 'regex.html',      name: 'Regex Tester',     href: 'tools/regex.html' },
+            { file: 'apitester.html',  name: 'API Tester',       href: 'tools/apitester.html' },
+            { file: 'base64.html',     name: 'Base64',           href: 'tools/base64.html' },
+            { file: 'uuid.html',       name: 'UUID Generator',   href: 'tools/uuid.html' },
+            { file: 'color.html',      name: 'Color Converter',  href: 'tools/color.html' },
+            { file: 'timestamp.html',  name: 'Date & Time',      href: 'tools/timestamp.html' },
+        ];
+
         // ── Most Used ──
         function loadMostUsed() {
             try {
-                const mostUsed = getMostUsed(8);
-                if (!mostUsed.length) return;
+                let mostUsed = getMostUsed(8);
+                const useCurated = !mostUsed.length;
+                if (useCurated) {
+                    mostUsed = CURATED_POPULAR.map(t => ({ file: t.file, count: 0, _curated: true, _href: t.href, _name: t.name }));
+                }
                 // Look up names from the DOM tool cards
                 const cardMap = {};
                 document.querySelectorAll('.tool-card').forEach(card => {
@@ -1058,18 +1260,25 @@
                 const section = document.getElementById('mostUsedSection');
                 const list = document.getElementById('mostUsedList');
                 const rendered = mostUsed
-                    .map(({ file, count }) => {
-                        const name = cardMap[file];
-                        if (!name) return ''; // skip unknown files
-                        const isCheatsheet = !cardMap[file] || file.includes('-cheatsheet') || file === 'git.html' || file === 'bash.html' || file === 'docker.html';
-                        const href = isCheatsheet ? `cheatsheets/${file}` : `tools/${file}`;
-                        return `<a href="${escHtmlIdx(href)}" title="${count} visit${count !== 1 ? 's' : ''}" style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;font-size:0.78rem;color:var(--text-dim);font-family:var(--mono);transition:all 0.14s;white-space:nowrap"
+                    .map(({ file, count, _curated, _href, _name }) => {
+                        const name = _name || cardMap[file];
+                        if (!name) return '';
+                        const CS_FILES_MU = new Set(['bash.html','docker.html','git.html','regex-cheatsheet.html']);
+                        const href = _href || ((!_curated && CS_FILES_MU.has(file)) ? `cheatsheets/${file}` : `tools/${file}`);
+                        const titleAttr = _curated ? 'Popular tool' : `${count} visit${count !== 1 ? 's' : ''}`;
+                        return `<a href="${escHtmlIdx(href)}" title="${titleAttr}" style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;font-size:0.78rem;color:var(--text-dim);font-family:var(--mono);transition:all 0.14s;white-space:nowrap"
                                onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border2)'"
                                onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">${escHtmlIdx(name)}</a>`;
                     })
                     .filter(Boolean)
                     .join('');
                 if (!rendered) return;
+                if (useCurated) {
+                    const lbl = document.getElementById('mostUsedLabel');
+                    if (lbl) lbl.textContent = '⭐ Popular';
+                    const clearBtn = document.getElementById('mostUsedClearBtn');
+                    if (clearBtn) clearBtn.style.display = 'none';
+                }
                 list.innerHTML = rendered;
                 section.style.display = '';
             } catch (e) { }
@@ -1077,7 +1286,13 @@
 
         function clearMostUsed() {
             lsRemove(USAGE_KEY);
+            // Reset label and clear button visibility, then reload with curated
+            const lbl = document.getElementById('mostUsedLabel');
+            const clearBtn = document.getElementById('mostUsedClearBtn');
+            if (lbl) lbl.textContent = '🔥 Most Used';
+            if (clearBtn) clearBtn.style.display = '';
             document.getElementById('mostUsedSection').style.display = 'none';
+            loadMostUsed();
         }
 
         function escHtmlIdx(s) {
@@ -1090,15 +1305,42 @@
             _whatsNewOpen = !_whatsNewOpen;
             document.getElementById('whatsNewList').style.display = _whatsNewOpen ? '' : 'none';
             document.getElementById('whatsNewToggle').classList.toggle('open', _whatsNewOpen);
+            const hdr = document.getElementById('whatsNewHeader');
+            if (hdr) hdr.setAttribute('aria-expanded', String(_whatsNewOpen));
+        }
+
+        // Toolkits toggle — persists state in localStorage
+        (function initToolkits() {
+            const stored = localStorage.getItem('devbox_toolkits_open');
+            const open = stored === null ? true : stored === '1';
+            if (!open) {
+                document.getElementById('toolkitsBody').style.display = 'none';
+                document.getElementById('toolkitsToggle').classList.remove('open');
+                const hdr = document.getElementById('toolkitsHeader');
+                if (hdr) hdr.setAttribute('aria-expanded', 'false');
+            }
+        })();
+        function toggleToolkits() {
+            const body    = document.getElementById('toolkitsBody');
+            const chevron = document.getElementById('toolkitsToggle');
+            const header  = document.getElementById('toolkitsHeader');
+            const isOpen  = body.style.display !== 'none';
+            body.style.display = isOpen ? 'none' : '';
+            chevron.classList.toggle('open', !isOpen);
+            if (header) header.setAttribute('aria-expanded', String(!isOpen));
+            try { localStorage.setItem('devbox_toolkits_open', isOpen ? '0' : '1'); } catch(e) {}
         }
 
         // ── Category Filter ──
         let _activeFilter = 'all';
         function setFilter(btn, filter) {
             _activeFilter = filter;
-            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.filter-tab').forEach(t => {
+                t.classList.remove('active');
+                t.setAttribute('aria-pressed', 'false');
+            });
             btn.classList.add('active');
-            // Clear search when switching category
+            btn.setAttribute('aria-pressed', 'true');
             if (filter !== 'all') {
                 document.getElementById('searchInput').value = '';
                 document.getElementById('searchClear').classList.remove('show');
@@ -1106,20 +1348,38 @@
             filterTools();
         }
 
+        function homepageFuzzyMatch(text, q) {
+            if (!q) return true;
+            if (text.includes(q)) return true;
+            const words = q.split(/\s+/).filter(Boolean);
+            if (words.length > 1 && words.every(w => text.includes(w))) return true;
+            if (words.some(w => w.length > 1 && text.includes(w))) return true;
+            // character-sequence fuzzy
+            let ti = 0;
+            for (let qi = 0; qi < q.length; qi++) {
+                ti = text.indexOf(q[qi], ti);
+                if (ti === -1) return false;
+                ti++;
+            }
+            return true;
+        }
+
         function filterTools() {
             const q = document.getElementById('searchInput').value.toLowerCase().trim();
             // If user typed in search, reset category filter to "all"
             if (q && _activeFilter !== 'all') {
                 _activeFilter = 'all';
-                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.filter-tab').forEach(t => {
+                    t.classList.remove('active');
+                    t.setAttribute('aria-pressed', 'false');
+                });
                 const allTab = document.querySelector('.filter-tab[data-filter="all"]');
-                if (allTab) allTab.classList.add('active');
+                if (allTab) { allTab.classList.add('active'); allTab.setAttribute('aria-pressed', 'true'); }
             }
             const sections = document.querySelectorAll('.section');
             let anyVisible = false;
             sections.forEach(section => {
                 const sectionName = section.dataset.section || '';
-                // Category filter: hide sections that don't match
                 if (_activeFilter !== 'all' && sectionName !== _activeFilter) {
                     section.style.display = 'none';
                     return;
@@ -1130,21 +1390,31 @@
                     const name = card.querySelector('.tool-name').textContent.toLowerCase();
                     const desc = card.querySelector('.tool-desc').textContent.toLowerCase();
                     const tags = (card.dataset.tags || '').toLowerCase();
-                    const match = !q || name.includes(q) || desc.includes(q) || sectionName.toLowerCase().includes(q) || tags.includes(q);
+                    const combined = `${name} ${desc} ${tags} ${sectionName.toLowerCase()}`;
+                    const match = !q || homepageFuzzyMatch(combined, q);
                     card.style.display = match ? '' : 'none';
                     if (match) { sectionHasVisible = true; anyVisible = true; }
                 });
                 section.style.display = sectionHasVisible ? '' : 'none';
             });
             document.getElementById('noResults').style.display = anyVisible || (!q && _activeFilter === 'all') ? 'none' : 'block';
+            // Hide toolkits when a search query is active OR a specific category is filtered
+            const toolkits = document.getElementById('toolkitsSection');
+            if (toolkits) toolkits.style.display = (q || _activeFilter !== 'all') ? 'none' : '';
+        // Dynamic section counts — show visible count (filtered) / total
+        document.querySelectorAll('.section').forEach(section => {
+            const allCards     = section.querySelectorAll('.tool-card');
+            const visibleCards = [...allCards].filter(c => c.style.display !== 'none');
+            const badge = section.querySelector('.section-count');
+            if (badge) {
+                const total   = allCards.length;
+                const visible = visibleCards.length;
+                badge.textContent = (q || _activeFilter !== 'all') ? `${visible}/${total}` : total;
+                badge.setAttribute('aria-label', `${visible} of ${total} tools`);
+            }
+        });
         }
 
-        // Dynamic section counts
-        document.querySelectorAll('.section').forEach(section => {
-            const count = section.querySelectorAll('.tool-card').length;
-            const badge = section.querySelector('.section-count');
-            if (badge) badge.textContent = count;
-        });
 
         // Platform-aware keyboard hint
         const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
@@ -1179,13 +1449,16 @@
             const section = document.getElementById('favSection');
             const list = document.getElementById('favList');
             if (!favs.length) { section.style.display = 'none'; return; }
+            const CS_FILES = new Set(['bash.html','docker.html','git.html','regex-cheatsheet.html']);
             section.style.display = 'block';
-            list.innerHTML = favs.map(f => `
-                                <a href="tools/${escHtmlIdx(f.file)}" style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;font-size:0.78rem;color:var(--text-dim);font-family:var(--mono);transition:all 0.14s;white-space:nowrap"
-                                   onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border2)'"
-                                   onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">
-                                    ★ ${escHtmlIdx(f.name)}
-                                </a>`).join('');
+            list.innerHTML = favs.map(f => {
+                const href = CS_FILES.has(f.file) ? `cheatsheets/${escHtmlIdx(f.file)}` : `tools/${escHtmlIdx(f.file)}`;
+                return `<a href="${href}" style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;font-size:0.78rem;color:var(--text-dim);font-family:var(--mono);transition:all 0.14s;white-space:nowrap"
+                           onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border2)'"
+                           onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">
+                            ★ ${escHtmlIdx(f.name)}
+                        </a>`;
+            }).join('');
         }
 
         function clearFavourites() {
@@ -1214,6 +1487,39 @@
             loadFavourites();
         });
 
+        let _searchFocusIdx = -1;
+        function getVisibleCards() {
+            return [...document.querySelectorAll('.tool-card')].filter(c => c.style.display !== 'none');
+        }
+
+        document.getElementById('searchInput').addEventListener('keydown', e => {
+            const q = document.getElementById('searchInput').value.trim();
+            if (!q) return;
+            const cards = getVisibleCards();
+            if (!cards.length) return;
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                _searchFocusIdx = Math.min(_searchFocusIdx + 1, cards.length - 1);
+                cards.forEach((c, i) => c.classList.toggle('search-hover', i === _searchFocusIdx));
+                cards[_searchFocusIdx]?.scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                _searchFocusIdx = Math.max(_searchFocusIdx - 1, 0);
+                cards.forEach((c, i) => c.classList.toggle('search-hover', i === _searchFocusIdx));
+                cards[_searchFocusIdx]?.scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'Enter' && _searchFocusIdx >= 0) {
+                e.preventDefault();
+                cards[_searchFocusIdx]?.click();
+            } else {
+                _searchFocusIdx = -1;
+            }
+        });
+
+        document.getElementById('searchInput').addEventListener('input', () => {
+            _searchFocusIdx = -1;
+            document.querySelectorAll('.tool-card.search-hover').forEach(c => c.classList.remove('search-hover'));
+        });
+
         document.addEventListener('keydown', e => {
             if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
                 e.preventDefault();
@@ -1224,6 +1530,8 @@
                 document.getElementById('searchClear').classList.remove('show');
                 filterTools();
                 document.getElementById('searchInput').blur();
+                _searchFocusIdx = -1;
+                document.querySelectorAll('.tool-card.search-hover').forEach(c => c.classList.remove('search-hover'));
             }
         });
 

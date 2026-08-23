@@ -1,13 +1,21 @@
 {
   "name": "DevBox",
   "short_name": "DevBox",
-  "description": "78 developer tools that run entirely in your browser — fast, private, and free. No login, no backend, nothing uploaded.",
+  "description": "79 developer tools that run entirely in your browser \u2014 fast, private, and free. No login, no backend, nothing uploaded.",
+  "lang": "en",
+  "scope": "./",
+  "id": "./",
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#0A0C10",
   "theme_color": "#0A0C10",
-  "orientation": "any",
-  "categories": ["developer", "utilities", "productivity"],
+  "categories": [
+    "developer",
+    "utilities",
+    "productivity"
+  ],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "assets/icon-192.png",
@@ -23,9 +31,25 @@
     }
   ],
   "shortcuts": [
-    { "name": "JSON Formatter", "url": "./tools/json.html", "description": "Format and validate JSON" },
-    { "name": "Base64 Encoder", "url": "./tools/base64.html", "description": "Encode and decode Base64" },
-    { "name": "Regex Tester", "url": "./tools/regex.html", "description": "Test regular expressions" },
-    { "name": "UUID Generator", "url": "./tools/uuid.html", "description": "Generate UUIDs" }
+    {
+      "name": "JSON Formatter",
+      "url": "./tools/json.html",
+      "description": "Format and validate JSON"
+    },
+    {
+      "name": "Base64 Encoder",
+      "url": "./tools/base64.html",
+      "description": "Encode and decode Base64"
+    },
+    {
+      "name": "Regex Tester",
+      "url": "./tools/regex.html",
+      "description": "Test regular expressions"
+    },
+    {
+      "name": "UUID Generator",
+      "url": "./tools/uuid.html",
+      "description": "Generate UUIDs"
+    }
   ]
 }

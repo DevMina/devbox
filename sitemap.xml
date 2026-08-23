@@ -2,523 +2,529 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://devmina.github.io/devbox/</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/contact.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/changelog.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/extension.html</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-08-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://devmina.github.io/devbox/about.html</loc>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/apitester.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/asciiart.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/aspectratio.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/base64.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/boxshadow.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/breakpoints.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/byteconvert.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/caseconvert.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/charcounter.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/color.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/colorblind.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/colorpalette.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/contrast.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/countdown.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/cron.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/cssgrid.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/cssminify.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/curlbuilder.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/diff.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/embed.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/envparser.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/fakedata.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/favicon.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/filebase64.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/flexbox.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/gitignore.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/gradient.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/graphql.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/hash.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/headerbuilder.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/htmlbeautify.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/htmlentity.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/httpstatus.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/imagepalette.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/ipcalc.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/json.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/jsoncsvconvert.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/jsonpath.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/jsonschema.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/jwt.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/jwtencoder.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/keytester.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/linesorter.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/lorem.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/markdown.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/matheval.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/metatags.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/morse.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/nettools.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/numbase.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/numberfmt.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/openapi.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/password.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/pomodoro.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/pxrem.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/qrcode.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/regex.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/seotools.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/slugify.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/snippets.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/sqlformat.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/stringescape.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/svgtools.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/tablebuilder.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/textencrypt.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/textstats.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/timestamp.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/todo.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/toml.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/unicode.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/unitconvert.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/url.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/urlparser.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/useragent.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/uuid.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/websocket.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/xml.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/xmljson.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/tools/yaml.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/cheatsheets/bash.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/cheatsheets/docker.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/cheatsheets/git.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://devmina.github.io/devbox/cheatsheets/regex-cheatsheet.html</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

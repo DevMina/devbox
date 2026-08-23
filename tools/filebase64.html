@@ -22,6 +22,7 @@
     <meta property="og:description" content="Convert any file to Base64 string or data URI, and decode Base64 back to a file">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-encode.png">
+    <link rel="canonical" href="https://devmina.github.io/devbox/tools/filebase64.html">
     <style>
         .drop-zone {
             border: 2px dashed var(--border2);
@@ -192,7 +193,7 @@
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar" id="sidebar"></aside>
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation"></aside>
         <main class="content-wrap">
             <div class="content" style="min-width:0">
 
@@ -235,7 +236,7 @@
                     <div class="panel" id="outputPanel" style="display:none">
                         <div class="panel-bar">
                             <span class="panel-label">Output</span>
-                            <div class="panel-actions">
+                            <div class="panel-actions"><button class="share-btn" onclick="navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
                                 <select id="outputFmt" onchange="renderOutput()" class="btn btn-ghost" style="font-family:var(--mono);font-size:0.72rem;padding:5px 10px;cursor:pointer">
                                     <option value="raw">Raw Base64</option>
                                     <option value="datauri">Data URI</option>

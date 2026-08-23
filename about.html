@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <meta charset="UTF-8">
+    <script>(function () { var k = 'devbox_theme', t = 'dark'; try { t = localStorage.getItem(k) || 'dark'; } catch (e) {} document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About — DevBox</title>
+    <meta name="description" content="DevBox is a free, browser-based developer toolbox with 79+ utilities. No backend, no login, no data uploaded.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <meta property="og:title" content="About DevBox">
+    <meta property="og:description" content="DevBox is a free, browser-based developer toolbox with 79+ utilities. No backend, no login, no data uploaded.">
+    <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-default.png">
+    <meta name="theme-color" content="#0A0C10">
+    <meta name="color-scheme" content="dark light">
+    <link rel="manifest" href="manifest.json">
+    <link rel="canonical" href="https://devmina.github.io/devbox/about.html">
+    <style>
+        .about-wrap {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+        }
+        .about-hero {
+            margin-bottom: 40px;
+        }
+        .about-hero-title {
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-weight: 600;
+            font-family: var(--mono);
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+        .about-hero-sub {
+            font-size: 0.92rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+        .about-section {
+            margin-bottom: 36px;
+        }
+        .about-section-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        .about-section p {
+            font-size: 0.88rem;
+            color: var(--text);
+            line-height: 1.75;
+            margin: 0 0 12px;
+        }
+        .about-section p:last-child { margin-bottom: 0; }
+        .about-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .about-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.77rem;
+            font-family: var(--mono);
+            color: var(--text-dim);
+        }
+        .about-pill-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .about-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .about-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--r-sm);
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: border-color 0.15s, color 0.15s;
+        }
+        .about-link-btn:hover { border-color: var(--green); color: var(--green); }
+        .privacy-card {
+            padding: 16px 20px;
+            background: rgba(61,255,160,0.04);
+            border: 1.5px solid rgba(61,255,160,0.2);
+            border-radius: var(--r);
+            font-size: 0.84rem;
+            color: var(--text);
+            line-height: 1.7;
+        }
+        .privacy-card strong { color: var(--green); }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 4px;
+        }
+        .stat-card {
+            padding: 16px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--r);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 1.6rem;
+            font-weight: 600;
+            font-family: var(--mono);
+            color: var(--green);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            font-family: var(--mono);
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="about-wrap">
+
+                    <div class="about-hero">
+                        <div class="about-hero-title">About <span style="color:var(--green)">DevBox</span></div>
+                        <div class="about-hero-sub">A free, browser-based developer toolbox. No backend, no login, no data uploaded. Just open it and get to work.</div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="about-section">
+                        <div class="about-section-title">By the numbers</div>
+                        <div class="stat-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">79+</div>
+                                <div class="stat-label">Tools</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">0</div>
+                                <div class="stat-label">Servers</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">0</div>
+                                <div class="stat-label">Logins</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">100%</div>
+                                <div class="stat-label">Client-side</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- What is DevBox -->
+                    <div class="about-section">
+                        <div class="about-section-title">What is DevBox?</div>
+                        <p>DevBox is an open-source collection of everyday developer utilities — all running directly in your browser. It covers formatting, inspection, encoding, security, API testing, CSS generation, color tools, converters, text utilities, and productivity tools.</p>
+                        <p>It started as a personal project to avoid switching between a dozen bookmarked tabs, and grew into something more complete over time. The goal is to feel like a native developer tool, not a website.</p>
+                    </div>
+
+                    <!-- Privacy -->
+                    <div class="about-section">
+                        <div class="about-section-title">Privacy philosophy</div>
+                        <div class="privacy-card">
+                            <strong>Your data stays in your browser.</strong> DevBox processes everything locally using JavaScript — your JSON, JWT tokens, passwords, source code, and API keys never leave your device and are never sent to any server.<br><br>
+                            The only exceptions are tools that intentionally make network requests by design: the <strong>API Tester</strong>, <strong>GraphQL Playground</strong>, <strong>WebSocket Client</strong>, and <strong>Network Tools</strong> send requests to the URLs <em>you</em> specify. For those, take the same care you would with any HTTP client.
+                        </div>
+                    </div>
+
+                    <!-- Tech stack -->
+                    <div class="about-section">
+                        <div class="about-section-title">Built with</div>
+                        <div class="about-pills">
+                            <span class="about-pill"><span class="about-pill-dot" style="background:var(--orange)"></span>Vanilla HTML / CSS / JS</span>
+                            <span class="about-pill"><span class="about-pill-dot" style="background:var(--green)"></span>No frameworks</span>
+                            <span class="about-pill"><span class="about-pill-dot" style="background:var(--cyan)"></span>Progressive Web App</span>
+                            <span class="about-pill"><span class="about-pill-dot" style="background:var(--purple)"></span>Service Worker</span>
+                            <span class="about-pill"><span class="about-pill-dot" style="background:var(--teal)"></span>GitHub Pages</span>
+                            <span class="about-pill"><span class="about-pill-dot" style="background:var(--yellow)"></span>Zero dependencies</span>
+                        </div>
+                        <p style="margin-top:14px">No npm, no bundler, no framework. Every tool is a standalone HTML file. This keeps the project fast to load, easy to audit, and trivial to self-host.</p>
+                    </div>
+
+                    <!-- PWA & Extension -->
+                    <div class="about-section">
+                        <div class="about-section-title">Install &amp; extend</div>
+                        <p>DevBox is a fully installable PWA — add it to your home screen or desktop for instant offline access to every tool. It also ships as a browser extension, giving you right-click access to DevBox tools directly from any page.</p>
+                        <div class="about-links">
+                            <a class="about-link-btn" href="extension.html">🧩 Get the extension</a>
+                            <a class="about-link-btn" href="changelog.html">✓ Changelog</a>
+                        </div>
+                    </div>
+
+                    <!-- Open source & contact -->
+                    <div class="about-section">
+                        <div class="about-section-title">Open source &amp; feedback</div>
+                        <p>DevBox is open source. You can browse the code, open issues, or suggest new tools on GitHub. If you'd prefer to reach out directly, use the contact form.</p>
+                        <div class="about-links">
+                            <a class="about-link-btn" href="https://github.com/devmina/devbox" target="_blank" rel="noopener noreferrer">⎇ View on GitHub ↗</a>
+                            <a class="about-link-btn" href="https://github.com/devmina/devbox/issues/new" target="_blank" rel="noopener noreferrer">💡 Suggest a tool ↗</a>
+                            <a class="about-link-btn" href="contact.html">✉ Contact</a>
+                        </div>
+                    </div>
+
+                </div><!-- /about-wrap -->
+            </div><!-- /content -->
+
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved. &nbsp;·&nbsp;
+                <a href="contact.html" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">Contact</a> &nbsp;·&nbsp;
+                <a href="https://github.com/devmina/devbox" target="_blank" rel="noopener noreferrer" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">GitHub ↗</a>
+            </footer>
+
+        </main><!-- /content-wrap -->
+    </div><!-- /app -->
+    <div class="toast" id="toast"></div>
+    <script src="assets/shared.js" defer></script>
+    <script src="assets/sidebar.js" defer></script>
+</body>
+</html>

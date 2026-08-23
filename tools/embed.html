@@ -22,6 +22,7 @@
     <meta property="og:description" content="Embed any DevBox tool in your own site or wiki">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-build.png">
+    <link rel="canonical" href="https://devmina.github.io/devbox/tools/embed.html">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -46,7 +47,7 @@
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar" id="sidebar"></aside>
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation"></aside>
         <main class="content-wrap">
             <div class="content" style="min-width:0">
                 <div class="tool-header">
@@ -70,7 +71,7 @@
 
                 <div class="panel" style="margin-bottom:14px">
                     <div class="panel-bar"><span class="panel-label">Embed code</span>
-                        <div class="panel-actions"><button class="btn btn-ghost" onclick="copy(document.getElementById('embedCode').textContent)">⎘ Copy</button></div>
+                        <div class="panel-actions"><button class="share-btn" onclick="navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button><button class="btn btn-ghost" onclick="copy(document.getElementById('embedCode').textContent)">⎘ Copy</button></div>
                     </div>
                     <pre id="embedCode" style="margin:0;padding:14px 16px;font-family:var(--mono);font-size:0.78rem;color:var(--text-bright);white-space:pre-wrap;word-break:break-all"></pre>
                 </div>

@@ -131,6 +131,8 @@ const USAGE_KEY = 'devbox_usage';
 function trackToolUse() {
     const page = location.pathname.split('/').pop();
     if (!page || page === 'index.html' || !page.endsWith('.html')) return;
+    const NON_TOOL_PAGES = new Set(['about.html','contact.html','changelog.html','extension.html']);
+    if (NON_TOOL_PAGES.has(page)) return;
     try {
         const counts = JSON.parse(lsGet(USAGE_KEY, '{}'));
         counts[page] = (counts[page] || 0) + 1;
@@ -194,6 +196,9 @@ function clearFavorites() {
 function trackPageView() {
     const page = location.pathname.split('/').pop();
     if (!page || page === 'index.html' || !page.endsWith('.html')) return;
+    // Exclude root-level non-tool pages (about, contact, changelog, extension)
+    const NON_TOOL_PAGES = new Set(['about.html','contact.html','changelog.html','extension.html']);
+    if (NON_TOOL_PAGES.has(page)) return;
     try {
         const title = document.querySelector('.tool-title')?.textContent || page;
         let recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
@@ -633,6 +638,7 @@ const SETTINGS_KEYS = [
     'devbox_ws_urls',
     'devbox_snippets',
     'devbox_api_history',
+    'devbox_toolkits_open',
 ];
 
 function exportSettings() {
@@ -749,12 +755,18 @@ function initPWA() {
         e.preventDefault();
         _pwaInstallEvent = e;
 
+        // Always show the persistent sidebar install button
+        const sbBtn = document.getElementById('sbInstallBtn');
+        if (sbBtn) sbBtn.style.display = '';
+
         // Show banner if not dismissed before
         if (lsGet('devbox_pwa_dismissed')) return;
 
         const banner = document.createElement('div');
         banner.className = 'pwa-banner';
         banner.id = 'pwaBanner';
+        banner.setAttribute('role', 'alert');
+        banner.setAttribute('aria-live', 'assertive');
         banner.innerHTML = `
             <div class="pwa-banner-text">
                 <div class="pwa-banner-title">Install DevBox</div>
@@ -771,7 +783,11 @@ function installPWA() {
     if (!_pwaInstallEvent) return;
     _pwaInstallEvent.prompt();
     _pwaInstallEvent.userChoice.then(result => {
-        if (result.outcome === 'accepted') showToast('✓ DevBox installed!');
+        if (result.outcome === 'accepted') {
+            showToast('✓ DevBox installed!');
+            const sbBtn = document.getElementById('sbInstallBtn');
+            if (sbBtn) sbBtn.style.display = 'none';
+        }
         _pwaInstallEvent = null;
         dismissPWABanner();
     });
@@ -835,6 +851,35 @@ function initEmbedMode() {
 
 // ── Init everything on DOM ready ──
 document.addEventListener('DOMContentLoaded', () => {
+    // Skip navigation link — keyboard accessibility
+    const main = document.querySelector('main.content-wrap');
+    if (main && !document.getElementById('main-content')) {
+        main.id = 'main-content';
+        const skip = document.createElement('a');
+        skip.href = '#main-content';
+        skip.className = 'skip-nav';
+        skip.textContent = 'Skip to main content';
+        document.body.insertBefore(skip, document.body.firstChild);
+    }
+
+    // Semantic headings — tool pages use <div class="tool-title"> instead of <h1>
+    // Add role="heading" aria-level="1" so screen readers announce them correctly
+    document.querySelectorAll('.tool-title, .contact-hero-title, .about-hero-title, .hero-title')
+        .forEach(el => {
+            if (!el.getAttribute('role')) {
+                el.setAttribute('role', 'heading');
+                el.setAttribute('aria-level', '1');
+            }
+        });
+    // Section-level headings (h2 equivalent)
+    document.querySelectorAll('.panel-label, .about-section-title, .section-header, .related-tools-header, .toolkit-name')
+        .forEach(el => {
+            if (!el.getAttribute('role')) {
+                el.setAttribute('role', 'heading');
+                el.setAttribute('aria-level', '2');
+            }
+        });
+
     initEmbedMode();
     initSidebar();
     initMobileSidebar();
@@ -844,6 +889,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initPWA();
     initBackToTop();
     trackPageView();
+    injectRelatedTools();
 
     // Platform-aware keyboard hint (tool pages have no search bar, so safe to try)
     const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
@@ -856,3 +902,140 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggle = document.querySelector('.sidebar-toggle');
     if (toggle) toggle.title = `Toggle sidebar (${isMac ? '⌘B' : 'Ctrl+B'})`;
 });
+
+// ════════════════════════════════════════════════
+// RELATED TOOLS
+// ════════════════════════════════════════════════
+
+const RELATED_TOOLS = {
+    'json.html':        ['jsonpath.html','jsonschema.html','jsoncsvconvert.html','yaml.html','diff.html'],
+    'jsonschema.html':  ['json.html','jsonpath.html','xmljson.html','diff.html'],
+    'jsonpath.html':    ['json.html','jsonschema.html','jsoncsvconvert.html','regex.html'],
+    'jsoncsvconvert.html': ['json.html','yaml.html','xmljson.html','tablebuilder.html','diff.html'],
+    'yaml.html':        ['json.html','toml.html','xmljson.html','diff.html','envparser.html'],
+    'toml.html':        ['yaml.html','json.html','envparser.html','diff.html'],
+    'xmljson.html':     ['xml.html','json.html','jsoncsvconvert.html','diff.html'],
+    'xml.html':         ['xmljson.html','json.html','htmlbeautify.html','diff.html'],
+    'sqlformat.html':   ['diff.html','regex.html','tablebuilder.html'],
+    'cssminify.html':   ['htmlbeautify.html','gradient.html','boxshadow.html','pxrem.html'],
+    'htmlbeautify.html':['cssminify.html','metatags.html','htmlentity.html','diff.html'],
+    'envparser.html':   ['yaml.html','diff.html','stringescape.html'],
+    'diff.html':        ['regex.html','textstats.html','linesorter.html','json.html'],
+    'regex.html':       ['diff.html','textstats.html','linesorter.html','caseconvert.html'],
+    'useragent.html':   ['urlparser.html','nettools.html','httpstatus.html'],
+    'keytester.html':   ['regex.html','charcounter.html'],
+    'urlparser.html':   ['url.html','curlbuilder.html','apitester.html','nettools.html'],
+    'seotools.html':    ['metatags.html','urlparser.html','textstats.html','slugify.html'],
+    'base64.html':      ['filebase64.html','url.html','textencrypt.html','stringescape.html'],
+    'filebase64.html':  ['base64.html','imagepalette.html','favicon.html'],
+    'url.html':         ['urlparser.html','base64.html','htmlentity.html','curlbuilder.html'],
+    'htmlentity.html':  ['htmlbeautify.html','url.html','unicode.html','stringescape.html'],
+    'unicode.html':     ['htmlentity.html','stringescape.html','charcounter.html'],
+    'stringescape.html':['base64.html','unicode.html','json.html','regex.html'],
+    'morse.html':       ['base64.html','caseconvert.html','charcounter.html'],
+    'password.html':    ['textencrypt.html','hash.html','uuid.html'],
+    'textencrypt.html': ['password.html','hash.html','base64.html'],
+    'jwt.html':         ['jwtencoder.html','base64.html','apitester.html','hash.html'],
+    'jwtencoder.html':  ['jwt.html','hash.html','apitester.html','base64.html'],
+    'uuid.html':        ['hash.html','password.html','fakedata.html','lorem.html'],
+    'lorem.html':       ['fakedata.html','textstats.html','charcounter.html','markdown.html'],
+    'fakedata.html':    ['uuid.html','lorem.html','jsoncsvconvert.html','tablebuilder.html'],
+    'qrcode.html':      ['url.html','base64.html','embed.html'],
+    'favicon.html':     ['svgtools.html','imagepalette.html','metatags.html','color.html'],
+    'hash.html':        ['password.html','textencrypt.html','base64.html','uuid.html'],
+    'color.html':       ['contrast.html','colorpalette.html','gradient.html','colorblind.html'],
+    'contrast.html':    ['color.html','colorblind.html','colorpalette.html'],
+    'colorpalette.html':['color.html','imagepalette.html','gradient.html','contrast.html'],
+    'imagepalette.html':['colorpalette.html','color.html','favicon.html','svgtools.html'],
+    'colorblind.html':  ['contrast.html','color.html','colorpalette.html'],
+    'gradient.html':    ['color.html','boxshadow.html','cssminify.html','cssgrid.html'],
+    'boxshadow.html':   ['gradient.html','flexbox.html','cssgrid.html','cssminify.html'],
+    'flexbox.html':     ['cssgrid.html','boxshadow.html','breakpoints.html','cssminify.html'],
+    'cssgrid.html':     ['flexbox.html','breakpoints.html','boxshadow.html','cssminify.html'],
+    'breakpoints.html': ['flexbox.html','cssgrid.html','pxrem.html','cssminify.html'],
+    'curlbuilder.html': ['apitester.html','headerbuilder.html','urlparser.html','httpstatus.html'],
+    'apitester.html':   ['curlbuilder.html','graphql.html','httpstatus.html','headerbuilder.html'],
+    'graphql.html':     ['apitester.html','openapi.html','json.html','curlbuilder.html'],
+    'websocket.html':   ['apitester.html','nettools.html','httpstatus.html'],
+    'openapi.html':     ['apitester.html','graphql.html','json.html','headerbuilder.html'],
+    'nettools.html':    ['ipcalc.html','urlparser.html','apitester.html','httpstatus.html'],
+    'ipcalc.html':      ['nettools.html','urlparser.html'],
+    'httpstatus.html':  ['apitester.html','curlbuilder.html','headerbuilder.html','nettools.html'],
+    'headerbuilder.html':['apitester.html','curlbuilder.html','metatags.html','httpstatus.html'],
+    'tablebuilder.html':['jsoncsvconvert.html','json.html','markdown.html','lorem.html'],
+    'metatags.html':    ['seotools.html','headerbuilder.html','htmlbeautify.html','slugify.html'],
+    'gitignore.html':   ['diff.html','envparser.html','snippets.html'],
+    'svgtools.html':    ['favicon.html','cssminify.html','imagepalette.html','color.html'],
+    'embed.html':       ['qrcode.html','metatags.html','htmlbeautify.html'],
+    'numbase.html':     ['byteconvert.html','matheval.html','unitconvert.html','numberfmt.html'],
+    'byteconvert.html': ['numbase.html','unitconvert.html','matheval.html'],
+    'aspectratio.html': ['pxrem.html','unitconvert.html','breakpoints.html'],
+    'pxrem.html':       ['aspectratio.html','unitconvert.html','breakpoints.html','cssminify.html'],
+    'numberfmt.html':   ['numbase.html','matheval.html','byteconvert.html'],
+    'matheval.html':    ['numbase.html','numberfmt.html','unitconvert.html'],
+    'unitconvert.html': ['byteconvert.html','numbase.html','pxrem.html','aspectratio.html'],
+    'timestamp.html':   ['cron.html','countdown.html','matheval.html','numberfmt.html'],
+    'cron.html':        ['timestamp.html','regex.html','countdown.html'],
+    'textstats.html':   ['charcounter.html','diff.html','linesorter.html','markdown.html'],
+    'charcounter.html': ['textstats.html','caseconvert.html','slugify.html'],
+    'caseconvert.html': ['slugify.html','linesorter.html','textstats.html','regex.html'],
+    'linesorter.html':  ['diff.html','textstats.html','caseconvert.html','regex.html'],
+    'markdown.html':    ['textstats.html','htmlbeautify.html','diff.html','tablebuilder.html'],
+    'asciiart.html':    ['textstats.html','caseconvert.html','charcounter.html'],
+    'slugify.html':     ['caseconvert.html','urlparser.html','seotools.html','charcounter.html'],
+    'pomodoro.html':    ['countdown.html','todo.html','snippets.html'],
+    'countdown.html':   ['pomodoro.html','timestamp.html','todo.html'],
+    'todo.html':        ['snippets.html','pomodoro.html','countdown.html'],
+    'snippets.html':    ['todo.html','markdown.html','gitignore.html','diff.html'],
+};
+
+// Label map built from SIDEBAR_ITEMS (sidebar.js loads after shared.js,
+// so we resolve lazily on first call)
+let _relatedLabelMap = null;
+function getRelatedLabelMap() {
+    if (_relatedLabelMap) return _relatedLabelMap;
+    _relatedLabelMap = {};
+    if (typeof SIDEBAR_ITEMS !== 'undefined') {
+        SIDEBAR_ITEMS.forEach(item => {
+            if (item.href) _relatedLabelMap[item.href] = { label: item.label, dot: item.dot || '--text-dim' };
+        });
+    }
+    return _relatedLabelMap;
+}
+
+function injectRelatedTools() {
+    const page = window.location.pathname.split('/').pop();
+    const related = RELATED_TOOLS[page];
+    if (!related || !related.length) return;
+    // Guard against double injection
+    if (document.querySelector('.related-tools-section')) return;
+
+    // Resolve labels (sidebar.js has loaded by now since this is called on DOMContentLoaded)
+    const map = getRelatedLabelMap();
+    const items = related.map(href => ({
+        href,
+        label: (map[href] && map[href].label) || href.replace('.html',''),
+        dot: (map[href] && map[href].dot) || '--text-dim',
+    }));
+
+    const section = document.createElement('div');
+    section.className = 'related-tools-section';
+    section.innerHTML = `
+        <div class="related-tools-header">Related tools</div>
+        <div class="related-tools-list">
+            ${items.map(t => `
+            <a class="related-tool-chip" href="${t.href}">
+                <span class="related-dot" style="background:var(${t.dot})"></span>
+                ${t.label}
+            </a>`).join('')}
+        </div>`;
+
+    // Append before the site footer, or at end of content-wrap
+    const footer = document.querySelector('.site-footer');
+    if (footer) footer.parentNode.insertBefore(section, footer);
+    else {
+        const wrap = document.querySelector('.content-wrap') || document.querySelector('main');
+        if (wrap) wrap.appendChild(section);
+    }
+}
+

@@ -22,6 +22,7 @@
     <meta property="og:description" content="Generate QR codes for URLs, WiFi, email, and more">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-generate.png">
+    <link rel="canonical" href="https://devmina.github.io/devbox/tools/qrcode.html">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -46,7 +47,7 @@
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar" id="sidebar"></aside>
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation"></aside>
         <main class="content-wrap">
             <div class="content" style="min-width:0">
                 <div class="tool-header">
@@ -89,6 +90,7 @@
                             <div class="panel-bar">
                                 <span class="panel-label">QR Code</span>
                                 <div class="panel-actions">
+                                    <button class="share-btn" onclick="navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
                                     <button class="btn btn-green" onclick="downloadQR()">↓ Download PNG</button>
                                     <button class="btn btn-ghost" onclick="copyQrData()">⎘ Copy data</button>
                                 </div>
@@ -111,7 +113,7 @@
     <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
     <script src="../assets/sidebar.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha384-3zSEDfvllQohrq0PHL1fOXJuC/jSOO34H46t6UQfobFOmxE5BpjjaIJY5F2/bMnU" crossorigin="anonymous" defer></script>
     <script>
         let qrType = 'url';
         let qrContainer = null;
@@ -146,10 +148,10 @@
                 rawRow.style.display = 'none';
                 dynFields.innerHTML = fields.map((f, i) =>
                     `<div class="input-row" style="${i === fields.length - 1 ? 'border-bottom:none' : ''}">
-                            <label>${f.label}</label>
-                            <input type="${f.type}" id="${f.id}" placeholder="${f.placeholder}"
-                                   oninput="updateQR()" style="font-family:var(--mono)">
-                        </div>`
+                                <label>${f.label}</label>
+                                <input type="${f.type}" id="${f.id}" placeholder="${f.placeholder}"
+                                       oninput="updateQR()" style="font-family:var(--mono)">
+                            </div>`
                 ).join('');
             }
             updateQR();

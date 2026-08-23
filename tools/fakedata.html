@@ -121,6 +121,7 @@
     <meta property="og:description" content="Generate realistic fake names, emails, addresses, and more">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-generate.png">
+    <link rel="canonical" href="https://devmina.github.io/devbox/tools/fakedata.html">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -145,7 +146,7 @@
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar" id="sidebar"></aside>
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation"></aside>
         <main class="content-wrap">
             <div class="content">
                 <div class="tool-header">
@@ -169,7 +170,7 @@
                 <div class="panel" id="outputPanel" style="display:none">
                     <div class="panel-bar">
                         <span class="panel-label" id="outputLabel">Output</span>
-                        <div class="panel-actions">
+                        <div class="panel-actions"><button class="share-btn" onclick="navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
                             <button class="btn btn-ghost" onclick="copyOut()">⎘ Copy</button>
                             <button class="btn btn-ghost" onclick="downloadOut()">↓ Download</button>
                         </div>

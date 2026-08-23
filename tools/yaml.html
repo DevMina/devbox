@@ -63,6 +63,7 @@
     <meta property="og:description" content="Convert between YAML and JSON, or format YAML">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-convert.png">
+    <link rel="canonical" href="https://devmina.github.io/devbox/tools/yaml.html">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -87,7 +88,7 @@
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar" id="sidebar"></aside>
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation"></aside>
         <main class="content-wrap">
             <div class="content">
                 <div class="tool-header">
@@ -131,7 +132,7 @@
         </main>
     </div>
     <div class="toast" id="toast"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js" integrity="sha384-+pxiN6T7yvpryuJmE1gM9PX7yQit15auDb+ZwwvJOd/4be2Cie5/IuVXgQb/S9du" crossorigin="anonymous"></script>
     <script src="../assets/shared.js" defer></script>
     <script src="../assets/sidebar.js" defer></script>
     <script>
@@ -191,7 +192,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             receiveHandoff('input', () => { if (mode === 'yj') setMode('jy'); run(); });
-            initDropZone('#yamlDropZone', ['.yaml','.yml','.json','application/json'], (text, name) => {
+            initDropZone('#yamlDropZone', ['.yaml', '.yml', '.json', 'application/json'], (text, name) => {
                 document.getElementById('input').value = text;
                 if (name.endsWith('.json') && mode === 'yj') setMode('jy');
                 run();
@@ -199,7 +200,7 @@
             const params = new URLSearchParams(location.search);
             const q = params.get('q');
             const m = params.get('mode');
-            if (m && ['yj','jy','fmt'].includes(m)) setMode(m);
+            if (m && ['yj', 'jy', 'fmt'].includes(m)) setMode(m);
             if (q !== null) { document.getElementById('input').value = q; run(); }
             persistInput('input', 'devbox_persist_yaml', run);
         });

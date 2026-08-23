@@ -23,10 +23,11 @@
     <meta property="og:description" content="Recent updates, new tools, and fixes">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-default.png">
+    <link rel="canonical" href="https://devmina.github.io/devbox/changelog.html">
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar" id="sidebar"></aside>
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation"></aside>
         <main class="content-wrap">
             <div class="content" style="min-width:0;max-width:760px">
                 <div class="tool-header">
@@ -40,7 +41,10 @@
                 <div id="changelogList"></div>
             </div>
             <footer class="site-footer">
-                © 2026 Mina Abdo. All rights reserved. &nbsp;·&nbsp; <a href="contact.html" style="color:var(--text-dim);text-decoration:none">Contact</a>
+                © 2026 Mina Abdo. All rights reserved. &nbsp;·&nbsp;
+                <a href="contact.html" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">Contact</a> &nbsp;·&nbsp;
+                <a href="about.html" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">About</a> &nbsp;·&nbsp;
+                <a href="https://github.com/devmina/devbox" target="_blank" rel="noopener noreferrer" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">GitHub ↗</a>
             </footer>
         </main><!-- /content-wrap -->
     </div>

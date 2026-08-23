@@ -22,6 +22,7 @@
     <meta property="og:description" content="Encrypt and decrypt text with AES-256 in-browser">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-security.png">
+    <link rel="canonical" href="https://devmina.github.io/devbox/tools/textencrypt.html">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -46,7 +47,7 @@
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar" id="sidebar"></aside>
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation"></aside>
         <main class="content-wrap">
             <div class="content" style="min-width:0">
                 <div class="tool-header">
@@ -64,6 +65,7 @@
                     <div class="panel-bar">
                         <span class="panel-label">Passphrase</span>
                         <div class="panel-actions">
+                            <button class="share-btn" onclick="navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
                             <button class="btn btn-ghost" onclick="togglePassVis()">👁 Show/Hide</button>
                         </div>
                     </div>
@@ -107,7 +109,7 @@
     <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
     <script src="../assets/sidebar.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" integrity="sha384-mgWScxWVKP8F7PBbpNp7i/aSb17kN0LcifBpahAplF3Mn0GR4/u1oMpWIm2rD8yY" crossorigin="anonymous" defer></script>
     <script>
         function togglePassVis() { const i = document.getElementById('encPassphrase'); i.type = i.type === 'password' ? 'text' : 'password'; }
         function setStatus(msg, ok) { const s = document.getElementById('encStatus'); s.style.display = ''; s.style.background = ok ? 'var(--green-dim)' : 'var(--red-dim)'; s.style.border = '1px solid ' + (ok ? 'rgba(61,255,160,0.3)' : 'rgba(255,94,122,0.3)'); s.style.color = ok ? 'var(--green)' : 'var(--red)'; s.textContent = msg; }

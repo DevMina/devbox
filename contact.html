@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:;">
     <meta charset="UTF-8">
     <script>(function () { var k = 'devbox_theme', t = 'dark'; try { t = localStorage.getItem(k) || 'dark'; } catch (e) {} document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,11 +16,17 @@
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
     <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <meta property="og:title" content="Contact — DevBox">
+    <meta property="og:description" content="Get in touch with the DevBox team, suggest a new tool, report a bug, or share feedback.">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-default.png">
+    <meta name="theme-color" content="#0A0C10">
+    <meta name="color-scheme" content="dark light">
+    <link rel="manifest" href="manifest.json">
+    <link rel="canonical" href="https://devmina.github.io/devbox/contact.html">
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar" id="sidebar"></aside>
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation"></aside>
         <main class="content-wrap">
             <div class="content">
                 <div class="contact-wrap">
@@ -28,6 +34,14 @@
                     <div class="contact-hero">
                         <div class="contact-hero-title">Contact <span style="color:var(--green)">Us</span></div>
                         <div class="contact-hero-sub">Have a suggestion, found a bug, or just want to say hello? We'll get back to you directly.</div>
+                    </div>
+
+                    <!-- Quick action chips -->
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+                        <button onclick="prefill('💡 Tool suggestion','I\'d love to see a tool that…')" style="padding:6px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:999px;font-family:var(--mono);font-size:0.78rem;color:var(--text-dim);cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">💡 Suggest a tool</button>
+                        <button onclick="prefill('🐛 Bug report','')" style="padding:6px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:999px;font-family:var(--mono);font-size:0.78rem;color:var(--text-dim);cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">🐛 Bug report</button>
+                        <button onclick="prefill('🙌 General feedback','')" style="padding:6px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:999px;font-family:var(--mono);font-size:0.78rem;color:var(--text-dim);cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='var(--cyan)';this.style.color='var(--cyan)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">🙌 General feedback</button>
+                        <a href="https://github.com/devmina/devbox/issues" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:999px;font-family:var(--mono);font-size:0.78rem;color:var(--text-dim);text-decoration:none;transition:all 0.15s" onmouseover="this.style.borderColor='var(--purple)';this.style.color='var(--purple)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">⎇ Open GitHub issue ↗</a>
                     </div>
 
                     <!-- Success state -->
@@ -48,12 +62,12 @@
 
                         <div class="form-group">
                             <label class="form-label" for="contactSubject">Subject</label>
-                            <input class="form-input" type="text" id="contactSubject" placeholder="What's this about?">
+                            <input class="form-input" type="text" id="contactSubject" placeholder="What's this about?" autocomplete="off">
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="contactMessage">Message</label>
-                            <textarea class="form-textarea" id="contactMessage" placeholder="Tell us what's on your mind…" style="min-height:160px"></textarea>
+                            <textarea class="form-textarea" id="contactMessage" placeholder="Tell us what's on your mind…" autocomplete="off" style="min-height:160px"></textarea>
                         </div>
 
                         <div id="formError" style="display:none;padding:10px 14px;background:var(--red-dim);border:1px solid var(--red);border-radius:var(--r);color:var(--red);font-size:0.8rem;font-family:var(--mono)"></div>
@@ -117,6 +131,12 @@
             document.getElementById('formError').style.display = 'none';
             document.getElementById('formSuccess').classList.remove('show');
             document.getElementById('contactForm').style.display = '';
+        }
+
+        function prefill(subject, message) {
+            document.getElementById('contactSubject').value = subject;
+            if (message) document.getElementById('contactMessage').value = message;
+            document.getElementById('contactMessage').focus();
         }
 
         function showErr(msg) {

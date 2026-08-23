@@ -22,6 +22,7 @@
     <meta property="og:description" content="Save, organize, and copy code snippets">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-productivity.png">
+    <link rel="canonical" href="https://devmina.github.io/devbox/tools/snippets.html">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -46,7 +47,7 @@
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar" id="sidebar"></aside>
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation"></aside>
         <main class="content-wrap">
             <div class="content" style="min-width:0">
                 <div class="tool-header">
@@ -62,6 +63,7 @@
                     <button class="btn btn-teal" onclick="openSnippetModal()">+ New snippet</button>
                     <button class="btn btn-ghost" onclick="exportSnippets()">⎘ Export JSON</button>
                     <button class="btn btn-ghost" onclick="document.getElementById('importFile').click()">↑ Import</button>
+                    <button class="share-btn" onclick="navigator.clipboard.writeText(location.href).then(()=>showToast('🔗 Link copied!'))">⎘ Share</button>
                     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importSnippets(this)">
                 </div>
                 <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap" id="tagFilter"></div>

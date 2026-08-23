@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <meta charset="UTF-8">
+    <script>(function(){var k='devbox_theme',t='dark';try{t=localStorage.getItem(k)||'dark';}catch(e){}document.documentElement.setAttribute('data-theme',t);window.toggleTheme=function(){var n=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem(k,n);}catch(e){}};})();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found — DevBox</title>
+    <meta name="description" content="The page you're looking for doesn't exist. Head back to DevBox to find the right developer tool.">
+    <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"></noscript>
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0A0C10">
+    <meta name="color-scheme" content="dark light">
+    <meta property="og:title" content="Page Not Found — DevBox">
+    <meta property="og:description" content="The page you're looking for doesn't exist.">
+    <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-default.png">
+    <link rel="canonical" href="https://devmina.github.io/devbox/404.html">
+    <style>
+        .notfound-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+            padding: 40px 24px;
+        }
+        .notfound-code {
+            font-family: var(--mono);
+            font-size: clamp(4rem, 15vw, 7rem);
+            font-weight: 700;
+            color: var(--border2);
+            line-height: 1;
+            margin-bottom: 16px;
+            letter-spacing: -0.03em;
+        }
+        .notfound-title {
+            font-family: var(--mono);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+        .notfound-sub {
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            margin-bottom: 32px;
+            max-width: 340px;
+            line-height: 1.6;
+        }
+        .notfound-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .notfound-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 18px;
+            border-radius: var(--r-sm);
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: all var(--transition);
+        }
+        .notfound-btn-primary {
+            background: var(--green-dim);
+            border: 1.5px solid rgba(61,255,160,0.35);
+            color: var(--green);
+        }
+        .notfound-btn-primary:hover { background: rgba(61,255,160,0.18); }
+        .notfound-btn-ghost {
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            color: var(--text-dim);
+        }
+        .notfound-btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation"></aside>
+        <main class="content-wrap">
+            <div class="content">
+                <div class="notfound-wrap">
+                    <div class="notfound-code">404</div>
+                    <div class="notfound-title">Page not found</div>
+                    <div class="notfound-sub">The tool or page you're looking for doesn't exist or may have moved.</div>
+                    <div class="notfound-actions">
+                        <a href="index.html" class="notfound-btn notfound-btn-primary">⌂ Back to all tools</a>
+                        <a href="index.html#search" class="notfound-btn notfound-btn-ghost">🔍 Search tools</a>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">
+                © 2026 Mina Abdo. All rights reserved. &nbsp;·&nbsp;
+                <a href="about.html" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">About</a> &nbsp;·&nbsp;
+                <a href="contact.html" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">Contact</a>
+            </footer>
+        </main>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="assets/shared.js" defer></script>
+    <script src="assets/sidebar.js" defer></script>
+</body>
+</html>

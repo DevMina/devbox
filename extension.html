@@ -16,7 +16,13 @@
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
     <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <meta property="og:title" content="Browser Extension — DevBox">
+    <meta property="og:description" content="Install the DevBox browser extension for right-click access to 79+ developer tools from any webpage.">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-default.png">
+    <meta name="theme-color" content="#0A0C10">
+    <meta name="color-scheme" content="dark light">
+    <link rel="manifest" href="manifest.json">
+    <link rel="canonical" href="https://devmina.github.io/devbox/extension.html">
     <style>
         .ext-wrap {
             max-width: 720px;
@@ -195,7 +201,7 @@
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar" id="sidebar"></aside>
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation"></aside>
         <main class="content-wrap">
             <div class="content">
                 <div class="ext-wrap">
@@ -244,8 +250,9 @@
 
             <footer class="site-footer">
                 © 2026 Mina Abdo. All rights reserved. &nbsp;·&nbsp;
-                <a href="index.html" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s"
-                   onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">Back to tools</a>
+                <a href="index.html" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">All tools</a> &nbsp;·&nbsp;
+                <a href="about.html" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">About</a> &nbsp;·&nbsp;
+                <a href="https://github.com/devmina/devbox" target="_blank" rel="noopener noreferrer" style="color:var(--text-dim);text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">GitHub ↗</a>
             </footer>
         </main>
     </div>

@@ -22,6 +22,7 @@
     <meta property="og:description" content="Generate MD5, SHA-1, and SHA-256 hashes">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-generate.png">
+    <link rel="canonical" href="https://devmina.github.io/devbox/tools/hash.html">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -46,7 +47,7 @@
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar" id="sidebar"></aside>
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation"></aside>
         <main class="content-wrap">
             <div class="content" style="min-width:0">
                 <div class="tool-header">
@@ -86,10 +87,10 @@
     <div class="toast" id="toast"></div>
     <script src="../assets/shared.js" defer></script>
     <script src="../assets/sidebar.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" integrity="sha384-mgWScxWVKP8F7PBbpNp7i/aSb17kN0LcifBpahAplF3Mn0GR4/u1oMpWIm2rD8yY" crossorigin="anonymous" defer></script>
     <script>
         function hashLive() { const t = document.getElementById('hashInput').value; if (!t) { ['h-md5', 'h-sha1', 'h-sha256'].forEach(id => document.getElementById(id).textContent = '—'); return; } document.getElementById('h-md5').textContent = CryptoJS.MD5(t).toString(); document.getElementById('h-sha1').textContent = CryptoJS.SHA1(t).toString(); document.getElementById('h-sha256').textContent = CryptoJS.SHA256(t).toString(); }
-        function hashClear() { document.getElementById('hashInput').value = ''; hashLive(); history.replaceState(null,'',location.pathname); }
+        function hashClear() { document.getElementById('hashInput').value = ''; hashLive(); history.replaceState(null, '', location.pathname); }
         document.addEventListener('DOMContentLoaded', () => {
             loadFromURL({ q: 'hashInput' }, hashLive);
             persistInput('hashInput', 'devbox_persist_hash', hashLive);
