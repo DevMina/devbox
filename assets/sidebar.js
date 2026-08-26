@@ -4,7 +4,7 @@
 
 const SIDEBAR_ITEMS = [
     { section: 'Format' },
-    { href: 'json.html', label: 'JSON Formatter', dot: '--green', tags: ['json','format','pretty','beautify','minify','validate','lint'] },
+    { href: 'json.html', shortcut: 'J', label: 'JSON Formatter', dot: '--green', tags: ['json','format','pretty','beautify','minify','validate','lint'] },
     { href: 'jsonschema.html', label: 'JSON Schema Generator', dot: '--yellow', tags: ['json','schema','validate','draft'] },
     { href: 'xml.html', label: 'XML Formatter', dot: '--orange', tags: ['xml','format','pretty','beautify','minify'] },
     { href: 'sqlformat.html', label: 'SQL Formatter', dot: '--orange', tags: ['sql','format','query','database','prettier'] },
@@ -13,8 +13,8 @@ const SIDEBAR_ITEMS = [
     { href: 'envparser.html', label: '.env Parser', dot: '--yellow', tags: ['env','dotenv','environment','variables','config'] },
 
     { section: 'Inspect' },
-    { href: 'diff.html', label: 'Diff Checker', dot: '--teal', tags: ['diff','compare','text','changes','delta'] },
-    { href: 'regex.html', label: 'Regex Tester', dot: '--red', tags: ['regex','regexp','pattern','match','test','live'] },
+    { href: 'diff.html', shortcut: 'D', label: 'Diff Checker', dot: '--teal', tags: ['diff','compare','text','changes','delta'] },
+    { href: 'regex.html', shortcut: 'R', label: 'Regex Tester', dot: '--red', tags: ['regex','regexp','pattern','match','test','live'] },
     { href: 'jsonpath.html', label: 'JSON Path', dot: '--green', tags: ['json','jsonpath','query','jq','extract'] },
     { href: 'useragent.html', label: 'User Agent', dot: '--teal', tags: ['useragent','browser','ua','parse','detect'] },
     { href: 'keytester.html', label: 'Key Tester', dot: '--blue', tags: ['key','keyboard','keycode','event','shortcut'] },
@@ -22,7 +22,7 @@ const SIDEBAR_ITEMS = [
     { href: 'seotools.html', label: 'SEO Tools', dot: '--green', tags: ['seo','meta','title','description','open graph'] },
 
     { section: 'Encode' },
-    { href: 'base64.html', label: 'Base64', dot: '--blue', tags: ['base64','encode','decode','binary','string'] },
+    { href: 'base64.html', shortcut: 'B', label: 'Base64', dot: '--blue', tags: ['base64','encode','decode','binary','string'] },
     { href: 'filebase64.html', label: 'File → Base64', dot: '--blue', tags: ['file','base64','encode','upload','binary','image'] },
     { href: 'url.html', label: 'URL Encoder', dot: '--cyan', tags: ['url','encode','decode','percent','uri','escape'] },
     { href: 'htmlentity.html', label: 'HTML Entities', dot: '--green', tags: ['html','entities','encode','decode','escape','ampersand'] },
@@ -33,11 +33,11 @@ const SIDEBAR_ITEMS = [
     { section: 'Security' },
     { href: 'password.html', label: 'Password', dot: '--pink', tags: ['password','generate','random','secure','strength'] },
     { href: 'textencrypt.html', label: 'Text Encrypt', dot: '--yellow', tags: ['encrypt','decrypt','aes','cipher','crypto','secure'] },
-    { href: 'jwt.html', label: 'JWT Decoder', dot: '--purple', tags: ['jwt','token','decode','auth','bearer','claims','payload'] },
+    { href: 'jwt.html', shortcut: 'K', label: 'JWT Decoder', dot: '--purple', tags: ['jwt','token','decode','auth','bearer','claims','payload'] },
     { href: 'jwtencoder.html', label: 'JWT Encoder', dot: '--purple', tags: ['jwt','token','encode','sign','auth','hmac'] },
 
     { section: 'Generate' },
-    { href: 'uuid.html', label: 'UUID', dot: '--orange', tags: ['uuid','guid','generate','random','v4','unique','id'] },
+    { href: 'uuid.html', shortcut: 'U', label: 'UUID', dot: '--orange', tags: ['uuid','guid','generate','random','v4','unique','id'] },
     { href: 'lorem.html', label: 'Lorem Ipsum', dot: '--cyan', tags: ['lorem','ipsum','placeholder','text','dummy','filler'] },
     { href: 'fakedata.html', label: 'Fake Data Generator', dot: '--orange', tags: ['fake','data','mock','generate','name','address','email'] },
     { href: 'qrcode.html', label: 'QR Code', dot: '--green', tags: ['qr','qrcode','generate','scan','barcode','url'] },
@@ -45,7 +45,7 @@ const SIDEBAR_ITEMS = [
     { href: 'hash.html', label: 'Hash Generator', dot: '--cyan', tags: ['hash','md5','sha','sha256','checksum','digest'] },
 
     { section: 'Color' },
-    { href: 'color.html', label: 'Color Converter', dot: '--pink', tags: ['color','hex','rgb','hsl','convert','picker'] },
+    { href: 'color.html', shortcut: 'C', label: 'Color Converter', dot: '--pink', tags: ['color','hex','rgb','hsl','convert','picker'] },
     { href: 'contrast.html', label: 'Contrast Checker', dot: '--green', tags: ['contrast','wcag','accessibility','a11y','color','ratio'] },
     { href: 'colorpalette.html', label: 'Color Palette', dot: '--pink', tags: ['color','palette','swatch','generate','shades'] },
     { href: 'imagepalette.html', label: 'Image Palette', dot: '--orange', tags: ['image','color','palette','extract','dominant'] },
@@ -88,7 +88,7 @@ const SIDEBAR_ITEMS = [
     { href: 'xmljson.html', label: 'XML ↔ JSON', dot: '--orange', tags: ['xml','json','convert','parse','transform'] },
     { href: 'unitconvert.html', label: 'Unit Converter', dot: '--cyan', tags: ['unit','convert','length','weight','temperature','metric'] },
     { href: 'toml.html', label: 'TOML ↔ JSON', dot: '--red', tags: ['toml','json','convert','config','rust','cargo'] },
-    { href: 'timestamp.html', label: 'Date & Time Tools', dot: '--yellow', tags: ['date','time','timestamp','epoch','unix','convert','format'] },
+    { href: 'timestamp.html', shortcut: 'T', label: 'Date & Time Tools', dot: '--yellow', tags: ['date','time','timestamp','epoch','unix','convert','format'] },
     { href: 'cron.html', label: 'Cron Parser', dot: '--yellow', tags: ['cron','schedule','parse','job','time','expression'] },
 
     { section: 'Text' },
@@ -420,6 +420,7 @@ function getPaletteEntries() {
             dot: item.dot,
             icon: null,
             tags: item.tags || [],
+            shortcut: item.shortcut || null,
         });
     });
     return [...actions, ...pages, ...toolEntries];
@@ -536,6 +537,7 @@ function renderPaletteResults(query) {
         html += `<${tag} class="cmd-palette-item${itemIdx === 0 ? ' selected' : ''}" ${hrefAttr} data-idx="${itemIdx}" data-action-idx="${isAction ? _paletteEntries.indexOf(e) : ''}">
             ${e.icon ? `<span class="cmd-palette-item-icon">${e.icon}</span>` : `<div class="nav-dot" style="background:var(${e.dot})"></div>`}
             <span class="cmd-palette-item-label">${e.label}</span>
+            ${e.shortcut ? `<kbd class="cmd-palette-shortcut">${e.shortcut}</kbd>` : ''}
             ${e.section && !isAction ? `<span class="cmd-palette-item-section">${e.section}</span>` : ''}
         </${tag}>`;
         itemIdx++;

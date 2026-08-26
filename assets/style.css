@@ -2668,3 +2668,17 @@ input[type="checkbox"] {
     outline: 2px solid var(--bg);
     outline-offset: -4px;
 }
+
+/* ── Command palette keyboard shortcut badge ── */
+.cmd-palette-shortcut {
+    margin-left: auto;
+    flex-shrink: 0;
+    padding: 1px 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+}

@@ -6,7 +6,7 @@
     <script>(function () { var k = 'devbox_theme', t = 'dark'; try { t = localStorage.getItem(k) || 'dark'; } catch (e) {} document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browser Extension — DevBox</title>
-    <meta name="description" content="Install the DevBox browser extension for quick access to 78 developer tools, plus right-click actions on any selected text.">
+    <meta name="description" content="Install the DevBox browser extension for quick access to 79 developer tools, plus right-click actions on any selected text.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -207,7 +207,7 @@
                 <div class="ext-wrap">
 
                     <div class="ext-hero-title">Browser <span style="color:var(--green)">Extension</span></div>
-                    <div class="ext-hero-sub">Quick access to all 78 DevBox tools from your toolbar, plus right-click actions that send selected text on any page straight to the right tool — already filled in.</div>
+                    <div class="ext-hero-sub">Quick access to all 79 DevBox tools from your toolbar, plus right-click actions that send selected text on any page straight to the right tool — already filled in.</div>
 
                     <div class="ext-download-card">
                         <div class="ext-download-meta">
@@ -238,6 +238,17 @@
                         <div class="ext-feature-card">
                             <strong>🖱️ Right-click on selected text</strong>
                             <span>Select any text on any page, right-click → DevBox, and choose Format as JSON, Base64 Decode, URL Decode, Decode JWT, or Hash — it opens the tool with your text already filled in.</span>
+                            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.72rem;color:var(--text-dim)">
+                                <span style="padding:3px 8px;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--text)">Select text</span>
+                                <span style="color:var(--green)">→</span>
+                                <span style="padding:3px 8px;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--text)">Right-click</span>
+                                <span style="color:var(--green)">→</span>
+                                <span style="padding:3px 8px;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--green)">DevBox</span>
+                                <span style="color:var(--green)">→</span>
+                                <span style="padding:3px 8px;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--text)">Format / Encode / Decode</span>
+                                <span style="color:var(--green)">→</span>
+                                <span style="padding:3px 8px;background:var(--green-dim);border:1px solid rgba(61,255,160,0.3);border-radius:4px;color:var(--green)">Tool opens pre-filled ✓</span>
+                            </div>
                         </div>
                     </div>
 

@@ -591,6 +591,17 @@
                         </div>
                     </div>
 
+                    <!-- CONTINUE -->
+                    <div id="continueSection" style="display:none;margin-bottom:20px">
+                        <div id="continueCard" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);transition:border-color var(--transition)" onmouseover="this.style.borderColor='var(--border2)'" onmouseout="this.style.borderColor='var(--border)'">
+                            <div style="min-width:0">
+                                <div style="font-family:var(--mono);font-size:0.58rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dim);margin-bottom:3px">↩ Continue</div>
+                                <div id="continueToolName" style="font-family:var(--mono);font-size:0.85rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+                            </div>
+                            <a id="continueLink" href="#" aria-label="Open last used tool" style="flex-shrink:0;padding:6px 14px;background:var(--green-dim);border:1.5px solid rgba(61,255,160,0.35);border-radius:var(--r-sm);font-family:var(--mono);font-size:0.75rem;color:var(--green);text-decoration:none;white-space:nowrap;transition:background var(--transition)" onmouseover="this.style.background='rgba(61,255,160,0.18)'" onmouseout="this.style.background='var(--green-dim)'">Open →</a>
+                        </div>
+                    </div>
+
                     <div id="favSection">
                         <div class="fav-section-header">
                             ⭐ Favourites
@@ -614,27 +625,6 @@
                             <button id="mostUsedClearBtn" onclick="clearMostUsed()" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:0.62rem;font-family:var(--mono);opacity:0.6;transition:opacity 0.15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">clear</button>
                         </div>
                         <div id="mostUsedList" style="display:flex;gap:6px;flex-wrap:wrap"></div>
-                    </div>
-
-                    <!-- WHAT'S NEW -->
-                    <div class="whats-new-section" id="whatsNewSection">
-                        <div class="whats-new-header" onclick="toggleWhatsNew()" id="whatsNewHeader"
-                             role="button" aria-expanded="true" aria-controls="whatsNewList" tabindex="0"
-                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleWhatsNew();}">
-                            <div class="whats-new-header-left">
-                                <div class="whats-new-dot"></div>
-                                What's New
-                            </div>
-                            <span class="whats-new-toggle open" id="whatsNewToggle">▾</span>
-                        </div>
-                        <div class="whats-new-list" id="whatsNewList">
-                            <a class="whats-new-item" href="tools/cron.html"><span class="new-tag">New</span>Cron Parser</a>
-                            <a class="whats-new-item" href="tools/toml.html"><span class="new-tag">New</span>TOML ↔ JSON</a>
-                            <a class="whats-new-item" href="tools/colorblind.html"><span class="new-tag">New</span>Color Blindness Sim</a>
-                            <a class="whats-new-item" href="tools/svgtools.html"><span class="new-tag">New</span>SVG Optimizer</a>
-                            <a class="whats-new-item" href="tools/cssgrid.html"><span class="new-tag">New</span>CSS Grid Generator</a>
-                            <a class="whats-new-item" href="changelog.html" style="color:var(--text-dim);opacity:0.6">Full changelog →</a>
-                        </div>
                     </div>
 
                     <!-- TOOLKITS -->
@@ -722,6 +712,27 @@
                         </div><!-- /toolkits-body -->
                     </div><!-- /toolkits-section -->
 
+                    <!-- WHAT'S NEW -->
+                    <div class="whats-new-section" id="whatsNewSection">
+                        <div class="whats-new-header" onclick="toggleWhatsNew()" id="whatsNewHeader"
+                             role="button" aria-expanded="true" aria-controls="whatsNewList" tabindex="0"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleWhatsNew();}">
+                            <div class="whats-new-header-left">
+                                <div class="whats-new-dot"></div>
+                                What's New
+                            </div>
+                            <span class="whats-new-toggle open" id="whatsNewToggle">▾</span>
+                        </div>
+                        <div class="whats-new-list" id="whatsNewList">
+                            <a class="whats-new-item" href="tools/cron.html"><span class="new-tag">New</span>Cron Parser</a>
+                            <a class="whats-new-item" href="tools/toml.html"><span class="new-tag">New</span>TOML ↔ JSON</a>
+                            <a class="whats-new-item" href="tools/colorblind.html"><span class="new-tag">New</span>Color Blindness Sim</a>
+                            <a class="whats-new-item" href="tools/svgtools.html"><span class="new-tag">New</span>SVG Optimizer</a>
+                            <a class="whats-new-item" href="tools/cssgrid.html"><span class="new-tag">New</span>CSS Grid Generator</a>
+                            <a class="whats-new-item" href="changelog.html" style="color:var(--text-dim);opacity:0.6">Full changelog →</a>
+                        </div>
+                    </div>
+
                     <!-- CATEGORY FILTERS -->
                     <div class="filter-tabs" id="filterTabs" role="group" aria-label="Filter tools by category">
                         <button class="filter-tab active" data-filter="all" onclick="setFilter(this,'all')" aria-pressed="true">All</button>
@@ -740,7 +751,7 @@
                         <button class="filter-tab" data-filter="Cheatsheets" onclick="setFilter(this,'Cheatsheets')" aria-pressed="false">Cheatsheets</button>
                     </div>
 
-                    <div class="search-wrap">
+                    <div class="search-wrap" id="search">
                         <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#6B7A99" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8" />
                             <path d="m21 21-4.35-4.35" />
@@ -1205,7 +1216,20 @@
     <script src="assets/shared.js" defer></script>
     <script src="assets/sidebar.js" defer></script>
     <script>
-        function loadRecent() {
+        function loadContinue() {
+            try {
+                const recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
+                if (!recent.length) return;
+                const last = recent[0];
+                const CS_FILES = new Set(['bash.html','docker.html','git.html','regex-cheatsheet.html']);
+                const href = CS_FILES.has(last.page) ? `cheatsheets/${last.page}` : `tools/${last.page}`;
+                document.getElementById('continueToolName').textContent = last.title;
+                const cl = document.getElementById('continueLink');
+                cl.href = href;
+                cl.setAttribute('aria-label', 'Continue: open ' + last.title);
+                document.getElementById('continueSection').style.display = '';
+            } catch(e) {}
+        }
             try {
                 const recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
                 if (!recent.length) return;
@@ -1227,6 +1251,7 @@
         function clearRecent() {
             localStorage.removeItem(RECENT_KEY);
             document.getElementById('recentSection').style.display = 'none';
+            document.getElementById('continueSection').style.display = 'none';
         }
 
         // ── Curated Popular (shown to first-time visitors before usage data exists) ──
@@ -1345,6 +1370,9 @@
                 document.getElementById('searchInput').value = '';
                 document.getElementById('searchClear').classList.remove('show');
             }
+            // Reset keyboard navigation state when filter changes
+            _searchFocusIdx = -1;
+            document.querySelectorAll('.tool-card.search-hover').forEach(c => c.classList.remove('search-hover'));
             filterTools();
         }
 
@@ -1538,8 +1566,15 @@
         document.addEventListener('DOMContentLoaded', () => {
             injectFavBtns();
             loadFavourites();
+            loadContinue();
             loadRecent();
             loadMostUsed();
+            filterTools(); // ensure section counts and noResults state are correct on load
+            // Auto-focus search if navigated here via #search (e.g. from 404 page)
+            if (location.hash === '#search') {
+                const si = document.getElementById('searchInput');
+                if (si) { si.focus(); si.select(); }
+            }
         });
     </script>
     <script>

@@ -163,7 +163,7 @@
                         <div class="about-section-title">By the numbers</div>
                         <div class="stat-grid">
                             <div class="stat-card">
-                                <div class="stat-number">79+</div>
+                                <div class="stat-number" id="aboutToolCount">79+</div>
                                 <div class="stat-label">Tools</div>
                             </div>
                             <div class="stat-card">
@@ -246,5 +246,14 @@
     <div class="toast" id="toast"></div>
     <script src="assets/shared.js" defer></script>
     <script src="assets/sidebar.js" defer></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof SIDEBAR_ITEMS !== 'undefined') {
+            const count = SIDEBAR_ITEMS.filter(i => i.href && !i.cs).length;
+            const el = document.getElementById('aboutToolCount');
+            if (el) el.textContent = count + '+';
+        }
+    });
+    </script>
 </body>
 </html>

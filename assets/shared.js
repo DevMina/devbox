@@ -341,8 +341,34 @@ function initKeyboard() {
                 if (search) { search.focus(); search.select(); }
             }
         }
-        // / → focus search (homepage only, when not in input)
-        if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
+        // Single-letter shortcuts → open tool directly (only when no input/textarea/palette focused)
+        const TOOL_SHORTCUTS = { j:'tools/json.html', r:'tools/regex.html', b:'tools/base64.html',
+                                  u:'tools/uuid.html', k:'tools/jwt.html', t:'tools/timestamp.html',
+                                  d:'tools/diff.html', c:'tools/color.html' };
+        if (!e.ctrlKey && !e.metaKey && !e.altKey &&
+            !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName) &&
+            !document.activeElement?.isContentEditable &&
+            !document.activeElement?.dataset?.capturesKeys &&
+            !(typeof window.isCommandPaletteOpen === 'function' && window.isCommandPaletteOpen()) &&
+            !document.getElementById('shortcutsBackdrop')?.classList.contains('open') &&
+            !document.getElementById('settingsBackdrop')?.classList.contains('open')) {
+            const dest = TOOL_SHORTCUTS[e.key.toLowerCase()];
+            if (dest) {
+                // Don't navigate if we're already on this page
+                const currentPage = location.pathname.split('/').pop();
+                const destPage = dest.split('/').pop();
+                if (currentPage === destPage) return;
+                e.preventDefault();
+                // Determine correct base path (root vs /tools/ vs /cheatsheets/)
+                const isRoot = !location.pathname.includes('/tools/') && !location.pathname.includes('/cheatsheets/');
+                window.location.href = isRoot ? dest : '../' + dest;
+            }
+        }
+        // / → focus search (homepage only, when not in input and no overlay open)
+        if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName) &&
+            !(typeof window.isCommandPaletteOpen === 'function' && window.isCommandPaletteOpen()) &&
+            !document.getElementById('shortcutsBackdrop')?.classList.contains('open') &&
+            !document.getElementById('settingsBackdrop')?.classList.contains('open')) {
             const search = document.getElementById('searchInput');
             if (search) { e.preventDefault(); search.focus(); }
         }
@@ -368,9 +394,11 @@ function initKeyboard() {
                 document.activeElement.blur();
             }
         }
-        // ? → open shortcuts overlay (when not typing)
-        if (e.key === '?' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
-            openShortcutsOverlay();
+        // ? → toggle shortcuts overlay (when not typing and settings not open)
+        if (e.key === '?' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName) &&
+            !document.getElementById('settingsBackdrop')?.classList.contains('open')) {
+            const isOpen = document.getElementById('shortcutsBackdrop')?.classList.contains('open');
+            isOpen ? closeShortcutsOverlay() : openShortcutsOverlay();
         }
     });
 }
@@ -506,6 +534,18 @@ function initShortcutsOverlay() {
         { desc: 'Close / dismiss', keys: ['Esc'] },
     ];
 
+    // Quick-navigate shortcuts (single key, no modifier, when no input focused)
+    const navShortcuts = [
+        { desc: 'JSON Formatter', keys: ['J'] },
+        { desc: 'Regex Tester',   keys: ['R'] },
+        { desc: 'Base64',         keys: ['B'] },
+        { desc: 'UUID Generator', keys: ['U'] },
+        { desc: 'JWT Decoder',    keys: ['K'] },
+        { desc: 'Timestamp',      keys: ['T'] },
+        { desc: 'Diff Checker',   keys: ['D'] },
+        { desc: 'Color Converter',keys: ['C'] },
+    ];
+
     // Build modal HTML
     const backdrop = document.createElement('div');
     backdrop.className = 'shortcuts-backdrop';
@@ -529,6 +569,13 @@ function initShortcutsOverlay() {
         </div>`
     ).join('');
 
+    const navRows = navShortcuts.map(s =>
+        `<div class="shortcut-row">
+            <span class="shortcut-desc">${s.desc}</span>
+            <span class="shortcut-keys">${s.keys.map(k => `<span class="kbd">${k}</span>`).join('')}</span>
+        </div>`
+    ).join('');
+
     backdrop.innerHTML = `
         <div class="shortcuts-modal" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
             <div class="shortcuts-modal-header">
@@ -537,6 +584,7 @@ function initShortcutsOverlay() {
             </div>
             ${toolSection}
             <div class="shortcuts-section"><div class="shortcuts-section-title">Global</div>${globalRows}</div>
+            <div class="shortcuts-section"><div class="shortcuts-section-title">Quick navigate (when no input focused)</div>${navRows}</div>
         </div>`;
 
     document.body.appendChild(backdrop);
@@ -864,7 +912,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Semantic headings — tool pages use <div class="tool-title"> instead of <h1>
     // Add role="heading" aria-level="1" so screen readers announce them correctly
-    document.querySelectorAll('.tool-title, .contact-hero-title, .about-hero-title, .hero-title')
+    document.querySelectorAll('.tool-title, .contact-hero-title, .about-hero-title, .hero-title, .notfound-title')
         .forEach(el => {
             if (!el.getAttribute('role')) {
                 el.setAttribute('role', 'heading');
