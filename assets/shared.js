@@ -759,7 +759,7 @@ function openSettingsPanel() {
                 </div>
                 <div class="settings-row">
                     <div><div class="settings-label">Reset all data</div><div class="settings-sub">Wipe all DevBox localStorage</div></div>
-                    <button class="btn btn-ghost" style="font-size:0.72rem;color:var(--red);border-color:var(--red-dim)" onclick="if(confirm('Reset ALL DevBox data?')){['${SETTINGS_KEYS.join("','")}'].forEach(k=>lsRemove(k));document.dispatchEvent(new CustomEvent('devbox:favorites-changed'));closeSettingsPanel();showToast('All data cleared');}">Reset</button>
+                    <button class="btn btn-ghost" style="font-size:0.72rem;color:var(--red);border-color:var(--red-dim)" onclick="if(confirm('Reset ALL DevBox data?')){['${SETTINGS_KEYS.join("','")}'].forEach(k=>lsRemove(k));document.dispatchEvent(new CustomEvent('devbox:favorites-changed'));document.dispatchEvent(new CustomEvent('devbox:recent-changed'));closeSettingsPanel();showToast('All data cleared');}">Reset</button>
                 </div>
                 <input type="file" id="settingsFileInput" accept=".json" style="display:none"
                     onchange="const r=new FileReader();r.onload=e=>importSettings(e.target.result);r.readAsText(this.files[0])">

@@ -388,7 +388,7 @@ function getPaletteEntries() {
         },
         {
             label: 'Clear Recent History', section: 'Actions', icon: '🕐', dot: '--text-dim',
-            action: () => { lsRemove('devbox_recent'); if (typeof showToast === 'function') showToast('Recent history cleared'); }
+            action: () => { lsRemove('devbox_recent'); document.dispatchEvent(new CustomEvent('devbox:recent-changed')); if (typeof showToast === 'function') showToast('Recent history cleared'); }
         },
         {
             label: 'Clear All Favorites', section: 'Actions', icon: '★', dot: '--text-dim',

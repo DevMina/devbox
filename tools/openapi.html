@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';">
     <meta charset="UTF-8">
-    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) { } var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) { } updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
+    <script>(function () { var k = 'devbox_theme'; var stored = null; try { stored = localStorage.getItem(k); } catch (e) {} var t = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); document.documentElement.setAttribute('data-theme', t); function updateThemeColor(th) { var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', th === 'light' ? '#F5F7FA' : '#0A0C10'); } function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} updateThemeColor(th); document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; updateThemeColor(t); })();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="DevBox — OpenAPI / Swagger spec viewer">
     <title>OpenAPI Viewer — DevBox</title>
@@ -17,286 +17,50 @@
     <link rel="apple-touch-icon" href="../assets/icon-192.png">
     <link rel="manifest" href="../manifest.json">
     <meta name="theme-color" content="#0A0C10">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js" integrity="sha384-+pxiN6T7yvpryuJmE1gM9PX7yQit15auDb+ZwwvJOd/4be2Cie5/IuVXgQb/S9du" crossorigin="anonymous"></script>
+    <!-- TODO: add integrity="sha384-…" crossorigin="anonymous" once SRI hash is computed -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <style>
-        .oa-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        @media(max-width:800px) {
-            .oa-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .code-editor {
-            width: 100%;
-            min-height: 380px;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            color: var(--text);
-            font-family: var(--mono);
-            font-size: 0.78rem;
-            padding: 12px;
-            border-radius: var(--r);
-            resize: vertical;
-            line-height: 1.6;
-        }
-
-            .code-editor:focus {
-                outline: none;
-                border-color: var(--purple, #a97ff5);
-            }
-
-        .api-info {
-            margin-bottom: 16px;
-        }
-
-        .api-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .api-ver {
-            font-family: var(--mono);
-            font-size: 0.75rem;
-            color: var(--text-dim);
-            margin-top: 2px;
-        }
-
-        .api-desc {
-            font-size: 0.85rem;
-            color: var(--text-dim);
-            margin-top: 6px;
-        }
-
-        .server-tag {
-            display: inline-block;
-            font-family: var(--mono);
-            font-size: 0.72rem;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 3px;
-            padding: 2px 8px;
-            margin-right: 5px;
-            margin-top: 4px;
-        }
-
-        .path-group {
-            margin-bottom: 8px;
-            border: 1px solid var(--border);
-            border-radius: var(--r);
-            overflow: hidden;
-        }
-
-        .path-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            cursor: pointer;
-            background: var(--surface2);
-            transition: background 0.15s;
-            user-select: none;
-        }
-
-            .path-header:hover {
-                background: var(--surface);
-            }
-
-        .path-method {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 3px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            flex-shrink: 0;
-        }
-
-        .method-get {
-            background: rgba(80,200,120,0.15);
-            color: var(--green);
-        }
-
-        .method-post {
-            background: rgba(100,150,255,0.15);
-            color: var(--blue, #6b9fff);
-        }
-
-        .method-put {
-            background: rgba(255,180,50,0.15);
-            color: var(--yellow);
-        }
-
-        .method-patch {
-            background: rgba(255,140,50,0.15);
-            color: var(--orange, #ff9f4a);
-        }
-
-        .method-delete {
-            background: rgba(255,80,80,0.15);
-            color: var(--red);
-        }
-
-        .method-head, .method-options {
-            background: rgba(150,100,255,0.15);
-            color: var(--purple, #a97ff5);
-        }
-
-        .path-url {
-            font-family: var(--mono);
-            font-size: 0.82rem;
-            color: var(--text);
-            flex: 1;
-        }
-
-        .path-summary {
-            font-size: 0.78rem;
-            color: var(--text-dim);
-            margin-left: auto;
-            padding-left: 10px;
-        }
-
-        .path-body {
-            padding: 12px 14px;
-            background: var(--surface);
-            border-top: 1px solid var(--border);
-            display: none;
-        }
-
-            .path-body.open {
-                display: block;
-            }
-
-        .param-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 8px;
-        }
-
-            .param-table th {
-                font-family: var(--mono);
-                font-size: 0.68rem;
-                color: var(--text-dim);
-                text-align: left;
-                padding: 4px 8px;
-                border-bottom: 1px solid var(--border);
-                text-transform: uppercase;
-            }
-
-            .param-table td {
-                font-family: var(--mono);
-                font-size: 0.78rem;
-                padding: 5px 8px;
-                border-bottom: 1px solid var(--border);
-                color: var(--text);
-                vertical-align: top;
-            }
-
-            .param-table tr:last-child td {
-                border: none;
-            }
-
-        .param-in {
-            font-size: 0.68rem;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 3px;
-            padding: 1px 5px;
-            color: var(--text-dim);
-        }
-
-        .param-required {
-            color: var(--red);
-            font-size: 0.65rem;
-        }
-
-        .param-type {
-            color: var(--cyan);
-        }
-
-        .resp-row {
-            display: flex;
-            gap: 8px;
-            align-items: flex-start;
-            padding: 5px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.8rem;
-        }
-
-            .resp-row:last-child {
-                border: none;
-            }
-
-        .resp-code {
-            font-family: var(--mono);
-            font-weight: 600;
-            width: 50px;
-            flex-shrink: 0;
-        }
-
-            .resp-code.ok {
-                color: var(--green);
-            }
-
-            .resp-code.redir {
-                color: var(--yellow);
-            }
-
-            .resp-code.err {
-                color: var(--red);
-            }
-
-        .section-title {
-            font-family: var(--mono);
-            font-size: 0.68rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin: 10px 0 5px;
-        }
-
-        .tag-group {
-            margin-bottom: 16px;
-        }
-
-        .tag-label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 6px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 5px;
-        }
-
-        .error-msg {
-            color: var(--red);
-            font-family: var(--mono);
-            font-size: 0.8rem;
-            padding: 8px;
-        }
-
-        .empty-msg {
-            color: var(--text-dim);
-            font-family: var(--mono);
-            font-size: 0.82rem;
-        }
-
-        .chevron {
-            transition: transform 0.2s;
-            margin-left: auto;
-            font-size: 0.8rem;
-            color: var(--text-dim);
-        }
-
-            .chevron.open {
-                transform: rotate(90deg);
-            }
+        .oa-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media(max-width:800px) { .oa-layout { grid-template-columns: 1fr; } }
+        .code-editor { width: 100%; min-height: 380px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 0.78rem; padding: 12px; border-radius: var(--r); resize: vertical; line-height: 1.6; }
+        .code-editor:focus { outline: none; border-color: var(--purple, #a97ff5); }
+        .api-info { margin-bottom: 16px; }
+        .api-title { font-size: 1.2rem; font-weight: 600; color: var(--text); }
+        .api-ver { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+        .api-desc { font-size: 0.85rem; color: var(--text-dim); margin-top: 6px; }
+        .server-tag { display: inline-block; font-family: var(--mono); font-size: 0.72rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: 2px 8px; margin-right: 5px; margin-top: 4px; }
+        .path-group { margin-bottom: 8px; border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+        .path-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; background: var(--surface2); transition: background 0.15s; user-select: none; }
+        .path-header:hover { background: var(--surface); }
+        .path-method { font-family: var(--mono); font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0; }
+        .method-get { background: rgba(80,200,120,0.15); color: var(--green); }
+        .method-post { background: rgba(100,150,255,0.15); color: var(--blue, #6b9fff); }
+        .method-put { background: rgba(255,180,50,0.15); color: var(--yellow); }
+        .method-patch { background: rgba(255,140,50,0.15); color: var(--orange, #ff9f4a); }
+        .method-delete { background: rgba(255,80,80,0.15); color: var(--red); }
+        .method-head, .method-options { background: rgba(150,100,255,0.15); color: var(--purple, #a97ff5); }
+        .path-url { font-family: var(--mono); font-size: 0.82rem; color: var(--text); flex: 1; }
+        .path-summary { font-size: 0.78rem; color: var(--text-dim); margin-left: auto; padding-left: 10px; }
+        .path-body { padding: 12px 14px; background: var(--surface); border-top: 1px solid var(--border); display: none; }
+        .path-body.open { display: block; }
+        .param-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        .param-table th { font-family: var(--mono); font-size: 0.68rem; color: var(--text-dim); text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--border); text-transform: uppercase; }
+        .param-table td { font-family: var(--mono); font-size: 0.78rem; padding: 5px 8px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+        .param-table tr:last-child td { border: none; }
+        .param-in { font-size: 0.68rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px; color: var(--text-dim); }
+        .param-required { color: var(--red); font-size: 0.65rem; }
+        .param-type { color: var(--cyan); }
+        .resp-row { display: flex; gap: 8px; align-items: flex-start; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+        .resp-row:last-child { border: none; }
+        .resp-code { font-family: var(--mono); font-weight: 600; width: 50px; flex-shrink: 0; }
+        .resp-code.ok { color: var(--green); } .resp-code.redir { color: var(--yellow); } .resp-code.err { color: var(--red); }
+        .section-title { font-family: var(--mono); font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin: 10px 0 5px; }
+        .tag-group { margin-bottom: 16px; }
+        .tag-label { font-size: 0.8rem; font-weight: 600; color: var(--text); margin-bottom: 6px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        .error-msg { color: var(--red); font-family: var(--mono); font-size: 0.8rem; padding: 8px; }
+        .empty-msg { color: var(--text-dim); font-family: var(--mono); font-size: 0.82rem; }
+        .chevron { transition: transform 0.2s; margin-left: auto; font-size: 0.8rem; color: var(--text-dim); }
+        .chevron.open { transform: rotate(90deg); }
     </style>
     <meta property="og:title" content="OpenAPI Viewer — DevBox">
     <meta property="og:description" content="Render and browse OpenAPI / Swagger specs in a clean UI">
@@ -304,25 +68,25 @@
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-api-network.png">
     <link rel="canonical" href="https://devmina.github.io/devbox/tools/openapi.html">
     <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
-            "name": "OpenAPI Viewer",
-            "description": "OpenAPI / Swagger spec viewer",
-            "url": "https://devmina.github.io/devbox/tools/openapi.html",
-            "applicationCategory": "DeveloperApplication",
-            "operatingSystem": "Any (runs in any modern web browser)",
-            "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "USD"
-            },
-            "isPartOf": {
-                "@type": "WebSite",
-                "name": "DevBox",
-                "url": "https://devmina.github.io/devbox/"
-            }
-        }
+{
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "OpenAPI Viewer",
+    "description": "OpenAPI / Swagger spec viewer",
+    "url": "https://devmina.github.io/devbox/tools/openapi.html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any (runs in any modern web browser)",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    },
+    "isPartOf": {
+        "@type": "WebSite",
+        "name": "DevBox",
+        "url": "https://devmina.github.io/devbox/"
+    }
+}
     </script>
 </head>
 <body>
