@@ -1,0 +1,1227 @@
+{
+  "version": 1,
+  "count": 79,
+  "generated": "2026-08-22",
+  "tools": [
+    {
+      "name": "JSON Formatter",
+      "file": "json.html",
+      "category": "Format",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/json.html",
+      "tags": [
+        "json",
+        "format",
+        "pretty",
+        "beautify",
+        "minify",
+        "validate",
+        "lint"
+      ],
+      "shortcut": "J"
+    },
+    {
+      "name": "JSON Schema Generator",
+      "file": "jsonschema.html",
+      "category": "Format",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/jsonschema.html",
+      "tags": [
+        "json",
+        "schema",
+        "validate",
+        "draft"
+      ]
+    },
+    {
+      "name": "XML Formatter",
+      "file": "xml.html",
+      "category": "Format",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/xml.html",
+      "tags": [
+        "xml",
+        "format",
+        "pretty",
+        "beautify",
+        "minify"
+      ]
+    },
+    {
+      "name": "SQL Formatter",
+      "file": "sqlformat.html",
+      "category": "Format",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/sqlformat.html",
+      "tags": [
+        "sql",
+        "format",
+        "query",
+        "database",
+        "prettier"
+      ]
+    },
+    {
+      "name": "CSS Minifier",
+      "file": "cssminify.html",
+      "category": "Format",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/cssminify.html",
+      "tags": [
+        "css",
+        "minify",
+        "compress",
+        "beautify",
+        "format"
+      ]
+    },
+    {
+      "name": "HTML Beautifier",
+      "file": "htmlbeautify.html",
+      "category": "Format",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/htmlbeautify.html",
+      "tags": [
+        "html",
+        "format",
+        "beautify",
+        "pretty",
+        "indent"
+      ]
+    },
+    {
+      "name": ".env Parser",
+      "file": "envparser.html",
+      "category": "Format",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/envparser.html",
+      "tags": [
+        "env",
+        "dotenv",
+        "environment",
+        "variables",
+        "config"
+      ]
+    },
+    {
+      "name": "Diff Checker",
+      "file": "diff.html",
+      "category": "Inspect",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/diff.html",
+      "tags": [
+        "diff",
+        "compare",
+        "text",
+        "changes",
+        "delta"
+      ],
+      "shortcut": "D"
+    },
+    {
+      "name": "Regex Tester",
+      "file": "regex.html",
+      "category": "Inspect",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/regex.html",
+      "tags": [
+        "regex",
+        "regexp",
+        "pattern",
+        "match",
+        "test",
+        "live"
+      ],
+      "shortcut": "R"
+    },
+    {
+      "name": "JSON Path",
+      "file": "jsonpath.html",
+      "category": "Inspect",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/jsonpath.html",
+      "tags": [
+        "json",
+        "jsonpath",
+        "query",
+        "jq",
+        "extract"
+      ]
+    },
+    {
+      "name": "User Agent",
+      "file": "useragent.html",
+      "category": "Inspect",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/useragent.html",
+      "tags": [
+        "useragent",
+        "browser",
+        "ua",
+        "parse",
+        "detect"
+      ]
+    },
+    {
+      "name": "Key Tester",
+      "file": "keytester.html",
+      "category": "Inspect",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/keytester.html",
+      "tags": [
+        "key",
+        "keyboard",
+        "keycode",
+        "event",
+        "shortcut"
+      ]
+    },
+    {
+      "name": "URL Parser",
+      "file": "urlparser.html",
+      "category": "Inspect",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/urlparser.html",
+      "tags": [
+        "url",
+        "parse",
+        "query",
+        "params",
+        "uri"
+      ]
+    },
+    {
+      "name": "SEO Tools",
+      "file": "seotools.html",
+      "category": "Inspect",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/seotools.html",
+      "tags": [
+        "seo",
+        "meta",
+        "title",
+        "description",
+        "open graph"
+      ]
+    },
+    {
+      "name": "Base64",
+      "file": "base64.html",
+      "category": "Encode",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/base64.html",
+      "tags": [
+        "base64",
+        "encode",
+        "decode",
+        "binary",
+        "string"
+      ],
+      "shortcut": "B"
+    },
+    {
+      "name": "File \u2192 Base64",
+      "file": "filebase64.html",
+      "category": "Encode",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/filebase64.html",
+      "tags": [
+        "file",
+        "base64",
+        "encode",
+        "upload",
+        "binary",
+        "image"
+      ]
+    },
+    {
+      "name": "URL Encoder",
+      "file": "url.html",
+      "category": "Encode",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/url.html",
+      "tags": [
+        "url",
+        "encode",
+        "decode",
+        "percent",
+        "uri",
+        "escape"
+      ]
+    },
+    {
+      "name": "HTML Entities",
+      "file": "htmlentity.html",
+      "category": "Encode",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/htmlentity.html",
+      "tags": [
+        "html",
+        "entities",
+        "encode",
+        "decode",
+        "escape",
+        "ampersand"
+      ]
+    },
+    {
+      "name": "Unicode Converter",
+      "file": "unicode.html",
+      "category": "Encode",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/unicode.html",
+      "tags": [
+        "unicode",
+        "utf",
+        "character",
+        "code point",
+        "escape"
+      ]
+    },
+    {
+      "name": "String Escape",
+      "file": "stringescape.html",
+      "category": "Encode",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/stringescape.html",
+      "tags": [
+        "string",
+        "escape",
+        "unescape",
+        "json",
+        "backslash"
+      ]
+    },
+    {
+      "name": "Morse Code",
+      "file": "morse.html",
+      "category": "Encode",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/morse.html",
+      "tags": [
+        "morse",
+        "code",
+        "encode",
+        "decode",
+        "dots",
+        "dashes"
+      ]
+    },
+    {
+      "name": "Password",
+      "file": "password.html",
+      "category": "Security",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/password.html",
+      "tags": [
+        "password",
+        "generate",
+        "random",
+        "secure",
+        "strength"
+      ]
+    },
+    {
+      "name": "Text Encrypt",
+      "file": "textencrypt.html",
+      "category": "Security",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/textencrypt.html",
+      "tags": [
+        "encrypt",
+        "decrypt",
+        "aes",
+        "cipher",
+        "crypto",
+        "secure"
+      ]
+    },
+    {
+      "name": "JWT Decoder",
+      "file": "jwt.html",
+      "category": "Security",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/jwt.html",
+      "tags": [
+        "jwt",
+        "token",
+        "decode",
+        "auth",
+        "bearer",
+        "claims",
+        "payload"
+      ],
+      "shortcut": "K"
+    },
+    {
+      "name": "JWT Encoder",
+      "file": "jwtencoder.html",
+      "category": "Security",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/jwtencoder.html",
+      "tags": [
+        "jwt",
+        "token",
+        "encode",
+        "sign",
+        "auth",
+        "hmac"
+      ]
+    },
+    {
+      "name": "UUID",
+      "file": "uuid.html",
+      "category": "Generate",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/uuid.html",
+      "tags": [
+        "uuid",
+        "guid",
+        "generate",
+        "random",
+        "v4",
+        "unique",
+        "id"
+      ],
+      "shortcut": "U"
+    },
+    {
+      "name": "Lorem Ipsum",
+      "file": "lorem.html",
+      "category": "Generate",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/lorem.html",
+      "tags": [
+        "lorem",
+        "ipsum",
+        "placeholder",
+        "text",
+        "dummy",
+        "filler"
+      ]
+    },
+    {
+      "name": "Fake Data Generator",
+      "file": "fakedata.html",
+      "category": "Generate",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/fakedata.html",
+      "tags": [
+        "fake",
+        "data",
+        "mock",
+        "generate",
+        "name",
+        "address",
+        "email"
+      ]
+    },
+    {
+      "name": "QR Code",
+      "file": "qrcode.html",
+      "category": "Generate",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/qrcode.html",
+      "tags": [
+        "qr",
+        "qrcode",
+        "generate",
+        "scan",
+        "barcode",
+        "url"
+      ]
+    },
+    {
+      "name": "Favicon",
+      "file": "favicon.html",
+      "category": "Generate",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/favicon.html",
+      "tags": [
+        "favicon",
+        "icon",
+        "png",
+        "ico",
+        "generate"
+      ]
+    },
+    {
+      "name": "Hash Generator",
+      "file": "hash.html",
+      "category": "Generate",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/hash.html",
+      "tags": [
+        "hash",
+        "md5",
+        "sha",
+        "sha256",
+        "checksum",
+        "digest"
+      ]
+    },
+    {
+      "name": "Color Converter",
+      "file": "color.html",
+      "category": "Color",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/color.html",
+      "tags": [
+        "color",
+        "hex",
+        "rgb",
+        "hsl",
+        "convert",
+        "picker"
+      ],
+      "shortcut": "C"
+    },
+    {
+      "name": "Contrast Checker",
+      "file": "contrast.html",
+      "category": "Color",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/contrast.html",
+      "tags": [
+        "contrast",
+        "wcag",
+        "accessibility",
+        "a11y",
+        "color",
+        "ratio"
+      ]
+    },
+    {
+      "name": "Color Palette",
+      "file": "colorpalette.html",
+      "category": "Color",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/colorpalette.html",
+      "tags": [
+        "color",
+        "palette",
+        "swatch",
+        "generate",
+        "shades"
+      ]
+    },
+    {
+      "name": "Image Palette",
+      "file": "imagepalette.html",
+      "category": "Color",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/imagepalette.html",
+      "tags": [
+        "image",
+        "color",
+        "palette",
+        "extract",
+        "dominant"
+      ]
+    },
+    {
+      "name": "Color Blindness Sim",
+      "file": "colorblind.html",
+      "category": "Color",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/colorblind.html",
+      "tags": [
+        "colorblind",
+        "accessibility",
+        "simulate",
+        "vision",
+        "a11y"
+      ]
+    },
+    {
+      "name": "CSS Gradient",
+      "file": "gradient.html",
+      "category": "CSS Builders",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/gradient.html",
+      "tags": [
+        "css",
+        "gradient",
+        "linear",
+        "radial",
+        "background",
+        "generate"
+      ]
+    },
+    {
+      "name": "Box Shadow Builder",
+      "file": "boxshadow.html",
+      "category": "CSS Builders",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/boxshadow.html",
+      "tags": [
+        "css",
+        "box-shadow",
+        "shadow",
+        "generate",
+        "builder"
+      ]
+    },
+    {
+      "name": "Flexbox Generator",
+      "file": "flexbox.html",
+      "category": "CSS Builders",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/flexbox.html",
+      "tags": [
+        "css",
+        "flexbox",
+        "flex",
+        "layout",
+        "generate"
+      ]
+    },
+    {
+      "name": "CSS Grid Generator",
+      "file": "cssgrid.html",
+      "category": "CSS Builders",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/cssgrid.html",
+      "tags": [
+        "css",
+        "grid",
+        "layout",
+        "generate",
+        "columns"
+      ]
+    },
+    {
+      "name": "Breakpoint Tester",
+      "file": "breakpoints.html",
+      "category": "CSS Builders",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/breakpoints.html",
+      "tags": [
+        "css",
+        "breakpoints",
+        "responsive",
+        "viewport",
+        "media query"
+      ]
+    },
+    {
+      "name": "curl Builder",
+      "file": "curlbuilder.html",
+      "category": "API & Network",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/curlbuilder.html",
+      "tags": [
+        "curl",
+        "http",
+        "request",
+        "command",
+        "api"
+      ]
+    },
+    {
+      "name": "API Tester",
+      "file": "apitester.html",
+      "category": "API & Network",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/apitester.html",
+      "tags": [
+        "api",
+        "http",
+        "rest",
+        "request",
+        "get",
+        "post",
+        "fetch",
+        "test"
+      ]
+    },
+    {
+      "name": "GraphQL Playground",
+      "file": "graphql.html",
+      "category": "API & Network",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/graphql.html",
+      "tags": [
+        "graphql",
+        "api",
+        "query",
+        "mutation",
+        "playground"
+      ]
+    },
+    {
+      "name": "WebSocket Client",
+      "file": "websocket.html",
+      "category": "API & Network",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/websocket.html",
+      "tags": [
+        "websocket",
+        "ws",
+        "real-time",
+        "connection",
+        "test"
+      ]
+    },
+    {
+      "name": "OpenAPI Viewer",
+      "file": "openapi.html",
+      "category": "API & Network",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/openapi.html",
+      "tags": [
+        "openapi",
+        "swagger",
+        "spec",
+        "api",
+        "viewer",
+        "docs"
+      ]
+    },
+    {
+      "name": "Network Tools",
+      "file": "nettools.html",
+      "category": "API & Network",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/nettools.html",
+      "tags": [
+        "network",
+        "dns",
+        "ping",
+        "whois",
+        "lookup",
+        "ip"
+      ]
+    },
+    {
+      "name": "IP Calculator",
+      "file": "ipcalc.html",
+      "category": "API & Network",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/ipcalc.html",
+      "tags": [
+        "ip",
+        "cidr",
+        "subnet",
+        "mask",
+        "network",
+        "calculate"
+      ]
+    },
+    {
+      "name": "HTTP Status",
+      "file": "httpstatus.html",
+      "category": "API & Network",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/httpstatus.html",
+      "tags": [
+        "http",
+        "status",
+        "code",
+        "200",
+        "404",
+        "500",
+        "response"
+      ]
+    },
+    {
+      "name": "Header Builder",
+      "file": "headerbuilder.html",
+      "category": "Build",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/headerbuilder.html",
+      "tags": [
+        "http",
+        "header",
+        "cors",
+        "csp",
+        "security",
+        "build"
+      ]
+    },
+    {
+      "name": "Table Builder",
+      "file": "tablebuilder.html",
+      "category": "Build",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/tablebuilder.html",
+      "tags": [
+        "table",
+        "html",
+        "csv",
+        "markdown",
+        "generate",
+        "builder"
+      ]
+    },
+    {
+      "name": "Meta Tag Generator",
+      "file": "metatags.html",
+      "category": "Build",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/metatags.html",
+      "tags": [
+        "meta",
+        "seo",
+        "og",
+        "open graph",
+        "twitter",
+        "html"
+      ]
+    },
+    {
+      "name": ".gitignore Generator",
+      "file": "gitignore.html",
+      "category": "Build",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/gitignore.html",
+      "tags": [
+        "gitignore",
+        "git",
+        "ignore",
+        "generate",
+        "template"
+      ]
+    },
+    {
+      "name": "SVG Optimizer",
+      "file": "svgtools.html",
+      "category": "Build",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/svgtools.html",
+      "tags": [
+        "svg",
+        "optimize",
+        "minify",
+        "compress",
+        "vector"
+      ]
+    },
+    {
+      "name": "Embed Generator",
+      "file": "embed.html",
+      "category": "Build",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/embed.html",
+      "tags": [
+        "embed",
+        "iframe",
+        "widget",
+        "snippet",
+        "blog",
+        "share"
+      ]
+    },
+    {
+      "name": "Number Base",
+      "file": "numbase.html",
+      "category": "Convert",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/numbase.html",
+      "tags": [
+        "number",
+        "base",
+        "binary",
+        "hex",
+        "octal",
+        "decimal",
+        "convert"
+      ]
+    },
+    {
+      "name": "Byte Converter",
+      "file": "byteconvert.html",
+      "category": "Convert",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/byteconvert.html",
+      "tags": [
+        "byte",
+        "kb",
+        "mb",
+        "gb",
+        "convert",
+        "size",
+        "units"
+      ]
+    },
+    {
+      "name": "Aspect Ratio",
+      "file": "aspectratio.html",
+      "category": "Convert",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/aspectratio.html",
+      "tags": [
+        "aspect",
+        "ratio",
+        "16:9",
+        "resolution",
+        "convert",
+        "size"
+      ]
+    },
+    {
+      "name": "px \u2194 rem",
+      "file": "pxrem.html",
+      "category": "Convert",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/pxrem.html",
+      "tags": [
+        "px",
+        "rem",
+        "em",
+        "convert",
+        "css",
+        "unit",
+        "font"
+      ]
+    },
+    {
+      "name": "JSON \u2194 CSV",
+      "file": "jsoncsvconvert.html",
+      "category": "Convert",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/jsoncsvconvert.html",
+      "tags": [
+        "json",
+        "csv",
+        "convert",
+        "table",
+        "import",
+        "export"
+      ]
+    },
+    {
+      "name": "Number Format",
+      "file": "numberfmt.html",
+      "category": "Convert",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/numberfmt.html",
+      "tags": [
+        "number",
+        "format",
+        "locale",
+        "currency",
+        "thousands",
+        "separator"
+      ]
+    },
+    {
+      "name": "Math Evaluator",
+      "file": "matheval.html",
+      "category": "Convert",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/matheval.html",
+      "tags": [
+        "math",
+        "evaluate",
+        "expression",
+        "calculate",
+        "formula"
+      ]
+    },
+    {
+      "name": "YAML \u2194 JSON",
+      "file": "yaml.html",
+      "category": "Convert",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/yaml.html",
+      "tags": [
+        "yaml",
+        "json",
+        "convert",
+        "config",
+        "parse"
+      ]
+    },
+    {
+      "name": "XML \u2194 JSON",
+      "file": "xmljson.html",
+      "category": "Convert",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/xmljson.html",
+      "tags": [
+        "xml",
+        "json",
+        "convert",
+        "parse",
+        "transform"
+      ]
+    },
+    {
+      "name": "Unit Converter",
+      "file": "unitconvert.html",
+      "category": "Convert",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/unitconvert.html",
+      "tags": [
+        "unit",
+        "convert",
+        "length",
+        "weight",
+        "temperature",
+        "metric"
+      ]
+    },
+    {
+      "name": "TOML \u2194 JSON",
+      "file": "toml.html",
+      "category": "Convert",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/toml.html",
+      "tags": [
+        "toml",
+        "json",
+        "convert",
+        "config",
+        "rust",
+        "cargo"
+      ]
+    },
+    {
+      "name": "Date & Time Tools",
+      "file": "timestamp.html",
+      "category": "Convert",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/timestamp.html",
+      "tags": [
+        "date",
+        "time",
+        "timestamp",
+        "epoch",
+        "unix",
+        "convert",
+        "format"
+      ],
+      "shortcut": "T"
+    },
+    {
+      "name": "Cron Parser",
+      "file": "cron.html",
+      "category": "Convert",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/cron.html",
+      "tags": [
+        "cron",
+        "schedule",
+        "parse",
+        "job",
+        "time",
+        "expression"
+      ]
+    },
+    {
+      "name": "Text Stats",
+      "file": "textstats.html",
+      "category": "Text",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/textstats.html",
+      "tags": [
+        "text",
+        "words",
+        "count",
+        "stats",
+        "characters",
+        "reading time"
+      ]
+    },
+    {
+      "name": "Char Counter",
+      "file": "charcounter.html",
+      "category": "Text",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/charcounter.html",
+      "tags": [
+        "character",
+        "count",
+        "limit",
+        "twitter",
+        "sms",
+        "text"
+      ]
+    },
+    {
+      "name": "Case Converter",
+      "file": "caseconvert.html",
+      "category": "Text",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/caseconvert.html",
+      "tags": [
+        "case",
+        "uppercase",
+        "lowercase",
+        "camel",
+        "snake",
+        "title"
+      ]
+    },
+    {
+      "name": "Line Sorter",
+      "file": "linesorter.html",
+      "category": "Text",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/linesorter.html",
+      "tags": [
+        "line",
+        "sort",
+        "deduplicate",
+        "unique",
+        "alphabetical",
+        "text"
+      ]
+    },
+    {
+      "name": "Markdown Preview",
+      "file": "markdown.html",
+      "category": "Text",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/markdown.html",
+      "tags": [
+        "markdown",
+        "preview",
+        "render",
+        "md",
+        "html"
+      ]
+    },
+    {
+      "name": "ASCII Art",
+      "file": "asciiart.html",
+      "category": "Text",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/asciiart.html",
+      "tags": [
+        "ascii",
+        "art",
+        "text",
+        "font",
+        "figlet",
+        "banner"
+      ]
+    },
+    {
+      "name": "Slug Generator",
+      "file": "slugify.html",
+      "category": "Text",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/slugify.html",
+      "tags": [
+        "slug",
+        "url",
+        "generate",
+        "seo",
+        "kebab",
+        "convert"
+      ]
+    },
+    {
+      "name": "Pomodoro Timer",
+      "file": "pomodoro.html",
+      "category": "Productivity",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/pomodoro.html",
+      "tags": [
+        "pomodoro",
+        "timer",
+        "focus",
+        "productivity",
+        "25min"
+      ]
+    },
+    {
+      "name": "Countdown",
+      "file": "countdown.html",
+      "category": "Productivity",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/countdown.html",
+      "tags": [
+        "countdown",
+        "timer",
+        "deadline",
+        "date",
+        "event"
+      ]
+    },
+    {
+      "name": "Todo List",
+      "file": "todo.html",
+      "category": "Productivity",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/todo.html",
+      "tags": [
+        "todo",
+        "tasks",
+        "list",
+        "checklist",
+        "notes"
+      ]
+    },
+    {
+      "name": "Snippet Manager",
+      "file": "snippets.html",
+      "category": "Productivity",
+      "type": "tool",
+      "url": "https://devmina.github.io/devbox/tools/snippets.html",
+      "tags": [
+        "snippet",
+        "code",
+        "save",
+        "manager",
+        "notes",
+        "clipboard"
+      ]
+    },
+    {
+      "name": "Regex Cheatsheet",
+      "file": "regex-cheatsheet.html",
+      "category": "Cheatsheets",
+      "type": "cheatsheet",
+      "url": "https://devmina.github.io/devbox/cheatsheets/regex-cheatsheet.html",
+      "tags": [
+        "regex",
+        "cheatsheet",
+        "reference",
+        "pattern"
+      ]
+    },
+    {
+      "name": "Git Cheatsheet",
+      "file": "git.html",
+      "category": "Cheatsheets",
+      "type": "cheatsheet",
+      "url": "https://devmina.github.io/devbox/cheatsheets/git.html",
+      "tags": [
+        "git",
+        "cheatsheet",
+        "commands",
+        "reference"
+      ]
+    },
+    {
+      "name": "Bash & Linux Cheatsheet",
+      "file": "bash.html",
+      "category": "Cheatsheets",
+      "type": "cheatsheet",
+      "url": "https://devmina.github.io/devbox/cheatsheets/bash.html",
+      "tags": [
+        "bash",
+        "linux",
+        "shell",
+        "cheatsheet",
+        "terminal"
+      ]
+    },
+    {
+      "name": "Docker Cheatsheet",
+      "file": "docker.html",
+      "category": "Cheatsheets",
+      "type": "cheatsheet",
+      "url": "https://devmina.github.io/devbox/cheatsheets/docker.html",
+      "tags": [
+        "docker",
+        "container",
+        "cheatsheet",
+        "devops"
+      ]
+    }
+  ]
+}

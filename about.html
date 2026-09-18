@@ -6,7 +6,7 @@
     <script>(function () { var k = 'devbox_theme', t = 'dark'; try { t = localStorage.getItem(k) || 'dark'; } catch (e) {} document.documentElement.setAttribute('data-theme', t); function a(th) { document.documentElement.setAttribute('data-theme', th); try { localStorage.setItem(k, th); } catch (e) {} document.querySelectorAll('.theme-toggle').forEach(function (b) { var i = b.querySelector('.theme-toggle-icon'), l = b.querySelector('.theme-toggle-label'); if (i) i.textContent = th === 'light' ? '🌙' : '☀️'; if (l) l.textContent = th === 'light' ? 'Dark mode' : 'Light mode'; }); } window.toggleTheme = function () { a(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }; window.applyTheme = a; })();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About — DevBox</title>
-    <meta name="description" content="DevBox is a free, browser-based developer toolbox with 79+ utilities. No backend, no login, no data uploaded.">
+    <meta name="description" content="DevBox is a free, browser-based developer toolbox with 79+ utilities. Your tool data stays in your browser.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -17,7 +17,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
     <link rel="apple-touch-icon" href="assets/icon-192.png">
     <meta property="og:title" content="About DevBox">
-    <meta property="og:description" content="DevBox is a free, browser-based developer toolbox with 79+ utilities. No backend, no login, no data uploaded.">
+    <meta property="og:description" content="DevBox is a free, browser-based developer toolbox with 79+ utilities. Your tool data stays in your browser.">
     <meta property="og:image" content="https://devmina.github.io/devbox/assets/og/og-default.png">
     <meta name="theme-color" content="#0A0C10">
     <meta name="color-scheme" content="dark light">
@@ -155,7 +155,7 @@
 
                     <div class="about-hero">
                         <div class="about-hero-title">About <span style="color:var(--green)">DevBox</span></div>
-                        <div class="about-hero-sub">A free, browser-based developer toolbox. No backend, no login, no data uploaded. Just open it and get to work.</div>
+                        <div class="about-hero-sub">A free, browser-based developer toolbox. Your tool data stays in your browser. Just open it and get to work.</div>
                     </div>
 
                     <!-- Stats -->
@@ -192,7 +192,7 @@
                     <div class="about-section">
                         <div class="about-section-title">Privacy philosophy</div>
                         <div class="privacy-card">
-                            <strong>Your data stays in your browser.</strong> DevBox processes everything locally using JavaScript — your JSON, JWT tokens, passwords, source code, and API keys never leave your device and are never sent to any server.<br><br>
+                            <strong>Your tool data stays in your browser.</strong> DevBox processes everything locally using JavaScript — your JSON, JWT tokens, passwords, source code, and API keys never leave your device and are never sent to any server.<br><br>
                             The only exceptions are tools that intentionally make network requests by design: the <strong>API Tester</strong>, <strong>GraphQL Playground</strong>, <strong>WebSocket Client</strong>, and <strong>Network Tools</strong> send requests to the URLs <em>you</em> specify. For those, take the same care you would with any HTTP client.
                         </div>
                     </div>

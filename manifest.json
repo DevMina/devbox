@@ -1,7 +1,7 @@
 {
   "name": "DevBox",
   "short_name": "DevBox",
-  "description": "79 developer tools that run entirely in your browser \u2014 fast, private, and free. No login, no backend, nothing uploaded.",
+  "description": "79 developer tools that run in your browser \u2014 fast, private, and free. No login required. Your tool data stays in your browser.",
   "lang": "en",
   "scope": "./",
   "id": "./",

@@ -207,7 +207,7 @@
                 <div class="ext-wrap">
 
                     <div class="ext-hero-title">Browser <span style="color:var(--green)">Extension</span></div>
-                    <div class="ext-hero-sub">Quick access to all 79 DevBox tools from your toolbar, plus right-click actions that send selected text on any page straight to the right tool — already filled in.</div>
+                    <div class="ext-hero-sub">Quick access to all <span data-tool-count>79</span> DevBox tools from your toolbar, plus right-click actions that send selected text on any page straight to the right tool — already filled in.</div>
 
                     <div class="ext-download-card">
                         <div class="ext-download-meta">
@@ -269,8 +269,15 @@
     </div>
 
     <div class="toast" id="toast"></div>
-    <script src="assets/theme.js"></script>
     <script src="assets/shared.js" defer></script>
     <script src="assets/sidebar.js" defer></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof SIDEBAR_ITEMS !== 'undefined') {
+            const count = SIDEBAR_ITEMS.filter(i => i.href && !i.cs).length;
+            document.querySelectorAll('[data-tool-count]').forEach(el => el.textContent = count);
+        }
+    });
+    </script>
 </body>
 </html>
